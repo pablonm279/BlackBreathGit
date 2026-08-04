@@ -775,6 +775,7 @@ public abstract class Habilidad : MonoBehaviour
     //Crítico = 3
 
     int resultado = 0;
+    Unidad objetivoProyectil = unidadAtacada;
 
     bool objetivoUnitario = !esZonal && enArea == 0 && targetEspecial == 0;
     if (unidadAtacada != null)
@@ -870,6 +871,7 @@ public abstract class Habilidad : MonoBehaviour
       }
       unidadAtacada?.NotificarAtaqueRecibido();
       BanterBattleDirector.NotificarResultadoAtaque(scEstaUnidad, unidadAtacada, -1);
+      ArrowFlight.NotificarResultadoAtaque(scEstaUnidad, objetivoProyectil, -1);
       return -1;
     }
 
@@ -895,6 +897,7 @@ public abstract class Habilidad : MonoBehaviour
           TRADU.i.Traducir("Impacto crítico")));
       unidadAtacada?.NotificarAtaqueRecibido();
       BanterBattleDirector.NotificarResultadoAtaque(scEstaUnidad, unidadAtacada, 3);
+      ArrowFlight.NotificarResultadoAtaque(scEstaUnidad, objetivoProyectil, 3);
       return 3;
     }
 
@@ -946,6 +949,7 @@ public abstract class Habilidad : MonoBehaviour
     { AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position); }
 
     unidadAtacada?.NotificarAtaqueRecibido();
+    ArrowFlight.NotificarResultadoAtaque(scEstaUnidad, objetivoProyectil, resultado);
     return resultado;
   }
 

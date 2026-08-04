@@ -10,7 +10,7 @@ public static class TextoRecursosCampania
 
     private static readonly RecursoIcono[] recursos =
     {
-        new RecursoIcono("aliento_negro", @"Aliento\s+Negro|Black\s+Breath|Sopro\s+Negro|H[aá]lito\s+Negro"),
+        new RecursoIcono("aliento_negro", @"Aliento\s+Negro|Black\s+Breath|Respiro\s+Negro|Sopro\s+Negro|H[aá]lito\s+Negro"),
         new RecursoIcono("suministros", @"Suministros?|Supplies|Supply|Suprimentos?|Provis(?:o|õ)es|Provisao|Provisões"),
         new RecursoIcono("materiales", @"Materiales?|Materials?"),
         new RecursoIcono("esperanza", @"Esperanza|Hope|Esperan(?:c|ç)a"),

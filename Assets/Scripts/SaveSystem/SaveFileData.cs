@@ -266,6 +266,7 @@ public class CaminoConexionSaveData
   public TipoCaminoCampania tipo;
   public int costoMovimiento = 1;
   public bool rutaHaciaAldea;
+  public bool recorridoPorCaravana;
   public bool reveladoPorVision;
 }
 

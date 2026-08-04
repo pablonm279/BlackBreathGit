@@ -96,7 +96,9 @@ public class BattleManager : MonoBehaviour
   private const int DcValourMin = 8;
   private const int DcValourMax = 22;
   private const int MaxHuidasMoralPorRonda = 1;
+  private const float DelayFinBatallaTrasHuidaMoral = 2f;
   private int huidasMoralEstaRonda = 0;
+  private Coroutine finBatallaTrasHuidaMoralRoutine;
   private float ultimoValourGlobalAliadosPct = -1f;
   [SerializeField, Range(0f, 1f)] private float alphaHoverObjetivoNoAfectado = 0.35f;
   [SerializeField, Range(0f, 1f)] private float alphaAliadoDebajoUnidadActivaFrontal = 0.35f;
@@ -139,6 +141,8 @@ public class BattleManager : MonoBehaviour
   private Coroutine coroutineTooltipValorDelay;
   private bool tooltipValorHoverActivo;
   private Unidad unidadHoverBajoMouse;
+  private Unidad unidadMarcadaHoverObjetivoHabilidad;
+  private bool redirigiendoClickUnidadCentralizado;
 
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
   private static void ResetearEstadoEstaticoCombate()
@@ -247,10 +251,19 @@ public class BattleManager : MonoBehaviour
   }
   public int indexTurno = 0;
 
+  private void OnEnable()
+  {
+    if (finBatallaTrasHuidaMoralRoutine != null)
+    {
+      StopCoroutine(finBatallaTrasHuidaMoralRoutine);
+    }
+    finBatallaTrasHuidaMoralRoutine = null;
+    BanterBattleUI.Instalar(this, prefabBanter);
+  }
+
   private void Start()
   {
     ConfigurarMicroAnimacionesUI();
-    BanterBattleUI.Instalar(this, prefabBanter);
 
     ArmarListadeCasillastotales();
     var handicapDificultad = GetComponent<Sistema.HandicapDificultad>();
@@ -1419,6 +1432,13 @@ public class BattleManager : MonoBehaviour
 
     huidasMoralEstaRonda++;
 
+    if (ladoB != null
+        && ladoB.unidadesLado.Count < 1
+        && aliadosRefuerzos.Count < 1)
+    {
+      ProgramarFinBatallaTrasHuidaMoral(aliado);
+    }
+
     AdministradorEscenas admin = ObtenerAdministradorEscenasActual();
     if (admin != null)
     {
@@ -1431,6 +1451,27 @@ public class BattleManager : MonoBehaviour
       ? nombreAliado + " fails Mental Save (DC " + dc + ") and flees the battle in shame."
       : nombreAliado + " falla la TS Mental (DC " + dc + ") y huye avergonzado de la batalla."));
     return true;
+  }
+
+  void ProgramarFinBatallaTrasHuidaMoral(Unidad unidadQueEscapa)
+  {
+    if (finBatallaTrasHuidaMoralRoutine == null)
+    {
+      finBatallaTrasHuidaMoralRoutine = StartCoroutine(
+        FinalizarBatallaTrasHuidaMoral(unidadQueEscapa));
+    }
+  }
+
+  IEnumerator FinalizarBatallaTrasHuidaMoral(Unidad unidadQueEscapa)
+  {
+    while (unidadQueEscapa != null && unidadQueEscapa.RetiradaPorMoralEnCurso)
+    {
+      yield return null;
+    }
+
+    yield return new WaitForSeconds(DelayFinBatallaTrasHuidaMoral);
+    finBatallaTrasHuidaMoralRoutine = null;
+    ChequearFinBatalla();
   }
 
   void AplicarDebuffDudando(Unidad aliado, int dc, bool porLimiteHuida)
@@ -2051,16 +2092,24 @@ public class BattleManager : MonoBehaviour
       {
         CancelarHabilidadActiva();
       }
+      habilidad.enabled = false;
       Destroy(habilidad);
-      if (unidad == unidadActiva && scUIBotonesHab != null)
-      {
-        scUIBotonesHab.ActualizarBotonesHabilidad();
-        _requiereActualizarBotones = false;
-      }
-      else
-      {
-        SolicitarActualizarBotones();
-      }
+      StartCoroutine(RefrescarBotonesTrasRemoverEscapar(unidad));
+    }
+  }
+
+  IEnumerator RefrescarBotonesTrasRemoverEscapar(Unidad unidad)
+  {
+    yield return null;
+
+    if (unidad == unidadActiva && scUIBotonesHab != null)
+    {
+      scUIBotonesHab.ActualizarBotonesHabilidad();
+      _requiereActualizarBotones = false;
+    }
+    else
+    {
+      SolicitarActualizarBotones();
     }
   }
   public void LimpiarCapasCasillas()
@@ -2542,14 +2591,11 @@ public class BattleManager : MonoBehaviour
     if (unidadActiva != null && scUIBotonesHab != null)
     {
       bool requiereEscape = DebeTenerHabilidadEscapar(unidadActiva);
-      bool tieneEscape = unidadActiva.GetComponent<Escapar>() != null;
+      Escapar habilidadEscape = unidadActiva.GetComponent<Escapar>();
+      bool tieneEscape = habilidadEscape != null && habilidadEscape.enabled;
       if (!requiereEscape && tieneEscape)
       {
         SincronizarHabilidadEscapar(unidadActiva);
-        if (unidadActiva.GetComponent<IAUnidad>() == null)
-        {
-          scUIBotonesHab.ActualizarBotonesHabilidad();
-        }
       }
     }
 
@@ -2568,41 +2614,127 @@ public class BattleManager : MonoBehaviour
 
   public bool HoverUnidadesCentralizadoActivo => true;
 
+  public bool TryRedirigirClickUnidadCentralizado(Unidad unidadQueRecibioClick)
+  {
+    if (unidadQueRecibioClick == null
+      || redirigiendoClickUnidadCentralizado
+      || vistaTacticaActiva
+      || !SeleccionandoObjetivo
+      || HabilidadActiva == null)
+    {
+      return false;
+    }
+
+    if (EstaPunteroSobreUIExterna())
+    {
+      return true;
+    }
+
+    Unidad unidadObjetivo = ObtenerUnidadBajoMousePorRectImagen(Input.mousePosition, MargenHoverUnidadPixeles);
+    if (unidadObjetivo == null || unidadObjetivo == unidadQueRecibioClick)
+    {
+      return false;
+    }
+
+    redirigiendoClickUnidadCentralizado = true;
+    try
+    {
+      unidadObjetivo.OnMouseDown();
+    }
+    finally
+    {
+      redirigiendoClickUnidadCentralizado = false;
+    }
+
+    return true;
+  }
+
   private void ActualizarHoverUnidadBajoMouse()
   {
     UIInfoChar infoChar = scUIInfoChar;
-    if (infoChar == null)
-    {
-      unidadHoverBajoMouse = null;
-      return;
-    }
-
     Unidad nuevaUnidadHover = !vistaTacticaActiva && !EstaPunteroSobreUIExterna()
-      ? ObtenerUnidadBajoMousePorRectImagen(Input.mousePosition, MargenHoverUnidadPixeles)
+      ? ObtenerUnidadHoverCentralizada()
       : null;
 
-    if (nuevaUnidadHover == unidadHoverBajoMouse)
+    if (nuevaUnidadHover != unidadHoverBajoMouse)
     {
-      return;
+      if (unidadHoverBajoMouse != null)
+      {
+        infoChar?.LimpiarHover(unidadHoverBajoMouse);
+      }
+
+      unidadHoverBajoMouse = nuevaUnidadHover;
+      if (unidadHoverBajoMouse != null)
+      {
+        if (!SeleccionandoObjetivo)
+        {
+          TooltipBatalla.Instance?.HideTooltipSinAnim();
+        }
+
+        infoChar?.MostrarHover(unidadHoverBajoMouse);
+      }
     }
 
-    if (unidadHoverBajoMouse != null)
+    ActualizarMarcadoHoverObjetivoHabilidad(nuevaUnidadHover, infoChar);
+  }
+
+  private Unidad ObtenerUnidadHoverCentralizada()
+  {
+    if (SeleccionandoObjetivo)
     {
-      infoChar?.LimpiarHover(unidadHoverBajoMouse);
+      return ObtenerUnidadBajoMouse(true, MargenHoverUnidadPixeles);
     }
 
-    unidadHoverBajoMouse = nuevaUnidadHover;
-    if (unidadHoverBajoMouse == null)
+    bool turnoJugador = unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null;
+    if (!turnoJugador)
     {
-      return;
+      return ObtenerUnidadBajoMouse(true, MargenHoverUnidadPixeles);
     }
 
-    if (!SeleccionandoObjetivo)
+    Unidad unidadPorCollider = ObtenerUnidadBajoMouse(false);
+    if (unidadPorCollider != null)
     {
-      TooltipBatalla.Instance?.HideTooltipSinAnim();
+      return unidadPorCollider;
     }
 
-    infoChar?.MostrarHover(unidadHoverBajoMouse);
+    Unidad unidadPorImagen = ObtenerUnidadBajoMousePorRectImagen(Input.mousePosition, MargenHoverUnidadPixeles);
+    return EsAliadaDeUnidadActiva(unidadPorImagen) ? null : unidadPorImagen;
+  }
+
+  private bool EsAliadaDeUnidadActiva(Unidad unidad)
+  {
+    return unidad != null
+      && unidadActiva != null
+      && unidad.CasillaPosicion != null
+      && unidadActiva.CasillaPosicion != null
+      && unidad.CasillaPosicion.lado == unidadActiva.CasillaPosicion.lado;
+  }
+
+  private void ActualizarMarcadoHoverObjetivoHabilidad(Unidad unidadBajoMouse, UIInfoChar infoChar)
+  {
+    Unidad nuevaUnidadMarcada = !vistaTacticaActiva
+      && SeleccionandoObjetivo
+      && HabilidadActiva != null
+      && EsUnidadObjetivoVisualHabilidadActiva(unidadBajoMouse)
+        ? unidadBajoMouse
+        : null;
+
+    bool debeReaplicarMarcadoInfo = unidadMarcadaHoverObjetivoHabilidad != null
+      && nuevaUnidadMarcada == null
+      && !SeleccionandoObjetivo;
+
+    if (unidadMarcadaHoverObjetivoHabilidad != nuevaUnidadMarcada)
+    {
+      unidadMarcadaHoverObjetivoHabilidad?.Marcar(0);
+      unidadMarcadaHoverObjetivoHabilidad = nuevaUnidadMarcada;
+    }
+
+    unidadMarcadaHoverObjetivoHabilidad?.Marcar(1);
+
+    if (debeReaplicarMarcadoInfo)
+    {
+      infoChar?.ReaplicarMarcadoPrioritario();
+    }
   }
 
   private bool EstaPunteroSobreUIExterna()
@@ -2753,6 +2885,12 @@ public class BattleManager : MonoBehaviour
     LimpiarFadeHoverObjetivoHabilidad();
     LimpiarPreviewHoverHostil();
 
+    if (unidadMarcadaHoverObjetivoHabilidad != null)
+    {
+      unidadMarcadaHoverObjetivoHabilidad.Marcar(0);
+      unidadMarcadaHoverObjetivoHabilidad = null;
+    }
+
     if (unidadHoverBajoMouse != null)
     {
       scUIInfoChar?.LimpiarHover(unidadHoverBajoMouse);
@@ -2846,36 +2984,39 @@ public class BattleManager : MonoBehaviour
     casillaBajoMouse.OnMouseOver();
   }
 
-  private Unidad ObtenerUnidadBajoMouse()
+  private Unidad ObtenerUnidadBajoMouse(bool incluirImagenYUI = true, float margenPantallaPixeles = 0f)
   {
     Vector3 mousePos = Input.mousePosition;
-    Unidad unidadPorRect = ObtenerUnidadBajoMousePorRectImagen(mousePos);
-    if (unidadPorRect != null)
+    if (incluirImagenYUI)
     {
-      return unidadPorRect;
-    }
-
-    if (EventSystem.current != null)
-    {
-      PointerEventData pointerData = new PointerEventData(EventSystem.current)
+      Unidad unidadPorRect = ObtenerUnidadBajoMousePorRectImagen(mousePos, margenPantallaPixeles);
+      if (unidadPorRect != null)
       {
-        position = mousePos
-      };
+        return unidadPorRect;
+      }
 
-      resultadosRaycastUnidadBajoMouse.Clear();
-      EventSystem.current.RaycastAll(pointerData, resultadosRaycastUnidadBajoMouse);
-      for (int i = 0; i < resultadosRaycastUnidadBajoMouse.Count; i++)
+      if (EventSystem.current != null)
       {
-        GameObject go = resultadosRaycastUnidadBajoMouse[i].gameObject;
-        if (go == null)
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
         {
-          continue;
-        }
+          position = mousePos
+        };
 
-        Unidad unidadUI = go.GetComponentInParent<Unidad>();
-        if (unidadUI != null)
+        resultadosRaycastUnidadBajoMouse.Clear();
+        EventSystem.current.RaycastAll(pointerData, resultadosRaycastUnidadBajoMouse);
+        for (int i = 0; i < resultadosRaycastUnidadBajoMouse.Count; i++)
         {
-          return unidadUI;
+          GameObject go = resultadosRaycastUnidadBajoMouse[i].gameObject;
+          if (go == null)
+          {
+            continue;
+          }
+
+          Unidad unidadUI = go.GetComponentInParent<Unidad>();
+          if (unidadUI != null)
+          {
+            return unidadUI;
+          }
         }
       }
     }
@@ -2923,6 +3064,7 @@ public class BattleManager : MonoBehaviour
 
     Unidad mejorUnidad = null;
     float mejorDistancia = float.MaxValue;
+    bool limitarAObjetivosValidos = SeleccionandoObjetivo && HabilidadActiva != null;
 
     foreach (Unidad unidad in lUnidadesTotal)
     {
@@ -2931,7 +3073,10 @@ public class BattleManager : MonoBehaviour
         || !unidad.gameObject.activeInHierarchy
         || !unidad.uImage.gameObject.activeInHierarchy
         || !unidad.uImage.enabled
-        || unidad.EstaOcultoVisualmenteParaJugador())
+        || unidad.EstaOcultoVisualmenteParaJugador()
+        || (limitarAObjetivosValidos
+          && (lUnidadesPosiblesHabilidadActiva == null
+            || !lUnidadesPosiblesHabilidadActiva.Contains(unidad))))
       {
         continue;
       }
@@ -4124,6 +4269,11 @@ public class BattleManager : MonoBehaviour
 
   public void ChequearFinBatalla()
   {
+
+    if (finBatallaTrasHuidaMoralRoutine != null)
+    {
+      return;
+    }
 
     // Asegurar listas actualizadas antes de chequear victoria/derrota
     // Esto cubre el caso donde entran refuerzos en la misma ronda

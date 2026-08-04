@@ -8,10 +8,10 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
   private const string RootName = "IdleLifeFx";
 
   [Header("Silueta secundaria")]
-  [SerializeField] private float alphaSilueta = 0.045f;
-  [SerializeField] private float amplitudVertical = 1.4f;
-  [SerializeField] private float amplitudEscala = 0.008f;
-  [SerializeField] private float velocidadRespiracion = 0.72f;
+  [SerializeField] private float alphaSilueta = 0.018f;
+  [SerializeField] private float amplitudVertical = 0.35f;
+  [SerializeField] private float amplitudEscala = 0.0015f;
+  [SerializeField] private float velocidadRespiracion = 0.55f;
 
   [Header("Sombra de contacto")]
   [SerializeField] private float alphaSombra = 0.14f;
@@ -211,11 +211,8 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
       rootRect.SetSiblingIndex(Mathf.Clamp(indiceObjetivo, 0, imagenRect.parent.childCount - 1));
     }
 
-    if (silueta.sprite != imagenUnidad.sprite)
-    {
-      silueta.sprite = imagenUnidad.sprite;
-    }
-
+    silueta.sprite = imagenUnidad.sprite;
+    silueta.overrideSprite = imagenUnidad.overrideSprite;
     silueta.preserveAspect = imagenUnidad.preserveAspect;
     silueta.type = imagenUnidad.type;
     silueta.fillCenter = imagenUnidad.fillCenter;
@@ -223,25 +220,16 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
 
   private void AnimarCapa()
   {
-    float t = Time.unscaledTime * Mathf.Max(0.01f, velocidadRespiracion) + fase;
-    float respiracion = Mathf.Sin(t);
-    float secundaria = Mathf.Sin((t * 0.47f) + fase * 0.31f);
-    float pulsoTurno = CalcularPulsoTurno();
+    CalcularPulsoTurno();
+    float respiracion = Mathf.Sin(
+      Time.unscaledTime * Mathf.Max(0.01f, velocidadRespiracion) + fase);
 
     RectTransform siluetaRect = silueta.rectTransform;
     siluetaRect.sizeDelta = imagenRect.rect.size;
-    siluetaRect.anchoredPosition = new Vector2(
-      secundaria * 0.35f,
-      respiracion * amplitudVertical + pulsoTurno * 2.2f);
-    float escala = 1.006f + respiracion * amplitudEscala + pulsoTurno * 0.012f;
-    siluetaRect.localScale = Vector3.one * escala;
+    siluetaRect.anchoredPosition = new Vector2(0f, respiracion * amplitudVertical);
+    siluetaRect.localScale = Vector3.one * (1.002f + respiracion * amplitudEscala);
     siluetaRect.localEulerAngles = Vector3.zero;
-
-    Color colorRim = EsUnidadActiva()
-      ? new Color(0.95f, 0.78f, 0.25f, 1f)
-      : new Color(0.32f, 0.55f, 0.62f, 1f);
-    colorRim.a = visibilidad * (alphaSilueta + pulsoTurno * 0.075f);
-    silueta.color = colorRim;
+    silueta.color = new Color(0.48f, 0.58f, 0.62f, visibilidad * alphaSilueta);
 
     RectTransform sombraRect = sombra.rectTransform;
     Vector2 tamano = imagenRect.rect.size;
@@ -250,8 +238,7 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
       Mathf.Max(3f, tamano.y * escalaSombra.y));
     sombraRect.anchoredPosition = new Vector2(0f, tamano.y * offsetSombraY);
     sombraRect.localEulerAngles = Vector3.zero;
-    float contraccion = 1f - respiracion * 0.035f;
-    sombraRect.localScale = new Vector3(contraccion, 1f, 1f);
+    sombraRect.localScale = Vector3.one;
     sombra.color = new Color(0.01f, 0.015f, 0.02f, visibilidad * alphaSombra);
   }
 
@@ -266,13 +253,6 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
     pulsoTurnoRestante = Mathf.Max(0f, pulsoTurnoRestante - Time.unscaledDeltaTime);
     float progreso = 1f - pulsoTurnoRestante / duracion;
     return Mathf.Sin(Mathf.Clamp01(progreso) * Mathf.PI);
-  }
-
-  private bool EsUnidadActiva()
-  {
-    return unidad != null
-      && BattleManager.Instance != null
-      && BattleManager.Instance.unidadActiva == unidad;
   }
 
   private void Ocultar()

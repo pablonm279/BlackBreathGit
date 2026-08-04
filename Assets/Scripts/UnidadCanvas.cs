@@ -39,6 +39,7 @@ public class UnidadCanvas : MonoBehaviour
     [SerializeField] private float barraVidaHealDelay = 0.08f;
     [SerializeField] private float barraVidaHealSpeed = 0.9f;
     [SerializeField] private Color barraVidaColorVidaBaja = new Color(0.42f, 0.02f, 0.02f, 1f);
+    [SerializeField] private Color barraVidaSangradoColor = new Color(0.28f, 0.015f, 0.015f, 1f);
     [SerializeField] private float barraVidaRatioInicioRojo = 0.2f;
     [SerializeField] private float barraVidaOscurecerTurnoPasado = 0.72f;
     private float barraVidaLastRatio = -1f;
@@ -49,6 +50,7 @@ public class UnidadCanvas : MonoBehaviour
     private RectTransform barraVidaFillRect;
     private Slider barraVidaSlider;
     private Image barraVidaFillImage;
+    private Image barraVidaSangradoFill;
     private Color barraVidaFillColorBase = Color.white;
     private bool barraVidaFillColorBaseInicializado;
     private TMP_FontAsset fuenteTextoProbabilidad;
@@ -73,6 +75,7 @@ public class UnidadCanvas : MonoBehaviour
     private int ultimaVidaMaximaMostrada = int.MinValue;
     private int ultimaBarreraMostrada = int.MinValue;
     private float ultimoRatioVidaVisual = -1f;
+    private float ultimoMaxHPPerdidoPorSangrado = -1f;
     private float ultimoRatioColorVida = -1f;
     private bool ultimoEstadoTurnoPasado;
     private bool estadoTurnoPasadoInicializado;
@@ -157,8 +160,12 @@ public class UnidadCanvas : MonoBehaviour
             barraVidaSlider = barraVida.GetComponent<Slider>();
         }
 
-        float ratioVida = unidad.mod_maxHP > 0f ? Mathf.Clamp01(unidad.HP_actual / unidad.mod_maxHP) : 0f;
-        bool cambioRatio = ultimoRatioVidaVisual < 0f || !Mathf.Approximately(ultimoRatioVidaVisual, ratioVida);
+        float maxHPVisual = Mathf.Max(0f, unidad.mod_maxHP) + Mathf.Max(0f, unidad.maxHPPerdidoPorSangrado);
+        float ratioVida = maxHPVisual > 0f ? Mathf.Clamp01(unidad.HP_actual / maxHPVisual) : 0f;
+        float ratioMaxActual = maxHPVisual > 0f ? Mathf.Clamp01(unidad.mod_maxHP / maxHPVisual) : 0f;
+        bool cambioRatio = ultimoRatioVidaVisual < 0f
+            || !Mathf.Approximately(ultimoRatioVidaVisual, ratioVida)
+            || !Mathf.Approximately(ultimoMaxHPPerdidoPorSangrado, unidad.maxHPPerdidoPorSangrado);
         if (cambioRatio)
         {
             if (barraVidaSlider != null)
@@ -166,8 +173,10 @@ public class UnidadCanvas : MonoBehaviour
                 barraVidaSlider.value = ratioVida * 100f;
             }
 
+            SetBarraSangradoRatio(ratioMaxActual);
             ActualizarBarraDanio(unidad);
             ultimoRatioVidaVisual = ratioVida;
+            ultimoMaxHPPerdidoPorSangrado = unidad.maxHPPerdidoPorSangrado;
         }
 
         BattleManager battleManager = BattleManager.Instance;
@@ -276,6 +285,36 @@ public class UnidadCanvas : MonoBehaviour
             barraVidaDamageFill = img;
         }
 
+        if (barraVidaSangradoFill == null)
+        {
+            GameObject go = new GameObject("SangradoMaxFill", typeof(RectTransform), typeof(Image));
+            RectTransform rt = go.GetComponent<RectTransform>();
+            rt.SetParent(parent, false);
+            rt.anchorMin = barraVidaFillRect.anchorMin;
+            rt.anchorMax = barraVidaFillRect.anchorMax;
+            rt.pivot = barraVidaFillRect.pivot;
+            rt.offsetMin = barraVidaFillRect.offsetMin;
+            rt.offsetMax = barraVidaFillRect.offsetMax;
+            rt.localScale = Vector3.one;
+
+            Image img = go.GetComponent<Image>();
+            if (fillImg != null)
+            {
+                img.sprite = fillImg.sprite;
+                img.type = fillImg.type;
+                img.fillMethod = fillImg.fillMethod;
+                img.fillOrigin = fillImg.fillOrigin;
+                img.fillClockwise = fillImg.fillClockwise;
+                img.preserveAspect = fillImg.preserveAspect;
+                img.material = fillImg.material;
+            }
+            img.color = barraVidaSangradoColor;
+            img.raycastTarget = false;
+            rt.SetSiblingIndex(barraVidaFillRect.GetSiblingIndex());
+            barraVidaSangradoFill = img;
+            barraVidaSangradoFill.gameObject.SetActive(false);
+        }
+
         if (barraVidaHealFill != null)
         {
             barraVidaHealFill.color = new Color(barraVidaHealColor.r, barraVidaHealColor.g, barraVidaHealColor.b, 0f);
@@ -318,8 +357,9 @@ public class UnidadCanvas : MonoBehaviour
             if (barraVidaDamageFill == null || barraVidaFillRect == null) { return; }
         }
 
-        if (unidad.mod_maxHP <= 0f) { return; }
-        float ratio = Mathf.Clamp01(unidad.HP_actual / unidad.mod_maxHP);
+        float maxHPVisual = Mathf.Max(0f, unidad.mod_maxHP) + Mathf.Max(0f, unidad.maxHPPerdidoPorSangrado);
+        if (maxHPVisual <= 0f) { return; }
+        float ratio = Mathf.Clamp01(unidad.HP_actual / maxHPVisual);
 
         if (barraVidaLastRatio < 0f)
         {
@@ -430,6 +470,31 @@ public class UnidadCanvas : MonoBehaviour
         rt.offsetMax = barraVidaFillRect.offsetMax;
     }
 
+    void SetBarraSangradoRatio(float ratioMaxActual)
+    {
+        if (barraVidaSangradoFill == null || barraVidaFillRect == null)
+        {
+            PrepararBarraDanio();
+            if (barraVidaSangradoFill == null || barraVidaFillRect == null) { return; }
+        }
+
+        bool mostrar = ratioMaxActual < 0.9999f;
+        barraVidaSangradoFill.gameObject.SetActive(mostrar);
+        if (!mostrar) { return; }
+
+        RectTransform rt = barraVidaSangradoFill.rectTransform;
+        Vector2 anchorMin = rt.anchorMin;
+        Vector2 anchorMax = rt.anchorMax;
+        anchorMin.x = Mathf.Clamp01(ratioMaxActual);
+        anchorMax.x = 1f;
+        anchorMin.y = barraVidaFillRect.anchorMin.y;
+        anchorMax.y = barraVidaFillRect.anchorMax.y;
+        rt.anchorMin = anchorMin;
+        rt.anchorMax = anchorMax;
+        rt.offsetMin = barraVidaFillRect.offsetMin;
+        rt.offsetMax = barraVidaFillRect.offsetMax;
+    }
+
 
     [SerializeField] private GameObject casillaEstadoPrefab;
     [SerializeField] private GameObject contenedorCasillasEstados;
@@ -443,6 +508,7 @@ public class UnidadCanvas : MonoBehaviour
         ultimaVidaMaximaMostrada = int.MinValue;
         ultimaBarreraMostrada = int.MinValue;
         ultimoRatioVidaVisual = -1f;
+        ultimoMaxHPPerdidoPorSangrado = -1f;
         ultimoRatioColorVida = -1f;
         estadoTurnoPasadoInicializado = false;
         ultimaFilaEscala = int.MinValue;

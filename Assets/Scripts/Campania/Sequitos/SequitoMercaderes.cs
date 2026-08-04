@@ -868,6 +868,8 @@ public class SequitoMercaderes : MonoBehaviour
             todosLosItems.RemoveAll(item => !EsItemValidoParaRecompensa(item));
         }
 
+        todosLosItems.RemoveAll(item => !TienePersonajedeLaClasedelItem(item));
+
         if (todosLosItems.Count == 0)
             return null;
 

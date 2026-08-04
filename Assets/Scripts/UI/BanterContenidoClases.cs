@@ -69,6 +69,7 @@ cab_vida_critica_01|VidaCritica|Aún sigo en pie.|I am still standing.|Ainda est
 cab_vida_critica_02|VidaCritica|No caeré mientras pueda sostener el acero.|I will not fall while I can still hold steel.|Não cairei enquanto puder empunhar o aço.
 cab_pifia_01|Pifia|¡Vuelve a intentarlo!|Try again!|Tente de novo!
 cab_pifia_02|Pifia|Concéntrate.|Focus.|Concentre-se.
+cab_escapa_01|AliadoEscapa|¡Cobarde! Nosotros mantendremos la línea.|Coward! We will hold the line.|Covarde! Nós manteremos a linha.
 ";
 
     private const string ContenidoExplorador = @"
@@ -96,6 +97,7 @@ exp_vida_critica_01|VidaCritica|Esto se está poniendo feo...|This is getting ug
 exp_vida_critica_02|VidaCritica|Necesito salir de aquí... pronto.|I need to get out of here... soon.|Preciso sair daqui... logo.
 exp_pifia_01|Pifia|Y mi vida depende de ti...|And my life depends on you...|E a minha vida depende de você...
 exp_pifia_02|Pifia|Puede pasar…|It happens…|Acontece…
+exp_escapa_01|AliadoEscapa|Lo entiendo... pero ahora somos menos.|I understand... but now there are fewer of us.|Eu entendo... mas agora somos menos.
 ";
 
     private const string ContenidoPurificadora = @"
@@ -123,6 +125,7 @@ pur_vida_critica_01|VidaCritica|La luz aún no me abandona.|The light has not ab
 pur_vida_critica_02|VidaCritica|Mi fe resistirá este dolor.|My faith will endure this pain.|Minha fé resistirá a esta dor.
 pur_pifia_01|Pifia|Déjate guiar por la luz...|Let the light guide you...|Deixe a luz guiar você...
 pur_pifia_02|Pifia|¡Recupérate! Tú puedes.|Recover! You can do this.|Recupere-se! Você consegue.
+pur_escapa_01|AliadoEscapa|Que la luz guíe su retirada.|May the light guide their retreat.|Que a luz guie sua retirada.
 ";
 
     private const string ContenidoAcechador = @"
@@ -150,6 +153,7 @@ ace_vida_critica_01|VidaCritica|Todavía no han terminado conmigo.|They are not 
 ace_vida_critica_02|VidaCritica|Van a pagar por esto.|They will pay for this.|Eles vão pagar por isso.
 ace_pifia_01|Pifia|Patético...|Pathetic...|Patético...
 ace_pifia_02|Pifia|Débil…|Weak…|Fraco…
+ace_escapa_01|AliadoEscapa|Uno menos para estorbar.|One less to get in the way.|Um a menos para atrapalhar.
 ";
 
     private const string ContenidoCanalizador = @"
@@ -177,6 +181,7 @@ can_vida_critica_01|VidaCritica|Mi cuerpo flaquea... mi poder no.|My body falter
 can_vida_critica_02|VidaCritica|Debo terminar esto pronto.|I must end this soon.|Preciso acabar com isso logo.
 can_pifia_01|Pifia|Difícil de ver...|Hard to watch...|Difícil de assistir...
 can_pifia_02|Pifia|¡Coordina tus ataques!|Coordinate your attacks!|Coordene seus ataques!
+can_escapa_01|AliadoEscapa|¡Que huya! Nosotros terminaremos esto.|Let them flee! We will finish this.|Que fuja! Nós terminaremos isso.
 ";
 
     private const string ContenidoDuelista = @"
@@ -204,5 +209,6 @@ due_vida_critica_01|VidaCritica|Eso estuvo demasiado cerca...|That was far too c
 due_vida_critica_02|VidaCritica|Aún me queda una estocada.|I still have one thrust left.|Ainda me resta uma estocada.
 due_pifia_01|Pifia|¡Magnífico! Ahora con la parte afilada...|Magnificent! Now try the sharp end...|Magnífico! Agora tente com a parte afiada...
 due_pifia_02|Pifia|Al menos lo intentas…|At least you're trying…|Pelo menos você está tentando…
+due_escapa_01|AliadoEscapa|Nos deja la parte divertida. Qué amable.|They left us the fun part. How kind.|Deixou a parte divertida para nós. Que gentil.
 ";
 }

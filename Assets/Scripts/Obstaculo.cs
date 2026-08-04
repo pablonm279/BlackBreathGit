@@ -298,9 +298,9 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
       var velocity = ps.velocityOverLifetime;
       velocity.enabled = true;
       velocity.space = ParticleSystemSimulationSpace.World;
-      velocity.x = new ParticleSystem.MinMaxCurve(0f);
+      velocity.x = new ParticleSystem.MinMaxCurve(0f, 0f);
       velocity.y = new ParticleSystem.MinMaxCurve(0.05f, 0.14f);
-      velocity.z = new ParticleSystem.MinMaxCurve(0f);
+      velocity.z = new ParticleSystem.MinMaxCurve(0f, 0f);
 
       var colorOverLifetime = ps.colorOverLifetime;
       colorOverLifetime.enabled = true;
@@ -366,8 +366,8 @@ public virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Uni
       velocity.enabled = true;
       velocity.space = ParticleSystemSimulationSpace.World;
       velocity.x = new ParticleSystem.MinMaxCurve(-0.09f, 0.09f);
-      velocity.y = new ParticleSystem.MinMaxCurve(0f);
-      velocity.z = new ParticleSystem.MinMaxCurve(0f);
+      velocity.y = new ParticleSystem.MinMaxCurve(0f, 0f);
+      velocity.z = new ParticleSystem.MinMaxCurve(0f, 0f);
 
       var limit = ps.limitVelocityOverLifetime;
       limit.enabled = true;

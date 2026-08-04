@@ -636,8 +636,8 @@ public class AsentamientoManager : MonoBehaviour
 
         if (inputBlocker != null)
         {
-            inputBlocker.gameObject.SetActive(true);
-            inputBlocker.raycastTarget = true;
+            inputBlocker.gameObject.SetActive(false);
+            inputBlocker.raycastTarget = false;
         }
     }
 

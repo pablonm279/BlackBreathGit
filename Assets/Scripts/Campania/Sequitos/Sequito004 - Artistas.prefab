@@ -1031,7 +1031,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "EFECTOS PASIVOS:\\n\\n-Al unirse a la Caravana se ganan 15 de Esperanza.\\n\\n-Cada
-    vez que se selecciona Feria como Tarea Civil de Descanso se ganan 10 de Esperanza
+    vez que se selecciona Feria como Tarea Civil de Descanso se ganan 5 de Esperanza
     Extra.\\n\\n-Cada d\xEDa hay un 30% de chances de que hagan un fest\xEDn y despilfarren
     1-4 Suministros.\\n\\n-Si abandonan la Caravana se pierden 15 de Esperanza."
   m_isRightToLeft: 0

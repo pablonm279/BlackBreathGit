@@ -399,13 +399,13 @@ public class EdgePanCameraZ : MonoBehaviour
             Vector3 deltaCamara = posicionCamara - diagnosticoCamaraAnterior;
             Vector3 deltaCaravana = posicionCaravana - diagnosticoCaravanaAnterior;
             Vector3 deltaExtra = deltaCamara - deltaCaravana;
-            Debug.Log(
+/*            Debug.Log(
                 $"[CameraTravelDiag] viaje={diagnosticoViajeNumero} frame={Time.frameCount} " +
                 $"cam={posicionCamara.ToString("F4")} dCam={deltaCamara.ToString("F4")} " +
                 $"caravana={posicionCaravana.ToString("F4")} dCaravana={deltaCaravana.ToString("F4")} " +
                 $"extra={deltaExtra.ToString("F4")} local={transform.localPosition.ToString("F4")} " +
                 $"mouseX={Input.mousePosition.x:F1} paneando={estaPaneando}",
-                this);
+                this);*/
             diagnosticoFramesRestantes--;
         }
 

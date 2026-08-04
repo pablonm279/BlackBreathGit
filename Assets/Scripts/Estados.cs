@@ -154,7 +154,9 @@ public class Estados : MonoBehaviour
   {
     
    
+    float maxHPAntes = unidad.mod_maxHP;
     unidad.mod_maxHP -= unidad.estado_sangrado * 2;
+    unidad.maxHPPerdidoPorSangrado += Mathf.Max(0f, maxHPAntes - unidad.mod_maxHP);
     if(unidad.HP_actual > unidad.mod_maxHP)  //Si al perder max HP, su vida actual es mayor a la amx, recibe daño verdadero para equiparar.
     {
        float cant = unidad.HP_actual - unidad.mod_maxHP ;

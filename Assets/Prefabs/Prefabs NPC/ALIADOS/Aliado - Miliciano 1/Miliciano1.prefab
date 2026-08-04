@@ -91,6 +91,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -112,9 +115,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &2145456265857469528
 GameObject:
@@ -638,8 +643,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.64, y: 0.54563, z: 4}
-  m_LocalScale: {x: 0.492705, y: 0.48664, z: 0.5}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.51, y: 0.50372213, z: 0.51755106}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8383370822044727369}
   - {fileID: 1198029709437951413}
@@ -841,6 +846,7 @@ MonoBehaviour:
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
   tierEnemigo: 1
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -898,6 +904,7 @@ MonoBehaviour:
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
   barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaSangradoColor: {r: 0.28, g: 0.015, b: 0.015, a: 1}
   barraVidaRatioInicioRojo: 0.2
   barraVidaOscurecerTurnoPasado: 0.72
   rotuloHabilidadOffset: {x: 0, y: 2.1}
@@ -925,8 +932,6 @@ MonoBehaviour:
   vfxCasteo: {fileID: 0}
   requiereRecurso: 0
   costoPM: 0
-  cooldownMax: 0
-  cooldownActual: 0
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   NIVEL: 0
@@ -987,6 +992,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 0
   costoAP: 0
   pPrioridad: 0
@@ -1278,6 +1284,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1299,9 +1308,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &7527010690597327621
 GameObject:
@@ -1394,6 +1405,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1415,9 +1429,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1001 &4507267119211147086
 PrefabInstance:

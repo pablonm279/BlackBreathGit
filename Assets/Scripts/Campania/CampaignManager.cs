@@ -1356,7 +1356,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private void InicializarRecursosNuevaCampania()
   {
     CambiarCivilesActuales(110);
-    CambiarEsperanzaActual(70);
+    CambiarEsperanzaActual(60);
     CambiarSuministrosActuales(300);
     CambiarMaterialesActuales(45);
     CambiarBueyesActuales(22);
@@ -2413,6 +2413,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     AjustesAudio.VolumenSfxCambiado += ActualizarVolumenSfxMovimientoCaravana;
     TryProcesarColaTextoFlotante();
     ActualizarCursorCampania(true);
+
+    if (startCampaniaEjecutado && !IntroCampaniaActivaOPendiente)
+    {
+      BanterBattleUI.InstalarCampania(this);
+    }
   }
 
   private void OnDisable()
@@ -2447,6 +2452,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     LimpiarTextosFlotantesCampaniaActivos();
     tiempoUltimoSpawnTiempoReal = float.NegativeInfinity;
     RestaurarCursorCampaniaPredeterminado();
+    BanterBattleUI.FinalizarCampania();
   }
   [SerializeField]private TextMeshProUGUI txtDia;
 
@@ -3402,6 +3408,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       TutorialEvents.Emit(TutorialEventNames.CampaignStarted, gameObject);
       eventoInicioCampaniaEmitido = true;
     }
+
+    BanterBattleUI.InstalarCampania(this);
   }
 
   void EjecutarAccionesAlFinalizarIntroCampania()
@@ -3657,6 +3665,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           tipo = conexion.tipo,
           costoMovimiento = conexion.costoMovimiento,
           rutaHaciaAldea = conexion.rutaHaciaAldea,
+          recorridoPorCaravana = conexion.recorridoPorCaravana,
           reveladoPorVision = nodo.EstaCaminoReveladoPorVision(conexion)
         });
       }
@@ -4317,6 +4326,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
             conexionData.tipo,
             conexionData.costoMovimiento,
             conexionData.rutaHaciaAldea);
+
+          CaminoConexion conexionRestaurada = origen.ObtenerConexionHacia(destino);
+          if (conexionRestaurada != null)
+          {
+            conexionRestaurada.recorridoPorCaravana = conexionData.recorridoPorCaravana;
+          }
 
           if (conexionData.reveladoPorVision)
           {
@@ -6764,7 +6779,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         return;
       }
 
-      float factorEventoBuenoMalo = 40 + Instance.GetEsperanzaActual() / 3 + ObtenerModificadorChanceEventoTraits();
+      float factorEventoBuenoMalo = 40 + Instance.GetEsperanzaActual() / 5 + ObtenerModificadorChanceEventoTraits();
       factorEventoBuenoMalo = AjustarChanceEventoBuenoPresagios(factorEventoBuenoMalo);
       float randomEvento = UnityEngine.Random.Range(0, 100);
 
@@ -6791,6 +6806,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (ID == 4) //Asentamiento
     {
+      scMapaManager?.RevelarAdyacentesDesdeAsentamiento();
+
       if (DebeUsarConfiguracionTutorial())
       {
         if (scMapaManager != null && scMapaManager.nodoActual != null)
@@ -6801,6 +6818,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
 
       estadisticaAsentamientosVisitados++;
+      BanterCampaignDirector.NotificarLlegadaAsentamiento();
       if (ObtenerAsentamientoManager() != null)
       {
         asentamientoManager.AbrirAlLlegar();
@@ -9394,7 +9412,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (esperanza < 0)
     {
       int cantidadConsuelos = CuantosPersonajesHacenTalActividad(21);
-      mitigacionConsuelo = Mathf.Min(-esperanza, cantidadConsuelos * 2);
+      mitigacionConsuelo = Mathf.Min(-esperanza, Mathf.Min(2, cantidadConsuelos * 2));
       esperanza += mitigacionConsuelo;
     }
 

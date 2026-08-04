@@ -33,6 +33,7 @@ public class MapaManager : MonoBehaviour
     const float OffsetNodoSobreRelieve = 0.08f;
     const float OffsetConvoySobreRelieve = 0.03f;
     const float EscalaDestinoNoAdyacente = 0.85f;
+    const float EscalaNodoInaccesible = 0.8f;
     [SerializeField] float rangoAleatorioNodoXZ = 0.18f;
 
     public ContenedorDeNodos scContenedordeNodos;
@@ -869,6 +870,27 @@ public class MapaManager : MonoBehaviour
        return CalcularDistanciasVision(distanciaVision).ContainsKey(nodo);
   }
 
+  public void RevelarAdyacentesDesdeAsentamiento()
+  {
+       if (nodoActual == null || nodoActual.tipoNodo != 4)
+       {
+           return;
+       }
+
+       foreach (Nodo destino in nodoActual.DestinosPosibles)
+       {
+           if (destino == null || !destino.gameObject.activeSelf)
+           {
+               continue;
+           }
+
+           destino.RevelarCompletamente();
+           nodoActual.MostrarCaminoPorVisionHacia(destino);
+       }
+
+       RefrescarVisibilidadExploracion();
+  }
+
   Dictionary<Nodo, int> CalcularDistanciasVision(int distanciaVision)
   {
        distanciasVision.Clear();
@@ -991,7 +1013,10 @@ public class MapaManager : MonoBehaviour
                escalasBaseNodos[nodo] = escalaBase;
            }
 
-           nodo.transform.localScale = escalaBase * multiplicadorEscala;
+           bool quedoAtras = nodoActual != null && nodo.posXNodo < nodoActual.posXNodo;
+           bool fueVisitadoPorCaravana = nodo.posXNodo == 0 || nodo.nodoDespejado;
+           nodo.transform.localScale = escalaBase * multiplicadorEscala * (quedoAtras ? EscalaNodoInaccesible : 1f);
+           nodo.AplicarEstadoVisualInaccesible(quedoAtras && !fueVisitadoPorCaravana);
        }
 
        if (nodoActual == null) return;
@@ -1373,6 +1398,7 @@ public class MapaManager : MonoBehaviour
             }
 
             settlement.ForzarSettlement(true);
+            BanterCampaignDirector.NotificarNodoRevelado(settlement);
             MarcarRutaCaminoAAldea(nodoActual, settlement);
             RevelarRutaCompletaAsentamiento(nodoActual, settlement);
             settlement.ActivarVfxDescubrimiento();

@@ -783,6 +783,138 @@ public class TRADU : MonoBehaviour
             return false;
         }
 
+        if (txt == "El grito de un guardia te lleva hasta el carro de las arcas. Un cofre fue forzado durante la noche y parte del botín ha desaparecido.\n\n")
+        {
+            traduccion = "A guard's shout draws you to the wagon carrying the coffers. One chest was forced open during the night, and part of the loot is gone.\n\n";
+            return true;
+        }
+        if (txt == "Unas marcas recientes junto al camino sugieren que alguien o algo sigue a la columna. La noticia corre rápido entre los carros traseros.\n\n")
+        {
+            traduccion = "Fresh marks beside the road suggest that someone—or something—is following the column. The news spreads quickly through the rear wagons.\n\n";
+            return true;
+        }
+        if (txt == "Encuentran un punto de espera abandonado: una manta, un fogón apagado y una señal vieja que promete ayuda que nunca llegó. La escena pesa sobre la Caravana.\n\n")
+        {
+            traduccion = "They find an abandoned waiting point: a blanket, a dead fire, and an old sign promising help that never arrived. The scene weighs on the Caravan.\n\n";
+            return true;
+        }
+        if (txt == "Antes de dormir, un Héroe propone repasar señales, posiciones y respuestas rápidas. Podría dejar a todos mejor preparados para el próximo choque.\n\n")
+        {
+            traduccion = "Before sleep, a Hero proposes reviewing signals, positions, and rapid responses. It could leave everyone better prepared for the next clash.\n\n";
+            return true;
+        }
+        if (txt == "Un círculo de cuervos se posa junto al camino y no se mueve cuando la Caravana se acerca. Su quietud pesa más que cualquier graznido, y el presagio corre rápido entre los Civiles.\n\n")
+        {
+            traduccion = "A circle of crows settles beside the road and does not move as the Caravan approaches. Their stillness weighs more than any caw, and the omen spreads quickly among the Civilians.\n\n";
+            return true;
+        }
+        if (txt == "Un filo de roca y hielo ofrece un mirador excepcional sobre el Paso. Desde ahí, un ojo atento podría leer el terreno antes de que llegue el peligro.\n\n")
+        {
+            traduccion = "A ridge of rock and ice offers an exceptional view over the Pass. From there, a watchful eye could read the terrain before danger arrives.\n\n";
+            return true;
+        }
+        if (txt == "Durante la noche, gritos ahogados despiertan a medio campamento. Al amanecer nadie logra explicar lo que soñó, pero el miedo sigue flotando entre las tiendas.\n\n")
+        {
+            traduccion = "Muffled screams wake half the camp during the night. By dawn, no one can explain what they dreamed, but fear still hangs between the tents.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef><b>La Caravana queda Acobardada para el próximo combate.</b></color>")
+        {
+            traduccion = "<color=#ba3fef><b>The Caravan becomes Doubtful for the next battle.</b></color>";
+            return true;
+        }
+        if (txt == "El suelo es incómodo, el viento no afloja y los carros crujen toda la noche. Nadie descansa de verdad; la Caravana se levanta como si apenas hubiera dormido.\n\n")
+        {
+            traduccion = "The ground is uncomfortable, the wind never lets up, and the wagons creak all night. No one truly rests; the Caravan rises as though it barely slept.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef><b>La Caravana queda Aletargada.</b></color>")
+        {
+            traduccion = "<color=#ba3fef><b>The Caravan becomes Sluggish.</b></color>";
+            return true;
+        }
+        if (txt == "Lo que empieza como un murmullo recorre todo el campamento: cansancio, dudas y recuerdos de días mejores. No hay desbande, solo una erosión lenta del ánimo.\n\n")
+        {
+            traduccion = "What begins as a murmur spreads through the entire camp: exhaustion, doubts, and memories of better days. There is no panic, only a slow erosion of morale.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef>-Si dejas que se descarguen, la Caravana quedará Desmotivada para el próximo combate.</color>\n\n")
+        {
+            traduccion = "<color=#ba3fef>-If you let them vent, the Caravan becomes Demotivated for the next battle.</color>\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef>-Si cortas la charla y apagas el fuego, la Caravana perderá 9 Esperanza.</color>\n\n")
+        {
+            traduccion = "<color=#ba3fef>-If you silence the complaints and put out the fire, the Caravan loses 9 Hope.</color>\n\n";
+            return true;
+        }
+        if (txt == "El campamento queda demasiado disperso. Las fogatas no se cubren entre sí, los llamados tardan en llegar y nadie sabe quién sigue atento.\n\n")
+        {
+            traduccion = "The camp is spread too thin. The fires cannot cover one another, calls take too long to carry, and no one knows who is still alert.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef><b>La Caravana queda Descuidada por 1 viaje.</b></color>")
+        {
+            traduccion = "<color=#ba3fef><b>The Caravan becomes Careless for 1 journey.</b></color>";
+            return true;
+        }
+        if (txt == "Uno de los guías perdió los mapas de la región. La Caravana deberá detenerse a buscarlos antes de internarse a ciegas en el camino.\n\n")
+        {
+            traduccion = "One of the guides lost the regional maps. The Caravan must stop to find them before pressing blindly into the road ahead.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef>-Revisarlos demorará la marcha: +1 Aliento Negro.</color>\n\n")
+        {
+            traduccion = "<color=#ba3fef>-Checking them will delay the march: +1 Black Breath.</color>\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef>-Ignorar las advertencias: morirán 1-3 Bueyes más.</color>\n\n")
+        {
+            traduccion = "<color=#ba3fef>-Ignore the warnings: 1-3 more Oxen will die.</color>\n\n";
+            return true;
+        }
+        if (txt == "Varios Civiles desaparecieron durante la marcha sin dejar rastro. Tras una búsqueda breve y estéril, solo queda consolar a sus familias y continuar.\n\n")
+        {
+            traduccion = "Several Civilians vanished during the march without a trace. After a brief, fruitless search, all that remains is to comfort their families and move on.\n\n";
+            return true;
+        }
+        if (txt == "Uno de los Bueyes cayó enfermo y no puede continuar. Los cuidadores aconsejan revisar al resto antes de que la enfermedad se propague.\n\n")
+        {
+            traduccion = "One of the Oxen has fallen ill and cannot continue. The handlers advise checking the rest before the sickness spreads.\n\n";
+            return true;
+        }
+        if (txt == "Un grupo de bandidos bloquea el único paso seguro y exige un peaje desmedido para dejar avanzar a la Caravana.\n\n")
+        {
+            traduccion = "A group of bandits blocks the only safe passage and demands an outrageous toll to let the Caravan through.\n\n";
+            return true;
+        }
+        if (txt == "Un carro de Suministros se hundió en el barro y el eje terminó por quebrarse. La carga aún puede salvarse, pero hará falta sacrificar materiales para trasladarla.\n\n")
+        {
+            traduccion = "A Supply wagon sank into the mud and its axle finally broke. The cargo can still be saved, but moving it will cost Materials.\n\n";
+            return true;
+        }
+        if (txt == "Un alboroto junto a los carros de los Héroes revela a <b><color=#d1006f>")
+        {
+            traduccion = "A commotion near the Heroes' wagons reveals <b><color=#d1006f>";
+            return true;
+        }
+        if (txt == "</color></b> discutiendo tras un entrenamiento que terminó mal.\n\n")
+        {
+            traduccion = "</color></b> arguing after a training session went wrong.\n\n";
+            return true;
+        }
+        if (txt == "Un Civil de origen noble cuestiona tu liderazgo a viva voz y afirma que él conduciría mejor a la Caravana. Sus argumentos son débiles, pero la multitud que se reúne empieza a dudar.\n\n")
+        {
+            traduccion = "A noble-born Civilian loudly challenges your leadership and claims he could guide the Caravan better. His arguments are weak, but the gathering crowd begins to doubt.\n\n";
+            return true;
+        }
+        if (txt == "Durante la noche, una luz clara brilla en el horizonte, hacia el puerto. Sea una señal o una casualidad, basta para devolver algo de fe a la Caravana.\n\n")
+        {
+            traduccion = "During the night, a clear light shines on the horizon toward the port. Whether sign or chance, it is enough to restore some faith to the Caravan.\n\n";
+            return true;
+        }
+        if (txt == "Área") { traduccion = "Area"; return true; }
+
         if (txt == "Paso Precario") { traduccion = "Precarious Crossing"; return true; }
         if (txt == "Aire Enrarecido") { traduccion = "Stale Air"; return true; }
         if (txt == "Rumor de Desbande") { traduccion = "Rumor of Desertion"; return true; }
@@ -2559,8 +2691,9 @@ public class TRADU : MonoBehaviour
             case "Riña":
                 r = "Brawl";
                 break;
+            case "Lugareño Anciano":
             case "Lugareño Anciano ":
-                r = "Local Elder ";
+                r = "Local Elder";
                 break;
             case "Sueño Inspirador":
                 r = "Inspiring Dream";
@@ -3182,8 +3315,8 @@ public class TRADU : MonoBehaviour
             case "-Los Herboristas han preparado sus Bálsamos.":
                 r = "-The Herbalists have prepared their Balms.";
                 break;
-            case "-En la Feria, los Artistas han realizado un espectáculo que ha levantado el ánimo de los Civiles. +10 Esperanza":
-                r = "-At the Fair, the Artists put on a show that lifted the spirits of the Civilians. +10 Hope";
+            case "-En la Feria, los Artistas han realizado un espectáculo que ha levantado el ánimo de los Civiles. +5 Esperanza":
+                r = "-At the Fair, the Artists put on a show that lifted the spirits of the Civilians. +5 Hope";
                 break;
             case " se cura ":
                 r = " heals ";
@@ -3227,8 +3360,8 @@ public class TRADU : MonoBehaviour
             case "Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n":
                 r = "The civilians will take the day to rest and regain strength.\n\n";
                 break;
-            case "<color=#d8a205>Se conseguirá 10 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n":
-                r = "<color=#d8a205>You will gain 10 Hope and the next day will start with -1 Fatigue. +10% Character healing.</color>\n\n\n";
+            case "<color=#d8a205>Se conseguirá 6 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n":
+                r = "<color=#d8a205>You will gain 6 Hope and the next day will start with -1 Fatigue. +10% Character healing.</color>\n\n\n";
                 break;
             case "<b><u>Feria</b></u>\n\n\n":
                 r = "<b><u>Fair</b></u>\n\n\n";
@@ -3236,8 +3369,8 @@ public class TRADU : MonoBehaviour
             case "Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n":
                 r = "The civilians will dedicate the day to organizing a fair with various games and celebrations.\n\n";
                 break;
-            case "<color=#d8a205>Se conseguirá entre 15 y 25 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n":
-                r = "<color=#d8a205>You will gain between 15 and 25 Hope and consume 20% more Supplies. <color=#bb280d>+10% chances of Ambush.</color></color>\n\n\n";
+            case "<color=#d8a205>Se conseguirá entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n":
+                r = "<color=#d8a205>You will gain between 10 and 15 Hope and consume 20% more Supplies. <color=#bb280d>+10% chances of Ambush.</color></color>\n\n\n";
                 break;
             case "<b><u>Recolección de Materiales</b></u>\n\n\n":
                 r = "<b><u>Material Collection</b></u>\n\n\n";
@@ -4016,8 +4149,8 @@ public class TRADU : MonoBehaviour
             case "Cantidad de Civiles: 25":
                 r = "Number of Civilians: 25";
                 break;
-            case "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 10 de Esperanza Extra.\n\n-Cada día hay un 30% de chances de que hagan un festán y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.":
-                r = "PASSIVE EFFECTS:\n\n-Joining the Caravan grants 15 Hope.\n\n-Each time Fair is chosen as a Civil Rest Task, gain 10 extra Hope.\n\n-Each day there is a 30% chance they hold a feast and waste 1-4 Supplies.\n\n-If they leave the Caravan, lose 15 Hope.";
+            case "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 5 de Esperanza Extra.\n\n-Cada día hay un 30% de chances de que hagan un festán y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.":
+                r = "PASSIVE EFFECTS:\n\n-Joining the Caravan grants 15 Hope.\n\n-Each time Fair is chosen as a Civil Rest Task, gain 5 extra Hope.\n\n-Each day there is a 30% chance they hold a feast and waste 1-4 Supplies.\n\n-If they leave the Caravan, lose 15 Hope.";
                 break;
             case "usa ":
                 r = "uses ";
@@ -8092,6 +8225,138 @@ public class TRADU : MonoBehaviour
             return false;
         }
 
+        if (txt == "El grito de un guardia te lleva hasta el carro de las arcas. Un cofre fue forzado durante la noche y parte del botín ha desaparecido.\n\n")
+        {
+            traduccion = "O grito de um guarda leva você até a carroça dos cofres. Um baú foi arrombado durante a noite, e parte do espólio desapareceu.\n\n";
+            return true;
+        }
+        if (txt == "Unas marcas recientes junto al camino sugieren que alguien o algo sigue a la columna. La noticia corre rápido entre los carros traseros.\n\n")
+        {
+            traduccion = "Marcas recentes junto à estrada sugerem que alguém — ou alguma coisa — segue a coluna. A notícia corre depressa entre as carroças da retaguarda.\n\n";
+            return true;
+        }
+        if (txt == "Encuentran un punto de espera abandonado: una manta, un fogón apagado y una señal vieja que promete ayuda que nunca llegó. La escena pesa sobre la Caravana.\n\n")
+        {
+            traduccion = "Eles encontram um ponto de espera abandonado: um cobertor, um fogo apagado e um sinal antigo que prometia ajuda que nunca chegou. A cena pesa sobre a Caravana.\n\n";
+            return true;
+        }
+        if (txt == "Antes de dormir, un Héroe propone repasar señales, posiciones y respuestas rápidas. Podría dejar a todos mejor preparados para el próximo choque.\n\n")
+        {
+            traduccion = "Antes de dormir, um Herói propõe revisar sinais, posições e respostas rápidas. Isso pode deixar todos mais preparados para o próximo confronto.\n\n";
+            return true;
+        }
+        if (txt == "Un círculo de cuervos se posa junto al camino y no se mueve cuando la Caravana se acerca. Su quietud pesa más que cualquier graznido, y el presagio corre rápido entre los Civiles.\n\n")
+        {
+            traduccion = "Um círculo de corvos pousa junto à estrada e não se move quando a Caravana se aproxima. Sua quietude pesa mais que qualquer grasnido, e o presságio se espalha depressa entre os Civis.\n\n";
+            return true;
+        }
+        if (txt == "Un filo de roca y hielo ofrece un mirador excepcional sobre el Paso. Desde ahí, un ojo atento podría leer el terreno antes de que llegue el peligro.\n\n")
+        {
+            traduccion = "Uma crista de rocha e gelo oferece uma vista excepcional sobre o Passo. Dali, um olhar atento pode ler o terreno antes que o perigo chegue.\n\n";
+            return true;
+        }
+        if (txt == "Durante la noche, gritos ahogados despiertan a medio campamento. Al amanecer nadie logra explicar lo que soñó, pero el miedo sigue flotando entre las tiendas.\n\n")
+        {
+            traduccion = "Gritos abafados despertam metade do acampamento durante a noite. Ao amanhecer, ninguém consegue explicar o que sonhou, mas o medo ainda paira entre as tendas.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef><b>La Caravana queda Acobardada para el próximo combate.</b></color>")
+        {
+            traduccion = "<color=#ba3fef><b>A Caravana fica Acobardada para o próximo combate.</b></color>";
+            return true;
+        }
+        if (txt == "El suelo es incómodo, el viento no afloja y los carros crujen toda la noche. Nadie descansa de verdad; la Caravana se levanta como si apenas hubiera dormido.\n\n")
+        {
+            traduccion = "O chão é desconfortável, o vento não dá trégua e as carroças rangem a noite inteira. Ninguém descansa de verdade; a Caravana se levanta como se mal tivesse dormido.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef><b>La Caravana queda Aletargada.</b></color>")
+        {
+            traduccion = "<color=#ba3fef><b>A Caravana fica Letárgica.</b></color>";
+            return true;
+        }
+        if (txt == "Lo que empieza como un murmullo recorre todo el campamento: cansancio, dudas y recuerdos de días mejores. No hay desbande, solo una erosión lenta del ánimo.\n\n")
+        {
+            traduccion = "O que começa como um murmúrio percorre todo o acampamento: cansaço, dúvidas e lembranças de dias melhores. Não há debandada, apenas uma lenta erosão do ânimo.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef>-Si dejas que se descarguen, la Caravana quedará Desmotivada para el próximo combate.</color>\n\n")
+        {
+            traduccion = "<color=#ba3fef>-Se você deixar que desabafem, a Caravana ficará Desmotivada para o próximo combate.</color>\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef>-Si cortas la charla y apagas el fuego, la Caravana perderá 9 Esperanza.</color>\n\n")
+        {
+            traduccion = "<color=#ba3fef>-Se você encerrar as reclamações e apagar o fogo, a Caravana perderá 9 de Esperança.</color>\n\n";
+            return true;
+        }
+        if (txt == "El campamento queda demasiado disperso. Las fogatas no se cubren entre sí, los llamados tardan en llegar y nadie sabe quién sigue atento.\n\n")
+        {
+            traduccion = "O acampamento fica disperso demais. As fogueiras não se protegem entre si, os chamados demoram a chegar e ninguém sabe quem ainda está atento.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef><b>La Caravana queda Descuidada por 1 viaje.</b></color>")
+        {
+            traduccion = "<color=#ba3fef><b>A Caravana fica Descuidada por 1 viagem.</b></color>";
+            return true;
+        }
+        if (txt == "Uno de los guías perdió los mapas de la región. La Caravana deberá detenerse a buscarlos antes de internarse a ciegas en el camino.\n\n")
+        {
+            traduccion = "Um dos guias perdeu os mapas da região. A Caravana terá de parar para procurá-los antes de avançar às cegas pelo caminho.\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef>-Revisarlos demorará la marcha: +1 Aliento Negro.</color>\n\n")
+        {
+            traduccion = "<color=#ba3fef>-Examiná-los atrasará a marcha: +1 Respiro Negro.</color>\n\n";
+            return true;
+        }
+        if (txt == "<color=#ba3fef>-Ignorar las advertencias: morirán 1-3 Bueyes más.</color>\n\n")
+        {
+            traduccion = "<color=#ba3fef>-Ignorar os avisos: mais 1-3 Bois morrerão.</color>\n\n";
+            return true;
+        }
+        if (txt == "Varios Civiles desaparecieron durante la marcha sin dejar rastro. Tras una búsqueda breve y estéril, solo queda consolar a sus familias y continuar.\n\n")
+        {
+            traduccion = "Vários Civis desapareceram durante a marcha sem deixar rastros. Após uma busca breve e inútil, resta apenas consolar suas famílias e seguir em frente.\n\n";
+            return true;
+        }
+        if (txt == "Uno de los Bueyes cayó enfermo y no puede continuar. Los cuidadores aconsejan revisar al resto antes de que la enfermedad se propague.\n\n")
+        {
+            traduccion = "Um dos Bois adoeceu e não pode continuar. Os tratadores aconselham examinar os demais antes que a doença se espalhe.\n\n";
+            return true;
+        }
+        if (txt == "Un grupo de bandidos bloquea el único paso seguro y exige un peaje desmedido para dejar avanzar a la Caravana.\n\n")
+        {
+            traduccion = "Um grupo de bandidos bloqueia a única passagem segura e exige um pedágio exorbitante para deixar a Caravana avançar.\n\n";
+            return true;
+        }
+        if (txt == "Un carro de Suministros se hundió en el barro y el eje terminó por quebrarse. La carga aún puede salvarse, pero hará falta sacrificar materiales para trasladarla.\n\n")
+        {
+            traduccion = "Uma carroça de Suprimentos afundou na lama e o eixo acabou quebrando. A carga ainda pode ser salva, mas será preciso gastar Materiais para transferi-la.\n\n";
+            return true;
+        }
+        if (txt == "Un alboroto junto a los carros de los Héroes revela a <b><color=#d1006f>")
+        {
+            traduccion = "Uma confusão junto às carroças dos Heróis revela <b><color=#d1006f>";
+            return true;
+        }
+        if (txt == "</color></b> discutiendo tras un entrenamiento que terminó mal.\n\n")
+        {
+            traduccion = "</color></b> discutindo depois que um treino terminou mal.\n\n";
+            return true;
+        }
+        if (txt == "Un Civil de origen noble cuestiona tu liderazgo a viva voz y afirma que él conduciría mejor a la Caravana. Sus argumentos son débiles, pero la multitud que se reúne empieza a dudar.\n\n")
+        {
+            traduccion = "Um Civil de origem nobre questiona sua liderança em voz alta e afirma que conduziria melhor a Caravana. Seus argumentos são fracos, mas a multidão reunida começa a duvidar.\n\n";
+            return true;
+        }
+        if (txt == "Durante la noche, una luz clara brilla en el horizonte, hacia el puerto. Sea una señal o una casualidad, basta para devolver algo de fe a la Caravana.\n\n")
+        {
+            traduccion = "Durante a noite, uma luz clara brilha no horizonte, na direção do porto. Seja um sinal ou acaso, basta para devolver alguma fé à Caravana.\n\n";
+            return true;
+        }
+        if (txt == "Área") { traduccion = "Área"; return true; }
+
         if (txt == "Paso Precario") { traduccion = "Passagem Precária"; return true; }
         if (txt == "Aire Enrarecido") { traduccion = "Ar Rarefeito"; return true; }
         if (txt == "Rumor de Desbande") { traduccion = "Rumor de Debandada"; return true; }
@@ -9893,8 +10158,9 @@ public class TRADU : MonoBehaviour
             case "Riña":
                 r = "Briga";
                 break;
+            case "Lugareño Anciano":
             case "Lugareño Anciano ":
-                r = "Ancião Local ";
+                r = "Ancião Local";
                 break;
             case "Sueño Inspirador":
                 r = "Sonho Inspirador";
@@ -10516,8 +10782,8 @@ public class TRADU : MonoBehaviour
             case "-Los Herboristas han preparado sus Bálsamos.":
                 r = "-Os Herboristas prepararam seus Bálsamos.";
                 break;
-            case "-En la Feria, los Artistas han realizado un espectáculo que ha levantado el ánimo de los Civiles. +10 Esperanza":
-                r = "-Na Feira, os Artistas realizaram um espetáculo que elevou o ânimo dos Civis. +10 Esperança";
+            case "-En la Feria, los Artistas han realizado un espectáculo que ha levantado el ánimo de los Civiles. +5 Esperanza":
+                r = "-Na Feira, os Artistas realizaram um espetáculo que elevou o ânimo dos Civis. +5 Esperança";
                 break;
             case " se cura ":
                 r = " recupera ";
@@ -10561,8 +10827,8 @@ public class TRADU : MonoBehaviour
             case "Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n":
                 r = "Os civis tirarão o dia para descansar e recuperar as forças.\n\n";
                 break;
-            case "<color=#d8a205>Se conseguirá 10 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n":
-                r = "<color=#d8a205>Serão obtidos 10 de Esperança, e o dia seguinte começará com -1 Fadiga. +10% de cura para os personagens.</color>\n\n\n";
+            case "<color=#d8a205>Se conseguirá 6 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n":
+                r = "<color=#d8a205>Serão obtidos 6 de Esperança, e o dia seguinte começará com -1 Fadiga. +10% de cura para os personagens.</color>\n\n\n";
                 break;
             case "<b><u>Feria</b></u>\n\n\n":
                 r = "<b><u>Feira</b></u>\n\n\n";
@@ -10570,8 +10836,8 @@ public class TRADU : MonoBehaviour
             case "Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n":
                 r = "Os civis dedicarão o dia a organizar uma feira com vários jogos e celebrações.\n\n";
                 break;
-            case "<color=#d8a205>Se conseguirá entre 15 y 25 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n":
-                r = "<color=#d8a205>Serão obtidos entre 15 e 25 de Esperança, e serão consumidos 20% a mais de Suprimentos. <color=#bb280d>+10% de chance de Emboscada.</color></color>\n\n\n";
+            case "<color=#d8a205>Se conseguirá entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n":
+                r = "<color=#d8a205>Serão obtidos entre 10 e 15 de Esperança, e serão consumidos 20% a mais de Suprimentos. <color=#bb280d>+10% de chance de Emboscada.</color></color>\n\n\n";
                 break;
             case "<b><u>Recolección de Materiales</b></u>\n\n\n":
                 r = "<b><u>Coleta de Materiais</b></u>\n\n\n";
@@ -11350,8 +11616,8 @@ public class TRADU : MonoBehaviour
             case "Cantidad de Civiles: 25":
                 r = "Quantidade de Civis: 25";
                 break;
-            case "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 10 de Esperanza Extra.\n\n-Cada día hay un 30% de chances de que hagan un festán y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.":
-                r = "EFEITOS PASSIVOS:\n\n-Ao se juntar à Caravana, ganham-se 15 de Esperança.\n\n-Cada vez que Feira é selecionada como Tarefa Civil de Descanso, ganham-se 10 de Esperança extra.\n\n-A cada dia, há 30% de chance de fazerem um banquete e desperdiçarem 1-4 Suprimentos.\n\n-Se abandonarem a Caravana, perdem-se 15 de Esperança.";
+            case "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 5 de Esperanza Extra.\n\n-Cada día hay un 30% de chances de que hagan un festán y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.":
+                r = "EFEITOS PASSIVOS:\n\n-Ao se juntar à Caravana, ganham-se 15 de Esperança.\n\n-Cada vez que Feira é selecionada como Tarefa Civil de Descanso, ganham-se 5 de Esperança extra.\n\n-A cada dia, há 30% de chance de fazerem um banquete e desperdiçarem 1-4 Suprimentos.\n\n-Se abandonarem a Caravana, perdem-se 15 de Esperança.";
                 break;
             case "usa ":
                 r = "usa ";

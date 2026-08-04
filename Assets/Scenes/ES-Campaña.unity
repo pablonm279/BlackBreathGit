@@ -44049,7 +44049,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.59607846}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.8784314}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -192414,7 +192414,7 @@ MonoBehaviour:
       defeatHopeLossPerPoint: 2
       defeatCivilLossPerPoint: 1
       defeatOxLoss: 0
-      victoryHopeBonus: 5
+      victoryHopeBonus: 3
       itemChancePerPoint: 3
   - battleType: 1
     tuning:
@@ -192424,7 +192424,7 @@ MonoBehaviour:
       defeatHopeLossPerPoint: 2.2
       defeatCivilLossPerPoint: 1.2
       defeatOxLoss: 0
-      victoryHopeBonus: 12
+      victoryHopeBonus: 6
       itemChancePerPoint: 6
   - battleType: 2
     tuning:
@@ -192434,7 +192434,7 @@ MonoBehaviour:
       defeatHopeLossPerPoint: 3
       defeatCivilLossPerPoint: 2
       defeatOxLoss: 1
-      victoryHopeBonus: 15
+      victoryHopeBonus: 8
       itemChancePerPoint: 6
   - battleType: 3
     tuning:
@@ -192444,7 +192444,7 @@ MonoBehaviour:
       defeatHopeLossPerPoint: 2.4
       defeatCivilLossPerPoint: 0.5
       defeatOxLoss: 0
-      victoryHopeBonus: 6
+      victoryHopeBonus: 4
       itemChancePerPoint: 4
   defaultRewardTuning:
     expPerPoint: 15
@@ -192453,7 +192453,7 @@ MonoBehaviour:
     defeatHopeLossPerPoint: 2
     defeatCivilLossPerPoint: 1
     defeatOxLoss: 0
-    victoryHopeBonus: 5
+    victoryHopeBonus: 3
     itemChancePerPoint: 3
   UIEmpezarBatalla: {fileID: 1522924258}
   UIEmpezarBatallaACaravana: {fileID: 155369272}
@@ -219714,7 +219714,7 @@ MonoBehaviour:
     m_NormalColor: {r: 0.8018868, g: 0.7058918, b: 0.631675, a: 1}
     m_HighlightedColor: {r: 1, g: 0.8351151, b: 0.2688679, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -281207,8 +281207,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16
-  m_fontSizeBase: 16
+  m_fontSize: 15.3
+  m_fontSizeBase: 15.3
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -281220,7 +281220,7 @@ MonoBehaviour:
   m_characterSpacing: 3
   m_characterHorizontalScale: 1
   m_wordSpacing: 2
-  m_lineSpacing: -12
+  m_lineSpacing: -15
   m_lineSpacingMax: 0
   m_paragraphSpacing: 3
   m_charWidthMaxAdj: 0
@@ -368230,7 +368230,7 @@ MonoBehaviour:
     valentiaMaxPct: 0
     valentiaMaxFlat: 0
     ataquePct: 0
-    ataqueFlat: -1
+    ataqueFlat: -2
     defensaPct: 0
     defensaFlat: -1
     armaduraPct: 0
@@ -368244,7 +368244,7 @@ MonoBehaviour:
     resistAllFlat: -1
     tsAllPct: 0
     tsAllFlat: 0
-    danioPorcPct: -10
+    danioPorcPct: -15
     danioPorcFlat: 0
   presetSeleccionado: 3
   usarPresets: 1
@@ -455473,8 +455473,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14.3
-  m_fontSizeBase: 14.3
+  m_fontSize: 14.1
+  m_fontSizeBase: 14.1
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -455486,7 +455486,7 @@ MonoBehaviour:
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
-  m_lineSpacing: -34
+  m_lineSpacing: -38
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -533918,7 +533918,7 @@ MonoBehaviour:
     m_NormalColor: {r: 0.8018868, g: 0.7058918, b: 0.631675, a: 1}
     m_HighlightedColor: {r: 1, g: 0.8351151, b: 0.2688679, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -587968,7 +587968,7 @@ MonoBehaviour:
     m_NormalColor: {r: 0.8018868, g: 0.7058918, b: 0.631675, a: 1}
     m_HighlightedColor: {r: 1, g: 0.8351151, b: 0.2688679, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -629748,7 +629748,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 34, y: -137}
+  m_AnchoredPosition: {x: 34, y: -139}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1649410416

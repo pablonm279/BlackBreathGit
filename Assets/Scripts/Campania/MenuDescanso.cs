@@ -297,7 +297,7 @@ public class MenuDescanso : MonoBehaviour
 
       tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Feria</b></u>\n\n\n");
       tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá entre 15 y 25 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n");
 
       chancesAtaqueACaravana = 30 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -316,7 +316,7 @@ public class MenuDescanso : MonoBehaviour
 
       tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Día Libre</b></u>\n\n\n");
       tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá 10 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá 6 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n");
 
       chancesAtaqueACaravana = 20 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 50 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -573,6 +573,7 @@ public class MenuDescanso : MonoBehaviour
 
     gameObject.SetActive(false);
 
+    BanterCampaignDirector.NotificarDescansoIniciado();
     CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(1.2f, 4.0f);
     await BattleManager.DelayCombateAsync(TimeSpan.FromSeconds(6.0f));
     IntentarEncontrarAtajoSuperficieTrasDescanso();
@@ -598,8 +599,8 @@ public class MenuDescanso : MonoBehaviour
     if (tareaCivilSeleccionada == 3)
     {
       consumo = consumo * 1.2f;
-      int random = UnityEngine.Random.Range(0, 11);
-      CampaignManager.Instance.CambiarEsperanzaActual(15 + random);
+      int random = UnityEngine.Random.Range(0, 6);
+      CampaignManager.Instance.CambiarEsperanzaActual(10 + random);
 
     } //Fiesta
 
@@ -712,8 +713,8 @@ public class MenuDescanso : MonoBehaviour
     //Efectos de Sequitos al descansar
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(4) && tareaCivilSeleccionada == 3) //Artistas
     {
-      CampaignManager.Instance.CambiarEsperanzaActual(10);
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-En la Feria, los Artistas han realizado un espectáculo que ha levantado el ánimo de los Civiles. +10 Esperanza"));
+      CampaignManager.Instance.CambiarEsperanzaActual(5);
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-En la Feria, los Artistas han realizado un espectáculo que ha levantado el ánimo de los Civiles. +5 Esperanza"));
     }
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(5)) //Herboristas
     {
@@ -772,7 +773,7 @@ public class MenuDescanso : MonoBehaviour
 
     int fatiga = CampaignManager.Instance.GetFatigaActual();
     if (tareaCivilSeleccionada == 4)
-    { fatiga++; CampaignManager.Instance.CambiarEsperanzaActual(10); } //Día libre
+    { fatiga++; CampaignManager.Instance.CambiarEsperanzaActual(6); } //Día libre
 
     if (tareaCivilSeleccionada == 5)
     { CampaignManager.Instance.CambiarEsperanzaActual(-10); } //Alerta
@@ -845,16 +846,15 @@ public class MenuDescanso : MonoBehaviour
 
     #region Acechadores Sueldo
     //Sueldo Acechadores
-    int sueldoAcechadores = 0;
-    if (CampaignManager.Instance.GetEsperanzaActual() < 70) //Si la esperanza es menor a 70, los Acechadores cobran su sueldo.
+    int cantidadAcechadores = CampaignManager.Instance.CuantosPersonajesSonDeTalClase(4); //Acechadores
+    if (cantidadAcechadores > 0 && CampaignManager.Instance.GetEsperanzaActual() < 70) //Si la esperanza es menor a 70, los Acechadores cobran su sueldo.
     {
-      sueldoAcechadores = CampaignManager.Instance.CuantosPersonajesSonDeTalClase(4) * 20; //Acechadores
+      int sueldoAcechadores = cantidadAcechadores * 20;
       CampaignManager.Instance.CambiarOroActual(-sueldoAcechadores);
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Acechadores en la Caravana se han cobrado su sueldo por Oro: ") + sueldoAcechadores);
     }
-    else //Si la esperanza es mayor o igual a 70, no cobran.
+    else if (cantidadAcechadores > 0) //Si la esperanza es mayor o igual a 70, no cobran.
     {
-      int cantidadacechadores = CampaignManager.Instance.CuantosPersonajesSonDeTalClase(4); //Acechadores
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido a la alta Esperanza, los Acechadores han decidido no cobrar su sueldo esta vez."));
 
     }
@@ -895,7 +895,7 @@ public class MenuDescanso : MonoBehaviour
     #endregion
 
     float randomEvento = UnityEngine.Random.Range(0, 100);
-    float factorEventoBuenoMalo = 36 + CampaignManager.Instance.GetEsperanzaActual() / 3 + CampaignManager.Instance.ObtenerModificadorChanceEventoTraits();
+    float factorEventoBuenoMalo = 36 + CampaignManager.Instance.GetEsperanzaActual() / 5 + CampaignManager.Instance.ObtenerModificadorChanceEventoTraits();
     factorEventoBuenoMalo = CampaignManager.Instance.AjustarChanceEventoBuenoPresagios(factorEventoBuenoMalo);
     bool descansoEnNodoEvento = CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == 2;
     bool descansoEnAsentamiento = CampaignManager.Instance.scMapaManager.nodoActual != null &&

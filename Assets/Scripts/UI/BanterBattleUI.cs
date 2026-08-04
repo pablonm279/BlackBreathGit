@@ -6,9 +6,19 @@ using UnityEngine.UI;
 
 public class BanterBattleUI : MonoBehaviour
 {
+    private const string PrefBantersHabilitados = "gameplay_banters_enabled";
+
+    private enum TipoSistema
+    {
+        Batalla,
+        Campania
+    }
+
     private sealed class SolicitudBanter
     {
         public Unidad hablante;
+        public Personaje personajeCampania;
+        public int idClaseCampania;
         public bool requiereHablanteVivo;
         public Sprite retrato;
         public string texto;
@@ -16,8 +26,11 @@ public class BanterBattleUI : MonoBehaviour
         public int prioridad;
     }
 
-    private static BanterBattleUI instance;
+    private static BanterBattleUI instanciaBatalla;
+    private static BanterBattleUI instanciaCampania;
     private readonly List<SolicitudBanter> cola = new List<SolicitudBanter>();
+    private readonly Dictionary<Image, Color> coloresOriginalesFlash =
+        new Dictionary<Image, Color>();
     private RectTransform panel;
     private CanvasGroup canvasGroup;
     private Image imagenRetrato;
@@ -36,10 +49,27 @@ public class BanterBattleUI : MonoBehaviour
     private float silencioHasta;
     private int bantersConsecutivos;
     private Vector3 escalaBase;
+    private TipoSistema tipoSistema;
+
+    public static bool BantersHabilitados => PlayerPrefs.GetInt(PrefBantersHabilitados, 1) == 1;
+
+    public static void EstablecerBantersHabilitados(bool habilitados)
+    {
+        PlayerPrefs.SetInt(PrefBantersHabilitados, habilitados ? 1 : 0);
+        PlayerPrefs.Save();
+
+        if (habilitados)
+        {
+            return;
+        }
+
+        instanciaBatalla?.CancelarSolicitudes(true);
+        instanciaCampania?.CancelarSolicitudes(true);
+    }
 
     public static void Instalar(BattleManager battleManager, GameObject prefab)
     {
-        if (instance != null || battleManager == null)
+        if (instanciaBatalla != null || battleManager == null)
         {
             return;
         }
@@ -67,8 +97,46 @@ public class BanterBattleUI : MonoBehaviour
         GameObject vista = Instantiate(prefab, canvas.transform);
         vista.name = "GOBanter_Runtime";
         BanterBattleUI controlador = vista.AddComponent<BanterBattleUI>();
-        controlador.Inicializar(canvas.sortingOrder + 50, prefab, canvas, false);
+        controlador.Inicializar(canvas.sortingOrder + 50, prefab, canvas, false, TipoSistema.Batalla);
         BanterBattleDirector.Instalar(battleManager);
+    }
+
+    public static void InstalarCampania(CampaignManager campaignManager, GameObject prefab = null)
+    {
+        if (instanciaCampania != null || campaignManager == null)
+        {
+            return;
+        }
+
+        if (prefab == null)
+        {
+            prefab = Resources.Load<GameObject>("GOBanter");
+        }
+        if (prefab == null)
+        {
+            Debug.LogWarning("BanterBattleUI: no se encontró el prefab GOBanter para campaña.");
+            return;
+        }
+
+        Canvas canvas = campaignManager.goCanvas != null
+            ? campaignManager.goCanvas.GetComponentInParent<Canvas>()
+            : null;
+        if (canvas == null && campaignManager.goCanvas != null)
+        {
+            canvas = campaignManager.goCanvas.GetComponentInChildren<Canvas>(true);
+        }
+        canvas = canvas != null && canvas.rootCanvas != null ? canvas.rootCanvas : canvas;
+        if (canvas == null)
+        {
+            Debug.LogWarning("BanterBattleUI: no se encontró el Canvas de campaña.");
+            return;
+        }
+
+        GameObject vista = Instantiate(prefab, canvas.transform);
+        vista.name = "GOBanter_Campania_Runtime";
+        BanterBattleUI controlador = vista.AddComponent<BanterBattleUI>();
+        controlador.Inicializar(150, prefab, canvas, false, TipoSistema.Campania);
+        BanterCampaignDirector.Instalar(campaignManager);
     }
 
     public static bool Emitir(
@@ -78,12 +146,14 @@ public class BanterBattleUI : MonoBehaviour
         int prioridad = 0,
         bool permitirDuplicado = false)
     {
-        if (instance == null || string.IsNullOrWhiteSpace(texto))
+        if (!BantersHabilitados
+            || instanciaBatalla == null
+            || string.IsNullOrWhiteSpace(texto))
         {
             return false;
         }
 
-        instance.Encolar(null, false, retrato, texto.Trim(), duracion, prioridad, permitirDuplicado);
+        instanciaBatalla.Encolar(null, null, 0, false, retrato, texto.Trim(), duracion, prioridad, permitirDuplicado);
         return true;
     }
 
@@ -101,13 +171,18 @@ public class BanterBattleUI : MonoBehaviour
                 ? unidad.uRetrato
                 : (unidad.uImage != null ? unidad.uImage.sprite : null);
         }
-        if (instance == null || unidad == null || string.IsNullOrWhiteSpace(texto))
+        if (!BantersHabilitados
+            || instanciaBatalla == null
+            || unidad == null
+            || string.IsNullOrWhiteSpace(texto))
         {
             return false;
         }
 
-        instance.Encolar(
+        instanciaBatalla.Encolar(
             unidad,
+            null,
+            0,
             true,
             retrato,
             texto.Trim(),
@@ -117,17 +192,83 @@ public class BanterBattleUI : MonoBehaviour
         return true;
     }
 
+    public static bool EmitirCampania(
+        Personaje personaje,
+        string texto,
+        float duracion = 3.2f,
+        int prioridad = 0,
+        bool permitirDuplicado = false)
+    {
+        if (!BantersHabilitados
+            || instanciaCampania == null
+            || personaje == null
+            || string.IsNullOrWhiteSpace(texto))
+        {
+            return false;
+        }
+
+        string textoLimpio = texto.Trim();
+        instanciaCampania.Encolar(
+            null,
+            personaje,
+            personaje.IDClase,
+            true,
+            personaje.spRetrato,
+            textoLimpio,
+            CalcularDuracionCampania(textoLimpio, duracion),
+            prioridad,
+            permitirDuplicado);
+        return true;
+    }
+
+    public static bool EmitirCampaniaDoble(
+        Personaje primerPersonaje,
+        string primerTexto,
+        Personaje segundoPersonaje,
+        string segundoTexto,
+        float duracion = 3.6f)
+    {
+        if (!BantersHabilitados
+            || instanciaCampania == null
+            || primerPersonaje == null
+            || string.IsNullOrWhiteSpace(primerTexto))
+        {
+            return false;
+        }
+
+        instanciaCampania.CancelarSolicitudes(true);
+        SolicitudBanter primera = CrearSolicitudCampania(primerPersonaje, primerTexto, duracion, 3);
+        instanciaCampania.IniciarSolicitudInmediata(primera);
+        float duracionMayor = primera.duracion;
+
+        if (segundoPersonaje != null
+            && segundoPersonaje != primerPersonaje
+            && !string.IsNullOrWhiteSpace(segundoTexto)
+            && instanciaCampania.segundaVista != null)
+        {
+            SolicitudBanter segunda = CrearSolicitudCampania(segundoPersonaje, segundoTexto, duracion, 3);
+            instanciaCampania.segundaVista.IniciarSolicitudInmediata(segunda);
+            duracionMayor = Mathf.Max(duracionMayor, segunda.duracion);
+        }
+
+        instanciaCampania.silencioHasta = Time.unscaledTime
+            + duracionMayor
+            + Random.Range(2.5f, 4f);
+
+        return true;
+    }
+
     public static void Finalizar()
     {
-        if (instance == null)
+        if (instanciaBatalla == null)
         {
             BanterBattleDirector.Finalizar();
             return;
         }
 
-        BanterBattleUI principal = instance;
+        BanterBattleUI principal = instanciaBatalla;
         BanterBattleUI secundaria = principal.segundaVista;
-        instance = null;
+        instanciaBatalla = null;
         principal.DetenerSistema();
         BanterBattleDirector.Finalizar();
 
@@ -138,25 +279,59 @@ public class BanterBattleUI : MonoBehaviour
         Destroy(principal.gameObject);
     }
 
-    public static void InvalidarHablante(Unidad unidad)
+    public static void FinalizarCampania()
     {
-        if (instance == null || unidad == null)
+        BanterCampaignDirector.Finalizar();
+        if (instanciaCampania == null)
         {
             return;
         }
 
-        instance.cola.RemoveAll(solicitud => solicitud.hablante == unidad);
+        BanterBattleUI principal = instanciaCampania;
+        BanterBattleUI secundaria = principal.segundaVista;
+        instanciaCampania = null;
+        principal.DetenerSistema();
+
+        if (secundaria != null)
+        {
+            Destroy(secundaria.gameObject);
+        }
+        Destroy(principal.gameObject);
+    }
+
+    public static void CancelarCampania(bool interrumpirActuales = false)
+    {
+        instanciaCampania?.CancelarSolicitudes(interrumpirActuales);
+    }
+
+    public static void InvalidarHablante(Unidad unidad)
+    {
+        if (instanciaBatalla == null || unidad == null)
+        {
+            return;
+        }
+
+        instanciaBatalla.cola.RemoveAll(solicitud => solicitud.hablante == unidad);
     }
 
     private void Inicializar(
         int sortingOrder,
         GameObject prefab,
         Canvas canvasPadre,
-        bool esSegundaVista)
+        bool esSegundaVista,
+        TipoSistema sistema)
     {
+        tipoSistema = sistema;
         if (!esSegundaVista)
         {
-            instance = this;
+            if (sistema == TipoSistema.Campania)
+            {
+                instanciaCampania = this;
+            }
+            else
+            {
+                instanciaBatalla = this;
+            }
         }
         panel = GetComponent<RectTransform>();
         escalaBase = panel.localScale;
@@ -196,12 +371,34 @@ public class BanterBattleUI : MonoBehaviour
             graficos[i].raycastTarget = false;
         }
 
-        panel.anchorMin = new Vector2(0f, 0.76f);
+        bool apareceDesdeDerecha = sistema == TipoSistema.Campania;
+        panel.anchorMin = new Vector2(apareceDesdeDerecha ? 1f : 0f, 0.76f);
         panel.anchorMax = panel.anchorMin;
         panel.pivot = new Vector2(0.5f, 0.5f);
-        float offsetY = esSegundaVista ? -(panel.rect.height + 36f) : 0f;
-        posicionVisible = new Vector2((panel.rect.width * 0.5f) - 150f, offsetY);
-        posicionOculta = posicionVisible + Vector2.left * (Mathf.Max(220f, panel.rect.width) + 100f);
+        const float offsetYBatalla = 50f;
+        float offsetY = sistema == TipoSistema.Batalla ? offsetYBatalla : 0f;
+        if (esSegundaVista)
+        {
+            offsetY -= panel.rect.height + 52f;
+        }
+        const float margenDerechoCampania = -50f;
+        float offsetX = apareceDesdeDerecha
+            ? -((panel.rect.width * 0.5f) + margenDerechoCampania)
+            : (panel.rect.width * 0.5f) - 150f;
+        float distanciaOculta = Mathf.Max(220f, panel.rect.width) + 100f;
+        if (apareceDesdeDerecha
+            && IntentarObtenerRangoHorizontalGraficos(panel, graficos, out float minX, out float maxX))
+        {
+            float escalaX = Mathf.Abs(escalaBase.x);
+            offsetX = -((maxX * escalaX) + margenDerechoCampania);
+            distanciaOculta = Mathf.Max(
+                distanciaOculta,
+                ((maxX - minX) * escalaX) + 250f);
+        }
+
+        posicionVisible = new Vector2(offsetX, offsetY);
+        Vector2 direccionOculta = apareceDesdeDerecha ? Vector2.right : Vector2.left;
+        posicionOculta = posicionVisible + direccionOculta * distanciaOculta;
         panel.anchoredPosition = posicionOculta;
         transform.SetAsLastSibling();
 
@@ -210,12 +407,14 @@ public class BanterBattleUI : MonoBehaviour
             GameObject segunda = Instantiate(prefab, canvasPadre.transform);
             segunda.name = "GOBanter_Runtime_2";
             segundaVista = segunda.AddComponent<BanterBattleUI>();
-            segundaVista.Inicializar(sortingOrder + 1, null, null, true);
+            segundaVista.Inicializar(sortingOrder + 1, null, null, true, sistema);
         }
     }
 
     private void Encolar(
         Unidad hablante,
+        Personaje personajeCampania,
+        int idClaseCampania,
         bool requiereHablanteVivo,
         Sprite retrato,
         string texto,
@@ -239,6 +438,8 @@ public class BanterBattleUI : MonoBehaviour
         SolicitudBanter solicitud = new SolicitudBanter
         {
             hablante = hablante,
+            personajeCampania = personajeCampania,
+            idClaseCampania = idClaseCampania,
             requiereHablanteVivo = requiereHablanteVivo,
             retrato = retrato,
             texto = texto,
@@ -271,6 +472,36 @@ public class BanterBattleUI : MonoBehaviour
         {
             procesarColaRoutine = StartCoroutine(ProcesarCola());
         }
+    }
+
+    private static SolicitudBanter CrearSolicitudCampania(
+        Personaje personaje,
+        string texto,
+        float duracion,
+        int prioridad)
+    {
+        return new SolicitudBanter
+        {
+            personajeCampania = personaje,
+            idClaseCampania = personaje != null ? personaje.IDClase : 0,
+            requiereHablanteVivo = true,
+            retrato = personaje != null ? personaje.spRetrato : null,
+            texto = texto != null ? texto.Trim() : string.Empty,
+            duracion = CalcularDuracionCampania(texto, duracion),
+            prioridad = prioridad
+        };
+    }
+
+    private void IniciarSolicitudInmediata(SolicitudBanter solicitud)
+    {
+        if (!EsSolicitudValida(solicitud))
+        {
+            return;
+        }
+
+        ocupada = true;
+        textoActual = solicitud.texto;
+        StartCoroutine(MostrarYLiberar(solicitud));
     }
 
     private bool ContieneTextoEnCola(string texto)
@@ -339,7 +570,14 @@ public class BanterBattleUI : MonoBehaviour
             vistaLibre.StartCoroutine(vistaLibre.MostrarYLiberar(solicitud));
             ultimoInicioBanter = Time.unscaledTime;
             bantersConsecutivos++;
-            if (bantersConsecutivos >= 2)
+            if (tipoSistema == TipoSistema.Campania)
+            {
+                silencioHasta = Time.unscaledTime
+                    + solicitud.duracion
+                    + Random.Range(2.5f, 4f);
+                bantersConsecutivos = 0;
+            }
+            else if (bantersConsecutivos >= 2)
             {
                 silencioHasta = Time.unscaledTime
                     + solicitud.duracion
@@ -360,7 +598,7 @@ public class BanterBattleUI : MonoBehaviour
 
     private IEnumerator Mostrar(SolicitudBanter solicitud)
     {
-        Color colorHablante = ColorParaHablante(solicitud.hablante);
+        Color colorHablante = ColorParaHablante(solicitud.hablante, solicitud.idClaseCampania);
         if (solicitud.hablante != null)
         {
             StartCoroutine(FlashHablante(solicitud.hablante, colorHablante));
@@ -399,7 +637,8 @@ public class BanterBattleUI : MonoBehaviour
         {
             tiempo += Time.unscaledDeltaTime;
             float t = Mathf.Clamp01(tiempo / duracionEntrada);
-            float curva = EaseOutBack(t);
+            float intensidadRebote = tipoSistema == TipoSistema.Campania ? 0.65f : 1.35f;
+            float curva = EaseOutBack(t, intensidadRebote);
             panel.anchoredPosition = Vector2.LerpUnclamped(posicionOculta, posicionVisible, curva);
             canvasGroup.alpha = Mathf.SmoothStep(0f, 1f, t);
             if (textoBanter != null)
@@ -453,12 +692,18 @@ public class BanterBattleUI : MonoBehaviour
             return solicitud != null;
         }
 
-        return solicitud.hablante != null
-            && solicitud.hablante.HP_actual > 0
-            && solicitud.hablante.gameObject.activeInHierarchy;
+        if (solicitud.hablante != null)
+        {
+            return solicitud.hablante.HP_actual > 0
+                && solicitud.hablante.gameObject.activeInHierarchy;
+        }
+
+        return solicitud.personajeCampania != null
+            && !solicitud.personajeCampania.Camp_Muerto
+            && solicitud.personajeCampania.gameObject.activeInHierarchy;
     }
 
-    private Color ColorParaHablante(Unidad hablante)
+    private Color ColorParaHablante(Unidad hablante, int idClaseCampania)
     {
         if (hablante is ClaseCaballero)
         {
@@ -484,6 +729,16 @@ public class BanterBattleUI : MonoBehaviour
         {
             return ColorDesdeHex("#B394D6");
         }
+
+        switch (idClaseCampania)
+        {
+            case 1: return ColorDesdeHex("#D3D5D7");
+            case 2: return ColorDesdeHex("#8FCB91");
+            case 3: return ColorDesdeHex("#E8D98A");
+            case 4: return ColorDesdeHex("#B394D6");
+            case 5: return ColorDesdeHex("#80B7E8");
+            case 6: return ColorDesdeHex("#D98BCB");
+        }
         return colorTextoBase;
     }
 
@@ -494,7 +749,7 @@ public class BanterBattleUI : MonoBehaviour
             : Color.white;
     }
 
-    private static IEnumerator FlashHablante(Unidad hablante, Color color)
+    private IEnumerator FlashHablante(Unidad hablante, Color color)
     {
         if (hablante == null
             || hablante.uImage == null
@@ -504,19 +759,21 @@ public class BanterBattleUI : MonoBehaviour
         }
 
         Image imagenOrigen = hablante.uImage;
+        if (coloresOriginalesFlash.ContainsKey(imagenOrigen))
+        {
+            yield break;
+        }
+
         Color colorOriginal = imagenOrigen.color;
-        Color colorIluminado = Color.Lerp(Color.white, color, 0.45f);
+        coloresOriginalesFlash.Add(imagenOrigen, colorOriginal);
+        Color colorIluminado = Color.Lerp(colorOriginal, Color.white, 0.38f);
+        colorIluminado = Color.Lerp(colorIluminado, color, 0.18f);
         colorIluminado.r = Mathf.Max(colorOriginal.r, colorIluminado.r);
         colorIluminado.g = Mathf.Max(colorOriginal.g, colorIluminado.g);
         colorIluminado.b = Mathf.Max(colorOriginal.b, colorIluminado.b);
         colorIluminado.a = colorOriginal.a;
 
-        Outline contorno = imagenOrigen.gameObject.AddComponent<Outline>();
-        contorno.effectDistance = new Vector2(3f, -3f);
-        contorno.useGraphicAlpha = true;
-
         const float duracionFlash = 0.22f;
-        const float alphaContornoMaxima = 0.42f;
         float tiempo = 0f;
         Color ultimoColorAplicado = colorOriginal;
         while (tiempo < duracionFlash
@@ -529,13 +786,8 @@ public class BanterBattleUI : MonoBehaviour
             ultimoColorAplicado = Color.Lerp(
                 colorOriginal,
                 colorIluminado,
-                pulso * 0.45f);
+                pulso * 0.65f);
             imagenOrigen.color = ultimoColorAplicado;
-            contorno.effectColor = new Color(
-                color.r,
-                color.g,
-                color.b,
-                pulso * alphaContornoMaxima);
             yield return null;
         }
 
@@ -544,10 +796,7 @@ public class BanterBattleUI : MonoBehaviour
         {
             imagenOrigen.color = colorOriginal;
         }
-        if (contorno != null)
-        {
-            Destroy(contorno);
-        }
+        coloresOriginalesFlash.Remove(imagenOrigen);
     }
 
     private static bool ColoresAproximadamenteIguales(Color a, Color b)
@@ -564,6 +813,7 @@ public class BanterBattleUI : MonoBehaviour
         sistemaCerrado = true;
         cola.Clear();
         StopAllCoroutines();
+        RestaurarFlashesActivos();
         procesarColaRoutine = null;
         textoActual = null;
         ocupada = false;
@@ -575,6 +825,42 @@ public class BanterBattleUI : MonoBehaviour
         {
             segundaVista.DetenerSistema();
         }
+    }
+
+    private void CancelarSolicitudes(bool interrumpirActuales)
+    {
+        cola.Clear();
+        if (procesarColaRoutine != null)
+        {
+            StopCoroutine(procesarColaRoutine);
+            procesarColaRoutine = null;
+        }
+
+        if (!interrumpirActuales)
+        {
+            return;
+        }
+
+        ReiniciarVista();
+        segundaVista?.ReiniciarVista();
+        ultimoInicioBanter = -10f;
+        silencioHasta = 0f;
+        bantersConsecutivos = 0;
+    }
+
+    private void ReiniciarVista()
+    {
+        StopAllCoroutines();
+        RestaurarFlashesActivos();
+        if (audioBanter != null)
+        {
+            audioBanter.Stop();
+        }
+        textoActual = null;
+        ocupada = false;
+        panel.anchoredPosition = posicionOculta;
+        panel.localScale = escalaBase;
+        canvasGroup.alpha = 0f;
     }
 
     private Image BuscarImagen(string nombre)
@@ -603,19 +889,80 @@ public class BanterBattleUI : MonoBehaviour
         return null;
     }
 
-    private static float EaseOutBack(float t)
+    private static bool IntentarObtenerRangoHorizontalGraficos(
+        RectTransform raiz,
+        Graphic[] graficos,
+        out float minX,
+        out float maxX)
     {
-        const float intensidad = 1.35f;
-        const float ajuste = intensidad + 1f;
+        minX = float.PositiveInfinity;
+        maxX = float.NegativeInfinity;
+        Vector3[] esquinas = new Vector3[4];
+
+        for (int i = 0; i < graficos.Length; i++)
+        {
+            RectTransform rectTransform = graficos[i] != null
+                ? graficos[i].rectTransform
+                : null;
+            if (rectTransform == null)
+            {
+                continue;
+            }
+
+            rectTransform.GetWorldCorners(esquinas);
+            for (int esquina = 0; esquina < esquinas.Length; esquina++)
+            {
+                float xLocal = raiz.InverseTransformPoint(esquinas[esquina]).x;
+                minX = Mathf.Min(minX, xLocal);
+                maxX = Mathf.Max(maxX, xLocal);
+            }
+        }
+
+        return !float.IsInfinity(minX) && !float.IsInfinity(maxX);
+    }
+
+    private static float CalcularDuracionCampania(string texto, float duracionBase)
+    {
+        const float duracionMinima = 3.2f;
+        const float duracionMaxima = 5.2f;
+        const float caracteresPorSegundo = 18f;
+        int caracteres = string.IsNullOrWhiteSpace(texto) ? 0 : texto.Trim().Length;
+        float duracionLectura = caracteres / caracteresPorSegundo;
+        return Mathf.Clamp(
+            Mathf.Max(duracionMinima, duracionBase, duracionLectura),
+            duracionMinima,
+            duracionMaxima);
+    }
+
+    private static float EaseOutBack(float t, float intensidad)
+    {
+        float ajuste = intensidad + 1f;
         float x = t - 1f;
         return 1f + ajuste * x * x * x + intensidad * x * x;
     }
 
     private void OnDestroy()
     {
-        if (instance == this)
+        RestaurarFlashesActivos();
+        if (instanciaBatalla == this)
         {
-            instance = null;
+            instanciaBatalla = null;
         }
+        if (instanciaCampania == this)
+        {
+            instanciaCampania = null;
+        }
+    }
+
+    private void RestaurarFlashesActivos()
+    {
+        foreach (KeyValuePair<Image, Color> flash in coloresOriginalesFlash)
+        {
+            if (flash.Key != null)
+            {
+                flash.Key.color = flash.Value;
+            }
+        }
+        coloresOriginalesFlash.Clear();
     }
 }

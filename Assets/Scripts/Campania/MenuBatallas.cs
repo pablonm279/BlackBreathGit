@@ -14,7 +14,7 @@ public class BattleRewardTuning
    public float defeatHopeLossPerPoint = 2f;
    public float defeatCivilLossPerPoint = 1f;
    public int defeatOxLoss = 0;
-   public float victoryHopeBonus = 10f;
+   public float victoryHopeBonus = 3f;
    public float itemChancePerPoint = 0f;
 }
 
@@ -252,7 +252,7 @@ public class MenuBatallas : MonoBehaviour
              profile.tuning.materialsPerPoint = defaultRewardTuning.materialsPerPoint * 1.6f;
              profile.tuning.defeatHopeLossPerPoint = defaultRewardTuning.defeatHopeLossPerPoint * 1.1f;
              profile.tuning.defeatCivilLossPerPoint = Mathf.Max(defaultRewardTuning.defeatCivilLossPerPoint, 1.2f);
-             profile.tuning.victoryHopeBonus = Mathf.Max(defaultRewardTuning.victoryHopeBonus, 12f);
+             profile.tuning.victoryHopeBonus = Mathf.Max(defaultRewardTuning.victoryHopeBonus, 6f);
              profile.tuning.itemChancePerPoint = Mathf.Max(defaultRewardTuning.itemChancePerPoint, 6f);
              break;
           case BattleEncounterType.AtaqueCaravana:
@@ -262,7 +262,7 @@ public class MenuBatallas : MonoBehaviour
              profile.tuning.defeatHopeLossPerPoint = defaultRewardTuning.defeatHopeLossPerPoint * 1.5f;
              profile.tuning.defeatCivilLossPerPoint = Mathf.Max(defaultRewardTuning.defeatCivilLossPerPoint, 2f);
              profile.tuning.defeatOxLoss = Mathf.Max(profile.tuning.defeatOxLoss, 1);
-             profile.tuning.victoryHopeBonus = Mathf.Max(defaultRewardTuning.victoryHopeBonus, 15f);
+             profile.tuning.victoryHopeBonus = Mathf.Max(defaultRewardTuning.victoryHopeBonus, 8f);
              profile.tuning.itemChancePerPoint = Mathf.Max(defaultRewardTuning.itemChancePerPoint, 6f);
              break;
           case BattleEncounterType.Subterraneo:
@@ -271,7 +271,7 @@ public class MenuBatallas : MonoBehaviour
              profile.tuning.materialsPerPoint = defaultRewardTuning.materialsPerPoint * 2.0f;
              profile.tuning.defeatHopeLossPerPoint = defaultRewardTuning.defeatHopeLossPerPoint * 1.2f;
              profile.tuning.defeatCivilLossPerPoint = defaultRewardTuning.defeatCivilLossPerPoint * 0.5f;
-             profile.tuning.victoryHopeBonus = Mathf.Max(defaultRewardTuning.victoryHopeBonus * 0.8f, 6f);
+             profile.tuning.victoryHopeBonus = Mathf.Max(defaultRewardTuning.victoryHopeBonus * 0.8f, 4f);
              profile.tuning.itemChancePerPoint = Mathf.Max(defaultRewardTuning.itemChancePerPoint, 4f);
              break;
           case BattleEncounterType.Normal:
@@ -3272,7 +3272,7 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
         return;
     }
 
-    int deltaEsperanza = resultado == 1 ? +5 : -5;
+    int deltaEsperanza = resultado == 1 ? +3 : -5;
     int expVictoria = resultado == 1 ? AplicarBonusExperienciaPrimeraBatallaRun(0) : 0;
 
     if (expVictoria > 0)

@@ -84,6 +84,19 @@ public class BanterBattleDirector : MonoBehaviour
         instance?.ProcesarInicioTurno(unidad);
     }
 
+    public static void NotificarEscapeAliado(Unidad unidadQueEscapa)
+    {
+        if (instance == null)
+        {
+            return;
+        }
+
+        instance.IntentarDisparar(
+            BanterDisparador.AliadoEscapa,
+            1f,
+            instance.ObtenerCompanerosVivos(unidadQueEscapa));
+    }
+
     private void Reiniciar(BattleManager manager)
     {
         if (idleTurnoRoutine != null)
@@ -565,6 +578,7 @@ public class BanterBattleDirector : MonoBehaviour
             case BanterDisparador.MoralDisminuyeEtapa:
             case BanterDisparador.RefuerzoEnemigo:
             case BanterDisparador.VidaCritica:
+            case BanterDisparador.AliadoEscapa:
                 return 2;
             case BanterDisparador.CriticoRecibido:
             case BanterDisparador.CriticoRealizado:

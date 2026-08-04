@@ -70,6 +70,7 @@ public class Unidad : MonoBehaviour
   [SerializeField] private float at_maxHP; 
   public float mod_maxHP; 
   public float HP_actual; 
+  [System.NonSerialized] public float maxHPPerdidoPorSangrado;
   private const float PorcentajeVidaPorPuntoFuerza = 0.10f;
   private float fuerzaReferenciaVidaPorFuerza;
   private float bonusVidaPorFuerzaAplicado;
@@ -296,6 +297,7 @@ public class Unidad : MonoBehaviour
   private static readonly int EstadoAnimacionMissHash = Animator.StringToHash("Animacion_esquivar-Miss");
   private static readonly int EstadoAnimacionMissFullPathHash = Animator.StringToHash("Base Layer.Animacion_esquivar-Miss");
   private Coroutine retiradaPorMoralCoroutine;
+  public bool RetiradaPorMoralEnCurso => retiradaPorMoralCoroutine != null;
   private bool suprimirAnimacionIA;
   private float ultimoAtaqueAnimTime = -999f;
   private float ultimoHabilidadAnimTime = -999f;
@@ -1457,7 +1459,36 @@ public bool movimientoEnCurso = false;
 
   void OnEnable()
   {
+    ConfigurarSombraImagenUnidad();
     AjustesAudio.VolumenSfxCambiado += OnVolumenSfxCambiado;
+  }
+
+  private void ConfigurarSombraImagenUnidad()
+  {
+    if (uImage == null)
+    {
+      return;
+    }
+
+    Shadow sombraImagen = null;
+    Shadow[] efectosSombra = uImage.GetComponents<Shadow>();
+    foreach (Shadow efecto in efectosSombra)
+    {
+      if (efecto != null && efecto.GetType() == typeof(Shadow))
+      {
+        sombraImagen = efecto;
+        break;
+      }
+    }
+
+    if (sombraImagen == null)
+    {
+      sombraImagen = uImage.gameObject.AddComponent<Shadow>();
+    }
+
+    sombraImagen.effectColor = new Color(0f, 0f, 0f, 0.87882354f);
+    sombraImagen.effectDistance = new Vector2(0.157f, 0.33f);
+    sombraImagen.useGraphicAlpha = true;
   }
 
   void OnDisable()
@@ -4753,7 +4784,7 @@ public virtual void AplicarDesesperanzado()
     }
   }
 
-  public void MostrarRotuloHabilidadIA(string txString, Color color, float duracion = 4f)
+  public void MostrarRotuloHabilidadIA(string txString, Color color, float duracion = 1.8f)
   {
     if (string.IsNullOrWhiteSpace(txString) || DebeSuprimirTextoFlotantePorEscondidoIA())
     {
@@ -4761,6 +4792,12 @@ public virtual void AplicarDesesperanzado()
     }
 
     string textoFormateado = txString.Trim().ToUpperInvariant();
+
+    RectTransform anclajeRotulo = scUnidadCanvas != null ? scUnidadCanvas.barraVida : null;
+    if (RotuloHabilidadEnemigaUI.Mostrar(this, anclajeRotulo, textoFormateado, color, duracion))
+    {
+      return;
+    }
 
     if (scUnidadCanvas != null)
     {
@@ -5253,6 +5290,11 @@ public void Marcar(int n)
       return;
     }
 
+    if (scBattleManager.HoverUnidadesCentralizadoActivo && !scBattleManager.VistaTacticaActiva)
+    {
+      return;
+    }
+
     if (!EsObjetivoHoverValidoSeleccion())
     {
       Marcar(0);
@@ -5265,6 +5307,11 @@ public void Marcar(int n)
   private void LimpiarVisualObjetivoHover()
   {
     if (scBattleManager == null || !scBattleManager.SeleccionandoObjetivo)
+    {
+      return;
+    }
+
+    if (scBattleManager.HoverUnidadesCentralizadoActivo && !scBattleManager.VistaTacticaActiva)
     {
       return;
     }
@@ -5425,6 +5472,11 @@ public void OnMouseExit()
 public async void OnMouseDown() 
 {
     if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+    {
+      return;
+    }
+
+    if (scBattleManager != null && scBattleManager.TryRedirigirClickUnidadCentralizado(this))
     {
       return;
     }

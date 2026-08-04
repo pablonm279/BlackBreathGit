@@ -25,6 +25,10 @@ public class EventosAdmin : MonoBehaviour
    const int DificultadRastroSospechoso = 10;
    const int DificultadCuervosDelPaso = 11;
    const int DificultadVigiaDelHielo = 10;
+   const string ColorBeneficio = "#a0e812";
+   const string ColorPerjuicio = "#ba3fef";
+   const string ColorRiesgo = "#d8a205";
+   const string ColorNeutral = "#d6d6d6";
    const string ItemIdBolsaOlvidada = "ITEM_SCRIPTS_CONSUMIBLES_GENERADOS_CONS12_AMPOLLAAISLANTE";
    [SerializeField] TextMeshProUGUI txtTitulo;
    [SerializeField] TextMeshProUGUI txtDescripcion;
@@ -124,8 +128,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento001;
             txtTitulo.text = TRADU.i.Traducir("Retraso Nocturno");
 
-            txtDescripcion.text = TRADU.i.Traducir("Uno de los principales encargados de guiar la caravana y elegir las rutas más seguras accidentalmente perdió sus mapas.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la región actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Uno de los guías perdió los mapas de la región. La Caravana deberá detenerse a buscarlos antes de internarse a ciegas en el camino.\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Pasan las Horas: +1 Avance Aliento Negro</b></color>");
@@ -139,8 +142,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento002;
             txtTitulo.text = TRADU.i.Traducir("Desapariciones Misteriosas");
 
-            txtDescripcion.text = TRADU.i.Traducir("De un momento a otro, varios miembros de la caravana han desaparecido sin dejar rastro. Nadie tiene una explicación de lo que ha sucedido. Pero el miedo y la incertidumbre se apoderan de todos.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Luego de buscar vagamente en la cercanía y concluir que no hay pistas, decides consolar a los familiares y seguir adelante.\n\n\n\n\n\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Varios Civiles desaparecieron durante la marcha sin dejar rastro. Tras una búsqueda breve y estéril, solo queda consolar a sus familias y continuar.\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Pierdes 4-12 Civiles, -5 Esperanza</b></color>");
@@ -154,9 +156,9 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento003;
             txtTitulo.text = TRADU.i.Traducir("Bueyes Enfermos");
 
-            txtDescripcion.text = TRADU.i.Traducir("Uno de los bueyes de la caravana ha caído enfermo y no puede continuar. Recibes recomendaciones de algunos especialistas en ganado que te aconsejan revisar a los otros bueyes para evitar una propagación de la enfermedad.\n\n\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides revisarlos tomará unas horas: +1 Avance Aliento Negro.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides ignorar las advertencias: 1-3 Bueyes mas morirán.</color>\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Uno de los Bueyes cayó enfermo y no puede continuar. Los cuidadores aconsejan revisar al resto antes de que la enfermedad se propague.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Revisarlos demorará la marcha: +1 Aliento Negro.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Ignorar las advertencias: morirán 1-3 Bueyes más.</color>\n\n");
 
 
             textBotonA.text = TRADU.i.Traducir("Revisarlos");
@@ -167,7 +169,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento004;
             txtTitulo.text = TRADU.i.Traducir("Peaje Criminal");
 
-            txtDescripcion.text = TRADU.i.Traducir("Mientras la caravana se dispone a avanzar por un terreno peligroso, se topa con un grupo de bandidos que exige un peaje exorbitante para dejar pasar a la caravana.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un grupo de bandidos bloquea el único paso seguro y exige un peaje desmedido para dejar avanzar a la Caravana.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides pagar el peaje, perderás 1 de Oro por Civil.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Luchar con los Bandidos.</color>\n\n");
 
@@ -183,7 +185,12 @@ public class EventosAdmin : MonoBehaviour
             retratoParticipante1.SetActive(true);
             retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
 
-            txtDescripcion.text = $"<b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> se acerca a ti y no luce nada bien. Te comenta que ha empezado a sentirse enfermo y necesita medicina para mejorar pronto y estar nuevamente en condiciones de combatir.\n\n");
+            int idiomaEnfermo = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+            txtDescripcion.text = "<b><color=#d1006f>" + participanteEvento1.sNombre + "</color></b> " + SeleccionarTextoLocal(
+                "apenas logra mantenerse en pie. La fiebre avanza y necesitará varios días para recuperarse.\n\n",
+                "can barely remain standing. The fever is worsening, and recovery will take several days.\n\n",
+                "mal consegue ficar de pé. A febre está piorando, e a recuperação levará vários dias.\n\n",
+                idiomaEnfermo);
             txtDescripcion.text += TRADU.i.Traducir("Obtendrá el estado Enfermo por 4-7 días. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 1 día.\n\n\n\n\n");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes comprar medicina por 45 Oro para reducir la Enfermedad un día extra.</color>\n\n");
@@ -201,13 +208,21 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento006;
             txtTitulo.text = TRADU.i.Traducir("Arcas Robadas");
 
-            txtDescripcion.text = TRADU.i.Traducir("Al grito de un guardia, tu atención se vuelve a uno de los carros que lleva las arcas con el oro de la caravana. Uno de sus cofres está volcado y el oro se ha derramado por el suelo. Aparentemente durante la noche, alguien logró forzarlo y se llevó parte del botón.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("El grito de un guardia te lleva hasta el carro de las arcas. Un cofre fue forzado durante la noche y parte del botín ha desaparecido.\n\n");
             int oroRobado = CampaignManager.Instance.GetOroActuales() / 4; //25% del oro actual
             if (oroRobado > CampaignManager.Instance.GetOroActuales()) { oroRobado = CampaignManager.Instance.GetOroActuales(); }
-            int seguridad = 40 + (int)CampaignManager.Instance.GetMiliciasActual();
+            int seguridad = LimitarProbabilidad(40 + (int)CampaignManager.Instance.GetMiliciasActual());
 
             txtDescripcion.text += TRADU.i.Traducir("<b>Oro Robado:  ") + oroRobado + "\n\n</b>";
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes someter a los Civiles a un interrogatorio para tratar de encontrar al ladrón:\n\n Se perdería 5 de Esperanza, <i>") + seguridad + TRADU.i.Traducir("% Chances (40 base + Milicianos)</i> de encontrar al culpable y recuperar el oro, -1 Civil por destierro.</color>\n\n");
+            AgregarDescripcionTiradaPorcentual(seguridad,
+                "de éxito (40 base + Milicianos)", "success chance (40 base + Militia)", "de chance de sucesso (40 base + Milicianos)",
+                "recuperas el Oro; -1 Civil y -5 Esperanza.",
+                "recover the Gold; -1 Civilian and -5 Hope.",
+                "você recupera o Ouro; -1 Civil e -5 de Esperança.",
+                "pierdes el 25 % del Oro actual y -5 Esperanza.",
+                "lose 25% of current Gold and -5 Hope.",
+                "você perde 25% do Ouro atual e -5 de Esperança.",
+                ColorPerjuicio, ColorPerjuicio);
 
 
             textBotonA.text = TRADU.i.Traducir("Interrogar");
@@ -219,7 +234,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento007;
             txtTitulo.text = TRADU.i.Traducir("Carro Deteriorado");
 
-            txtDescripcion.text = TRADU.i.Traducir("Tras un estruendo, volteas la cabeza hacia atrás y ves que uno de los carros de suministros de la caravana ha sufrido un accidente. Las ruedas están atascadas en el barro y el carro parece haberse perdido definitivamente.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un carro de Suministros se hundió en el barro y el eje terminó por quebrarse. La carga aún puede salvarse, pero hará falta sacrificar materiales para trasladarla.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes pasar los 60 suministros caídos a otro carro, sacrificando 20 Materiales; o asumir la pérdida de suministros.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Aceptar");
@@ -234,9 +249,17 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text = TRADU.i.Traducir("La Caravana encuentra un Río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("El agua podría estar contaminada por el Aliento Negro. Puedes negarle a los Civiles el acceso al agua o dejarlos a su propia suerte.\n\n");
 
-            int chancesContaminado = 30 + (int)CampaignManager.Instance.GetValorAlientoNegro() * 3;
+            int chancesContaminado = LimitarProbabilidad(30 + (int)CampaignManager.Instance.GetValorAlientoNegro() * 3);
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si les niegas el acceso perderás 15 de Esperanza.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si los dejas ir, hay un %") + chancesContaminado + TRADU.i.Traducir("<i>(Determinado por Aliento Negro)</i> de que se contaminen y mueran 25 Civiles. Si no está contaminada descansarán (-1 Fatiga).</color>\n\n");
+            AgregarDescripcionTiradaPorcentual(chancesContaminado,
+                "de contaminación (según el Aliento Negro)", "contamination risk (from the Black Breath)", "de contaminação (segundo o Respiro Negro)",
+                "el agua está contaminada; -25 Civiles y -10 Esperanza.",
+                "the water is contaminated; -25 Civilians and -10 Hope.",
+                "a água está contaminada; -25 Civis e -10 de Esperança.",
+                "el agua es segura; -1 Fatiga.",
+                "the water is safe; -1 Fatigue.",
+                "a água é segura; -1 de Fadiga.",
+                ColorPerjuicio, ColorBeneficio, false);
 
             textBotonA.text = TRADU.i.Traducir("Negarse");
 
@@ -255,8 +278,7 @@ public class EventosAdmin : MonoBehaviour
             retratoParticipante2.SetActive(true);
             retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
 
-            txtDescripcion.text = TRADU.i.Traducir("Escuchas un alboroto en las proximidades a los carros de los Héroes. Al acercarte a investigar ves a <b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> y <b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b> discutiendo acaloradamente.");
-            txtDescripcion.text += TRADU.i.Traducir("\nAparentemente tuvieron un incidente durante un entrenamiento leve que se dispusieron a realizar y en el cual ambos se lastimaron levemente.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un alboroto junto a los carros de los Héroes revela a <b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> y <b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b> discutiendo tras un entrenamiento que terminó mal.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("La tensión sube y los demás caravaneros miran con incomodidad. Ambos reclaman tener la razón y esperan tu juicio.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Debes intervenir en apoyo a uno de los dos. El otro obtendrá Baja Moral por 5 días. Apoyas a:</color>\n\n");
 
@@ -269,11 +291,13 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento010;
             txtTitulo.text = TRADU.i.Traducir("Liderazgo Cuestionado");
 
-            txtDescripcion.text = TRADU.i.Traducir("Un Civil de origen noble se acerca a ti con altanería y comienza a cuestionar tu liderazgo. Argumentando que no estás tomando las decisiones correctas para el bienestar de la Caravana y que él mismo podría hacerlo mejor.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Si bien sus puntos son poco coherentes, a medida que te habla en voz elevada, varios civiles comienzan a congregarse alrededor, curiosos.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un Civil de origen noble cuestiona tu liderazgo a viva voz y afirma que él conduciría mejor a la Caravana. Sus argumentos son débiles, pero la multitud que se reúne empieza a dudar.\n\n");
 
-            int chances = 35 + (int)CampaignManager.Instance.GetEsperanzaActual() / 3;
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes dar un discurso motivador, refutando sus argumentos con hechos.</color> Chances: %") + chances + TRADU.i.Traducir(" <i>(Determinado por Esperanza) Éxito: +15 Esperanza. Fallo: -20 Esperanza.</i> \n\n");
+            int chances = LimitarProbabilidad(35 + (int)CampaignManager.Instance.GetEsperanzaActual() / 5);
+            AgregarDescripcionTiradaPorcentual(chances,
+                "de éxito (según la Esperanza)", "success chance (from Hope)", "de chance de sucesso (segundo a Esperança)",
+                "+15 Esperanza.", "+15 Hope.", "+15 de Esperança.",
+                "-20 Esperanza.", "-20 Hope.", "-20 de Esperança.");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Golpearlo.</color> Su familia abandona la Caravana, retirando su inversión. -65 Oro -8 Civiles -10 Esperanza\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Discurso");
@@ -292,13 +316,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar guiar el cruce antes de que cunda el pánico.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Tirada de Salvación: TS Reflejos DC ") + DificultadPasoPrecario + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, ganará 35 Experiencia. Si falla, obtendrá Herida.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes puede intentar guiar el cruce antes de que cunda el pánico.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 11. Si la supera, ganará 35 Experiencia. Si falla, obtendrá Herida.</color>\n\n");
             }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadPasoPrecario,
+                "+35 Experiencia.", "+35 Experience.", "+35 de Experiência.",
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides rodear el tramo, la Caravana ganará +1 Fatiga.</color>\n\n");
 
@@ -317,13 +342,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar entrar y sacar a quienes sigan con vida antes de que colapse el lugar.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Tirada de Salvación: TS Fortaleza DC ") + DificultadAireEnrarecido + TRADU.i.Traducir(" <i>(TS Fortaleza actual: ") + ObtenerTSFortalezaTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, rescatará 6-10 Civiles y ganará 30 Experiencia. Si falla, obtendrá Enfermo por 3 días.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes puede intentar entrar y sacar a quienes sigan con vida antes de que colapse el lugar.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Fortaleza DC 10. Si la supera, rescatará 6-10 Civiles y ganará 30 Experiencia. Si falla, obtendrá Enfermo por 3 días.</color>\n\n");
             }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento1), DificultadAireEnrarecido,
+                "+6-10 Civiles y +30 Experiencia.", "+6-10 Civilians and +30 Experience.", "+6-10 Civis e +30 de Experiência.",
+                "Enfermo por 3 días.", "Sick for 3 days.", "Doente por 3 dias.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides sellar la entrada y seguir, -12 Esperanza.</color>\n\n");
 
@@ -342,13 +368,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar frenarlo con calma antes de que empeore.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Tirada de Salvación: TS Mental DC ") + DificultadRumorDeDesbande + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, ganará 35 Experiencia y +4 Esperanza. Si falla, obtendrá Baja Moral por 3 días y la Caravana perderá 10 Esperanza.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes puede intentar frenar el rumor con calma antes de que empeore.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Mental DC 12. Si la supera, ganará 35 Experiencia y +4 Esperanza. Si falla, obtendrá Baja Moral por 3 días y la Caravana perderá 10 Esperanza.</color>\n\n");
             }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadRumorDeDesbande,
+                "+35 Experiencia y +4 Esperanza.", "+35 Experience and +4 Hope.", "+35 de Experiência e +4 de Esperança.",
+                "Baja Moral por 3 días y -10 Esperanza.", "Low Morale for 3 days and -10 Hope.", "Moral Baixa por 3 dias e -10 de Esperança.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides imponer silencio por la fuerza, -10 Esperanza.</color>\n\n");
 
@@ -369,13 +396,17 @@ public class EventosAdmin : MonoBehaviour
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b>: TS Reflejos DC ") + DificultadVadoTraicionero + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si supera la tirada, ganará 40 Experiencia. Si falla, obtendrá Herida y la Caravana perderá 1 Buey.</color>\n\n");
+                AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadVadoTraicionero,
+                    "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
+                    "Herida y -1 Buey.", "Injury and -1 Ox.", "Ferimento e -1 Boi.");
             }
 
             if (participanteEvento2 != null)
             {
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-<b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b>: TS Reflejos DC ") + DificultadVadoTraicionero + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento2) + TRADU.i.Traducir(").</i> Si supera la tirada, ganará 40 Experiencia. Si falla, obtendrá Herida y la Caravana perderá 1 Buey.</color>\n\n");
+                AgregarDescripcionTiradaD20(participanteEvento2, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento2), DificultadVadoTraicionero,
+                    "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
+                    "Herida y -1 Buey.", "Injury and -1 Ox.", "Ferimento e -1 Boi.");
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
             }
@@ -400,13 +431,17 @@ public class EventosAdmin : MonoBehaviour
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b>: TS Fortaleza DC ") + DificultadCarroEncajado + TRADU.i.Traducir(" <i>(TS Fortaleza actual: ") + ObtenerTSFortalezaTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si supera la tirada, ganará 35 Experiencia y +3 Esperanza. Si falla, obtendrá Herida y la Caravana ganará +1 Fatiga.</color>\n\n");
+                AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento1), DificultadCarroEncajado,
+                    "+35 Experiencia y +3 Esperanza.", "+35 Experience and +3 Hope.", "+35 de Experiência e +3 de Esperança.",
+                    "Herida y +1 Fatiga.", "Injury and +1 Fatigue.", "Ferimento e +1 de Fadiga.");
             }
 
             if (participanteEvento2 != null)
             {
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-<b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b>: TS Fortaleza DC ") + DificultadCarroEncajado + TRADU.i.Traducir(" <i>(TS Fortaleza actual: ") + ObtenerTSFortalezaTotal(participanteEvento2) + TRADU.i.Traducir(").</i> Si supera la tirada, ganará 35 Experiencia y +3 Esperanza. Si falla, obtendrá Herida y la Caravana ganará +1 Fatiga.</color>\n\n");
+                AgregarDescripcionTiradaD20(participanteEvento2, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento2), DificultadCarroEncajado,
+                    "+35 Experiencia y +3 Esperanza.", "+35 Experience and +3 Hope.", "+35 de Experiência e +3 de Esperança.",
+                    "Herida y +1 Fatiga.", "Injury and +1 Fatigue.", "Ferimento e +1 de Fadiga.");
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
             }
@@ -429,9 +464,9 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Un grupo de bestias enloquecidas por el humo y el fuego irrumpe cerca del camino, cruzando entre los árboles calcinados con una violencia desesperada.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Los bueyes se inquietan al instante y varios Civiles retroceden alarmados. Si nadie actúa rápido, el caos podría extenderse a toda la Caravana.\n\n");
-            txtDescripcion.text += "<color=#ba3fef>-<b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar contener a los animales.</color> ");
-            txtDescripcion.text += TRADU.i.Traducir("Tirada de Salvación: TS Reflejos DC ") + DificultadBestiasAterradas + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + tsReflejos + TRADU.i.Traducir(").</i> ");
-            txtDescripcion.text += TRADU.i.Traducir("Si lo logra, ganará 40 Experiencia. Si falla, la Caravana perderá 2 Bueyes.\n\n");
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tsReflejos, DificultadBestiasAterradas,
+                "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
+                "-2 Bueyes.", "-2 Oxen.", "-2 Bois.");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides apartarte y ceder el paso, el Aliento Negro avanzará.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Contenerlos");
@@ -474,13 +509,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text = TRADU.i.Traducir("Un tramo helado del camino cruje bajo el peso de la Caravana. ") + "<b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar guiar el cruce antes de que el hielo ceda.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Tirada de Salvación: TS Reflejos DC 12 (TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir("). Si supera la tirada, ganará 40 Experiencia. Si falla, obtendrá Herida.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text = TRADU.i.Traducir("Un tramo helado del camino cruje bajo el peso de la Caravana. Uno de los Héroes puede intentar guiar el cruce antes de que el hielo ceda.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 12. Si la supera, ganará 40 Experiencia. Si falla, obtendrá Herida.</color>\n\n");
             }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadHieloQuebradizo,
+                "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides rodear el tramo, el Aliento Negro avanzará.</color>\n\n");
 
@@ -570,13 +606,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += "<b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar guiar el cruce antes de que alguien caiga al desnivel.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Tirada de Salvación: TS Reflejos DC ") + DificultadBrechaEnLaCalzada + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, ganará 40 Experiencia. Si falla, obtendrá Herida.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes puede intentar guiar el cruce antes de que alguien caiga al desnivel.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 12. Si la supera, ganará 40 Experiencia. Si falla, obtendrá Herida.</color>\n\n");
             }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadBrechaEnLaCalzada,
+                "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides rodear la brecha, la Caravana ganará +1 Fatiga.</color>\n\n");
 
@@ -666,8 +703,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento201;
             txtTitulo.text = TRADU.i.Traducir("Destello Esperanzador");
 
-            txtDescripcion.text = TRADU.i.Traducir("Durante la noche, los civiles reunidos divisan un destello de luz clara y hermosa en el horizonte hacia la dirección del puerto.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Quizás sea una señal, quizás casualidad, pero los civiles se ven ahora más optimistas, por más que aún falte un largo trecho.\n\n\n\n\n\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Durante la noche, una luz clara brilla en el horizonte, hacia el puerto. Sea una señal o una casualidad, basta para devolver algo de fe a la Caravana.\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+15 Esperanza</b></color>");
@@ -705,11 +741,22 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento203;
             txtTitulo.text = TRADU.i.Traducir("Caravana Perdida");
 
-            txtDescripcion.text = TRADU.i.Traducir("Al avanzar en el camino, encuentras varios carros destruidos rodeado de cadáveres civiles. Una lucha tuvo lugar aquí y esta caravana no sobrevivió.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Si bien la situación es sombría, varios suministros en buen estado no fueron saqueados, quedando a un lado del camino.\n\n\n\n");
-
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes ordenar a la Caravana que saqueen los Suministros.</color> +21-35 Suministros, +5-11 Materiales, +15-35 Oro, -5 Esperanza.</i> \n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes dar entierro a los Civiles y honrar su memoria, sin saquearlos.</color> +15 Esperanza \n\n");
+            int idiomaCaravanaPerdida = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+            txtDescripcion.text = SeleccionarTextoLocal(
+                "Varios carros destruidos yacen entre cadáveres. La otra Caravana no sobrevivió, pero parte de su carga sigue intacta.\n\n",
+                "Several shattered wagons lie among the dead. The other Caravan did not survive, but part of its cargo remains intact.\n\n",
+                "Várias carroças destruídas jazem entre os mortos. A outra Caravana não sobreviveu, mas parte da carga continua intacta.\n\n",
+                idiomaCaravanaPerdida);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#d8a205>Saquear: +21-35 Suministros, +5-11 Materiales, +15-35 Oro y -5 Esperanza.</color>\n\n",
+                "<color=#d8a205>Loot: +21-35 Supplies, +5-11 Materials, +15-35 Gold, and -5 Hope.</color>\n\n",
+                "<color=#d8a205>Saquear: +21-35 Suprimentos, +5-11 Materiais, +15-35 de Ouro e -5 de Esperança.</color>\n\n",
+                idiomaCaravanaPerdida);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#a0e812>Dar sepultura: +15 Esperanza.</color>\n\n",
+                "<color=#a0e812>Bury the dead: +15 Hope.</color>\n\n",
+                "<color=#a0e812>Sepultar os mortos: +15 de Esperança.</color>\n\n",
+                idiomaCaravanaPerdida);
 
             textBotonA.text = TRADU.i.Traducir("Saquear");
 
@@ -720,11 +767,22 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento204;
             txtTitulo.text = TRADU.i.Traducir("Aserradero Abandonado");
 
-            txtDescripcion.text = TRADU.i.Traducir("La Caravana se detiene en un aserradero abandonado, algunos árboles han sido talados y la madera está apilada en desorden.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Hay suficiente madera como para llenar un par de carros, pero juntarla toda cansará a los Civiles que participen y llevará algunas horas.\n\n\n\n");
-
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes ordenar a la Caravana que junten toda la madera.</color> +65-90 Materiales, +1 Fatiga, +1 Avance del Aliento Negro.</i> \n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes juntar solo lo que está a mano y continuar sin retraso.</color> +15-26 Materiales \n\n");
+            int idiomaAserradero = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+            txtDescripcion.text = SeleccionarTextoLocal(
+                "La Caravana encuentra un aserradero abandonado con madera aún aprovechable. Cargarla toda dará buenos materiales, pero agotará a los Civiles y consumirá horas.\n\n",
+                "The Caravan finds an abandoned sawmill with usable timber. Taking it all will yield plenty of materials, but exhaust the Civilians and cost precious hours.\n\n",
+                "A Caravana encontra uma serraria abandonada com madeira aproveitável. Levar tudo renderá muitos materiais, mas cansará os Civis e consumirá horas preciosas.\n\n",
+                idiomaAserradero);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#d8a205>Cargar todo: +65-90 Materiales, +1 Fatiga y +1 Aliento Negro.</color>\n\n",
+                "<color=#d8a205>Take everything: +65-90 Materials, +1 Fatigue, and +1 Black Breath.</color>\n\n",
+                "<color=#d8a205>Levar tudo: +65-90 Materiais, +1 de Fadiga e +1 Respiro Negro.</color>\n\n",
+                idiomaAserradero);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#a0e812>Recoger lo cercano: +15-26 Materiales.</color>\n\n",
+                "<color=#a0e812>Gather what is nearby: +15-26 Materials.</color>\n\n",
+                "<color=#a0e812>Recolher o que está perto: +15-26 Materiais.</color>\n\n",
+                idiomaAserradero);
 
             textBotonA.text = TRADU.i.Traducir("Todo");
 
@@ -738,10 +796,18 @@ public class EventosAdmin : MonoBehaviour
             retratoParticipante1.SetActive(true);
             retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
 
-            int chances = 60 + (int)(participanteEvento1.fNivelActual * 5);
+            int chances = LimitarProbabilidad(60 + (int)(participanteEvento1.fNivelActual * 5));
             txtDescripcion.text = TRADU.i.Traducir("La Caravana se detiene en un claro donde pasta una manada de bueyes. Los animales parecen sanos y bien alimentados, pero están asustados por la presencia de la Caravana.\n");
-            txtDescripcion.text += TRADU.i.Traducir("\n<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> cree que puede cazar algunos de estos Bueyes para obtener comida.  Chances: %") + chances + TRADU.i.Traducir(" <i>(Determinado por Nivel)  Exito: +50-80 Suministros +55 Experiencia.  Fallo: Recibe Herida.</i>\n\n\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes optar por dejarlo cazar, o directamente domesticar a un puñado para que se sumen a la Caravana. +2-3 Bueyes</i> \n\n");
+            txtDescripcion.text += "\n<b><color=#d1006f>" + participanteEvento1.sNombre + "</color></b>\n\n";
+            AgregarDescripcionTiradaPorcentual(chances,
+                "de éxito (según el Nivel)", "success chance (from Level)", "de chance de sucesso (segundo o Nível)",
+                "+50-80 Suministros y +55 Experiencia.", "+50-80 Supplies and +55 Experience.", "+50-80 Suprimentos e +55 de Experiência.",
+                "Herida y pierde el 60 % de su Vida actual.", "Injury and loses 60% of current Health.", "Ferimento e perde 60% da Vida atual.");
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#a0e812>Domesticarlos: +2-3 Bueyes.</color>\n\n",
+                "<color=#a0e812>Domesticate them: +2-3 Oxen.</color>\n\n",
+                "<color=#a0e812>Domesticá-los: +2-3 Bois.</color>\n\n",
+                TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol);
 
             textBotonA.text = TRADU.i.Traducir("Cazarlos");
 
@@ -752,10 +818,22 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento206;
             txtTitulo.text = TRADU.i.Traducir("Civiles en Apuros");
 
-            txtDescripcion.text = TRADU.i.Traducir("La Caravana se detiene al escuchar gritos de auxilio provenientes de un lado del camino. Al investigar encuentras a un puñado de Civiles escapando de una banda de bandidos en dirección a la Caravana.\n");
-            txtDescripcion.text += TRADU.i.Traducir("'Son bandidos! no pudimos ver cuántos, pero se acercan.' - Dice un Civil aterrorizado. 'Ayúdanos'\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes defender a los civiles de sus perseguidores mientras les das tiempo a los más débiles a sumarse a la Caravana.</color> Combate Normal - +18-26 Civiles\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes aceptar solo a los mas ágiles y huir para evitar confrontar con sus perseguidores.</color> +5-10 Civiles -5 Esperanza\n\n");
+            int idiomaCiviles = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+            txtDescripcion.text = SeleccionarTextoLocal(
+                "Un grupo de Civiles corre hacia la Caravana con bandidos pisándoles los talones. Los más débiles no llegarán sin ayuda.\n\n",
+                "A group of Civilians runs toward the Caravan with bandits close behind. The weakest will not make it without help.\n\n",
+                "Um grupo de Civis corre em direção à Caravana com bandidos logo atrás. Os mais fracos não conseguirão chegar sem ajuda.\n\n",
+                idiomaCiviles);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#d8a205>Defenderlos: combate normal; +18-26 Civiles.</color>\n\n",
+                "<color=#d8a205>Defend them: normal battle; +18-26 Civilians.</color>\n\n",
+                "<color=#d8a205>Defendê-los: batalha normal; +18-26 Civis.</color>\n\n",
+                idiomaCiviles);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#d8a205>Huir con los más ágiles: +5-10 Civiles y -5 Esperanza.</color>\n\n",
+                "<color=#d8a205>Flee with the fastest: +5-10 Civilians and -5 Hope.</color>\n\n",
+                "<color=#d8a205>Fugir com os mais ágeis: +5-10 Civis e -5 de Esperança.</color>\n\n",
+                idiomaCiviles);
 
             textBotonA.text = TRADU.i.Traducir("Defender");
 
@@ -766,9 +844,12 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento207;
             txtTitulo.text = TRADU.i.Traducir("Tranquilidad");
 
-            txtDescripcion.text = TRADU.i.Traducir("En un momento repentino, te das cuenta que hay mucha paz. Se escuchan los pasos constantes de la caravana, algún murmullo, risa y la naturaleza alrededor.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Estos momentos son muy escasos y sientes que cada individuo de la caravana lo valoró a su manera. \nDe alguna forma, el aire se siente más limpio.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-2 al Avance del Aliento Negro.</color>\n\n");
+            int idiomaTranquilidad = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+            txtDescripcion.text = SeleccionarTextoLocal(
+                "Por un instante solo se oyen pasos, murmullos y alguna risa. La paz es tan extraña que hasta el aire parece más limpio.\n\n<color=#a0e812>-2 Aliento Negro.</color>\n\n",
+                "For a moment there are only footsteps, murmurs, and scattered laughter. The peace is so strange that even the air seems cleaner.\n\n<color=#a0e812>-2 Black Breath.</color>\n\n",
+                "Por um instante, ouvem-se apenas passos, murmúrios e algumas risadas. A paz é tão estranha que até o ar parece mais limpo.\n\n<color=#a0e812>-2 Respiro Negro.</color>\n\n",
+                idiomaTranquilidad);
 
 
             botonA.SetActive(false);
@@ -784,10 +865,22 @@ public class EventosAdmin : MonoBehaviour
             retratoParticipante1.SetActive(true);
             retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
 
-            txtDescripcion.text = "<b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> se acerca a ti y coloca una mano en tu hombro y dice: -'Tengo mucha esperanza en usted, y creo que será exitoso al liderarnos a salvo hacia el puerto'.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Con su otra mano extendida sostiene una bolsa con oro y te la ofrece amigablemente. -'Considéralo un símbolo de mi confianza en ti, además de un aporte que puede ser útil para la Caravana.'-dice\n ");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Respondes: -'Conserva el dinero, tu aporte a la Caravana ya es considerable con tu esfuerzo diario, y estoy más que agradecido de poder contar contigo.'</color> Efectos: ") + participanteEvento1.sNombre + TRADU.i.Traducir(" gana Alta Moral por 4 días y 50 Experiencia. \n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Respondes: -'Acepto tu ofrecimiento, no hay moneda que sobre en nuestra situación actual y seguramente nos ayudará durante el viaje, gracias.'</color> Efectos: +120-160 Oro. \n\n");
+            int idiomaVoto = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+            txtDescripcion.text = "<b><color=#d1006f>" + participanteEvento1.sNombre + "</color></b> " + SeleccionarTextoLocal(
+                "te ofrece una bolsa de monedas como voto de confianza.\n\n",
+                "offers you a purse of coins as a sign of trust.\n\n",
+                "oferece uma bolsa de moedas como voto de confiança.\n\n",
+                idiomaVoto);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#a0e812>Rechazar el Oro: Alta Moral por 4 días y +55 Experiencia.</color>\n\n",
+                "<color=#a0e812>Refuse the Gold: High Morale for 4 days and +55 Experience.</color>\n\n",
+                "<color=#a0e812>Recusar o Ouro: Moral Alta por 4 dias e +55 de Experiência.</color>\n\n",
+                idiomaVoto);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#a0e812>Aceptar el Oro: +120-160 Oro.</color>\n\n",
+                "<color=#a0e812>Accept the Gold: +120-160 Gold.</color>\n\n",
+                "<color=#a0e812>Aceitar o Ouro: +120-160 de Ouro.</color>\n\n",
+                idiomaVoto);
 
             textBotonA.text = TRADU.i.Traducir("Rechazar");
 
@@ -796,17 +889,28 @@ public class EventosAdmin : MonoBehaviour
         if (ID == 209) // Lugareño Anciano
         {
             imRetrato.sprite = Evento209;
-            txtTitulo.text = TRADU.i.Traducir("Lugareño Anciano ");
+            txtTitulo.text = TRADU.i.Traducir("Lugareño Anciano");
 
-
-            txtDescripcion.text = TRADU.i.Traducir("Un hombre anciano aparece a un lado del camino haciendole señas con las manos a la Caravana. De cerca, te das cuenta que este hombre lleva viviendo muchísimos años en la región y la conoce a la perfección.\n");
-            txtDescripcion.text += TRADU.i.Traducir("'Aliento Negro o no, mis días ya están contados. Pero puedo transmitirles mis conocimientos sobre esta tierra, como último acto de bien.'- dice\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Preguntas: -'¿Conoce algún atajo que nos aleje del peligro inminente al menos por unos kilómetros?'</color> Efectos: Si es posible se generará un Atajo subterráneo. \n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Preguntas: -'Describanos el area circundante para que podamos tomar decisiones con más información.'</color> Efectos: Se revelarán próximos nodos. \n\n");
+            int idiomaAnciano = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+            txtDescripcion.text = SeleccionarTextoLocal(
+                "Un anciano de la región hace señas a la Caravana. No piensa huir del Aliento Negro, pero ofrece compartir lo que sabe del terreno.\n\n",
+                "An old local waves down the Caravan. He does not intend to flee the Black Breath, but offers to share what he knows of the land.\n\n",
+                "Um ancião da região chama a Caravana. Ele não pretende fugir do Respiro Negro, mas oferece compartilhar o que sabe sobre o terreno.\n\n",
+                idiomaAnciano);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#a0e812>Preguntar por un atajo: intentará generar un Atajo.</color>\n\n",
+                "<color=#a0e812>Ask about a shortcut: attempts to create a Shortcut.</color>\n\n",
+                "<color=#a0e812>Perguntar por um atalho: tentará gerar um Atalho.</color>\n\n",
+                idiomaAnciano);
+            txtDescripcion.text += SeleccionarTextoLocal(
+                "<color=#a0e812>Preguntar por los alrededores: revela nodos cercanos.</color>\n\n",
+                "<color=#a0e812>Ask about the surroundings: reveals nearby nodes.</color>\n\n",
+                "<color=#a0e812>Perguntar pelos arredores: revela nós próximos.</color>\n\n",
+                idiomaAnciano);
 
             textBotonA.text = TRADU.i.Traducir("Atajo");
 
-            textBotonB.text = TRADU.i.Traducir("Area");
+            textBotonB.text = TRADU.i.Traducir("Área");
         }
         if (ID == 210) // Sueño Inspirador
         {
@@ -817,9 +921,17 @@ public class EventosAdmin : MonoBehaviour
             retratoParticipante1.SetActive(true);
             retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
 
-            txtDescripcion.text = $"A <b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> se lo ve con mucha energía y determinación mientras realiza sus labores habituales. Cuando te acercas a él, te dice que tuvo un Sueño en el cual vio a la Caravana llegando a su destino.\n");
-            txtDescripcion.text += TRADU.i.Traducir("'En el sueño, vi un claro camino hacia nuestro destino. Habrá peligros y dificultades, pero estoy convencido que lo lograremos. Sigamos esa ruta.'- dice con Determinación\n\n\n");
-            txtDescripcion.text += $"<color=#ba3fef><b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> obtiene 150 Experiencia y Alta Moral por 5 días.</color>\n\n");
+            int idiomaSueno = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+            txtDescripcion.text = "<b><color=#d1006f>" + participanteEvento1.sNombre + "</color></b> " + SeleccionarTextoLocal(
+                "despierta con una certeza extraña: soñó con la Caravana llegando a salvo al puerto. Su convicción se contagia a quienes lo escuchan.\n\n",
+                "wakes with a strange certainty: they dreamed of the Caravan reaching the port safely. Their conviction spreads to everyone who listens.\n\n",
+                "desperta com uma certeza estranha: sonhou com a Caravana chegando em segurança ao porto. Sua convicção contagia quem escuta.\n\n",
+                idiomaSueno);
+            txtDescripcion.text += "<color=#a0e812><b><color=#d1006f>" + participanteEvento1.sNombre + "</color></b> " + SeleccionarTextoLocal(
+                "gana 150 Experiencia y Alta Moral por 5 días.</color>\n\n",
+                "gains 150 Experience and High Morale for 5 days.</color>\n\n",
+                "ganha 150 de Experiência e Moral Alta por 5 dias.</color>\n\n",
+                idiomaSueno);
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -836,13 +948,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar interpretarlas antes de que se pierda la luz.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Mental DC ") + DificultadMarcasDelCorreo + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, se revelarán nodos cercanos y ganará 30 Experiencia. Si falla, la demora hará que la Caravana gane +1 Fatiga.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes puede intentar interpretarlas antes de que se pierda la luz.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, hará una Tirada de Salvación: TS Mental DC 10. Si la supera, se revelarán nodos cercanos y ganará 30 Experiencia. Si falla, la Caravana ganará +1 Fatiga.</color>\n\n");
             }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadMarcasDelCorreo,
+                "revela nodos cercanos y gana 30 Experiencia.", "reveals nearby nodes and gains 30 Experience.", "revela nós próximos e ganha 30 de Experiência.",
+                "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides seguir sin detenerte, +3 Esperanza.</color>\n\n");
 
@@ -862,13 +975,17 @@ public class EventosAdmin : MonoBehaviour
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b>: TS Mental DC ") + DificultadPulsoDeMando + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TraducirPulsoDeMandoFallo();
+                AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadPulsoDeMando,
+                    "+30 Experiencia y +6 Esperanza.", "+30 Experience and +6 Hope.", "+30 de Experiência e +6 de Esperança.",
+                    "-6 Esperanza.", "-6 Hope.", "-6 de Esperança.");
             }
 
             if (participanteEvento2 != null)
             {
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-<b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b>: TS Mental DC ") + DificultadPulsoDeMando + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento2) + TraducirPulsoDeMandoFallo();
+                AgregarDescripcionTiradaD20(participanteEvento2, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento2), DificultadPulsoDeMando,
+                    "+30 Experiencia y +6 Esperanza.", "+30 Experience and +6 Hope.", "+30 de Experiência e +6 de Esperança.",
+                    "-6 Esperanza.", "-6 Hope.", "-6 de Esperança.");
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
             }
@@ -891,13 +1008,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> se ofrece a levantarlo y cargarlo. Pero puedes optar por ordenarle que guarde sus fuerzas para futuros peligros del camino.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Fortaleza DC ") + DificultadHombrosFirmes + TRADU.i.Traducir(" <i>(TS Fortaleza actual: ") + ObtenerTSFortalezaTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, ganará 50 Experiencia y la Caravana obtendrá +5 Esperanza. Si falla, obtendrá Fatigado.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes se ofrece a levantarlo y cargarlo. Pero puedes optar por ordenarle que guarde sus fuerzas para futuros peligros del camino.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, hará una Tirada de Salvación: TS Fortaleza DC 13. Si la supera, ganará 50 Experiencia y la Caravana obtendrá +5 Esperanza. Si falla, obtendrá Fatigado.</color>\n\n");
             }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento1), DificultadHombrosFirmes,
+                "+50 Experiencia y +5 Esperanza.", "+50 Experience and +5 Hope.", "+50 de Experiência e +5 de Esperança.",
+                "obtiene Fatigado.", "becomes Fatigued.", "fica Fatigado.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejar al Civil, -5 Esperanza. -1 Civil.</color>\n\n");
 
@@ -916,13 +1034,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar atraparla antes de que se pierda del todo.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Reflejos DC ") + DificultadManoCierta + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, se revelarán nodos cercanos, ganará 35 Experiencia y la Caravana obtendrá +4 Esperanza. Si falla, obtendrá Herida.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes puede intentar atraparla antes de que se pierda del todo.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 13. Si la supera, se revelarán nodos cercanos, ganará 35 Experiencia y la Caravana obtendrá +4 Esperanza. Si falla, obtendrá Herida.</color>\n\n");
             }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadManoCierta,
+                "revela nodos cercanos; +35 Experiencia y +4 Esperanza.", "reveals nearby nodes; +35 Experience and +4 Hope.", "revela nós próximos; +35 de Experiência e +4 de Esperança.",
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejarla ir, -10 Esperanza.</color>\n\n");
 
@@ -942,13 +1061,17 @@ public class EventosAdmin : MonoBehaviour
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b>: TS Mental DC ") + DificultadDosMiradas + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si supera la tirada, ganará 25 Experiencia y el Aliento Negro retrocederá 1. Si falla, la Caravana ganará +1 Fatiga.</color>\n\n");
+                AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadDosMiradas,
+                    "+25 Experiencia y -1 Aliento Negro.", "+25 Experience and -1 Black Breath.", "+25 de Experiência e -1 Respiro Negro.",
+                    "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
             }
 
             if (participanteEvento2 != null)
             {
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-<b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b>: TS Mental DC ") + DificultadDosMiradas + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento2) + TRADU.i.Traducir(").</i> Si supera la tirada, ganará 25 Experiencia y el Aliento Negro retrocederá 1. Si falla, la Caravana ganará +1 Fatiga.</color>\n\n");
+                AgregarDescripcionTiradaD20(participanteEvento2, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento2), DificultadDosMiradas,
+                    "+25 Experiencia y -1 Aliento Negro.", "+25 Experience and -1 Black Breath.", "+25 de Experiência e -1 Respiro Negro.",
+                    "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
             }
@@ -1392,13 +1515,14 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += "<b><color=#d1006f>" + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar asegurarlo antes de que ceda.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Tirada de Salvación: TS Reflejos DC ") + DificultadTechoInestable + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, ganará 35 Experiencia. Si falla, obtendrá Herida.</color>\n\n");
             }
             else
             {
                 txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes puede intentar asegurarlo antes de que ceda.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 12. Si la supera, ganará 35 Experiencia. Si falla, obtendrá Herida.</color>\n\n");
             }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadTechoInestable,
+                "+35 Experiencia.", "+35 Experience.", "+35 de Experiência.",
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides mover el campamento, la noche será más larga. +1 Fatiga.</color>\n\n");
 
@@ -1852,10 +1976,10 @@ public class EventosAdmin : MonoBehaviour
             textBotonB.text = TRADU.i.Traducir("Continuar");
         }
 
-        if (ID == 16) // Siluetas entre los Arboles
+        if (ID == 16) // Siluetas entre los Árboles
         {
             imRetrato.sprite = Evento010;
-            txtTitulo.text = TRADU.i.Traducir("Siluetas entre los Arboles");
+            txtTitulo.text = TRADU.i.Traducir("Siluetas entre los Árboles");
 
             txtDescripcion.text = TRADU.i.Traducir("Al costado del camino, varias siluetas se mueven entre la maleza justo fuera del alcance de la vista. Nadie logra confirmar si hay una amenaza real o solo trucos de la mente.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Los rumores corren rápido entre los carros y varios Civiles ya esperan un ataque inminente.\n\n");
@@ -1871,7 +1995,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Barro que Retiene");
 
             txtDescripcion.text = TRADU.i.Traducir("Un tramo de barro pegajoso se agarra a ruedas, botas y arreos. Cada metro parece costar el doble, y la columna entera empieza a moverse con una pesadez desesperante.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendrá Aletargados. El Aliento Negro avanzará +1 en el próximo viaje.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si ordenas reacomodar la marcha, la Caravana ganará +1 Fatiga.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Forzar");
@@ -1882,7 +2006,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento001;
             txtTitulo.text = TRADU.i.Traducir("Promesa Incumplida");
 
-            txtDescripcion.text = TRADU.i.Traducir("Encuentran un punto de espera abandonado: una manta, un fogón apagado y una señal vieja que promete ayuda que nunca llego. La escena cae pesado sobre la Caravana.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Encuentran un punto de espera abandonado: una manta, un fogón apagado y una señal vieja que promete ayuda que nunca llegó. La escena pesa sobre la Caravana.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides seguir sin detenerte, la Caravana obtendrá Desmotivación. Ganará 20% menos Experiencia en el próximo combate.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si haces una breve parada para ordenar el paso, el Aliento Negro avanzará.</color>\n\n");
 
@@ -1906,8 +2030,8 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento010;
             txtTitulo.text = TRADU.i.Traducir("Pesadillas Compartidas");
 
-            txtDescripcion.text = TRADU.i.Traducir("Durante la noche, gritos ahogados despiertan a medio campamento. Al amanecer nadie logra explicar bien lo que soño, pero el miedo queda flotando igual entre las tiendas.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>La Caravana obtiene 1 estado positivo aleatorio.</b></color>");
+            txtDescripcion.text = TRADU.i.Traducir("Durante la noche, gritos ahogados despiertan a medio campamento. Al amanecer nadie logra explicar lo que soñó, pero el miedo sigue flotando entre las tiendas.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>La Caravana queda Acobardada para el próximo combate.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1917,8 +2041,8 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento007;
             txtTitulo.text = TRADU.i.Traducir("Descanso Incompleto");
 
-            txtDescripcion.text = TRADU.i.Traducir("El suelo es incomodo, el viento no afloja y los carros crujen toda la noche. Nadie descansa de verdad, y la Caravana se levanta con la sensacion de haber dormido a medias.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>La Caravana obtiene 1 estado positivo aleatorio.</b></color>");
+            txtDescripcion.text = TRADU.i.Traducir("El suelo es incómodo, el viento no afloja y los carros crujen toda la noche. Nadie descansa de verdad; la Caravana se levanta como si apenas hubiera dormido.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>La Caravana queda Aletargada.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1928,9 +2052,9 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento001;
             txtTitulo.text = TRADU.i.Traducir("Quejas en Voz Baja");
 
-            txtDescripcion.text = TRADU.i.Traducir("Lo que empieza como murmullo termina recorriendo el campamento entero: cansancio, dudas, comparaciones con dias mejores. No hay gritos ni desbande, solo una erosion lenta del ánimo.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si dejas que se descarguen, la Caravana obtendrá 1 estado positivo aleatorio.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si cortas la charla y apagas el fuego, la Caravana perdera 9 Esperanza.</color>\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Lo que empieza como un murmullo recorre todo el campamento: cansancio, dudas y recuerdos de días mejores. No hay desbande, solo una erosión lenta del ánimo.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si dejas que se descarguen, la Caravana quedará Desmotivada para el próximo combate.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si cortas la charla y apagas el fuego, la Caravana perderá 9 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Escucharlas");
             textBotonB.text = TRADU.i.Traducir("Cortarlas");
@@ -1940,8 +2064,8 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento007;
             txtTitulo.text = TRADU.i.Traducir("Fogatas Demasiado Lejos");
 
-            txtDescripcion.text = TRADU.i.Traducir("El campamento queda armado demasiado disperso. Las fogatas no se cubren entre si, los llamados tardan en llegar y cuesta saber quien esta atento y quien no.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>La Caravana obtiene 1 estado positivo aleatorio.</b></color>");
+            txtDescripcion.text = TRADU.i.Traducir("El campamento queda demasiado disperso. Las fogatas no se cubren entre sí, los llamados tardan en llegar y nadie sabe quién sigue atento.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>La Caravana queda Descuidada por 1 viaje.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1958,12 +2082,11 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede intentar levantar a la Caravana.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Mental DC ") + DificultadArengaEnLaLluvia + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, la Caravana obtendrá Inspiración para el próximo combate y ganará 30 Experiencia. Si falla, solo obtendrá +2 Esperanza.</color>\n\n");
             }
-            else
-            {
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, un Héroe hará una Tirada de Salvación Mental DC 11. Si la supera, la Caravana obtendrá Inspiración y ese Héroe ganará 30 Experiencia.</color>\n\n");
-            }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadArengaEnLaLluvia,
+                "Inspiración para el próximo combate y +30 Experiencia.", "Inspiration for the next battle and +30 Experience.", "Inspiração para o próximo combate e +30 de Experiência.",
+                "+2 Esperanza.", "+2 Hope.", "+2 de Esperança.",
+                ColorBeneficio, ColorBeneficio);
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides no detener la marcha, +3 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Hablar");
@@ -2012,28 +2135,26 @@ public class EventosAdmin : MonoBehaviour
 
             participanteEvento1 = CampaignManager.Instance.ObtenerPersonajeAleatorio();
             retratoParticipante1.SetActive(participanteEvento1 != null);
-            txtDescripcion.text = TRADU.i.Traducir("Unas marcas recientes junto al camino sugieren que alguien o algo estuvo siguiendo la columna desde hace rato. La noticia corre rapido entre quienes van en los carros traseros.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Unas marcas recientes junto al camino sugieren que alguien o algo sigue a la columna. La noticia corre rápido entre los carros traseros.\n\n");
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede leer el rastro y ordenar a tiempo la vigilancia.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Reflejos DC ") + DificultadRastroSospechoso + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, la Caravana obtendrá Vigilante por 1 viaje y ganará 30 Experiencia. Si falla, la Caravana obtendrá Descuidados por 3 días.</color>\n\n");
             }
-            else
-            {
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, un Héroe hará una Tirada de Salvación de Reflejos DC 10. Si la supera, la Caravana obtendrá Vigilante.</color>\n\n");
-            }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadRastroSospechoso,
+                "Vigilante por 1 viaje y +30 Experiencia.", "Vigilant for 1 journey and +30 Experience.", "Vigilante por 1 viagem e +30 de Experiência.",
+                "Descuidados por 3 viajes.", "Careless for 3 journeys.", "Descuidada por 3 viagens.");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides no detenerte, +2 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Leer el rastro");
             textBotonB.text = TRADU.i.Traducir("Seguir");
         }
-        if (ID == 322) // Circulo de Historias
+        if (ID == 322) // Círculo de Historias
         {
             imRetrato.sprite = Evento201;
-            txtTitulo.text = TRADU.i.Traducir("Circulo de Historias");
+            txtTitulo.text = TRADU.i.Traducir("Círculo de Historias");
 
-            txtDescripcion.text = TRADU.i.Traducir("Alguien empieza a contar una historia vieja junto al fuego. Otra voz corrige un detalle, otra suma un recuerdo, y pronto media Caravana esta escuchando con una sonrisa cansada.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Alguien empieza a contar una historia vieja junto al fuego. Otra voz corrige un detalle, otra suma un recuerdo, y pronto media Caravana está escuchando con una sonrisa cansada.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>La Caravana obtiene Inspiración para el próximo combate. +2 VAL a todos.</b></color>");
 
             botonA.SetActive(false);
@@ -2044,7 +2165,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento007;
             txtTitulo.text = TRADU.i.Traducir("Campamento Ligero");
 
-            txtDescripcion.text = TRADU.i.Traducir("Sin que nadie lo ordene demasiado, el campamento se arma con lo justo y queda listo para levantarse en minutos. Hay una sensación compartida de que hoy convendrá moverse rapido.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Sin que nadie lo ordene demasiado, el campamento se arma con lo justo y queda listo para levantarse en minutos. Hay una sensación compartida de que hoy convendrá moverse rápido.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>La Caravana obtiene Presteza. El Aliento Negro no avanzará en el próximo viaje.</b></color>");
 
             botonA.SetActive(false);
@@ -2057,17 +2178,15 @@ public class EventosAdmin : MonoBehaviour
 
             participanteEvento1 = CampaignManager.Instance.ObtenerPersonajeAleatorio();
             retratoParticipante1.SetActive(participanteEvento1 != null);
-            txtDescripcion.text = TRADU.i.Traducir("Antes de dormir, un Héroe propone repasar señales, posiciones y respuestas rápidas junto al fuego. No cambia el cansancio, pero podría dejar a todos mejor parados para el proximo choque.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Antes de dormir, un Héroe propone repasar señales, posiciones y respuestas rápidas. Podría dejar a todos mejor preparados para el próximo choque.\n\n");
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede dirigir el repaso.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Mental DC ") + DificultadRepasoDeManiobras + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, la Caravana obtendrá Compromiso y ganará 35 Experiencia. Si falla, la Caravana ganará +1 Fatiga.</color>\n\n");
             }
-            else
-            {
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, un Héroe hará una Tirada de Salvación Mental DC 12. Si la supera, la Caravana obtendrá Compromiso.</color>\n\n");
-            }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadRepasoDeManiobras,
+                "Compromiso y +35 Experiencia.", "Commitment and +35 Experience.", "Compromisso e +35 de Experiência.",
+                "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si prefieres descansar de inmediato, +2 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Repasar");
@@ -2089,7 +2208,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento001;
             txtTitulo.text = TRADU.i.Traducir("Humo Inquieto");
 
-            txtDescripcion.text = TRADU.i.Traducir("En el Bosque Ardiente, el humo cambia de direccion de golpe y se mete bajo telas, capuchas y lonas. La Caravana avanza entre toses y ojos llorosos, cada vez más lenta.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("En el Bosque Ardiente, el humo cambia de dirección de golpe y se mete bajo telas, capuchas y lonas. La Caravana avanza entre toses y ojos llorosos, cada vez más lenta.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides avanzar igual, la Caravana obtendrá Aletargados.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si haces una parada corta hasta que abra el aire, el Aliento Negro avanzará.</color>\n\n");
 
@@ -2103,17 +2222,15 @@ public class EventosAdmin : MonoBehaviour
 
             participanteEvento1 = CampaignManager.Instance.ObtenerPersonajeAleatorio();
             retratoParticipante1.SetActive(participanteEvento1 != null);
-            txtDescripcion.text = TRADU.i.Traducir("Un circulo de cuervos se posa cerca del camino y no se mueve aunque la Caravana se acerque. Su quietud resulta peor que cualquier graznido, y el presagio corre rapido entre los Civiles.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un círculo de cuervos se posa junto al camino y no se mueve cuando la Caravana se acerca. Su quietud pesa más que cualquier graznido, y el presagio corre rápido entre los Civiles.\n\n");
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede romper el malestar antes de que prenda.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Tirada de Salvación: TS Mental DC ") + DificultadCuervosDelPaso + TRADU.i.Traducir(" <i>(TS Mental actual: ") + ObtenerTSMentalTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, +2 Esperanza. Si falla, la Caravana obtendrá Acobardados.</color>\n\n");
             }
-            else
-            {
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si lo intentas, un Héroe hará una Tirada de Salvación Mental DC 11. Si falla, la Caravana obtendrá Acobardados.</color>\n\n");
-            }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadCuervosDelPaso,
+                "+2 Esperanza.", "+2 Hope.", "+2 de Esperança.",
+                "Acobardados para el próximo combate.", "Doubtful for the next battle.", "Acobardada para o próximo combate.");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides seguir sin mirarlos, la Caravana obtendrá Acobardados.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Romper el clima");
@@ -2124,9 +2241,9 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento001;
             txtTitulo.text = TRADU.i.Traducir("Eco Bajo los Pies");
 
-            txtDescripcion.text = TRADU.i.Traducir("En Nedukazal, un golpeteo hueco sube desde abajo de la tierra y vuelve a cortarse antes de que alguien lo ubique. La reaccion inmediata es apurar el paso, pero no todos conservan la disciplina al hacerlo.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("En Nedukazal, un golpeteo hueco sube desde abajo de la tierra y vuelve a cortarse antes de que alguien lo ubique. La reacción inmediata es apurar el paso, pero no todos conservan la disciplina al hacerlo.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si ordenas avanzar sin mirar atrás, la Caravana obtendrá Descuidados por 1 viaje.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si impones una marcha mas cerrada y cauta, la Caravana ganará +1 Fatiga.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si impones una marcha más cerrada y cauta, la Caravana ganará +1 Fatiga.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Apurar");
             textBotonB.text = TRADU.i.Traducir("Cerrar filas");
@@ -2136,31 +2253,29 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento201;
             txtTitulo.text = TRADU.i.Traducir("Veta de Resina");
 
-            txtDescripcion.text = TRADU.i.Traducir("Una veta de resina endurecida marca un paso firme entre raices y tierra negra. La ruta apenas se sostiene, pero si la toman bien podría regalarle a la Caravana una salida rápida del sector.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Una veta de resina endurecida marca un paso firme entre raíces y tierra negra. La ruta apenas se sostiene, pero si la toman bien podría regalarle a la Caravana una salida rápida del sector.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si la aprovechas, la Caravana obtendrá Presteza.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si prefieres cruzar con maxima cautela, +3 Esperanza.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si prefieres cruzar con máxima cautela, +3 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Aprovechar");
             textBotonB.text = TRADU.i.Traducir("Cautela");
         }
-        if (ID == 296) // Vigia del Hielo
+        if (ID == 296) // Vigía del Hielo
         {
             imRetrato.sprite = Evento008;
-            txtTitulo.text = TRADU.i.Traducir("Vigia del Hielo");
+            txtTitulo.text = TRADU.i.Traducir("Vigía del Hielo");
 
             participanteEvento1 = CampaignManager.Instance.ObtenerPersonajeAleatorio();
             retratoParticipante1.SetActive(participanteEvento1 != null);
-            txtDescripcion.text = TRADU.i.Traducir("Un filo de roca y hielo ofrece un punto de vista raro en el Paso. Desde ahi, un ojo atento podría leer mejor el terreno y ordenar la marcha antes de que llegue el peligro.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un filo de roca y hielo ofrece un mirador excepcional sobre el Paso. Desde ahí, un ojo atento podría leer el terreno antes de que llegue el peligro.\n\n");
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> puede trepar y vigilar desde arriba.\n\n");
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Tirada de Salvación: TS Reflejos DC ") + DificultadVigiaDelHielo + TRADU.i.Traducir(" <i>(TS Reflejos actual: ") + ObtenerTSReflejosTotal(participanteEvento1) + TRADU.i.Traducir(").</i> Si la supera, la Caravana obtendrá Vigilante y ganará 30 Experiencia. Si falla, la Caravana ganará +1 Fatiga.</color>\n\n");
             }
-            else
-            {
-                txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si lo intentas, un Héroe hará una Tirada de Salvación de Reflejos DC 10. Si la supera, la Caravana obtendrá Vigilante.</color>\n\n");
-            }
+            AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadVigiaDelHielo,
+                "Vigilante por 1 viaje y +30 Experiencia.", "Vigilant for 1 journey and +30 Experience.", "Vigilante por 1 viagem e +30 de Experiência.",
+                "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides no exponer a nadie, +2 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Subir");
@@ -2179,6 +2294,10 @@ public class EventosAdmin : MonoBehaviour
             textBotonB.text = TRADU.i.Traducir("Responder");
         }
 
+        if (ID < 401 || ID > 405)
+        {
+            AplicarClavesColorSemanticas(ID);
+        }
         AplicarIconosAConsecuencias();
 
         
@@ -2223,30 +2342,195 @@ public class EventosAdmin : MonoBehaviour
         txtDescripcion.text = introduccion + TextoRecursosCampania.FormatearRecursos(consecuencias, true);
     }
 
-    private static int ObtenerInicioConsecuencias(string texto)
+    private void AplicarClavesColorSemanticas(int idEvento)
     {
-        int inicioNegativo = texto.IndexOf("<color=#ba3fef", System.StringComparison.OrdinalIgnoreCase);
-        int inicioPositivo = texto.IndexOf("<color=#a0e812", System.StringComparison.OrdinalIgnoreCase);
-
-        if (inicioNegativo < 0)
+        if (txtDescripcion == null || string.IsNullOrEmpty(txtDescripcion.text))
         {
-            return inicioPositivo;
+            return;
         }
 
-        if (inicioPositivo < 0)
+        string[] lineas = txtDescripcion.text.Split('\n');
+        for (int i = 0; i < lineas.Length; i++)
         {
-            return inicioNegativo;
+            string linea = lineas[i];
+            if (!ContieneColorSemantico(linea))
+            {
+                continue;
+            }
+
+            string color = ObtenerColorSemantico(idEvento, linea);
+            linea = ReemplazarColoresSemanticos(linea, color);
+            lineas[i] = "<color=" + color + ">" + linea + "</color>";
         }
 
-        return Mathf.Min(inicioNegativo, inicioPositivo);
+        txtDescripcion.text = string.Join("\n", lineas);
     }
 
-    string TraducirPulsoDeMandoFallo()
+    private static bool ContieneColorSemantico(string linea)
     {
-        return TRADU.i.Traducir(").</i> Si supera la tirada, ganará 30 Experiencia y la Caravana obtendrá +6 Esperanza. Si falla, la Caravana perderá 2 Esperanza.</color>\n\n")
-            .Replace("perderá 2 Esperanza", "perderá 6 Esperanza")
-            .Replace("loses 2 Hope", "loses 6 Hope")
-            .Replace("perderá 2 Esperança", "perderá 6 Esperança");
+        return linea.IndexOf("<color=" + ColorBeneficio, System.StringComparison.OrdinalIgnoreCase) >= 0
+            || linea.IndexOf("<color=" + ColorPerjuicio, System.StringComparison.OrdinalIgnoreCase) >= 0
+            || linea.IndexOf("<color=" + ColorRiesgo, System.StringComparison.OrdinalIgnoreCase) >= 0
+            || linea.IndexOf("<color=" + ColorNeutral, System.StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    private static string ObtenerColorSemantico(int idEvento, string linea)
+    {
+        string minusculas = linea.ToLowerInvariant();
+        bool eraBeneficio = linea.IndexOf("<color=" + ColorBeneficio, System.StringComparison.OrdinalIgnoreCase) >= 0;
+        bool eraPerjuicio = linea.IndexOf("<color=" + ColorPerjuicio, System.StringComparison.OrdinalIgnoreCase) >= 0;
+
+        if (idEvento == 203)
+        {
+            return ContieneValorNegativo(linea) ? ColorRiesgo : ColorBeneficio;
+        }
+
+        if (idEvento == 204)
+        {
+            return linea.Contains("65-90") ? ColorRiesgo : ColorBeneficio;
+        }
+
+        if (idEvento == 206)
+        {
+            return ColorRiesgo;
+        }
+
+        if (idEvento == 207 || idEvento == 209)
+        {
+            return ColorBeneficio;
+        }
+
+        if ((idEvento == 213 || idEvento == 214) && ContieneValorNegativo(linea))
+        {
+            return ColorPerjuicio;
+        }
+
+        if (minusculas.Contains("comenzará una batalla")
+            || minusculas.Contains("a battle will begin")
+            || minusculas.Contains("uma batalha começará")
+            || minusculas.Contains("combate normal")
+            || minusculas.Contains("luchar con")
+            || minusculas.Contains("fight the")
+            || minusculas.Contains("lutar contra"))
+        {
+            return ColorRiesgo;
+        }
+
+        bool beneficioNumerico = ContieneValorPositivo(linea) && ContieneRecursoBeneficioso(minusculas);
+        bool perjuicioNumerico = ContieneValorNegativo(linea) && ContieneRecursoBeneficioso(minusculas);
+        bool aumentoPerjudicial = ContieneAumentoPerjudicial(minusculas);
+        bool expresaContrapartida = minusculas.Contains(" pero ")
+            || minusculas.Contains(" but ")
+            || minusculas.Contains(", mas ");
+
+        if (expresaContrapartida
+            || (eraPerjuicio && beneficioNumerico && (perjuicioNumerico || aumentoPerjudicial)))
+        {
+            return ColorRiesgo;
+        }
+
+        if (linea.IndexOf("<color=" + ColorRiesgo, System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return ColorRiesgo;
+        }
+
+        if (linea.IndexOf("<color=" + ColorNeutral, System.StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return ColorNeutral;
+        }
+
+        if (eraBeneficio)
+        {
+            return ColorBeneficio;
+        }
+
+        return eraPerjuicio && beneficioNumerico && !perjuicioNumerico && !aumentoPerjudicial
+            ? ColorBeneficio
+            : ColorPerjuicio;
+    }
+
+    private static bool ContieneValorPositivo(string texto)
+    {
+        for (int i = 0; i < texto.Length - 1; i++)
+        {
+            if (texto[i] == '+' && char.IsDigit(texto[i + 1]))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool ContieneValorNegativo(string texto)
+    {
+        for (int i = 0; i < texto.Length - 1; i++)
+        {
+            if (texto[i] == '-'
+                && char.IsDigit(texto[i + 1])
+                && (i == 0 || !char.IsDigit(texto[i - 1])))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool ContieneRecursoBeneficioso(string texto)
+    {
+        return texto.Contains("esperanza") || texto.Contains("hope") || texto.Contains("esperança")
+            || texto.Contains("oro") || texto.Contains("gold") || texto.Contains("ouro")
+            || texto.Contains("materiales") || texto.Contains("materials") || texto.Contains("materiais")
+            || texto.Contains("suministros") || texto.Contains("supplies") || texto.Contains("suprimentos")
+            || texto.Contains("civiles") || texto.Contains("civilians") || texto.Contains("civis")
+            || texto.Contains("experiencia") || texto.Contains("experience") || texto.Contains("experiência")
+            || texto.Contains("buey") || texto.Contains("bueyes") || texto.Contains("ox") || texto.Contains("boi");
+    }
+
+    private static bool ContieneAumentoPerjudicial(string texto)
+    {
+        bool aumentaFatiga = texto.Contains("fatiga") || texto.Contains("fatigue") || texto.Contains("fadiga");
+        bool avanzaCorrupcion = texto.Contains("aliento negro") || texto.Contains("black breath") || texto.Contains("respiro negro");
+        bool aumentaKaleTav = texto.Contains("kale'tav")
+            && (texto.Contains("aumenta") || texto.Contains("increases"));
+
+        return (ContieneValorPositivo(texto) && aumentaFatiga)
+            || (avanzaCorrupcion
+                && (texto.Contains("avanza") || texto.Contains("advance") || texto.Contains("avanç") || ContieneValorPositivo(texto)))
+            || aumentaKaleTav;
+    }
+
+    private static string ReemplazarColoresSemanticos(string linea, string color)
+    {
+        return linea
+            .Replace("<color=" + ColorBeneficio + ">", "<color=" + color + ">")
+            .Replace("<color=" + ColorPerjuicio + ">", "<color=" + color + ">")
+            .Replace("<color=" + ColorRiesgo + ">", "<color=" + color + ">")
+            .Replace("<color=" + ColorNeutral + ">", "<color=" + color + ">");
+    }
+
+    private static int ObtenerInicioConsecuencias(string texto)
+    {
+        string[] coloresConsecuencia =
+        {
+            ColorBeneficio,
+            ColorPerjuicio,
+            ColorRiesgo,
+            ColorNeutral
+        };
+        int primerInicio = -1;
+
+        for (int i = 0; i < coloresConsecuencia.Length; i++)
+        {
+            int inicio = texto.IndexOf("<color=" + coloresConsecuencia[i], System.StringComparison.OrdinalIgnoreCase);
+            if (inicio >= 0 && (primerInicio < 0 || inicio < primerInicio))
+            {
+                primerInicio = inicio;
+            }
+        }
+
+        return primerInicio;
     }
 
     Personaje participanteEvento1;
@@ -2342,68 +2626,215 @@ public class EventosAdmin : MonoBehaviour
         }
     }
 
-    string ObtenerTextoResultadoHombrosFirmes(Personaje participante, int tirada, int tsFortaleza, int resultado, bool exito)
+    private enum TipoTiradaEvento
     {
-        string nombre = participante != null ? participante.sNombre : "Héroe";
-        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
-
-        switch (idioma)
-        {
-            case TRADU.IdiomaIngles:
-                return "-" + nombre + (exito ? " passed the Fortitude Save (1d20: " : " failed the Fortitude Save (1d20: ")
-                    + tirada + " + " + tsFortaleza + " = " + resultado + " vs DC " + DificultadHombrosFirmes
-                    + (exito ? "), carried the Civilian during the march. +50 Experience, +5 Hope." : "). Became Fatigued.");
-            case TRADU.IdiomaPortugues:
-                return "-" + nombre + (exito ? " foi aprovado no Teste de Resistência de Fortitude (1d20: " : " falhou no Teste de Resistência de Fortitude (1d20: ")
-                    + tirada + " + " + tsFortaleza + " = " + resultado + " contra CD " + DificultadHombrosFirmes
-                    + (exito ? "), carregou o Civil durante a marcha. +50 Experiência, +5 Esperança." : "). Ficou Fatigado.");
-            default:
-                return "-" + nombre + (exito ? " superó su Tirada de Salvación de Fortaleza (1d20: " : " falló su Tirada de Salvación de Fortaleza (1d20: ")
-                    + tirada + " + " + tsFortaleza + " = " + resultado + " vs DC " + DificultadHombrosFirmes
-                    + (exito ? "), cargó al Civil durante la marcha. +50 Experiencia, +5 Esperanza." : "). Obtuvo Fatigado.");
-        }
+        Reflejos,
+        Fortaleza,
+        Mental
     }
 
-    string ObtenerTextoTiradaLocal(
+    void RegistrarTiradaD20(
         Personaje participante,
+        TipoTiradaEvento tipo,
         int tirada,
         int modificador,
-        int resultado,
         int dificultad,
-        string textoEs,
-        string textoEn,
-        string textoPt,
+        bool exito,
+        string accionEs,
+        string accionEn,
+        string accionPt,
         string consecuenciaEs,
         string consecuenciaEn,
         string consecuenciaPt)
     {
-        string nombre = participante != null ? participante.sNombre : "Héroe";
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
-        string texto;
+        string nombre;
+        string accion;
         string consecuencia;
-        string contraDificultad;
+        string nombreTirada;
+        string etiquetaResultado;
+        string siglaDificultad;
 
         switch (idioma)
         {
             case TRADU.IdiomaIngles:
-                texto = textoEn;
+                nombre = participante != null ? participante.sNombre : "A Hero";
+                accion = accionEn;
                 consecuencia = consecuenciaEn;
-                contraDificultad = " vs DC ";
+                nombreTirada = "Saving Throw — " + ObtenerNombreTipoTirada(tipo, idioma);
+                etiquetaResultado = exito ? "Success" : "Failure";
+                siglaDificultad = "DC";
                 break;
             case TRADU.IdiomaPortugues:
-                texto = textoPt;
+                nombre = participante != null ? participante.sNombre : "Um Herói";
+                accion = accionPt;
                 consecuencia = consecuenciaPt;
-                contraDificultad = " contra CD ";
+                nombreTirada = "Teste de Resistência — " + ObtenerNombreTipoTirada(tipo, idioma);
+                etiquetaResultado = exito ? "Sucesso" : "Falha";
+                siglaDificultad = "CD";
                 break;
             default:
-                texto = textoEs;
+                nombre = participante != null ? participante.sNombre : "Un Héroe";
+                accion = accionEs;
                 consecuencia = consecuenciaEs;
-                contraDificultad = " vs DC ";
+                nombreTirada = "Tirada de Salvación — " + ObtenerNombreTipoTirada(tipo, idioma);
+                etiquetaResultado = exito ? "Éxito" : "Fallo";
+                siglaDificultad = "CD";
                 break;
         }
 
-        return "-" + nombre + texto + " (1d20: " + tirada + " + " + modificador + " = " + resultado
-            + contraDificultad + dificultad + "). " + consecuencia;
+        int resultado = tirada + modificador;
+        string operador = modificador >= 0 ? "+ " + modificador : "- " + Mathf.Abs(modificador);
+        string textoLog = "—" + nombre + " " + accion + ". " + nombreTirada + ": 1d20 (" + tirada + ") "
+            + operador + " = " + resultado + " vs " + siglaDificultad + " " + dificultad + ". "
+            + etiquetaResultado + ": " + consecuencia;
+
+        CampaignManager.Instance.EscribirLog(textoLog, true);
+    }
+
+    void RegistrarTiradaPorcentual(
+        int tirada,
+        int umbral,
+        string accionEs,
+        string accionEn,
+        string accionPt,
+        string umbralEs,
+        string umbralEn,
+        string umbralPt,
+        string resultadoEs,
+        string resultadoEn,
+        string resultadoPt)
+    {
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+        string accion = SeleccionarTextoLocal(accionEs, accionEn, accionPt, idioma);
+        string descripcionUmbral = SeleccionarTextoLocal(umbralEs, umbralEn, umbralPt, idioma);
+        string resultado = SeleccionarTextoLocal(resultadoEs, resultadoEn, resultadoPt, idioma);
+        string nombreTirada = idioma == TRADU.IdiomaIngles
+            ? "Percentage Roll"
+            : idioma == TRADU.IdiomaPortugues ? "Teste Percentual" : "Tirada porcentual";
+
+        CampaignManager.Instance.EscribirLog(
+            "—" + accion + ". " + nombreTirada + ": " + tirada + "/100 vs " + umbral + " % "
+            + descripcionUmbral + ". " + resultado,
+            true);
+    }
+
+    static int LimitarProbabilidad(int probabilidad)
+    {
+        return Mathf.Clamp(probabilidad, 0, 100);
+    }
+
+    static string ObtenerNombreTipoTirada(TipoTiradaEvento tipo, int idioma)
+    {
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            return tipo == TipoTiradaEvento.Reflejos ? "Reflex" : tipo == TipoTiradaEvento.Fortaleza ? "Fortitude" : "Mental";
+        }
+
+        if (idioma == TRADU.IdiomaPortugues)
+        {
+            return tipo == TipoTiradaEvento.Reflejos ? "Reflexos" : tipo == TipoTiradaEvento.Fortaleza ? "Fortitude" : "Mental";
+        }
+
+        return tipo == TipoTiradaEvento.Reflejos ? "Reflejos" : tipo == TipoTiradaEvento.Fortaleza ? "Fortaleza" : "Mental";
+    }
+
+    static string SeleccionarTextoLocal(string textoEs, string textoEn, string textoPt, int idioma)
+    {
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            return textoEn;
+        }
+
+        return idioma == TRADU.IdiomaPortugues ? textoPt : textoEs;
+    }
+
+    void AgregarDescripcionTiradaD20(
+        Personaje participante,
+        TipoTiradaEvento tipo,
+        int modificador,
+        int dificultad,
+        string exitoEs,
+        string exitoEn,
+        string exitoPt,
+        string falloEs,
+        string falloEn,
+        string falloPt,
+        string colorExito = ColorBeneficio,
+        string colorFallo = ColorPerjuicio)
+    {
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+        string nombreTirada;
+        string siglaDificultad;
+        string etiquetaExito;
+        string etiquetaFallo;
+
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            nombreTirada = "Saving Throw — " + ObtenerNombreTipoTirada(tipo, idioma);
+            siglaDificultad = "DC";
+            etiquetaExito = "Success";
+            etiquetaFallo = "Failure";
+        }
+        else if (idioma == TRADU.IdiomaPortugues)
+        {
+            nombreTirada = "Teste de Resistência — " + ObtenerNombreTipoTirada(tipo, idioma);
+            siglaDificultad = "CD";
+            etiquetaExito = "Sucesso";
+            etiquetaFallo = "Falha";
+        }
+        else
+        {
+            nombreTirada = "Tirada de Salvación — " + ObtenerNombreTipoTirada(tipo, idioma);
+            siglaDificultad = "CD";
+            etiquetaExito = "Éxito";
+            etiquetaFallo = "Fallo";
+        }
+
+        string participanteFormateado = participante != null
+            ? "<b><color=#d1006f>" + participante.sNombre + "</color></b> — "
+            : string.Empty;
+        string operador = modificador >= 0 ? "+ " + modificador : "- " + Mathf.Abs(modificador);
+        string exito = SeleccionarTextoLocal(exitoEs, exitoEn, exitoPt, idioma);
+        string fallo = SeleccionarTextoLocal(falloEs, falloEn, falloPt, idioma);
+
+        txtDescripcion.text += "<color=" + ColorRiesgo + ">" + participanteFormateado + nombreTirada
+            + ": 1d20 " + operador + " vs " + siglaDificultad + " " + dificultad + ".</color>\n";
+        txtDescripcion.text += "<color=" + colorExito + ">" + etiquetaExito + ": " + exito + "</color>\n";
+        txtDescripcion.text += "<color=" + colorFallo + ">" + etiquetaFallo + ": " + fallo + "</color>\n\n";
+    }
+
+    void AgregarDescripcionTiradaPorcentual(
+        int probabilidad,
+        string umbralEs,
+        string umbralEn,
+        string umbralPt,
+        string exitoEs,
+        string exitoEn,
+        string exitoPt,
+        string falloEs,
+        string falloEn,
+        string falloPt,
+        string colorExito = ColorBeneficio,
+        string colorFallo = ColorPerjuicio,
+        bool resultadoBajoEsExito = true)
+    {
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+        string nombreTirada = idioma == TRADU.IdiomaIngles
+            ? "Percentage Roll"
+            : idioma == TRADU.IdiomaPortugues ? "Teste Percentual" : "Tirada porcentual";
+        string etiquetaExito = idioma == TRADU.IdiomaIngles ? "Success" : idioma == TRADU.IdiomaPortugues ? "Sucesso" : "Éxito";
+        string etiquetaFallo = idioma == TRADU.IdiomaIngles ? "Failure" : idioma == TRADU.IdiomaPortugues ? "Falha" : "Fallo";
+        string umbral = SeleccionarTextoLocal(umbralEs, umbralEn, umbralPt, idioma);
+        string exito = SeleccionarTextoLocal(exitoEs, exitoEn, exitoPt, idioma);
+        string fallo = SeleccionarTextoLocal(falloEs, falloEn, falloPt, idioma);
+
+        txtDescripcion.text += "<color=" + ColorRiesgo + ">" + nombreTirada + ": 1d100 ≤ "
+            + LimitarProbabilidad(probabilidad) + " % " + umbral + ".</color>\n";
+        string etiquetaResultadoBajo = resultadoBajoEsExito ? etiquetaExito : etiquetaFallo;
+        string etiquetaResultadoAlto = resultadoBajoEsExito ? etiquetaFallo : etiquetaExito;
+        txtDescripcion.text += "<color=" + colorExito + ">" + etiquetaResultadoBajo + ": " + exito + "</color>\n";
+        txtDescripcion.text += "<color=" + colorFallo + ">" + etiquetaResultadoAlto + ": " + fallo + "</color>\n\n";
     }
 
     void CambiarFuerzaKaleTav(int delta)
@@ -2489,14 +2920,18 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 6)
         {
-            int random =UnityEngine.Random.Range(1, 101);
-            int seguridad = 40 + (int)CampaignManager.Instance.GetMiliciasActual();
+            int random = UnityEngine.Random.Range(1, 101);
+            int seguridad = LimitarProbabilidad(40 + (int)CampaignManager.Instance.GetMiliciasActual());
             if (random <= seguridad) //Encuentra al culpable
             {
-
                 CampaignManager.Instance.CambiarCivilesActuales(-1);
                 CampaignManager.Instance.CambiarEsperanzaActual(-5);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Has encontrado al ladrón y recuperado el oro robado, pero has tenido que desterrar al ladrón. -5 Esperanza -1 Civil."));
+                RegistrarTiradaPorcentual(random, seguridad,
+                    "Interrogatorio por las arcas robadas", "Interrogation over the stolen coffers", "Interrogatório sobre os cofres roubados",
+                    "de éxito", "success chance", "de chance de sucesso",
+                    "Éxito: el ladrón fue descubierto y el oro recuperado; -1 Civil y -5 Esperanza.",
+                    "Success: the thief was found and the gold recovered; -1 Civilian and -5 Hope.",
+                    "Sucesso: o ladrão foi descoberto e o ouro recuperado; -1 Civil e -5 de Esperança.");
             }
             else
             {
@@ -2504,7 +2939,12 @@ public class EventosAdmin : MonoBehaviour
                 if (oroRobado > CampaignManager.Instance.GetOroActuales()) { oroRobado = CampaignManager.Instance.GetOroActuales(); }
                 CampaignManager.Instance.CambiarOroActual(-oroRobado);
                 CampaignManager.Instance.CambiarEsperanzaActual(-5);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-No has logrado encontrar al ladrón y se perdieron ") + oroRobado + TRADU.i.Traducir(" de oro. -5 Esperanza por el interrogatorio"));
+                RegistrarTiradaPorcentual(random, seguridad,
+                    "Interrogatorio por las arcas robadas", "Interrogation over the stolen coffers", "Interrogatório sobre os cofres roubados",
+                    "de éxito", "success chance", "de chance de sucesso",
+                    "Fallo: el ladrón escapó con " + oroRobado + " Oro y el interrogatorio costó -5 Esperanza.",
+                    "Failure: the thief escaped with " + oroRobado + " Gold and the interrogation cost -5 Hope.",
+                    "Falha: o ladrão fugiu com " + oroRobado + " de Ouro e o interrogatório custou -5 de Esperança.");
             }
 
             gameObject.SetActive(false);
@@ -2526,16 +2966,27 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 10)
         {
-            int chances = 35 + (int)CampaignManager.Instance.GetEsperanzaActual() / 3;
-            if(UnityEngine.Random.Range(1, 101) <= chances)
+            int chances = LimitarProbabilidad(35 + (int)CampaignManager.Instance.GetEsperanzaActual() / 5);
+            int tiradaPorcentual = UnityEngine.Random.Range(1, 101);
+            if (tiradaPorcentual <= chances)
             {
                 CampaignManager.Instance.CambiarEsperanzaActual(15);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Has dado un discurso motivador y has refutado los argumentos del Noble. +15 Esperanza"));
+                RegistrarTiradaPorcentual(tiradaPorcentual, chances,
+                    "Discurso ante el noble", "Speech before the noble", "Discurso diante do nobre",
+                    "de éxito", "success chance", "de chance de sucesso",
+                    "Éxito: el discurso acalló las dudas; +15 Esperanza.",
+                    "Success: the speech silenced the doubts; +15 Hope.",
+                    "Sucesso: o discurso silenciou as dúvidas; +15 de Esperança.");
             }
             else
             {
                 CampaignManager.Instance.CambiarEsperanzaActual(-20);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Has dado un discurso poco convincente que ha generado más dudas que certezas. -20 de Esperanza."));
+                RegistrarTiradaPorcentual(tiradaPorcentual, chances,
+                    "Discurso ante el noble", "Speech before the noble", "Discurso diante do nobre",
+                    "de éxito", "success chance", "de chance de sucesso",
+                    "Fallo: el discurso sembró más dudas; -20 Esperanza.",
+                    "Failure: the speech raised further doubts; -20 Hope.",
+                    "Falha: o discurso gerou ainda mais dúvidas; -20 de Esperança.");
             }
             gameObject.SetActive(false);
         }
@@ -2548,22 +2999,24 @@ public class EventosAdmin : MonoBehaviour
             if (resultado >= DificultadPasoPrecario && participanteEvento1 != null)
             {
                 participanteEvento1.RecibirExperiencia(35);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadPasoPrecario + TRADU.i.Traducir(") y logró guiar a la Caravana por el paso precario. +35 Experiencia."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadPasoPrecario, true,
+                    "intentó guiar a la Caravana por el paso precario",
+                    "tried to guide the Caravan across the precarious crossing",
+                    "tentou guiar a Caravana pela passagem precária",
+                    "guio el cruce sin incidentes y ganó 35 Experiencia.",
+                    "guided the crossing safely and gained 35 Experience.",
+                    "guiou a travessia em segurança e ganhou 35 de Experiência.");
             }
             else if (participanteEvento1 != null)
             {
                 AplicarHeridaDeEvento(participanteEvento1);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadPasoPrecario + TRADU.i.Traducir(") y sufrió una Herida al intentar guiar a la Caravana."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadPasoPrecario, false,
+                    "intentó guiar a la Caravana por el paso precario",
+                    "tried to guide the Caravan across the precarious crossing",
+                    "tentou guiar a Caravana pela passagem precária",
+                    "perdió pie entre los tablones y sufrió una Herida.",
+                    "lost their footing among the planks and suffered an Injury.",
+                    "perdeu o equilíbrio entre as tábuas e sofreu um Ferimento.");
             }
 
             gameObject.SetActive(false);
@@ -2579,23 +3032,24 @@ public class EventosAdmin : MonoBehaviour
                 int civiles = UnityEngine.Random.Range(6, 11);
                 participanteEvento1.RecibirExperiencia(30);
                 CampaignManager.Instance.CambiarCivilesActuales(civiles);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación de Fortaleza (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsFortaleza + TRADU.i.Traducir(" vs DC ")
-                    + DificultadAireEnrarecido + TRADU.i.Traducir("), logró entrar en la bodega y rescató ")
-                    + civiles + TRADU.i.Traducir(" Civiles. +30 Experiencia."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, tirada, tsFortaleza, DificultadAireEnrarecido, true,
+                    "entró en la bodega de aire enrarecido",
+                    "entered the cellar filled with stale air",
+                    "entrou no porão de ar rarefeito",
+                    "rescató " + civiles + " Civiles y ganó 30 Experiencia.",
+                    "rescued " + civiles + " Civilians and gained 30 Experience.",
+                    "resgatou " + civiles + " Civis e ganhou 30 de Experiência.");
             }
             else if (participanteEvento1 != null)
             {
                 participanteEvento1.Camp_Enfermo += 3;
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Fortaleza (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsFortaleza + TRADU.i.Traducir(" vs DC ")
-                    + DificultadAireEnrarecido + TRADU.i.Traducir(") y quedó Enfermo por 3 días tras respirar el aire enrarecido."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, tirada, tsFortaleza, DificultadAireEnrarecido, false,
+                    "entró en la bodega de aire enrarecido",
+                    "entered the cellar filled with stale air",
+                    "entrou no porão de ar rarefeito",
+                    "el aire lo venció y quedó Enfermo por 3 días.",
+                    "the foul air overwhelmed them; they became Sick for 3 days.",
+                    "o ar nocivo o venceu; ficou Doente por 3 dias.");
             }
 
             gameObject.SetActive(false);
@@ -2610,23 +3064,25 @@ public class EventosAdmin : MonoBehaviour
             {
                 participanteEvento1.RecibirExperiencia(35);
                 CampaignManager.Instance.CambiarEsperanzaActual(4);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación Mental (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsMental + TRADU.i.Traducir(" vs DC ")
-                    + DificultadRumorDeDesbande + TRADU.i.Traducir(") y logró apagar el rumor antes de que creciera. +35 Experiencia, +4 Esperanza."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadRumorDeDesbande, true,
+                    "intentó contener el rumor de desbande",
+                    "tried to contain the rumor of desertion",
+                    "tentou conter o rumor de deserção",
+                    "apagó el rumor antes de que creciera; +35 Experiencia y +4 Esperanza.",
+                    "stopped the rumor before it spread; +35 Experience and +4 Hope.",
+                    "conteve o rumor antes que se espalhasse; +35 de Experiência e +4 de Esperança.");
             }
             else if (participanteEvento1 != null)
             {
                 participanteEvento1.Camp_Moral -= 3;
                 CampaignManager.Instance.CambiarEsperanzaActual(-10);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación Mental (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsMental + TRADU.i.Traducir(" vs DC ")
-                    + DificultadRumorDeDesbande + TRADU.i.Traducir("). El rumor de desbande se agravó. Baja Moral por 3 días, -10 Esperanza."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadRumorDeDesbande, false,
+                    "intentó contener el rumor de desbande",
+                    "tried to contain the rumor of desertion",
+                    "tentou conter o rumor de deserção",
+                    "el rumor se agravó; obtuvo Baja Moral por 3 días y la Caravana perdió 10 Esperanza.",
+                    "the rumor worsened; they suffered Low Morale for 3 days and the Caravan lost 10 Hope.",
+                    "o rumor se agravou; ficou com Moral Baixa por 3 dias e a Caravana perdeu 10 de Esperança.");
             }
 
             gameObject.SetActive(false);
@@ -2641,23 +3097,25 @@ public class EventosAdmin : MonoBehaviour
             if (resultado >= DificultadVadoTraicionero && participante != null)
             {
                 participante.RecibirExperiencia(40);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participante.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadVadoTraicionero + TRADU.i.Traducir(") y logró ordenar el cruce del vado. +40 Experiencia."));
+                RegistrarTiradaD20(participante, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadVadoTraicionero, true,
+                    "ordenó el cruce del vado traicionero",
+                    "organized the crossing of the treacherous ford",
+                    "organizou a travessia do vau traiçoeiro",
+                    "condujo a la Caravana sin pérdidas y ganó 40 Experiencia.",
+                    "led the Caravan across without losses and gained 40 Experience.",
+                    "conduziu a Caravana sem perdas e ganhou 40 de Experiência.");
             }
             else if (participante != null)
             {
                 AplicarHeridaDeEvento(participante);
                 CampaignManager.Instance.CambiarBueyesActuales(-1);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participante.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadVadoTraicionero + TRADU.i.Traducir("). Sufrió una Herida y la Caravana perdió 1 Buey en el vado."));
+                RegistrarTiradaD20(participante, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadVadoTraicionero, false,
+                    "ordenó el cruce del vado traicionero",
+                    "organized the crossing of the treacherous ford",
+                    "organizou a travessia do vau traiçoeiro",
+                    "la corriente rompió la formación; sufrió una Herida y la Caravana perdió 1 Buey.",
+                    "the current broke the formation; they suffered an Injury and the Caravan lost 1 Ox.",
+                    "a corrente rompeu a formação; sofreu um Ferimento e a Caravana perdeu 1 Boi.");
             }
 
             gameObject.SetActive(false);
@@ -2673,23 +3131,25 @@ public class EventosAdmin : MonoBehaviour
             {
                 participante.RecibirExperiencia(35);
                 CampaignManager.Instance.CambiarEsperanzaActual(3);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participante.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación de Fortaleza (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsFortaleza + TRADU.i.Traducir(" vs DC ")
-                    + DificultadCarroEncajado + TRADU.i.Traducir("), destrabó el carro y sostuvo el ánimo de la Caravana. +35 Experiencia, +3 Esperanza."));
+                RegistrarTiradaD20(participante, TipoTiradaEvento.Fortaleza, tirada, tsFortaleza, DificultadCarroEncajado, true,
+                    "intentó liberar el carro encajado",
+                    "tried to free the stuck wagon",
+                    "tentou soltar a carroça atolada",
+                    "liberó el carro; +35 Experiencia y +3 Esperanza.",
+                    "freed the wagon; +35 Experience and +3 Hope.",
+                    "soltou a carroça; +35 de Experiência e +3 de Esperança.");
             }
             else if (participante != null)
             {
                 AplicarHeridaDeEvento(participante);
                 CampaignManager.Instance.CambiarFatigaActual(1);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participante.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Fortaleza (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsFortaleza + TRADU.i.Traducir(" vs DC ")
-                    + DificultadCarroEncajado + TRADU.i.Traducir("). Sufrió una Herida al intentar mover el carro y la Caravana ganó +1 Fatiga."));
+                RegistrarTiradaD20(participante, TipoTiradaEvento.Fortaleza, tirada, tsFortaleza, DificultadCarroEncajado, false,
+                    "intentó liberar el carro encajado",
+                    "tried to free the stuck wagon",
+                    "tentou soltar a carroça atolada",
+                    "el esfuerzo lo hirió y la Caravana ganó +1 Fatiga.",
+                    "the effort injured them and the Caravan gained +1 Fatigue.",
+                    "o esforço o feriu e a Caravana ganhou +1 de Fadiga.");
             }
 
             gameObject.SetActive(false);
@@ -2703,22 +3163,24 @@ public class EventosAdmin : MonoBehaviour
             if (resultado >= DificultadBestiasAterradas)
             {
                 participanteEvento1.RecibirExperiencia(40);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadBestiasAterradas + TRADU.i.Traducir(") y logró contener a las bestias aterradas. +40 Experiencia."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadBestiasAterradas, true,
+                    "intentó contener a las bestias aterradas",
+                    "tried to contain the terrified beasts",
+                    "tentou conter as feras aterrorizadas",
+                    "dominó el caos y ganó 40 Experiencia.",
+                    "brought the chaos under control and gained 40 Experience.",
+                    "controlou o caos e ganhou 40 de Experiência.");
             }
             else
             {
                 CampaignManager.Instance.CambiarBueyesActuales(-2);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadBestiasAterradas + TRADU.i.Traducir("). Las bestias aterradas desataron el caos y la Caravana perdió 2 Bueyes."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadBestiasAterradas, false,
+                    "intentó contener a las bestias aterradas",
+                    "tried to contain the terrified beasts",
+                    "tentou conter as feras aterrorizadas",
+                    "las bestias rompieron la formación y la Caravana perdió 2 Bueyes.",
+                    "the beasts broke the formation and the Caravan lost 2 Oxen.",
+                    "as feras romperam a formação e a Caravana perdeu 2 Bois.");
             }
             gameObject.SetActive(false);
         }
@@ -2744,23 +3206,25 @@ public class EventosAdmin : MonoBehaviour
                 if (participanteEvento1 != null)
                 {
                     participanteEvento1.RecibirExperiencia(40);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                        + TRADU.i.Traducir(" superó su Tirada de Salvación de Reflejos (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                        + DificultadHieloQuebradizo + TRADU.i.Traducir(") y logró guiar a la Caravana por el hielo. +40 Experiencia."));
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadHieloQuebradizo, true,
+                        "intentó guiar a la Caravana sobre el hielo quebradizo",
+                        "tried to guide the Caravan over the brittle ice",
+                        "tentou guiar a Caravana sobre o gelo quebradiço",
+                        "encontró un paso firme y ganó 40 Experiencia.",
+                        "found firm footing and gained 40 Experience.",
+                        "encontrou uma passagem firme e ganhou 40 de Experiência.");
                 }
             }
             else if (participanteEvento1 != null)
             {
                 AplicarHeridaDeEvento(participanteEvento1);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadHieloQuebradizo + TRADU.i.Traducir(") y sufrió una Herida al quebrarse el hielo."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadHieloQuebradizo, false,
+                    "intentó guiar a la Caravana sobre el hielo quebradizo",
+                    "tried to guide the Caravan over the brittle ice",
+                    "tentou guiar a Caravana sobre o gelo quebradiço",
+                    "el hielo cedió bajo sus pies y sufrió una Herida.",
+                    "the ice gave way beneath them and they suffered an Injury.",
+                    "o gelo cedeu sob seus pés e sofreu um Ferimento.");
             }
 
             gameObject.SetActive(false);
@@ -2776,23 +3240,25 @@ public class EventosAdmin : MonoBehaviour
                 if (participanteEvento1 != null)
                 {
                     participanteEvento1.RecibirExperiencia(40);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                        + TRADU.i.Traducir(" superó su Tirada de Salvación de Reflejos (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                        + DificultadBrechaEnLaCalzada + TRADU.i.Traducir(") y logró guiar a la Caravana por la brecha. +40 Experiencia."));
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadBrechaEnLaCalzada, true,
+                        "intentó guiar a la Caravana por la brecha",
+                        "tried to guide the Caravan across the breach",
+                        "tentou guiar a Caravana pela brecha",
+                        "marcó un paso seguro y ganó 40 Experiencia.",
+                        "marked a safe route and gained 40 Experience.",
+                        "marcou uma passagem segura e ganhou 40 de Experiência.");
                 }
             }
             else if (participanteEvento1 != null)
             {
                 AplicarHeridaDeEvento(participanteEvento1);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadBrechaEnLaCalzada + TRADU.i.Traducir(") y sufrió una Herida al intentar guiar a la Caravana por la brecha."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadBrechaEnLaCalzada, false,
+                    "intentó guiar a la Caravana por la brecha",
+                    "tried to guide the Caravan across the breach",
+                    "tentou guiar a Caravana pela brecha",
+                    "cayó entre los escombros y sufrió una Herida.",
+                    "fell among the rubble and suffered an Injury.",
+                    "caiu entre os escombros e sofreu um Ferimento.");
             }
 
             gameObject.SetActive(false);
@@ -2841,7 +3307,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 204)
         {
-            CampaignManager.Instance.CambiarMaterialesActuales(UnityEngine.Random.Range(65, 90));
+            CampaignManager.Instance.CambiarMaterialesActuales(UnityEngine.Random.Range(65, 91));
             CampaignManager.Instance.CambiarValorAlientoNegro(1);
             CampaignManager.Instance.CambiarFatigaActual(1);
 
@@ -2849,19 +3315,34 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 205)
         {
-            int chances = 60 + (int)(participanteEvento1.fNivelActual * 5);
-            if(UnityEngine.Random.Range(1, 101) <= chances)
+            int chances = LimitarProbabilidad(60 + (int)(participanteEvento1.fNivelActual * 5));
+            int tiradaPorcentual = UnityEngine.Random.Range(1, 101);
+            if (tiradaPorcentual <= chances)
             {
-                int rand =UnityEngine.Random.Range(50, 80);
+                int rand = UnityEngine.Random.Range(50, 81);
                 CampaignManager.Instance.CambiarSuministrosActuales(rand);
                 participanteEvento1.RecibirExperiencia(55);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La cacería de ") + participanteEvento1.sNombre + TRADU.i.Traducir(" ha sido exitosa. +") + rand.ToString() + TRADU.i.Traducir(" Suministros +55 Experiencia."));
+                RegistrarTiradaPorcentual(tiradaPorcentual, chances,
+                    "Cacería de " + participanteEvento1.sNombre,
+                    participanteEvento1.sNombre + "'s hunt",
+                    "Caçada de " + participanteEvento1.sNombre,
+                    "de éxito", "success chance", "de chance de sucesso",
+                    "Éxito: regresó con " + rand + " Suministros y ganó 55 Experiencia.",
+                    "Success: returned with " + rand + " Supplies and gained 55 Experience.",
+                    "Sucesso: voltou com " + rand + " Suprimentos e ganhou 55 de Experiência.");
             }
             else
             {
                 AplicarHeridaDeEvento(participanteEvento1);
                 participanteEvento1.fVidaActual -= participanteEvento1.fVidaActual * 0.6f;
-                CampaignManager.Instance.EscribirLog("-" + participanteEvento1.sNombre + TRADU.i.Traducir(" sufrió un accidente durante la cacería. Herido."));
+                RegistrarTiradaPorcentual(tiradaPorcentual, chances,
+                    "Cacería de " + participanteEvento1.sNombre,
+                    participanteEvento1.sNombre + "'s hunt",
+                    "Caçada de " + participanteEvento1.sNombre,
+                    "de éxito", "success chance", "de chance de sucesso",
+                    "Fallo: sufrió una Herida y perdió el 60 % de su Vida actual.",
+                    "Failure: suffered an Injury and lost 60% of current Health.",
+                    "Falha: sofreu um Ferimento e perdeu 60% da Vida atual.");
             }
             gameObject.SetActive(false);
         }
@@ -2905,25 +3386,24 @@ public class EventosAdmin : MonoBehaviour
             {
                 participanteEvento1.RecibirExperiencia(30);
                 CampaignManager.Instance.scMapaManager.nodoActual.TiradaExploracion(100, true);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación Mental (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsMental + TRADU.i.Traducir(" vs DC ")
-                    + DificultadMarcasDelCorreo + TRADU.i.Traducir("), interpretó las marcas del correo y reveló nodos cercanos. +30 Experiencia."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadMarcasDelCorreo, true,
+                    "intentó interpretar las marcas del correo",
+                    "tried to interpret the courier marks",
+                    "tentou interpretar as marcas do correio",
+                    "descifró el código, reveló nodos cercanos y ganó 30 Experiencia.",
+                    "decoded the marks, revealed nearby nodes, and gained 30 Experience.",
+                    "decifrou as marcas, revelou nós próximos e ganhou 30 de Experiência.");
             }
             else
             {
                 CampaignManager.Instance.CambiarFatigaActual(1);
-                CampaignManager.Instance.EscribirAdvertenciaLog(
-                    ObtenerTextoTiradaLocal(
-                        participanteEvento1, tirada, tsMental, resultado, DificultadMarcasDelCorreo,
-                        " no logró interpretar las marcas del correo",
-                        " failed to interpret the courier's marks",
-                        " não conseguiu interpretar as marcas da mensagem",
-                        "La demora hizo que la Caravana ganara +1 Fatiga.",
-                        "The delay caused the Caravan to gain +1 Fatigue.",
-                        "O atraso fez a Caravana ganhar +1 Fadiga."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadMarcasDelCorreo, false,
+                    "intentó interpretar las marcas del correo",
+                    "tried to interpret the courier marks",
+                    "tentou interpretar as marcas do correio",
+                    "la demora no reveló nada y la Caravana ganó +1 Fatiga.",
+                    "the delay revealed nothing and the Caravan gained +1 Fatigue.",
+                    "o atraso não revelou nada e a Caravana ganhou +1 de Fadiga.");
             }
             gameObject.SetActive(false);
         }
@@ -2938,25 +3418,24 @@ public class EventosAdmin : MonoBehaviour
             {
                 participante.RecibirExperiencia(30);
                 CampaignManager.Instance.CambiarEsperanzaActual(6);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participante.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación Mental (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsMental + TRADU.i.Traducir(" vs DC ")
-                    + DificultadPulsoDeMando + TRADU.i.Traducir("), recompuso la fila y levantó el ánimo de la Caravana. +30 Experiencia, +6 Esperanza."));
+                RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadPulsoDeMando, true,
+                    "intentó recomponer la fila",
+                    "tried to restore order to the line",
+                    "tentou reorganizar a fila",
+                    "impuso orden; +30 Experiencia y +6 Esperanza.",
+                    "restored order; +30 Experience and +6 Hope.",
+                    "restabeleceu a ordem; +30 de Experiência e +6 de Esperança.");
             }
             else
             {
                 CampaignManager.Instance.CambiarEsperanzaActual(-6);
-                CampaignManager.Instance.EscribirAdvertenciaLog(
-                    ObtenerTextoTiradaLocal(
-                        participante, tirada, tsMental, resultado, DificultadPulsoDeMando,
-                        " falló su Tirada de Salvación Mental",
-                        " failed the Mental Save",
-                        " falhou no Teste de Resistência Mental",
-                        "La confusión desanimó a la Caravana. -6 Esperanza.",
-                        "The confusion discouraged the Caravan. -6 Hope.",
-                        "A confusão desanimou a Caravana. -6 Esperança."));
+                RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadPulsoDeMando, false,
+                    "intentó recomponer la fila",
+                    "tried to restore order to the line",
+                    "tentou reorganizar a fila",
+                    "la confusión se extendió y la Caravana perdió 6 Esperanza.",
+                    "the confusion spread and the Caravan lost 6 Hope.",
+                    "a confusão se espalhou e a Caravana perdeu 6 de Esperança.");
             }
             gameObject.SetActive(false);
         }
@@ -2970,14 +3449,24 @@ public class EventosAdmin : MonoBehaviour
             {
                 participanteEvento1.RecibirExperiencia(50);
                 CampaignManager.Instance.CambiarEsperanzaActual(5);
-                CampaignManager.Instance.EscribirAdvertenciaLog(
-                    ObtenerTextoResultadoHombrosFirmes(participanteEvento1, tirada, tsFortaleza, resultado, true));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, tirada, tsFortaleza, DificultadHombrosFirmes, true,
+                    "cargó al Civil agotado durante la marcha",
+                    "carried the exhausted Civilian during the march",
+                    "carregou o Civil exausto durante a marcha",
+                    "sostuvo el paso; +50 Experiencia y +5 Esperanza.",
+                    "kept pace; +50 Experience and +5 Hope.",
+                    "manteve o ritmo; +50 de Experiência e +5 de Esperança.");
             }
             else if (participanteEvento1 != null)
             {
                 participanteEvento1.SetCampFatigado(true);
-                CampaignManager.Instance.EscribirAdvertenciaLog(
-                    ObtenerTextoResultadoHombrosFirmes(participanteEvento1, tirada, tsFortaleza, resultado, false));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, tirada, tsFortaleza, DificultadHombrosFirmes, false,
+                    "cargó al Civil agotado durante la marcha",
+                    "carried the exhausted Civilian during the march",
+                    "carregou o Civil exausto durante a marcha",
+                    "el esfuerzo lo dejó Fatigado.",
+                    "the effort left them Fatigued.",
+                    "o esforço o deixou Fatigado.");
             }
             gameObject.SetActive(false);
         }
@@ -2992,24 +3481,24 @@ public class EventosAdmin : MonoBehaviour
                 participanteEvento1.RecibirExperiencia(35);
                 CampaignManager.Instance.scMapaManager.nodoActual.TiradaExploracion(100, true);
                 CampaignManager.Instance.CambiarEsperanzaActual(4);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadManoCierta + TRADU.i.Traducir("), recuperó la cartera de viaje y reveló nodos cercanos. +35 Experiencia, +4 Esperanza."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadManoCierta, true,
+                    "intentó recuperar la cartera de viaje",
+                    "tried to recover the travel satchel",
+                    "tentou recuperar a bolsa de viagem",
+                    "la recuperó, reveló nodos cercanos; +35 Experiencia y +4 Esperanza.",
+                    "recovered it and revealed nearby nodes; +35 Experience and +4 Hope.",
+                    "recuperou-a e revelou nós próximos; +35 de Experiência e +4 de Esperança.");
             }
             else if (participanteEvento1 != null)
             {
                 AplicarHeridaDeEvento(participanteEvento1);
-
-                 CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadManoCierta + TRADU.i.Traducir("), y ha sufrido una herida."));
-            
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadManoCierta, false,
+                    "intentó recuperar la cartera de viaje",
+                    "tried to recover the travel satchel",
+                    "tentou recuperar a bolsa de viagem",
+                    "perdió el equilibrio y sufrió una Herida.",
+                    "lost their footing and suffered an Injury.",
+                    "perdeu o equilíbrio e sofreu um Ferimento.");
             }
             gameObject.SetActive(false);
         }
@@ -3024,25 +3513,24 @@ public class EventosAdmin : MonoBehaviour
             {
                 participante.RecibirExperiencia(25);
                 CampaignManager.Instance.CambiarValorAlientoNegro(-1);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participante.sNombre
-                    + TRADU.i.Traducir(" superó su Tirada de Salvación Mental (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsMental + TRADU.i.Traducir(" vs DC ")
-                    + DificultadDosMiradas + TRADU.i.Traducir("), eligió bien la ruta y el Aliento Negro retrocedió 1. +25 Experiencia."));
+                RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadDosMiradas, true,
+                    "defendió su lectura de la ruta",
+                    "defended their reading of the route",
+                    "defendeu sua leitura da rota",
+                    "eligió bien; +25 Experiencia y el Aliento Negro retrocedió 1.",
+                    "chose correctly; +25 Experience and the Black Breath receded by 1.",
+                    "escolheu corretamente; +25 de Experiência e o Respiro Negro recuou 1.");
             }
             else
             {
                 CampaignManager.Instance.CambiarFatigaActual(1);
-                CampaignManager.Instance.EscribirAdvertenciaLog(
-                    ObtenerTextoTiradaLocal(
-                        participante, tirada, tsMental, resultado, DificultadDosMiradas,
-                        " falló su Tirada de Salvación Mental",
-                        " failed the Mental Save",
-                        " falhou no Teste de Resistência Mental",
-                        "La Caravana ganó +1 Fatiga al dudar del camino.",
-                        "The Caravan gained +1 Fatigue while doubting the route.",
-                        "A Caravana ganhou +1 Fadiga ao duvidar do caminho."));
+                RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadDosMiradas, false,
+                    "defendió su lectura de la ruta",
+                    "defended their reading of the route",
+                    "defendeu sua leitura da rota",
+                    "la duda retrasó la marcha y la Caravana ganó +1 Fatiga.",
+                    "the hesitation delayed the march and the Caravan gained +1 Fatigue.",
+                    "a hesitação atrasou a marcha e a Caravana ganhou +1 de Fadiga.");
             }
             gameObject.SetActive(false);
         }
@@ -3079,23 +3567,25 @@ public class EventosAdmin : MonoBehaviour
                 if (participanteEvento1 != null)
                 {
                     participanteEvento1.RecibirExperiencia(35);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                        + TRADU.i.Traducir(" superó su Tirada de Salvación de Reflejos (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                        + DificultadTechoInestable + TRADU.i.Traducir(") y logró asegurar el techo. +35 Experiencia."));
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadTechoInestable, true,
+                        "intentó asegurar el techo inestable",
+                        "tried to secure the unstable roof",
+                        "tentou escorar o teto instável",
+                        "afianzó la estructura y ganó 35 Experiencia.",
+                        "secured the structure and gained 35 Experience.",
+                        "firmou a estrutura e ganhou 35 de Experiência.");
                 }
             }
             else if (participanteEvento1 != null)
             {
                 AplicarHeridaDeEvento(participanteEvento1);
-                CampaignManager.Instance.EscribirLog(
-                    TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                    + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
-                    + tirada + TRADU.i.Traducir(" + ")
-                    + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                    + DificultadTechoInestable + TRADU.i.Traducir(") y sufrió una Herida por el derrumbe del techo."));
+                RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadTechoInestable, false,
+                    "intentó asegurar el techo inestable",
+                    "tried to secure the unstable roof",
+                    "tentou escorar o teto instável",
+                    "parte del techo cedió y sufrió una Herida.",
+                    "part of the roof collapsed and they suffered an Injury.",
+                    "parte do teto cedeu e sofreu um Ferimento.");
             }
             gameObject.SetActive(false);
         }
@@ -3161,20 +3651,25 @@ public class EventosAdmin : MonoBehaviour
                 if (resultado >= DificultadArengaEnLaLluvia)
                 {
                     participanteEvento1.RecibirExperiencia(30);
-                    OtorgarEstadoCaravana(TipoEstadoCaravana.Inspiracion,
-                        "-" + participanteEvento1.sNombre + TRADU.i.Traducir(" sostuvo la arenga bajo la lluvia (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ") + tsMental + TRADU.i.Traducir(" vs DC ")
-                        + DificultadArengaEnLaLluvia + TRADU.i.Traducir("). +30 Experiencia y Inspiración para el próximo combate."));
+                    OtorgarEstadoCaravana(TipoEstadoCaravana.Inspiracion, null);
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadArengaEnLaLluvia, true,
+                        "alzó la voz bajo la lluvia",
+                        "raised their voice beneath the rain",
+                        "ergueu a voz sob a chuva",
+                        "la arenga sostuvo a la Caravana; +30 Experiencia e Inspiración para el próximo combate.",
+                        "the speech rallied the Caravan; +30 Experience and Inspiration for the next battle.",
+                        "o discurso reanimou a Caravana; +30 de Experiência e Inspiração para o próximo combate.");
                 }
                 else
                 {
                     CampaignManager.Instance.CambiarEsperanzaActual(2);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                        + TRADU.i.Traducir(" no logró encender a todos con su arenga (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsMental + TRADU.i.Traducir(" vs DC ")
-                        + DificultadArengaEnLaLluvia + TRADU.i.Traducir("), pero la Caravana sostuvo el ánimo. +2 Esperanza."));
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadArengaEnLaLluvia, false,
+                        "alzó la voz bajo la lluvia",
+                        "raised their voice beneath the rain",
+                        "ergueu a voz sob a chuva",
+                        "la arenga no encendió a todos, pero sostuvo el ánimo; +2 Esperanza.",
+                        "the speech failed to rally everyone, but steadied their spirits; +2 Hope.",
+                        "o discurso não reanimou a todos, mas sustentou o ânimo; +2 de Esperança.");
                 }
             }
             else
@@ -3203,25 +3698,30 @@ public class EventosAdmin : MonoBehaviour
                 if (resultado >= DificultadRastroSospechoso)
                 {
                     participanteEvento1.RecibirExperiencia(30);
-                    OtorgarEstadoCaravana(TipoEstadoCaravana.Vigilante,
-                        "-" + participanteEvento1.sNombre + TRADU.i.Traducir(" leyo el rastro a tiempo (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ") + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                        + DificultadRastroSospechoso + TRADU.i.Traducir("). +30 Experiencia y Vigilante por 1 viaje."));
+                    OtorgarEstadoCaravana(TipoEstadoCaravana.Vigilante, null);
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadRastroSospechoso, true,
+                        "intentó leer el rastro sospechoso",
+                        "tried to read the suspicious trail",
+                        "tentou interpretar o rastro suspeito",
+                        "detectó el peligro a tiempo; +30 Experiencia y Vigilante por 1 viaje.",
+                        "spotted the danger in time; +30 Experience and Vigilant for 1 journey.",
+                        "percebeu o perigo a tempo; +30 de Experiência e Vigilante por 1 viagem.");
                 }
                 else
                 {
                     OtorgarEstadoCaravana(TipoEstadoCaravana.Descuidados, null, 3);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                        + TRADU.i.Traducir(" no logró leer bien el rastro (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                        + DificultadRastroSospechoso + TRADU.i.Traducir("). Descuidados por 3 días."));
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadRastroSospechoso, false,
+                        "intentó leer el rastro sospechoso",
+                        "tried to read the suspicious trail",
+                        "tentou interpretar o rastro suspeito",
+                        "interpretó mal las señales y la Caravana quedó Descuidados por 3 viajes.",
+                        "misread the signs and the Caravan became Careless for 3 journeys.",
+                        "interpretou mal os sinais e a Caravana ficou Descuidada por 3 viagens.");
                 }
             }
             else
             {
-                OtorgarEstadoCaravana(TipoEstadoCaravana.Vigilante, "-La Caravana ajusto la vigilancia tras ver el rastro.");
+                OtorgarEstadoCaravana(TipoEstadoCaravana.Vigilante, "-La Caravana ajustó la vigilancia tras ver el rastro.");
             }
             gameObject.SetActive(false);
         }
@@ -3235,26 +3735,25 @@ public class EventosAdmin : MonoBehaviour
                 if (resultado >= DificultadRepasoDeManiobras)
                 {
                     participanteEvento1.RecibirExperiencia(35);
-                    OtorgarEstadoCaravana(TipoEstadoCaravana.Compromiso,
-                        "-" + participanteEvento1.sNombre + TRADU.i.Traducir(" dirigio un repaso de maniobras util (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ") + tsMental + TRADU.i.Traducir(" vs DC ")
-                        + DificultadRepasoDeManiobras + TRADU.i.Traducir("). +35 Experiencia y Compromiso."));
+                    OtorgarEstadoCaravana(TipoEstadoCaravana.Compromiso, null);
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadRepasoDeManiobras, true,
+                        "dirigió un repaso de maniobras",
+                        "led a review of the Caravan's maneuvers",
+                        "conduziu uma revisão de manobras",
+                        "ordenó al grupo; +35 Experiencia y Compromiso.",
+                        "brought the group into order; +35 Experience and Commitment.",
+                        "organizou o grupo; +35 de Experiência e Compromisso.");
                 }
                 else
                 {
                     CampaignManager.Instance.CambiarFatigaActual(1);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                        + TRADU.i.Traducir(" no logró ordenar bien el repaso de maniobras. +1 Fatiga."));
-                    CampaignManager.Instance.EscribirAdvertenciaLog(
-                        ObtenerTextoTiradaLocal(
-                            participanteEvento1, tirada, tsMental, resultado, DificultadRepasoDeManiobras,
-                            " no logró ordenar bien el repaso de maniobras",
-                            " failed to organize the maneuver review",
-                            " não conseguiu organizar bem a revisão de manobras",
-                            "+1 Fatiga.",
-                            "+1 Fatigue.",
-                            "+1 Fadiga."));
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadRepasoDeManiobras, false,
+                        "dirigió un repaso de maniobras",
+                        "led a review of the Caravan's maneuvers",
+                        "conduziu uma revisão de manobras",
+                        "el ejercicio se volvió confuso y la Caravana ganó +1 Fatiga.",
+                        "the exercise became confused and the Caravan gained +1 Fatigue.",
+                        "o exercício se tornou confuso e a Caravana ganhou +1 de Fadiga.");
                 }
             }
             else
@@ -3278,32 +3777,24 @@ public class EventosAdmin : MonoBehaviour
                 if (resultado >= DificultadCuervosDelPaso)
                 {
                     CampaignManager.Instance.CambiarEsperanzaActual(2);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                        + TRADU.i.Traducir(" rompio el mal augurio de los cuervos. +2 Esperanza."));
-                    CampaignManager.Instance.EscribirAdvertenciaLog(
-                        ObtenerTextoTiradaLocal(
-                            participanteEvento1, tirada, tsMental, resultado, DificultadCuervosDelPaso,
-                            " superó su Tirada de Salvación Mental y rompió el mal augurio de los cuervos",
-                            " passed the Mental Save and broke the crows' bad omen",
-                            " foi aprovado no Teste de Resistência Mental e rompeu o mau agouro dos corvos",
-                            "+2 Esperanza.",
-                            "+2 Hope.",
-                            "+2 Esperança."));
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadCuervosDelPaso, true,
+                        "enfrentó el mal augurio de los cuervos",
+                        "faced the crows' dark omen",
+                        "enfrentou o mau agouro dos corvos",
+                        "rompió el miedo y la Caravana ganó +2 Esperanza.",
+                        "broke the fear and the Caravan gained +2 Hope.",
+                        "rompeu o medo e a Caravana ganhou +2 de Esperança.");
                 }
                 else
                 {
-                    OtorgarEstadoCaravana(TipoEstadoCaravana.Acobardados,
-                        "-" + participanteEvento1.sNombre + TRADU.i.Traducir(" no logró cortar el malestar de la Caravana. Acobardados para el próximo combate."));
-                    CampaignManager.Instance.EscribirAdvertenciaLog(
-                        ObtenerTextoTiradaLocal(
-                            participanteEvento1, tirada, tsMental, resultado, DificultadCuervosDelPaso,
-                            " no logró superar su Tirada de Salvación Mental y no pudo cortar el malestar de la Caravana",
-                            " failed the Mental Save and could not break the Caravan's unease",
-                            " falhou no Teste de Resistência Mental e não conseguiu cortar o mal-estar da Caravana",
-                            "Acobardados para el próximo combate.",
-                            "Doubtful for the next battle.",
-                            "Acobardados para o próximo combate."));
+                    OtorgarEstadoCaravana(TipoEstadoCaravana.Acobardados, null);
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadCuervosDelPaso, false,
+                        "enfrentó el mal augurio de los cuervos",
+                        "faced the crows' dark omen",
+                        "enfrentou o mau agouro dos corvos",
+                        "el presagio se impuso y la Caravana quedó Acobardada para el próximo combate.",
+                        "the omen prevailed and the Caravan became Doubtful for the next battle.",
+                        "o presságio prevaleceu e a Caravana ficou Acobardada para o próximo combate.");
                 }
             }
             else
@@ -3314,7 +3805,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 98)
         {
-            OtorgarEstadoCaravana(TipoEstadoCaravana.Descuidados, "-El eco bajo los pies desordeno la marcha. Descuidados por 1 viaje.");
+            OtorgarEstadoCaravana(TipoEstadoCaravana.Descuidados, "-El eco bajo los pies desordenó la marcha. Descuidados por 1 viaje.");
             gameObject.SetActive(false);
         }
         if (eventoActual == 295)
@@ -3332,33 +3823,25 @@ public class EventosAdmin : MonoBehaviour
                 if (resultado >= DificultadVigiaDelHielo)
                 {
                     participanteEvento1.RecibirExperiencia(30);
-                    OtorgarEstadoCaravana(TipoEstadoCaravana.Vigilante,
-                        "-" + participanteEvento1.sNombre + TRADU.i.Traducir(" vigiló desde el hielo alto y ordeno la marcha. +30 Experiencia y Vigilante."));
-                    CampaignManager.Instance.EscribirAdvertenciaLog(
-                        ObtenerTextoTiradaLocal(
-                            participanteEvento1, tirada, tsReflejos, resultado, DificultadVigiaDelHielo,
-                            " superó su Tirada de Salvación de Reflejos, vigiló desde el hielo alto y ordenó la marcha",
-                            " passed the Reflex Save, watched from the high ice, and organized the march",
-                            " foi aprovado no Teste de Resistência de Reflexos, vigiou do gelo alto e ordenou a marcha",
-                            "+30 Experiencia y Vigilante.",
-                            "+30 Experience and Vigilant.",
-                            "+30 Experiência e Vigilante."));
+                    OtorgarEstadoCaravana(TipoEstadoCaravana.Vigilante, null);
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadVigiaDelHielo, true,
+                        "subió al filo de hielo para vigilar la ruta",
+                        "climbed the icy ridge to survey the route",
+                        "subiu à crista de gelo para vigiar a rota",
+                        "leyó el terreno; +30 Experiencia y Vigilante por 1 viaje.",
+                        "read the terrain; +30 Experience and Vigilant for 1 journey.",
+                        "leu o terreno; +30 de Experiência e Vigilante por 1 viagem.");
                 }
                 else
                 {
                     CampaignManager.Instance.CambiarFatigaActual(1);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participanteEvento1.sNombre
-                        + TRADU.i.Traducir(" bajo agotado del filo helado. +1 Fatiga."));
-                    CampaignManager.Instance.EscribirAdvertenciaLog(
-                        ObtenerTextoTiradaLocal(
-                            participanteEvento1, tirada, tsReflejos, resultado, DificultadVigiaDelHielo,
-                            " bajó agotado del filo helado",
-                            " came down exhausted from the icy ridge",
-                            " desceu exausto da crista congelada",
-                            "+1 Fatiga.",
-                            "+1 Fatigue.",
-                            "+1 Fadiga."));
+                    RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadVigiaDelHielo, false,
+                        "subió al filo de hielo para vigilar la ruta",
+                        "climbed the icy ridge to survey the route",
+                        "subiu à crista de gelo para vigiar a rota",
+                        "bajó agotado y la Caravana ganó +1 Fatiga.",
+                        "came down exhausted and the Caravan gained +1 Fatigue.",
+                        "desceu exausto e a Caravana ganhou +1 de Fadiga.");
                 }
             }
             else
@@ -3370,6 +3853,16 @@ public class EventosAdmin : MonoBehaviour
         if (eventoActual == 297)
         {
             OtorgarEstadoCaravana(TipoEstadoCaravana.Compromiso, "-La señal de los resistentes reforzó el Compromiso de la Caravana.");
+            gameObject.SetActive(false);
+        }
+        if (eventoActual == 292)
+        {
+            CampaignManager.Instance.scMapaManager.nodoActual.TiradaExploracion(100, true);
+            gameObject.SetActive(false);
+        }
+        if (eventoActual == 312)
+        {
+            CampaignManager.Instance.AgregarHeroe(0);
             gameObject.SetActive(false);
         }
 
@@ -3417,12 +3910,15 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 6)
         {
-
             int oroRobado = CampaignManager.Instance.GetOroActuales() / 4; //25% del oro actual
             if (oroRobado > CampaignManager.Instance.GetOroActuales()) { oroRobado = CampaignManager.Instance.GetOroActuales(); }
             CampaignManager.Instance.CambiarOroActual(-oroRobado);
-            CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-No has logrado encontrar al ladrón y se perdieron ") + oroRobado + TRADU.i.Traducir(" de oro. -5 Esperanza por el interrogatorio"));
-
+            int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+            CampaignManager.Instance.EscribirLog(SeleccionarTextoLocal(
+                "—La Caravana renunció al interrogatorio. El ladrón escapó con " + oroRobado + " Oro.",
+                "—The Caravan declined the interrogation. The thief escaped with " + oroRobado + " Gold.",
+                "—A Caravana desistiu do interrogatório. O ladrão fugiu com " + oroRobado + " de Ouro.",
+                idioma), true);
 
             gameObject.SetActive(false);
         }
@@ -3433,18 +3929,29 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 8)
         {
-            int chancesCont = 30 + (int)CampaignManager.Instance.GetValorAlientoNegro() * 3;
-            if (UnityEngine.Random.Range(1, 101) <= chancesCont)
+            int chancesCont = LimitarProbabilidad(30 + (int)CampaignManager.Instance.GetValorAlientoNegro() * 3);
+            int tiradaPorcentual = UnityEngine.Random.Range(1, 101);
+            if (tiradaPorcentual <= chancesCont)
             {
                 int civilesPerdidos = 25;
                 CampaignManager.Instance.CambiarCivilesActuales(-civilesPerdidos);
                 CampaignManager.Instance.CambiarEsperanzaActual(-10);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Civiles se han contaminado y han muerto ") + civilesPerdidos + TRADU.i.Traducir(" Civiles. -10 Esperanza"));
+                RegistrarTiradaPorcentual(tiradaPorcentual, chancesCont,
+                    "Riesgo del río", "River risk", "Risco do rio",
+                    "de contaminación", "contamination risk", "de contaminação",
+                    "Fallo: el agua estaba contaminada; -" + civilesPerdidos + " Civiles y -10 Esperanza.",
+                    "Failure: the water was contaminated; -" + civilesPerdidos + " Civilians and -10 Hope.",
+                    "Falha: a água estava contaminada; -" + civilesPerdidos + " Civis e -10 de Esperança.");
             }
             else
             {
                 CampaignManager.Instance.CambiarFatigaActual(-1);
-                CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Los Civiles han descansado en el Río y se han refrescado. -1 Fatiga "));
+                RegistrarTiradaPorcentual(tiradaPorcentual, chancesCont,
+                    "Riesgo del río", "River risk", "Risco do rio",
+                    "de contaminación", "contamination risk", "de contaminação",
+                    "Éxito: el agua era segura y los Civiles se refrescaron; -1 Fatiga.",
+                    "Success: the water was safe and the Civilians recovered; -1 Fatigue.",
+                    "Sucesso: a água era segura e os Civis se recuperaram; -1 de Fadiga.");
             }
             gameObject.SetActive(false);
         }
@@ -3489,23 +3996,25 @@ public class EventosAdmin : MonoBehaviour
                 if (resultado >= DificultadVadoTraicionero)
                 {
                     participante.RecibirExperiencia(40);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participante.sNombre
-                        + TRADU.i.Traducir(" superó su Tirada de Salvación de Reflejos (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                        + DificultadVadoTraicionero + TRADU.i.Traducir(") y logró ordenar el cruce del vado. +40 Experiencia."));
+                    RegistrarTiradaD20(participante, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadVadoTraicionero, true,
+                        "ordenó el cruce del vado traicionero",
+                        "organized the crossing of the treacherous ford",
+                        "organizou a travessia do vau traiçoeiro",
+                        "condujo a la Caravana sin pérdidas y ganó 40 Experiencia.",
+                        "led the Caravan across without losses and gained 40 Experience.",
+                        "conduziu a Caravana sem perdas e ganhou 40 de Experiência.");
                 }
                 else
                 {
                     AplicarHeridaDeEvento(participante);
                     CampaignManager.Instance.CambiarBueyesActuales(-1);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participante.sNombre
-                        + TRADU.i.Traducir(" falló su Tirada de Salvación de Reflejos (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsReflejos + TRADU.i.Traducir(" vs DC ")
-                        + DificultadVadoTraicionero + TRADU.i.Traducir("). Sufrió una Herida y la Caravana perdió 1 Buey en el vado."));
+                    RegistrarTiradaD20(participante, TipoTiradaEvento.Reflejos, tirada, tsReflejos, DificultadVadoTraicionero, false,
+                        "ordenó el cruce del vado traicionero",
+                        "organized the crossing of the treacherous ford",
+                        "organizou a travessia do vau traiçoeiro",
+                        "la corriente rompió la formación; sufrió una Herida y la Caravana perdió 1 Buey.",
+                        "the current broke the formation; they suffered an Injury and the Caravan lost 1 Ox.",
+                        "a corrente rompeu a formação; sofreu um Ferimento e a Caravana perdeu 1 Boi.");
                 }
             }
             else
@@ -3527,23 +4036,25 @@ public class EventosAdmin : MonoBehaviour
                 {
                     participante.RecibirExperiencia(35);
                     CampaignManager.Instance.CambiarEsperanzaActual(3);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participante.sNombre
-                        + TRADU.i.Traducir(" superó su Tirada de Salvación de Fortaleza (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsFortaleza + TRADU.i.Traducir(" vs DC ")
-                        + DificultadCarroEncajado + TRADU.i.Traducir("), destrabó el carro y sostuvo el ánimo de la Caravana. +35 Experiencia, +3 Esperanza."));
+                    RegistrarTiradaD20(participante, TipoTiradaEvento.Fortaleza, tirada, tsFortaleza, DificultadCarroEncajado, true,
+                        "intentó liberar el carro encajado",
+                        "tried to free the stuck wagon",
+                        "tentou soltar a carroça atolada",
+                        "liberó el carro; +35 Experiencia y +3 Esperanza.",
+                        "freed the wagon; +35 Experience and +3 Hope.",
+                        "soltou a carroça; +35 de Experiência e +3 de Esperança.");
                 }
                 else
                 {
                     AplicarHeridaDeEvento(participante);
                     CampaignManager.Instance.CambiarFatigaActual(1);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participante.sNombre
-                        + TRADU.i.Traducir(" falló su Tirada de Salvación de Fortaleza (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsFortaleza + TRADU.i.Traducir(" vs DC ")
-                        + DificultadCarroEncajado + TRADU.i.Traducir("). Sufrió una Herida al intentar mover el carro y la Caravana ganó +1 Fatiga."));
+                    RegistrarTiradaD20(participante, TipoTiradaEvento.Fortaleza, tirada, tsFortaleza, DificultadCarroEncajado, false,
+                        "intentó liberar el carro encajado",
+                        "tried to free the stuck wagon",
+                        "tentou soltar a carroça atolada",
+                        "el esfuerzo lo hirió y la Caravana ganó +1 Fatiga.",
+                        "the effort injured them and the Caravan gained +1 Fatigue.",
+                        "o esforço o feriu e a Caravana ganhou +1 de Fadiga.");
                 }
             }
             else
@@ -3644,7 +4155,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 204)
         {
-            CampaignManager.Instance.CambiarMaterialesActuales(UnityEngine.Random.Range(15, 26));
+            CampaignManager.Instance.CambiarMaterialesActuales(UnityEngine.Random.Range(15, 27));
             gameObject.SetActive(false);
         }
         if (eventoActual == 205)
@@ -3702,16 +4213,24 @@ public class EventosAdmin : MonoBehaviour
                 {
                     participante.RecibirExperiencia(30);
                     CampaignManager.Instance.CambiarEsperanzaActual(6);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participante.sNombre
-                        + TRADU.i.Traducir(" superó su Tirada de Salvación Mental (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsMental + TRADU.i.Traducir(" vs DC ")
-                        + DificultadPulsoDeMando + TRADU.i.Traducir("), recompuso la fila y levantó el ánimo de la Caravana. +30 Experiencia, +6 Esperanza."));
+                    RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadPulsoDeMando, true,
+                        "intentó recomponer la fila",
+                        "tried to restore order to the line",
+                        "tentou reorganizar a fila",
+                        "impuso orden; +30 Experiencia y +6 Esperanza.",
+                        "restored order; +30 Experience and +6 Hope.",
+                        "restabeleceu a ordem; +30 de Experiência e +6 de Esperança.");
                 }
                 else
                 {
                     CampaignManager.Instance.CambiarEsperanzaActual(-6);
+                    RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadPulsoDeMando, false,
+                        "intentó recomponer la fila",
+                        "tried to restore order to the line",
+                        "tentou reorganizar a fila",
+                        "la confusión se extendió y la Caravana perdió 6 Esperanza.",
+                        "the confusion spread and the Caravan lost 6 Hope.",
+                        "a confusão se espalhou e a Caravana perdeu 6 de Esperança.");
                 }
             }
             else
@@ -3744,16 +4263,24 @@ public class EventosAdmin : MonoBehaviour
                 {
                     participante.RecibirExperiencia(25);
                     CampaignManager.Instance.CambiarValorAlientoNegro(-1);
-                    CampaignManager.Instance.EscribirLog(
-                        TRADU.i.Traducir("-") + participante.sNombre
-                        + TRADU.i.Traducir(" superó su Tirada de Salvación Mental (1d20: ")
-                        + tirada + TRADU.i.Traducir(" + ")
-                        + tsMental + TRADU.i.Traducir(" vs DC ")
-                        + DificultadDosMiradas + TRADU.i.Traducir("), eligió bien la ruta y el Aliento Negro retrocedió 1. +25 Experiencia."));
+                    RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadDosMiradas, true,
+                        "defendió su lectura de la ruta",
+                        "defended their reading of the route",
+                        "defendeu sua leitura da rota",
+                        "eligió bien; +25 Experiencia y el Aliento Negro retrocedió 1.",
+                        "chose correctly; +25 Experience and the Black Breath receded by 1.",
+                        "escolheu corretamente; +25 de Experiência e o Respiro Negro recuou 1.");
                 }
                 else
                 {
                     CampaignManager.Instance.CambiarFatigaActual(1);
+                    RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadDosMiradas, false,
+                        "defendió su lectura de la ruta",
+                        "defended their reading of the route",
+                        "defendeu sua leitura da rota",
+                        "la duda retrasó la marcha y la Caravana ganó +1 Fatiga.",
+                        "the hesitation delayed the march and the Caravan gained +1 Fatigue.",
+                        "a hesitação atrasou a marcha e a Caravana ganhou +1 de Fadiga.");
                 }
             }
             else
@@ -3791,12 +4318,6 @@ public class EventosAdmin : MonoBehaviour
             CampaignManager.Instance.CambiarEsperanzaActual(4);
             gameObject.SetActive(false);
         }
-        if (eventoActual == 292)
-        {
-            CampaignManager.Instance.scMapaManager.nodoActual.TiradaExploracion(100, true);
-            gameObject.SetActive(false);
-        }
-
         // Eventos de descanso malos
         if (eventoActual == 86)
         {
@@ -3970,11 +4491,6 @@ public class EventosAdmin : MonoBehaviour
             }
             gameObject.SetActive(false);
         }
-        if (eventoActual == 312)
-        {
-            CampaignManager.Instance.AgregarHeroe(0);
-            gameObject.SetActive(false);
-        }
         if (eventoActual == 109)
         {
             CampaignManager.Instance.CambiarFatigaActual(1);
@@ -4123,12 +4639,14 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 119)
         {
-            OtorgarEstadoCaravanaPositivoAleatorio("-La noche dejó a la Caravana reforzada.");
+            OtorgarEstadoCaravana(TipoEstadoCaravana.Acobardados,
+                "-Las pesadillas dejaron a la Caravana Acobardada para el próximo combate.");
             gameObject.SetActive(false);
         }
         if (eventoActual == 120)
         {
-            OtorgarEstadoCaravanaPositivoAleatorio("-El descanso incompleto terminó templando a la Caravana.");
+            OtorgarEstadoCaravana(TipoEstadoCaravana.Aletargados,
+                "-El descanso incompleto dejó a la Caravana Aletargada.");
             gameObject.SetActive(false);
         }
         if (eventoActual == 121)
@@ -4138,7 +4656,8 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 122)
         {
-            OtorgarEstadoCaravanaPositivoAleatorio("-La reorganización del campamento dejó una enseñanza útil en la Caravana.");
+            OtorgarEstadoCaravana(TipoEstadoCaravana.Descuidados,
+                "-La dispersión de las fogatas dejó a la Caravana Descuidada por 1 viaje.");
             gameObject.SetActive(false);
         }
         if (eventoActual == 216)

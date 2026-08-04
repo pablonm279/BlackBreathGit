@@ -14,7 +14,8 @@ public enum BanterDisparador
     MoralDisminuyeEtapa,
     HabilidadAliadaRecibida,
     VidaCritica,
-    Pifia
+    Pifia,
+    AliadoEscapa
 }
 
 public sealed class BanterLineaLocal

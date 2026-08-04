@@ -122,6 +122,11 @@ public class Escapar : Habilidad
 
     AplicarPenalizacionValentiaAliadosPorEscape(battleManager, ladoQueEscapa);
 
+    if (ladoQueEscapa == 2)
+    {
+      BanterBattleDirector.NotificarEscapeAliado(scEstaUnidad);
+    }
+
     AdministradorEscenas admin = CampaignManager.Instance != null ? CampaignManager.Instance.scAdministradorEscenas : null;
     admin?.MarcarAvergonzadoDesdeUnidad(scEstaUnidad);
 

@@ -542,6 +542,8 @@ public abstract class IAHabilidad : MonoBehaviour
     //Crítico = 3
     //Si la habilidad es hostil, no Discreta, y tiene Escondido tier 1, se revela
     
+    Unidad objetivoProyectil = unidadAtacada;
+
     if (scEstaUnidad.ObtenerEstaEscondido() > 0)
     {
       scEstaUnidad.PerderEscondido();
@@ -607,6 +609,7 @@ public abstract class IAHabilidad : MonoBehaviour
       }
       unidadAtacada?.NotificarAtaqueRecibido();
       BanterBattleDirector.NotificarResultadoAtaque(scEstaUnidad, unidadAtacada, -1);
+      ArrowFlight.NotificarResultadoAtaque(scEstaUnidad, objetivoProyectil, -1);
 
       return -1;
     }
@@ -633,6 +636,7 @@ public abstract class IAHabilidad : MonoBehaviour
           TRADU.i.Traducir("Impacto crítico")));
       unidadAtacada?.NotificarAtaqueRecibido();
       BanterBattleDirector.NotificarResultadoAtaque(scEstaUnidad, unidadAtacada, 3);
+      ArrowFlight.NotificarResultadoAtaque(scEstaUnidad, objetivoProyectil, 3);
       return 3; //Golpe crítico
     }
 
@@ -682,6 +686,7 @@ public abstract class IAHabilidad : MonoBehaviour
     }
 
     unidadAtacada?.NotificarAtaqueRecibido();
+    ArrowFlight.NotificarResultadoAtaque(scEstaUnidad, objetivoProyectil, resultado);
     return resultado;
   }
 

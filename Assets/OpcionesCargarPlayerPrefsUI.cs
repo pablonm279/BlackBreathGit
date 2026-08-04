@@ -21,6 +21,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private const float FpsLimitOffsetY = -85f;
     private const float EscalaTextoSliderOffsetY = -80f;
     private const float EscalaTextoSeparacionEtiquetaY = -19f;
+    private const float BanterEtiquetaOffsetY = -85f;
+    private const float BanterToggleOffsetY = 20f;
 
     public Slider volMusicaSlider;
     [NonSerialized] private Slider volSfxSlider;
@@ -56,6 +58,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public Toggle tipsToggle;
     [NonSerialized] private Slider escalaTextoSlider;
     private TextMeshProUGUI etiquetaEscalaTexto;
+    [NonSerialized] private Toggle banterToggle;
+    private TextMeshProUGUI etiquetaBanter;
 
     [Header("Visual Quality")]
     public Toggle postFxToggle;
@@ -78,6 +82,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         AsegurarDropdownLimitadorFPS();
         ConfigurarToggleAyudas();
         AsegurarSliderEscalaTexto();
+        AsegurarToggleBanter();
        
         LlenarDropdownResoluciones();
         AplicarEfectosEnUI();
@@ -90,6 +95,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         AsegurarDropdownLimitadorFPS();
         ConfigurarToggleAyudas();
         AsegurarSliderEscalaTexto();
+        AsegurarToggleBanter();
         
         AplicarEfectosEnUI();
     }
@@ -113,6 +119,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         AsegurarControlesAudioSfx();
         AsegurarDropdownLimitadorFPS();
         AsegurarSliderEscalaTexto();
+        AsegurarToggleBanter();
 
         // Volumen de la másica
         float volumenMusica = AjustesAudio.ObtenerVolumenMusica();
@@ -212,7 +219,11 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         if (escalaTextoSlider != null)
             escalaTextoSlider.SetValueWithoutNotify(EscaladoFuentesGlobal.EscalaTextoActual * 100f);
 
+        if (banterToggle != null)
+            banterToggle.SetIsOnWithoutNotify(BanterBattleUI.BantersHabilitados);
+
         ActualizarEtiquetaEscalaTexto();
+        ActualizarEtiquetaBanter();
 
         CargarOpcionesVisuales();
         AplicarPreferenciasSyncYFPS();
@@ -260,6 +271,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         GuardarOpcionesVisuales();
         AplicarPreferenciasSyncYFPS();
         AplicarMostrarAyudas();
+        AplicarBanters();
 
         //---
         PlayerPrefs.Save();
@@ -336,6 +348,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         RuntimeAnalytics.TrackDesign("ui", "options", "gameplay_panel");
         AsegurarSliderEscalaTexto();
         ActualizarEtiquetaEscalaTexto();
+        AsegurarToggleBanter();
+        ActualizarEtiquetaBanter();
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(false);
         PanelControles.SetActive(false);
@@ -743,6 +757,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             RectTransform rect = parent.GetChild(i) as RectTransform;
             if (rect == null) { continue; }
             if (sliderIgnorado != null && rect.gameObject == sliderIgnorado.gameObject) { continue; }
+            if (rect.name == "BanterToggle") { continue; }
 
             bool esControl = rect.GetComponent<Toggle>() != null
                 || rect.GetComponent<Slider>() != null
@@ -784,6 +799,202 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         else
         {
             etiquetaEscalaTexto.text = "Tamaño de texto: " + porcentaje + "%";
+        }
+    }
+
+    private void AsegurarToggleBanter()
+    {
+        if (PanelGameplay == null)
+        {
+            return;
+        }
+
+        if (banterToggle == null)
+        {
+            Toggle[] toggles = PanelGameplay.GetComponentsInChildren<Toggle>(true);
+            for (int i = 0; i < toggles.Length; i++)
+            {
+                if (toggles[i] != null && toggles[i].name == "BanterToggle")
+                {
+                    banterToggle = toggles[i];
+                    break;
+                }
+            }
+        }
+
+        Toggle toggleBase = tipsToggle != null ? tipsToggle : modorapidoToggle;
+        if (banterToggle == null && toggleBase != null)
+        {
+            GameObject clonToggle = Instantiate(toggleBase.gameObject, PanelGameplay.transform);
+            clonToggle.name = "BanterToggle";
+            banterToggle = clonToggle.GetComponent<Toggle>();
+            if (banterToggle == null)
+            {
+                Destroy(clonToggle);
+                return;
+            }
+
+            banterToggle.onValueChanged = new Toggle.ToggleEvent();
+            TextMeshProUGUI[] textosInternos = clonToggle.GetComponentsInChildren<TextMeshProUGUI>(true);
+            for (int i = 0; i < textosInternos.Length; i++)
+            {
+                textosInternos[i].gameObject.SetActive(false);
+            }
+        }
+
+        if (banterToggle == null)
+        {
+            return;
+        }
+
+        if (etiquetaBanter == null)
+        {
+            Transform etiquetaExistente = PanelGameplay.transform.Find("txtBanter");
+            if (etiquetaExistente != null)
+            {
+                etiquetaBanter = etiquetaExistente.GetComponent<TextMeshProUGUI>();
+            }
+        }
+
+        if (etiquetaBanter == null)
+        {
+            TextMeshProUGUI etiquetaBase = etiquetaEscalaTexto;
+            if (etiquetaBase == null && toggleBase != null)
+            {
+                etiquetaBase = toggleBase.GetComponentInChildren<TextMeshProUGUI>(true);
+            }
+            etiquetaBanter = CrearEtiquetaGameplay("txtBanter", etiquetaBase);
+        }
+
+        PosicionarControlBanter();
+        banterToggle.onValueChanged.RemoveListener(OnBanterToggleChanged);
+        banterToggle.onValueChanged.AddListener(OnBanterToggleChanged);
+        banterToggle.SetIsOnWithoutNotify(BanterBattleUI.BantersHabilitados);
+        ActualizarEtiquetaBanter();
+    }
+
+    private TextMeshProUGUI CrearEtiquetaGameplay(string nombre, TextMeshProUGUI etiquetaBase)
+    {
+        if (PanelGameplay == null || etiquetaBase == null)
+        {
+            return null;
+        }
+
+        GameObject objetoEtiqueta = new GameObject(
+            nombre,
+            typeof(RectTransform),
+            typeof(CanvasRenderer),
+            typeof(TextMeshProUGUI));
+        objetoEtiqueta.layer = PanelGameplay.layer;
+        objetoEtiqueta.transform.SetParent(PanelGameplay.transform, false);
+
+        TextMeshProUGUI etiqueta = objetoEtiqueta.GetComponent<TextMeshProUGUI>();
+        etiqueta.font = etiquetaBase.font;
+        etiqueta.fontSharedMaterial = etiquetaBase.fontSharedMaterial;
+        etiqueta.fontSize = etiquetaBase.fontSize;
+        etiqueta.fontStyle = etiquetaBase.fontStyle;
+        etiqueta.alignment = etiquetaBase.alignment;
+        etiqueta.color = etiquetaBase.color;
+        etiqueta.textWrappingMode = etiquetaBase.textWrappingMode;
+        etiqueta.overflowMode = etiquetaBase.overflowMode;
+        etiqueta.raycastTarget = false;
+
+        RectTransform rectBase = etiquetaBase.transform as RectTransform;
+        RectTransform rect = objetoEtiqueta.transform as RectTransform;
+        if (rectBase != null && rect != null)
+        {
+            rect.anchorMin = rectBase.anchorMin;
+            rect.anchorMax = rectBase.anchorMax;
+            rect.pivot = rectBase.pivot;
+            rect.sizeDelta = rectBase.sizeDelta;
+            rect.localScale = rectBase.localScale;
+        }
+
+        EscaladoFuentesGlobal.RegistrarClon(etiquetaBase, etiqueta);
+        return etiqueta;
+    }
+
+    private void PosicionarControlBanter()
+    {
+        if (PanelGameplay == null || banterToggle == null || etiquetaBanter == null)
+        {
+            return;
+        }
+
+        RectTransform toggleRect = banterToggle.transform as RectTransform;
+        RectTransform etiquetaRect = etiquetaBanter.transform as RectTransform;
+        RectTransform sliderRect = escalaTextoSlider != null
+            ? escalaTextoSlider.transform as RectTransform
+            : null;
+        RectTransform etiquetaEscalaRect = etiquetaEscalaTexto != null
+            ? etiquetaEscalaTexto.transform as RectTransform
+            : null;
+        if (toggleRect == null || etiquetaRect == null)
+        {
+            return;
+        }
+
+        float referenciaY;
+        if (sliderRect != null)
+        {
+            referenciaY = sliderRect.anchoredPosition.y;
+            if (etiquetaEscalaRect != null)
+            {
+                referenciaY = Mathf.Min(referenciaY, etiquetaEscalaRect.anchoredPosition.y);
+            }
+        }
+        else
+        {
+            referenciaY = ObtenerPosicionYControlMasBajo(PanelGameplay.transform, null);
+        }
+
+        float etiquetaY = referenciaY + BanterEtiquetaOffsetY;
+        float etiquetaX = etiquetaEscalaRect != null
+            ? etiquetaEscalaRect.anchoredPosition.x
+            : toggleRect.anchoredPosition.x;
+        etiquetaRect.anchorMin = toggleRect.anchorMin;
+        etiquetaRect.anchorMax = toggleRect.anchorMax;
+        etiquetaRect.pivot = toggleRect.pivot;
+        etiquetaRect.anchoredPosition = new Vector2(etiquetaX, etiquetaY);
+
+        Vector2 posicionToggle = toggleRect.anchoredPosition;
+        posicionToggle.y = etiquetaY + BanterToggleOffsetY;
+        toggleRect.anchoredPosition = posicionToggle;
+    }
+
+    private void OnBanterToggleChanged(bool activo)
+    {
+        BanterBattleUI.EstablecerBantersHabilitados(activo);
+        RuntimeAnalytics.TrackDesign("ui", "options", "banters_" + RuntimeAnalytics.BoolToken(activo));
+    }
+
+    private void AplicarBanters()
+    {
+        if (banterToggle != null)
+        {
+            BanterBattleUI.EstablecerBantersHabilitados(banterToggle.isOn);
+        }
+    }
+
+    private void ActualizarEtiquetaBanter()
+    {
+        if (etiquetaBanter == null)
+        {
+            return;
+        }
+
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            etiquetaBanter.text = "Character banter";
+        }
+        else if (idioma == TRADU.IdiomaPortugues)
+        {
+            etiquetaBanter.text = "Conversas dos personagens";
+        }
+        else
+        {
+            etiquetaBanter.text = "Diálogos de personajes";
         }
     }
 
@@ -1151,6 +1362,7 @@ public void CambiarIdioma(int idioma)
     TraducirDropdownGraficos();
     TraducirDropdownDificultad();
     ActualizarTextosLimitadorFPS();
+    ActualizarEtiquetaBanter();
     AplicarIdiomaPanelControles();
     RefrescarObjetosMenuDependientesIdioma();
     SetRestartRequiredText(string.Empty);
