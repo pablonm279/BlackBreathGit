@@ -27,22 +27,29 @@ public class CaminoMesh : MonoBehaviour
     private const float RutCenterOffsetScale = 0.43f;
     private const float RutHalfWidthScale = 0.18f;
     private const float PathOpacity = 0.70f;
+    private const float PathOpacityRecorrido = 0.82f;
     private const float UnderlayOpacity = 0.16f;
-    private const float RutOpacity = 0.12f;
+    private const float UnderlayOpacityRecorrido = 0.24f;
+    private const float RutOpacityRecorrido = 0.34f;
+    private const float FootprintSpacing = 0.34f;
     private const float PathEmissionScale = 0.05f;
     private const float GoldenTintBlend = 0.10f;
     private const string UnderlayName = "BaseTierraCamino";
     private const string RutsName = "HuellasCarretaCamino";
+    private const string FootprintsName = "PisadasConvoyCamino";
 
     Mesh _mesh;
     Mesh _underlayMesh;
     Mesh _rutsMesh;
+    Mesh _footprintsMesh;
     MeshFilter _mf;
     MeshRenderer _mr;
     MeshFilter _underlayMf;
     MeshRenderer _underlayMr;
     MeshFilter _rutsMf;
     MeshRenderer _rutsMr;
+    MeshFilter _footprintsMf;
+    MeshRenderer _footprintsMr;
     Material _displayMaterial;
     Material _displaySourceMaterial;
     Material _underlayMaterial;
@@ -51,6 +58,12 @@ public class CaminoMesh : MonoBehaviour
     Material _rutsSourceMaterial;
     LineRenderer _lr;
     bool _visible = true;
+    bool _culledByVision;
+    bool _cullingVisionInicializado;
+    bool _visibleParaDecoracion;
+    bool _caminoRecorrido;
+
+    public bool VisibleParaDecoracion => _visibleParaDecoracion;
 
     void Awake()
     {
@@ -106,13 +119,19 @@ public class CaminoMesh : MonoBehaviour
             UnderlayEdgeIrregularityScale);
         EnsureRuts();
         BuildRuts(ptsLocal, _rutsMesh);
+        if (_caminoRecorrido)
+        {
+            EnsureFootprints();
+            BuildFootprints(ptsLocal, _footprintsMesh);
+        }
 
         if (_mf != null) _mf.sharedMesh = _mesh;
         if (_underlayMf != null) _underlayMf.sharedMesh = _underlayMesh;
         if (_rutsMf != null) _rutsMf.sharedMesh = _rutsMesh;
         if (_mr != null) _mr.enabled = _visible;
         if (_underlayMr != null) _underlayMr.enabled = _visible;
-        if (_rutsMr != null) _rutsMr.enabled = _visible;
+        if (_rutsMr != null) _rutsMr.enabled = _visible && _caminoRecorrido;
+        if (_footprintsMr != null) _footprintsMr.enabled = _visible && _caminoRecorrido;
     }
 
     void BuildStrip(
@@ -313,6 +332,79 @@ public class CaminoMesh : MonoBehaviour
         targetMesh.RecalculateBounds();
     }
 
+    void BuildFootprints(IList<Vector3> ptsLocal, Mesh targetMesh)
+    {
+        if (targetMesh == null || ptsLocal == null || ptsLocal.Count < 2)
+            return;
+
+        int segmentCount = ptsLocal.Count - 1;
+        float[] cumulative = new float[ptsLocal.Count];
+        float totalDistance = 0f;
+        for (int i = 0; i < segmentCount; i++)
+        {
+            totalDistance += Vector3.Distance(ptsLocal[i], ptsLocal[i + 1]);
+            cumulative[i + 1] = totalDistance;
+        }
+
+        int footprintCount = Mathf.Max(0, Mathf.FloorToInt((totalDistance - 0.30f) / FootprintSpacing));
+        if (footprintCount == 0)
+        {
+            targetMesh.Clear();
+            return;
+        }
+
+        var verts = new Vector3[footprintCount * 4];
+        var norms = new Vector3[footprintCount * 4];
+        var uvs = new Vector2[footprintCount * 4];
+        var tris = new int[footprintCount * 6];
+        int segmentIndex = 0;
+
+        for (int i = 0; i < footprintCount; i++)
+        {
+            float distance = 0.20f + i * FootprintSpacing;
+            while (segmentIndex < segmentCount - 1 && cumulative[segmentIndex + 1] < distance)
+                segmentIndex++;
+
+            float segmentLength = Mathf.Max(0.0001f, cumulative[segmentIndex + 1] - cumulative[segmentIndex]);
+            float t = Mathf.Clamp01((distance - cumulative[segmentIndex]) / segmentLength);
+            Vector3 forward = (ptsLocal[segmentIndex + 1] - ptsLocal[segmentIndex]).normalized;
+            Vector3 side = Vector3.Cross(Vector3.up, forward).normalized;
+            if (side.sqrMagnitude <= 0.0001f) side = Vector3.right;
+
+            float alternate = (i & 1) == 0 ? -1f : 1f;
+            Vector3 center = Vector3.Lerp(ptsLocal[segmentIndex], ptsLocal[segmentIndex + 1], t)
+                + Vector3.up * (RutYOffset + 0.004f)
+                + side * (width * 0.10f * alternate);
+            float halfLength = width * 0.14f;
+            float halfWidth = width * 0.047f;
+            int vi = i * 4;
+            verts[vi] = center - forward * halfLength - side * halfWidth;
+            verts[vi + 1] = center + forward * halfLength - side * halfWidth;
+            verts[vi + 2] = center + forward * halfLength + side * halfWidth;
+            verts[vi + 3] = center - forward * halfLength + side * halfWidth;
+            norms[vi] = norms[vi + 1] = norms[vi + 2] = norms[vi + 3] = Vector3.up;
+            uvs[vi] = new Vector2(0f, 0f);
+            uvs[vi + 1] = new Vector2(1f, 0f);
+            uvs[vi + 2] = new Vector2(1f, 1f);
+            uvs[vi + 3] = new Vector2(0f, 1f);
+
+            int ti = i * 6;
+            tris[ti] = vi;
+            tris[ti + 1] = vi + 1;
+            tris[ti + 2] = vi + 2;
+            tris[ti + 3] = vi;
+            tris[ti + 4] = vi + 2;
+            tris[ti + 5] = vi + 3;
+        }
+
+        targetMesh.Clear();
+        targetMesh.vertices = verts;
+        targetMesh.normals = norms;
+        targetMesh.uv = uvs;
+        targetMesh.triangles = tris;
+        targetMesh.RecalculateBounds();
+    }
+
     static float EvaluateWidthScale(float distance, float totalDistance)
     {
         if (totalDistance <= 0.0001f)
@@ -453,6 +545,44 @@ public class CaminoMesh : MonoBehaviour
         }
     }
 
+    void EnsureFootprints()
+    {
+        if (_footprintsMf == null || _footprintsMr == null)
+        {
+            Transform footprints = transform.Find(FootprintsName);
+            if (footprints == null)
+            {
+                GameObject footprintsObject = new GameObject(FootprintsName);
+                footprintsObject.hideFlags = HideFlags.HideInHierarchy | HideFlags.DontSave;
+                footprintsObject.layer = gameObject.layer;
+                footprintsObject.transform.SetParent(transform, false);
+                footprints = footprintsObject.transform;
+            }
+
+            _footprintsMf = footprints.GetComponent<MeshFilter>();
+            if (_footprintsMf == null) _footprintsMf = footprints.gameObject.AddComponent<MeshFilter>();
+            _footprintsMr = footprints.GetComponent<MeshRenderer>();
+            if (_footprintsMr == null) _footprintsMr = footprints.gameObject.AddComponent<MeshRenderer>();
+            _footprintsMr.shadowCastingMode = ShadowCastingMode.Off;
+            _footprintsMr.receiveShadows = false;
+            if (_mr != null)
+            {
+                _footprintsMr.sortingLayerID = _mr.sortingLayerID;
+                _footprintsMr.sortingOrder = _mr.sortingOrder + 2;
+            }
+        }
+
+        if (_footprintsMesh == null)
+        {
+            _footprintsMesh = new Mesh();
+            _footprintsMesh.name = "CaminoPisadasConvoyMesh";
+            _footprintsMesh.MarkDynamic();
+        }
+
+        _footprintsMf.sharedMesh = _footprintsMesh;
+        _footprintsMr.sharedMaterial = _rutsMaterial;
+    }
+
     void UpdateDisplayMaterial(Material source)
     {
         if (_displayMaterial != null && _displaySourceMaterial == source)
@@ -471,7 +601,7 @@ public class CaminoMesh : MonoBehaviour
             name = source.name + " Camino Mate (Runtime)"
         };
         ClampSurfaceShine(_displayMaterial, 0.08f, 0.06f);
-        GradeDisplayMaterial(_displayMaterial);
+        GradeDisplayMaterial(_displayMaterial, _caminoRecorrido);
         ConfigureTransparentSurface(_displayMaterial);
         _mr.sharedMaterial = _displayMaterial;
     }
@@ -496,7 +626,7 @@ public class CaminoMesh : MonoBehaviour
             name = source.name + " Base Tierra (Runtime)"
         };
 
-        Color dirt = new Color(0.28f, 0.18f, 0.09f, UnderlayOpacity);
+        Color dirt = ObtenerColorTierraDesgastada(_caminoRecorrido ? UnderlayOpacityRecorrido : UnderlayOpacity);
         ApplyUnderlayColor("_Color", dirt);
         ApplyUnderlayColor("_BaseColor", dirt);
         if (_underlayMaterial.HasProperty("_Metallic")) _underlayMaterial.SetFloat("_Metallic", 0f);
@@ -534,7 +664,7 @@ public class CaminoMesh : MonoBehaviour
             name = source.name + " Huellas Carreta (Runtime)"
         };
 
-        Color wornDirt = new Color(0.10f, 0.06f, 0.025f, RutOpacity);
+        Color wornDirt = ObtenerColorHuellas(RutOpacityRecorrido);
         ApplyDerivedColor(_rutsMaterial, "_Color", wornDirt, 0.68f);
         ApplyDerivedColor(_rutsMaterial, "_BaseColor", wornDirt, 0.68f);
         ClampSurfaceShine(_rutsMaterial, 0f, 0f);
@@ -544,6 +674,7 @@ public class CaminoMesh : MonoBehaviour
         _rutsMaterial.renderQueue = (int)RenderQueue.Transparent + 1;
 
         _rutsMr.sharedMaterial = _rutsMaterial;
+        if (_footprintsMr != null) _footprintsMr.sharedMaterial = _rutsMaterial;
     }
 
     void ApplyUnderlayColor(string propertyName, Color dirt)
@@ -562,7 +693,7 @@ public class CaminoMesh : MonoBehaviour
         material.SetColor(propertyName, derivedColor);
     }
 
-    static void GradeDisplayMaterial(Material material)
+    static void GradeDisplayMaterial(Material material, bool recorrido)
     {
         if (material == null)
             return;
@@ -576,11 +707,11 @@ public class CaminoMesh : MonoBehaviour
 
         if (material.HasProperty("_Color"))
         {
-            material.SetColor("_Color", GradePathColor(material.GetColor("_Color"), hasGoldenSignal));
+            material.SetColor("_Color", GradePathColor(material.GetColor("_Color"), hasGoldenSignal, recorrido));
         }
         if (material.HasProperty("_BaseColor"))
         {
-            material.SetColor("_BaseColor", GradePathColor(material.GetColor("_BaseColor"), hasGoldenSignal));
+            material.SetColor("_BaseColor", GradePathColor(material.GetColor("_BaseColor"), hasGoldenSignal, recorrido));
         }
         if (material.HasProperty("_BumpScale"))
             material.SetFloat("_BumpScale", Mathf.Max(material.GetFloat("_BumpScale"), 0.8f));
@@ -595,13 +726,14 @@ public class CaminoMesh : MonoBehaviour
         }
     }
 
-    static Color GradePathColor(Color color, bool hasGoldenSignal)
+    static Color GradePathColor(Color color, bool hasGoldenSignal, bool recorrido)
     {
+        float multiplicador = recorrido ? 0.80f : 0.86f;
         Color graded = new Color(
-            color.r * 0.86f,
-            color.g * 0.86f,
-            color.b * 0.86f,
-            Mathf.Min(color.a, PathOpacity));
+            color.r * multiplicador,
+            color.g * multiplicador,
+            color.b * multiplicador,
+            Mathf.Min(color.a, recorrido ? PathOpacityRecorrido : PathOpacity));
 
         if (hasGoldenSignal)
         {
@@ -610,6 +742,28 @@ public class CaminoMesh : MonoBehaviour
         }
 
         return graded;
+    }
+
+    static Color ObtenerColorTierraDesgastada(float alpha)
+    {
+        int zona = CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null
+            ? CampaignManager.Instance.scAtributosZona.ID
+            : 0;
+        if (zona == 2) return new Color(0.18f, 0.23f, 0.25f, alpha);
+        if (zona == 1) return new Color(0.24f, 0.15f, 0.075f, alpha);
+        if (zona == 3) return new Color(0.16f, 0.14f, 0.12f, alpha);
+        return new Color(0.28f, 0.18f, 0.09f, alpha);
+    }
+
+    static Color ObtenerColorHuellas(float alpha)
+    {
+        int zona = CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null
+            ? CampaignManager.Instance.scAtributosZona.ID
+            : 0;
+        if (zona == 2) return new Color(0.10f, 0.16f, 0.18f, alpha);
+        if (zona == 1) return new Color(0.075f, 0.042f, 0.018f, alpha);
+        if (zona == 3) return new Color(0.075f, 0.065f, 0.055f, alpha);
+        return new Color(0.10f, 0.06f, 0.025f, alpha);
     }
 
     static void ConfigureTransparentSurface(Material material)
@@ -712,8 +866,49 @@ public class CaminoMesh : MonoBehaviour
         if (_mr == null) _mr = GetComponent<MeshRenderer>();
         if (_mr != null) _mr.enabled = _visible;
         if (_underlayMr != null) _underlayMr.enabled = _visible;
-        if (_rutsMr != null) _rutsMr.enabled = _visible;
+        if (_rutsMr != null) _rutsMr.enabled = _visible && _caminoRecorrido;
+        if (_footprintsMr != null) _footprintsMr.enabled = _visible && _caminoRecorrido;
         if (_lr != null) _lr.enabled = false;
+    }
+
+    public void SetCulledByVision(bool culled)
+    {
+        if (_cullingVisionInicializado && _culledByVision == culled)
+            return;
+
+        _culledByVision = culled;
+        _cullingVisionInicializado = true;
+        if (_lr == null) _lr = GetComponent<LineRenderer>();
+        if (_mr == null) _mr = GetComponent<MeshRenderer>();
+        EnsureUnderlay();
+        EnsureRuts();
+
+        if (_lr != null) _lr.forceRenderingOff = culled;
+        if (_mr != null) _mr.forceRenderingOff = culled;
+        if (_underlayMr != null) _underlayMr.forceRenderingOff = culled;
+        if (_rutsMr != null) _rutsMr.forceRenderingOff = culled;
+        if (_footprintsMr != null) _footprintsMr.forceRenderingOff = culled;
+    }
+
+    public void SetEstadoRecorrido(bool recorrido)
+    {
+        if (_caminoRecorrido == recorrido)
+            return;
+
+        _caminoRecorrido = recorrido;
+        if (_caminoRecorrido)
+        {
+            EnsureFootprints();
+            RebuildFromLine();
+        }
+
+        if (_rutsMr != null) _rutsMr.enabled = _visible && _caminoRecorrido;
+        if (_footprintsMr != null) _footprintsMr.enabled = _visible && _caminoRecorrido;
+    }
+
+    public void SetVisibleParaDecoracion(bool visible)
+    {
+        _visibleParaDecoracion = visible;
     }
 
     public void SetMaterial(Material material)
@@ -732,6 +927,7 @@ public class CaminoMesh : MonoBehaviour
         if (_mr != null) _mr.SetPropertyBlock(null);
         if (_underlayMr != null) _underlayMr.SetPropertyBlock(null);
         if (_rutsMr != null) _rutsMr.SetPropertyBlock(null);
+        if (_footprintsMr != null) _footprintsMr.SetPropertyBlock(null);
     }
 
     void OnDestroy()
@@ -742,6 +938,7 @@ public class CaminoMesh : MonoBehaviour
         ReleaseMesh(_mesh);
         ReleaseMesh(_underlayMesh);
         ReleaseMesh(_rutsMesh);
+        ReleaseMesh(_footprintsMesh);
     }
 
     static void ReleaseMesh(Mesh mesh)

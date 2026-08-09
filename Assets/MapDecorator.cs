@@ -17,6 +17,14 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] MeshFilter[] sectoresTerreno = new MeshFilter[5];
     [SerializeField] bool autoBuscarSectoresTerreno = true;
 
+    [Header("Bordes organicos de sectores")]
+    [Tooltip("Deforma por tramos los limites rectangulares usados por sector y sectorno.")]
+    [SerializeField] bool usarBordesOrganicosSectores = true;
+    [Tooltip("Avance o retroceso maximo de cada borde respecto al tamano del sector.")]
+    [SerializeField, Range(0f, 0.15f)] float variacionBordeSectores = 0.15f;
+    [Tooltip("Cantidad aproximada de cambios suaves a lo largo de cada lado.")]
+    [SerializeField, Range(1f, 8f)] float seccionesBordeSectores = 4f;
+
     [Header("Caminos y Nodos (exclusiones)")]
     [Tooltip("Usar SOLO LineRenderers con este tag (recomendado).")]
     [SerializeField] bool soloLineRenderersConTag = true;
@@ -79,6 +87,11 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] float frecuenciaWarpRelieve = 0.035f;
     [SerializeField] float intensidadWarpRelieve = 1.1f;
     [SerializeField] float distanciaMuestreoNormal = 0.32f;
+
+    [Header("Elevacion - Bosque Ardiente")]
+    [SerializeField] bool usarElevacionTerrenoSurBosque = true;
+    [SerializeField] float alturaElevacionTerrenoSurBosque = 0.7f;
+    [SerializeField] float anchoSuavizadoLateralElevacionTerrenoSurBosque = 1.25f;
 
     [Header("Precipicio - Paso Viento Helado")]
     [SerializeField] bool usarPrecipicioTerrenoSurPasoHelado = true;
@@ -177,9 +190,22 @@ public class MapDecorator : MonoBehaviour
     MeshFilter meshAreaActual;
     Collider colliderSueloAreaActual;
     MeshFilter sectorExcluidoActual;
+    int sectorExcluidoIndiceActual;
+    bool bordeOrganicoSectorActual;
+    int sectorActual;
+    float bordeSectorMinX;
+    float bordeSectorMaxX;
+    float bordeSectorMinZ;
+    float bordeSectorMaxZ;
     int relieveSeed;
     int zonaRelieveActual;
     float alturaRelieveActual;
+    bool elevacionTerrenoSurBosqueDisponible;
+    float elevacionSurBosqueMinX;
+    float elevacionSurBosqueMaxX;
+    float elevacionSurBosqueBordeInteriorZ;
+    float elevacionSurBosqueProfundidad;
+    float elevacionSurBosqueDireccionExteriorZ = -1f;
     bool precipicioTerrenoSurDisponible;
     float precipicioSurMinX;
     float precipicioSurMaxX;
@@ -443,6 +469,7 @@ public class MapDecorator : MonoBehaviour
         AplicarMaterialesAlientoNegro(zonaId);
         AplicarMaterialesClimaNiebla(zonaId);
         alturaRelieveActual = ObtenerAlturaRelieveParaZona(zonaId);
+        PrepararElevacionTerrenoSurBosque();
         PrepararPrecipicioTerrenoSur();
         PrepararPrecipicioTerrenoNorte();
         PrepararGrietaPasoHelado();
@@ -620,6 +647,7 @@ public class MapDecorator : MonoBehaviour
 
         ConfigurarAreaTrabajo(ResolverAreaPorSector(sector));
         sectorExcluidoActual = sectorno > 0 ? ResolverAreaPorSector(sectorno) : null;
+        sectorExcluidoIndiceActual = sectorno;
 
         int batchSeedBase = relieveSeed != 0
             ? relieveSeed
@@ -633,11 +661,12 @@ public class MapDecorator : MonoBehaviour
         this.distNodo   = distNodoOverride;
         this.radioPoisson = EscalarRadioDecoracionesPorCalidad(rOverride);
         this.intentosPorPunto = kOverride;
-        batchActualEsRellenoRemovible = distCaminoOverride < UmbralDistCaminoRellenoRemovible;
+        batchActualEsRellenoRemovible = EsRellenoRemovible(prefab, distCaminoOverride);
         desactivarSombrasDinamicasDecoracion =
             PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel()) <= CalidadGraficaBaja;
 
         ActualizarZonaSegura();
+        ConfigurarBordeOrganicoSectorActual(sector);
 
         cell = radioPoisson / Mathf.Sqrt(2f);
         grid = new Dictionary<CellKey, List<Vector3>>(1024);
@@ -647,6 +676,24 @@ public class MapDecorator : MonoBehaviour
         ConstruirIndicesExclusion();
 
        // Debug.Log($"[MapDecorator] área={tPlane.name}  SizeWorld=({sizeWorldX:F1},{sizeWorldZ:F1})  r={radioPoisson}  k={intentosPorPunto}  distCamino={distCamino}  distNodo={distNodo}  Caminos={segmentos.Count} tramos  Nodos={nodos.Count}");
+    }
+
+    static bool EsRellenoRemovible(GameObject prefab, float distanciaCamino)
+    {
+        if (distanciaCamino < UmbralDistCaminoRellenoRemovible)
+        {
+            return true;
+        }
+
+        // La vegetación puede ocupar caminos todavía ocultos y se retira recién
+        // cuando el tramo entra en visión. Así el bosque no dibuja rutas futuras.
+        string nombre = prefab != null ? prefab.name.ToLowerInvariant() : string.Empty;
+        return nombre.Contains("arbol")
+            || nombre.Contains("tree")
+            || nombre.Contains("maleza")
+            || nombre.Contains("arbusto")
+            || nombre.Contains("bush")
+            || nombre.Contains("raiz");
     }
 
     // ===================== Núcleo =====================
@@ -808,6 +855,7 @@ public class MapDecorator : MonoBehaviour
         for (int i = 0; i < 400; i++)
         {
             var cand = RandomPointInsideRect();
+            if (!DentroDelRect(cand)) continue;
             if (PasaExclusiones(cand) && PasaPoisson(cand)) { p0 = cand; return true; }
         }
         p0 = Vector3.zero;
@@ -828,7 +876,10 @@ public class MapDecorator : MonoBehaviour
             for (int i = 0; i < todos.Length; i++)
             {
                 LineRenderer lr = todos[i];
-                if (!lr || !TieneTagCamino(lr.gameObject) || (!incluirCaminosInactivos && !lr.gameObject.activeInHierarchy))
+                if (!lr
+                    || !TieneTagCamino(lr.gameObject)
+                    || lr.name.Contains("LineaVisionCorta")
+                    || (!incluirCaminosInactivos && !CaminoVisibleParaDecoracion(lr)))
                 {
                     continue;
                 }
@@ -842,7 +893,9 @@ public class MapDecorator : MonoBehaviour
             for (int i = 0; i < todos.Length; i++)
             {
                 LineRenderer lr = todos[i];
-                if (!lr || (!incluirCaminosInactivos && !lr.gameObject.activeInHierarchy))
+                if (!lr
+                    || lr.name.Contains("LineaVisionCorta")
+                    || (!incluirCaminosInactivos && !CaminoVisibleParaDecoracion(lr)))
                 {
                     continue;
                 }
@@ -872,14 +925,15 @@ public class MapDecorator : MonoBehaviour
         }
     }
 
-    public void OcultarDecoracionRemovibleSobreCamino(LineRenderer lr)
+    public void OcultarDecoracionRemovibleSobreCamino(LineRenderer lr, bool forzar = false)
     {
         if (lr == null || lr.positionCount < 2 || decoracionesRemoviblesSobreCaminos.Count == 0)
         {
             return;
         }
 
-        if (versionLimpiezaDecoracionPorCamino.TryGetValue(lr, out int versionLimpieza)
+        if (!forzar
+            && versionLimpiezaDecoracionPorCamino.TryGetValue(lr, out int versionLimpieza)
             && versionLimpieza == versionDecoracionesRemovibles)
         {
             return;
@@ -909,13 +963,28 @@ public class MapDecorator : MonoBehaviour
         for (int i = 0; i < todos.Length; i++)
         {
             LineRenderer lr = todos[i];
-            if (!lr || !lr.gameObject.activeInHierarchy || (soloLineRenderersConTag && !TieneTagCamino(lr.gameObject)))
+            if (!lr
+                || !CaminoVisibleParaDecoracion(lr)
+                || (soloLineRenderersConTag && !TieneTagCamino(lr.gameObject)))
             {
                 continue;
             }
 
             OcultarDecoracionRemovibleSobreCamino(lr);
         }
+    }
+
+    static bool CaminoVisibleParaDecoracion(LineRenderer lr)
+    {
+        if (lr == null || !lr.gameObject.activeInHierarchy)
+        {
+            return false;
+        }
+
+        CaminoMesh caminoMesh = lr.GetComponent<CaminoMesh>();
+        return caminoMesh != null
+            ? caminoMesh.VisibleParaDecoracion
+            : !lr.forceRenderingOff;
     }
 
     void OcultarDecoracionRemovibleCercanaASegmento(Vector3 a, Vector3 b, float radio, float radioSqr)
@@ -996,14 +1065,7 @@ public class MapDecorator : MonoBehaviour
             return false;
         }
 
-        try
-        {
-            return go.CompareTag(tag);
-        }
-        catch
-        {
-            return false;
-        }
+        return string.Equals(go.tag, tag, System.StringComparison.OrdinalIgnoreCase);
     }
 
     void AgregarSiIntersecta(LineRenderer lr, List<LineRenderer> lista)
@@ -1272,6 +1334,20 @@ public class MapDecorator : MonoBehaviour
         }
 
         Bounds bounds = sectorExcluidoActual.sharedMesh.bounds;
+        if (usarBordesOrganicosSectores
+            && variacionBordeSectores > 0f
+            && sectorExcluidoIndiceActual > 0)
+        {
+            return EstaDentroLimiteOrganico(
+                sectorExcluidoActual.transform,
+                bounds.min.x,
+                bounds.max.x,
+                bounds.min.z,
+                bounds.max.z,
+                sectorExcluidoIndiceActual,
+                p);
+        }
+
         Vector3 local = sectorExcluidoActual.transform.InverseTransformPoint(p);
         return local.x >= bounds.min.x
             && local.x <= bounds.max.x
@@ -1389,8 +1465,116 @@ public class MapDecorator : MonoBehaviour
     bool DentroDelRect(Vector3 world)
     {
         Vector3 local = tPlane.InverseTransformPoint(world);
-        return (local.x >= safeMinX && local.x <= safeMaxX &&
-                local.z >= safeMinZ && local.z <= safeMaxZ);
+        if (local.x < safeMinX || local.x > safeMaxX || local.z < safeMinZ || local.z > safeMaxZ)
+        {
+            return false;
+        }
+
+        if (!bordeOrganicoSectorActual)
+        {
+            return true;
+        }
+
+        return EstaDentroLimiteOrganico(
+            tPlane,
+            bordeSectorMinX,
+            bordeSectorMaxX,
+            bordeSectorMinZ,
+            bordeSectorMaxZ,
+            sectorActual,
+            world);
+    }
+
+    void ConfigurarBordeOrganicoSectorActual(int sector)
+    {
+        sectorActual = sector;
+        bordeOrganicoSectorActual = usarBordesOrganicosSectores
+            && variacionBordeSectores > 0f
+            && sector > 0
+            && meshAreaActual != null
+            && meshAreaActual != planeMesh;
+
+        bordeSectorMinX = safeMinX;
+        bordeSectorMaxX = safeMaxX;
+        bordeSectorMinZ = safeMinZ;
+        bordeSectorMaxZ = safeMaxZ;
+
+        if (!bordeOrganicoSectorActual)
+        {
+            return;
+        }
+
+        float porcentaje = Mathf.Clamp(variacionBordeSectores, 0f, 0.15f);
+        float amplitudX = Mathf.Max(0f, bordeSectorMaxX - bordeSectorMinX) * porcentaje;
+        float amplitudZ = Mathf.Max(0f, bordeSectorMaxZ - bordeSectorMinZ) * porcentaje;
+        safeMinX -= amplitudX;
+        safeMaxX += amplitudX;
+        safeMinZ -= amplitudZ;
+        safeMaxZ += amplitudZ;
+        ActualizarRectMundoDesdeLimites(safeMinX, safeMaxX, safeMinZ, safeMaxZ);
+    }
+
+    bool EstaDentroLimiteOrganico(
+        Transform referencia,
+        float baseMinX,
+        float baseMaxX,
+        float baseMinZ,
+        float baseMaxZ,
+        int sector,
+        Vector3 world)
+    {
+        Vector3 local = referencia.InverseTransformPoint(world);
+        float ancho = Mathf.Max(0.0001f, baseMaxX - baseMinX);
+        float largo = Mathf.Max(0.0001f, baseMaxZ - baseMinZ);
+        float porcentaje = Mathf.Clamp(variacionBordeSectores, 0f, 0.15f);
+        float amplitudX = ancho * porcentaje;
+        float amplitudZ = largo * porcentaje;
+
+        if (local.x < baseMinX - amplitudX || local.x > baseMaxX + amplitudX
+            || local.z < baseMinZ - amplitudZ || local.z > baseMaxZ + amplitudZ)
+        {
+            return false;
+        }
+
+        float tX = Mathf.InverseLerp(baseMinX, baseMaxX, local.x);
+        float tZ = Mathf.InverseLerp(baseMinZ, baseMaxZ, local.z);
+        float minXOrganico = baseMinX + RuidoBordeSector(tZ, sector, 0) * amplitudX;
+        float maxXOrganico = baseMaxX + RuidoBordeSector(tZ, sector, 1) * amplitudX;
+        float minZOrganico = baseMinZ + RuidoBordeSector(tX, sector, 2) * amplitudZ;
+        float maxZOrganico = baseMaxZ + RuidoBordeSector(tX, sector, 3) * amplitudZ;
+
+        return local.x >= minXOrganico
+            && local.x <= maxXOrganico
+            && local.z >= minZOrganico
+            && local.z <= maxZOrganico;
+    }
+
+    float RuidoBordeSector(float recorrido01, int sector, int lado)
+    {
+        int seedBase = relieveSeed != 0 ? relieveSeed : semilla;
+        int hash;
+        unchecked
+        {
+            hash = (seedBase * 397) ^ (sector * 486187739) ^ (lado * 16777619);
+        }
+
+        float offset = (hash & 0x7fffffff) * 0.0000137f;
+        float secciones = Mathf.Clamp(seccionesBordeSectores, 1f, 8f);
+        float principal = SampleSignedPerlin(recorrido01 * secciones + offset, offset * 0.37f + lado * 7.31f);
+        float secundaria = SampleSignedPerlin(recorrido01 * secciones * 0.5f + offset * 0.61f, offset * 0.19f + lado * 3.17f);
+        return Mathf.Clamp(principal * 0.78f + secundaria * 0.22f, -1f, 1f);
+    }
+
+    void ActualizarRectMundoDesdeLimites(float minX, float maxX, float minZ, float maxZ)
+    {
+        Vector3 aW = tPlane.TransformPoint(new Vector3(minX, yLocalPlano, minZ));
+        Vector3 bW = tPlane.TransformPoint(new Vector3(maxX, yLocalPlano, minZ));
+        Vector3 cW = tPlane.TransformPoint(new Vector3(maxX, yLocalPlano, maxZ));
+        Vector3 dW = tPlane.TransformPoint(new Vector3(minX, yLocalPlano, maxZ));
+        rectMinX = Mathf.Min(Mathf.Min(aW.x, bW.x), Mathf.Min(cW.x, dW.x));
+        rectMaxX = Mathf.Max(Mathf.Max(aW.x, bW.x), Mathf.Max(cW.x, dW.x));
+        rectMinZ = Mathf.Min(Mathf.Min(aW.z, bW.z), Mathf.Min(cW.z, dW.z));
+        rectMaxZ = Mathf.Max(Mathf.Max(aW.z, bW.z), Mathf.Max(cW.z, dW.z));
     }
 
     static Vector3 LRPointWorld(LineRenderer lr, int i)
@@ -1562,6 +1746,28 @@ public class MapDecorator : MonoBehaviour
             if (renderer != null)
                 renderer.sharedMaterial = material;
         }
+    }
+
+    void PrepararElevacionTerrenoSurBosque()
+    {
+        elevacionTerrenoSurBosqueDisponible = false;
+
+        if (!usarElevacionTerrenoSurBosque || zonaRelieveActual != 1)
+            return;
+
+        MeshFilter sectorSur = ObtenerSectorTerreno(3);
+        if (sectorSur == null || sectorSur.sharedMesh == null)
+            return;
+
+        if (!TryObtenerBoundsXZ(sectorSur, out elevacionSurBosqueMinX, out elevacionSurBosqueMaxX, out float minZ, out float maxZ))
+            return;
+
+        float centroSectorZ = (minZ + maxZ) * 0.5f;
+        float centroTerrenoZ = ObtenerCentroTerrenoPrincipalZ();
+        elevacionSurBosqueDireccionExteriorZ = centroSectorZ < centroTerrenoZ ? -1f : 1f;
+        elevacionSurBosqueBordeInteriorZ = elevacionSurBosqueDireccionExteriorZ < 0f ? maxZ : minZ;
+        elevacionSurBosqueProfundidad = Mathf.Max(0.1f, maxZ - minZ);
+        elevacionTerrenoSurBosqueDisponible = true;
     }
 
     void PrepararPrecipicioTerrenoSur()
@@ -1743,9 +1949,32 @@ public class MapDecorator : MonoBehaviour
         relieve = SuavizarSubidaCercaPrecipicioTerrenoSur(worldPos, relieve);
         relieve = SuavizarSubidaCercaPrecipicioTerrenoNorte(worldPos, relieve, seedA, seedB);
         return relieve
+            + EvaluateElevacionTerrenoSurBosque(worldPos)
             + EvaluatePrecipicioTerrenoSur(worldPos, seedA, seedB)
             + EvaluatePrecipicioTerrenoNorte(worldPos, seedA, seedB)
             + EvaluateGrietaPasoHelado(worldPos, seedA, seedB);
+    }
+
+    float EvaluateElevacionTerrenoSurBosque(Vector3 worldPos)
+    {
+        if (!elevacionTerrenoSurBosqueDisponible || zonaRelieveActual != 1)
+            return 0f;
+
+        float distanciaExterior = (worldPos.z - elevacionSurBosqueBordeInteriorZ) * elevacionSurBosqueDireccionExteriorZ;
+        if (distanciaExterior <= 0f)
+            return 0f;
+
+        float anchoLateral = Mathf.Max(0.1f, anchoSuavizadoLateralElevacionTerrenoSurBosque);
+        float mascaraIzquierda = Mathf.Clamp01((worldPos.x - elevacionSurBosqueMinX) / anchoLateral);
+        float mascaraDerecha = Mathf.Clamp01((elevacionSurBosqueMaxX - worldPos.x) / anchoLateral);
+        float mascaraLateral = Mathf.Min(mascaraIzquierda, mascaraDerecha);
+        mascaraLateral = mascaraLateral * mascaraLateral * (3f - 2f * mascaraLateral);
+        if (mascaraLateral <= 0f)
+            return 0f;
+
+        float progresoSubida = Mathf.Clamp01(distanciaExterior / elevacionSurBosqueProfundidad);
+        progresoSubida = progresoSubida * progresoSubida * (3f - 2f * progresoSubida);
+        return Mathf.Max(0f, alturaElevacionTerrenoSurBosque) * progresoSubida * mascaraLateral;
     }
 
     float SuavizarSubidaCercaPrecipicioTerrenoSur(Vector3 worldPos, float relieve)

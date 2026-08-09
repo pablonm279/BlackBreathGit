@@ -27,7 +27,7 @@ RectTransform:
   m_GameObject: {fileID: 1385359930295448639}
   m_LocalRotation: {x: -0.68399537, y: -0, z: -0, w: 0.7294864}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.011982159, y: 0.002076901, z: 0.03207541}
+  m_LocalScale: {x: 0.009527134, y: 0.002076901, z: 0.03207541}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1702015427316775190}
@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
@@ -203,9 +203,9 @@ Transform:
   m_GameObject: {fileID: 4948109475767131408}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -4.64, y: 0.539, z: 4}
-  m_LocalScale: {x: 0.25, y: 0.5, z: 0.5}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -4.64, y: 0.543, z: 4}
+  m_LocalScale: {x: 0.21961232, y: 0.474935, z: 0.474935}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3606423354356659533}
   m_Father: {fileID: 0}
@@ -246,15 +246,15 @@ RectTransform:
   m_GameObject: {fileID: 6972120648065224537}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 28.823032, y: 40, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 36.12679, y: 58.6892, z: 1.2534}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 477202230346507598}
   m_Father: {fileID: 3606423354356659533}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -14.4}
+  m_AnchoredPosition: {x: 0, y: -7.67}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!33 &2074895059697153047
@@ -284,6 +284,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -305,9 +308,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &4273123573182047390
 MonoBehaviour:

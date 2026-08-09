@@ -25,8 +25,6 @@ public class AparienciaAlternativaCaballero
 
 public class ClaseCaballero : Unidad
 {
-   private const string BuffNombrePosturaDefensiva = "Postura Defensiva";
-   
    public int PASIVA_Acorazado; //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
    public int PASIVA_Determinacion;  //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
    public int PASIVA_Implacable;  //0 no tiene, 1 nv 1, 2 nv 2, 3nv 3,       4 nv 4a ° 5 nv 4b
@@ -118,7 +116,7 @@ public class ClaseCaballero : Unidad
   public override void ActualizarClaseComienzoTurno()
   {
     ChequearBuffPASIVADeterminacion();
-    SincronizarPosturaDefensivaSegunBuffActual();
+    SincronizarPosturaDefensivaSegunReaccionActual();
   }
 
   public override void AplicarAparienciaAlternativaAleatoria()
@@ -143,6 +141,8 @@ public class ClaseCaballero : Unidad
     if (aparienciaElegida == null)
     {
       poseControllerCaballero.RestaurarPosesBase();
+      posePosturaDefensivaActiva = false;
+      SincronizarPosturaDefensivaSegunReaccionActual();
       return;
     }
 
@@ -161,6 +161,8 @@ public class ClaseCaballero : Unidad
     Sprite poseTurnoActivo = aparienciaElegida.poseTurnoActivo != null ? aparienciaElegida.poseTurnoActivo : poseTurnoActivoBase;
 
     poseControllerCaballero.ConfigurarPoses(poseIdle, poseMover, poseAtacar, poseHabilidad, poseRecibirDanio, poseTurnoActivo);
+    posePosturaDefensivaActiva = false;
+    SincronizarPosturaDefensivaSegunReaccionActual();
   }
 
   public override int ObtenerCantidadAparienciasAlternativas()
@@ -323,7 +325,7 @@ public class ClaseCaballero : Unidad
     public override void ComienzoBatallaClase()
     {
        base.ComienzoBatallaClase();
-       SincronizarPosturaDefensivaSegunBuffActual();
+       SincronizarPosturaDefensivaSegunReaccionActual();
 
 
        //PASIVA_Determinacion Nv 4a
@@ -359,9 +361,9 @@ public class ClaseCaballero : Unidad
       ActualizarPosePosturaDefensiva(false);
     }
 
-    private void SincronizarPosturaDefensivaSegunBuffActual()
+    private void SincronizarPosturaDefensivaSegunReaccionActual()
     {
-      if (TieneBuffNombre(BuffNombrePosturaDefensiva))
+      if (GetComponent<ReaccionPosturaDefensiva>() != null)
       {
         NotificarInicioPosturaDefensiva();
         return;
@@ -429,6 +431,7 @@ public class ClaseCaballero : Unidad
         ReaccionPosturaDefensiva reacc = gameObject.GetComponent<ReaccionPosturaDefensiva>();
         if (reacc.NIVEL != 4) //Si tiene la reaccion activa y no es nivel 4a, la remueve
         {
+          NotificarFinPosturaDefensiva();
           Destroy(reacc);
           await gameObject.GetComponent<Unidad>().GenerarTextoFlotante("<s>" + TRADU.i.Traducir("Postura Defensiva") + "</s>", Color.blue);
 
@@ -460,5 +463,4 @@ public class ClaseCaballero : Unidad
     }
 
 }
-
 

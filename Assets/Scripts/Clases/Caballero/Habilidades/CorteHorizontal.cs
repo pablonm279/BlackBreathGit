@@ -549,7 +549,7 @@ public class CorteHorizontal : Habilidad
           {
              int calculo = Math.Abs(cas.posY - posYorigen); //distancia en Y al origen para calcular adyacentes o frontal
             
-             if(calculo < 2)
+             if(calculo == 0)
              {
                casillasAdyacentesyFrenteColumna1.Add(cas);
              }
@@ -559,7 +559,7 @@ public class CorteHorizontal : Habilidad
           {
              int calculo = Math.Abs(cas.posY - posYorigen); //distancia en Y al origen para calcular adyacentes o frontal
             
-             if(calculo < 2)
+             if(calculo == 0)
              {
                casillasAdyacentesyFrenteColumna2.Add(cas);
              }

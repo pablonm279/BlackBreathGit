@@ -43,6 +43,11 @@ private async void OnMouseDown()
     return;
   }
 
+  if (scBattleManager.TryRedirigirClickObstaculoCentralizado(this))
+  {
+    return;
+  }
+
   if(scBattleManager.lObstaculosPosiblesHabilidadActiva.Contains(this) && scBattleManager.SeleccionandoObjetivo)
   {
     

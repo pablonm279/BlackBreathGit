@@ -68,7 +68,18 @@ public class CampaignManager : MonoBehaviour
   private const bool DEBUG_ABRIR_MENU_SERRIA_AL_INICIAR = false;
   private const int DistanciaVisionBase = 1;
   private const int DistanciaVisionMinima = 1;
-  private const float DuracionEnvioExploradoresSegundos = 4f;
+  private const float AlcanceVisionMinimoPasos = 1.5f;
+  private const float MultiplicadorVisionNiebla = 0.80f;
+  private static readonly float[] AlcanceVisionCatalejosPorTier =
+  {
+    1.5f,
+    1.9f,
+    2.5f,
+    2.9f,
+    3.5f
+  };
+  private const float DuracionEnvioExploradoresSegundos = 6.5f;
+  private const float DuracionResultadoExploradoresSegundos = 1.2f;
   private const float RetrasoInicioEnvioExploradoresSegundos = 0.25f;
   private const float RetrasoEntreTextosExploradoresSegundos = 0.9f;
   private const float DuracionHighlightNodoSegundos = 10f;
@@ -205,6 +216,8 @@ public class CampaignManager : MonoBehaviour
 
   public int BATALLA_EnCurso;
   public int EMBOSCADA_EnCurso;
+  private bool emboscadaViajeCalculada;
+  private string logEmboscadaViajePendiente;
 
   public GameObject goBotonViajando;
   public GameObject goBotonResolverCombate;
@@ -1322,6 +1335,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     nodoDestinoActual = null;
     BATALLA_EnCurso = 0;
     EMBOSCADA_EnCurso = 0;
+    emboscadaViajeCalculada = false;
+    logEmboscadaViajePendiente = null;
     resolviendoJefeZona = false;
     abriendoCiudadPuerto = false;
   }
@@ -1358,7 +1373,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     CambiarCivilesActuales(110);
     CambiarEsperanzaActual(60);
     CambiarSuministrosActuales(300);
-    CambiarMaterialesActuales(45);
+    CambiarMaterialesActuales(50);
     CambiarBueyesActuales(22);
 
     if (scTutorialManager.tutorialActivo)
@@ -2815,7 +2830,24 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     return Mathf.Max(
       ObtenerDistanciaVisionMinima(),
-      ObtenerDistanciaVisionBase() + ObtenerBonusDistanciaVisionCatalejos() - ObtenerPenalizacionClimaVision());
+      ObtenerDistanciaVisionBase() + ObtenerBonusDistanciaVisionCatalejos());
+  }
+
+  public float ObtenerAlcanceVisionEnPasos()
+  {
+    float alcanceNormal = ObtenerAlcanceVisionNormalEnPasos();
+    return Mathf.Max(
+      AlcanceVisionMinimoPasos,
+      alcanceNormal * ObtenerMultiplicadorClimaVision());
+  }
+
+  public float ObtenerAlcanceVisionNormalEnPasos()
+  {
+    int tier = Mathf.Clamp(
+      mejoraCaravanaCatalejos,
+      MinTierMejoraCaravana,
+      MaxTierMejoraCaravana);
+    return AlcanceVisionCatalejosPorTier[tier - MinTierMejoraCaravana];
   }
 
   public int ObtenerDistanciaVisionBase()
@@ -2835,13 +2867,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public int ObtenerPenalizacionClimaVision()
   {
-    if (intTipoClima == 5) return 2;
+    if (intTipoClima == 5) return 20;
     return 0;
   }
 
-  public int ObtenerBonusScoutCatalejos()
+  public float ObtenerMultiplicadorClimaVision()
   {
-    return 5 * Mathf.Max(0, mejoraCaravanaCatalejos - 1);
+    return intTipoClima == 5 ? MultiplicadorVisionNiebla : 1f;
   }
 
   public int ObtenerBonusObjetosPostBatallaAntorchas()
@@ -2849,16 +2881,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return 3 + Mathf.Max(0, mejoraCaravanaAntorchas - 1) * 2;
   }
 
-  int ObtenerBonusExploracionCatalejos()
-  {
-    return 3 + Mathf.Max(0, mejoraCaravanaCatalejos - 1) * 2;
-  }
-
   public int ObtenerChanceExploracionPasiva(int modificadorContextual = 0)
   {
     int chance = 55;
     chance += scAtributosZona != null ? scAtributosZona.modChanceExploracion : 0;
-    chance += ObtenerBonusExploracionCatalejos();
     chance += MetaprogresionManager.Instance != null ? MetaprogresionManager.Instance.SerriaTierAlmenaras * 3 : 0;
     chance += ExploracionSumadaPorActividades();
     chance += ObtenerModificadorChanceExploracionTraits();
@@ -2896,7 +2922,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     int chance = 80;
     chance += scAtributosZona != null ? scAtributosZona.modChanceExploracion : 0;
-    chance += ObtenerBonusScoutCatalejos();
     chance -= GetTierAlientoNegro() >= 2 ? 10 : 0;
     return Mathf.Clamp(chance, 0, 100);
   }
@@ -2962,7 +2987,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return false;
     }
 
-    if (!destino.EstaVisiblePorVision())
+    if (scMapaManager == null || !scMapaManager.NodoDentroDeVision(destino))
     {
       motivo = LocExploradores(
         "-Ese destino esta fuera de la distancia de vision.",
@@ -3031,10 +3056,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       sunController.duracion = duracionSolOriginal;
     }
 
-    yield return new WaitForSeconds(DuracionEnvioExploradoresSegundos);
+    Nodo origenExploradores = scMapaManager != null ? scMapaManager.nodoActual : null;
+    yield return ScoutExplorationSequenceFx.ReproducirTrayecto(origenExploradores, destino, DuracionEnvioExploradoresSegundos);
 
     ResultadoExploradoresCampania resultado = ResolverResultadoExploradores(destino);
     List<(string texto, Color color)> textosBufferizados = FinalizarBufferTextosFlotantesCampania();
+    yield return ScoutExplorationSequenceFx.ReproducirResultado(resultado, DuracionResultadoExploradoresSegundos);
     enviandoExploradores = false;
     RestaurarInterfazCampaniaTrasExploradores();
     yield return null;
@@ -3650,6 +3677,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       nodoData.faccionScoutReveladaNombre = nodo.ObtenerFaccionScoutReveladaNombre();
       nodoData.visibilidadForzadaEspecial = nodo.TieneVisibilidadForzadaPorReveladoEspecial();
       nodoData.reveladoPorZonaCartografiada = nodo.FueReveladoPorZonaCartografiada();
+      nodoData.descubiertoPorMecanicaEspecial = nodo.FueDescubiertoPorMecanicaEspecial();
 
       foreach (CaminoConexion conexion in nodo.ConexionesSalientes)
       {
@@ -3666,7 +3694,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           costoMovimiento = conexion.costoMovimiento,
           rutaHaciaAldea = conexion.rutaHaciaAldea,
           recorridoPorCaravana = conexion.recorridoPorCaravana,
-          reveladoPorVision = nodo.EstaCaminoReveladoPorVision(conexion)
+          reveladoPorVision = false
         });
       }
 
@@ -4279,7 +4307,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       if (savePorClave.TryGetValue(entry.Key, out NodeSaveData nodeData))
       {
-        entry.Value.RestaurarDesdeSave(nodeData);
+        entry.Value.RestaurarDesdeSave(nodeData, saveFileData.version);
       }
       else
       {
@@ -4331,11 +4359,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           if (conexionRestaurada != null)
           {
             conexionRestaurada.recorridoPorCaravana = conexionData.recorridoPorCaravana;
-          }
-
-          if (conexionData.reveladoPorVision)
-          {
-            origen.RestaurarCaminoReveladoPorVisionHacia(destino);
+            if (saveFileData.version < 24
+                && (conexionRestaurada.EsAtajoSubterraneo || conexionRestaurada.EsAtajoSuperficie))
+            {
+              destino.MarcarDescubiertoPorMecanicaEspecial();
+            }
           }
         }
       }
@@ -4797,6 +4825,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     AplicarSpriteClimaDesdeEstadoActual();
+    SincronizarVisualesMenuDescansoClima();
     RecalcularPreciosPuestoComercialDesdeEstadoActual();
     ActualizarDescripcionesPuestoComercialDesdeEstadoActual();
     ActualizarPuestoComercial();
@@ -6181,7 +6210,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return true;
   }
 
-  int CalcularResultadoEmboscadaViajeActual()
+  int CalcularResultadoEmboscadaViajeActual(bool anunciarEmboscadaAliada = true)
   {
     if (debugIgnorarCombates)
     {
@@ -6230,11 +6259,59 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     if (emboscadaAliada)
     {
-      EscribirLog(FormatearLogTiradaEmboscada(false, chanceEmboscadaEnemiga, chanceEmboscadaAliada, randomEmboscada));
+      string logEmboscadaAliada = FormatearLogTiradaEmboscada(
+        false,
+        chanceEmboscadaEnemiga,
+        chanceEmboscadaAliada,
+        randomEmboscada);
+      if (anunciarEmboscadaAliada)
+      {
+        EscribirLog(logEmboscadaAliada);
+      }
+      else
+      {
+        logEmboscadaViajePendiente = logEmboscadaAliada;
+      }
+
       return 2;
     }
 
     return 0;
+  }
+
+  public int PrepararEmboscadaViajeAnticipada(Nodo destino)
+  {
+    if (emboscadaViajeCalculada)
+    {
+      return EMBOSCADA_EnCurso;
+    }
+
+    if (destino == null
+        || destino != nodoDestinoActual
+        || (destino.tipoNodo != 1 && destino.tipoNodo != 8))
+    {
+      return 0;
+    }
+
+    EMBOSCADA_EnCurso = CalcularResultadoEmboscadaViajeActual(false);
+    emboscadaViajeCalculada = true;
+    return EMBOSCADA_EnCurso;
+  }
+
+  int ObtenerResultadoEmboscadaAlLlegar()
+  {
+    if (!emboscadaViajeCalculada)
+    {
+      EMBOSCADA_EnCurso = CalcularResultadoEmboscadaViajeActual();
+      emboscadaViajeCalculada = true;
+    }
+    else if (!string.IsNullOrEmpty(logEmboscadaViajePendiente))
+    {
+      EscribirLog(logEmboscadaViajePendiente);
+      logEmboscadaViajePendiente = null;
+    }
+
+    return EMBOSCADA_EnCurso;
   }
 
   int ReducirFrecuenciaEmboscada(int chanceBase)
@@ -6340,6 +6417,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return;
     }
 
+    if (menuDescanso != null)
+    {
+      menuDescanso.SetActive(false);
+    }
+
     pausandoTextoDistanciaAliento = true;
     Nodo destino = conexion.destino;
     bool viajeAtajoSuperficie = conexion.EsAtajoSuperficie;
@@ -6352,6 +6434,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     bool sePrevieneAvanceAliento = false;
     BATALLA_EnCurso = 0;
     EMBOSCADA_EnCurso = 0;
+    emboscadaViajeCalculada = false;
+    logEmboscadaViajePendiente = null;
     nodoDestinoActual = destino;
     sunController.OnTravelStart(); // duración en segundos
     animCaravana.SetBool("IsWalking", true);
@@ -6696,7 +6780,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
 
       BATALLA_EnCurso = ID;
-      EMBOSCADA_EnCurso = CalcularResultadoEmboscadaViajeActual();
+      EMBOSCADA_EnCurso = ObtenerResultadoEmboscadaAlLlegar();
       if (EMBOSCADA_EnCurso == 1 && AbrirMenuBatallas())
       {
         TutorialTooltipManager.TryShow(TooltipEmboscadaNormalId);
@@ -6757,7 +6841,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
 
       BATALLA_EnCurso = ID;
-      EMBOSCADA_EnCurso = CalcularResultadoEmboscadaViajeActual();
+      EMBOSCADA_EnCurso = ObtenerResultadoEmboscadaAlLlegar();
       if (EMBOSCADA_EnCurso == 1 && AbrirMenuBatallas())
       {
         ResolverCombateElite(EMBOSCADA_EnCurso);
@@ -7666,6 +7750,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   public TextMeshProUGUI txtComnercialSumDisp;
   public TextMeshProUGUI txtComnercialMatDisp;
   public TextMeshProUGUI txtComnercialBueyesDisp;
+  [SerializeField] private TextMeshProUGUI txtOroCaravana;
 
   public TextMeshProUGUI txtDescSum;
   public TextMeshProUGUI txtDescMat;
@@ -7728,6 +7813,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void ActualizarPuestoComercial()
   {
+    ActualizarOroPuestoComercial();
     txtComnercialSumDisp.text = "" + pComercialSuministrosDisp;
     txtComnercialMatDisp.text = "" + pComercialMaterialesDisp;
     txtComnercialBueyesDisp.text = "" + pComercialBueyesDisp;
@@ -7771,6 +7857,27 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     else { btnVentaBuey.SetActive(false); }
 
+  }
+
+  private void ActualizarOroPuestoComercial()
+  {
+    if (txtOroCaravana == null && goUIComercioNodo != null)
+    {
+      TextMeshProUGUI[] textosPuestoComercial = goUIComercioNodo.GetComponentsInChildren<TextMeshProUGUI>(true);
+      foreach (TextMeshProUGUI texto in textosPuestoComercial)
+      {
+        if (texto != null && texto.gameObject.name == "txtOrocaravana")
+        {
+          txtOroCaravana = texto;
+          break;
+        }
+      }
+    }
+
+    if (txtOroCaravana != null)
+    {
+      txtOroCaravana.text = OroActuales.ToString();
+    }
   }
 
   public void ComprarSum()
@@ -8906,6 +9013,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     nodoFuturo.DesactivarGraficosNodo();
     nodoFuturo.tipoNodo = 16;
     nodoFuturo.revelado = true;
+    nodoFuturo.MarcarDescubiertoPorMecanicaEspecial();
     nodoFuturo.ActivarNodoVisual(16, false, true);
     scMapaManager.RefrescarVisibilidadExploracion();
     MarcarNodoCampaniaTemporal(nodoFuturo, TipoHighlightNodoCampania.MisionSalvamento);
@@ -9827,6 +9935,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     OroActuales = Mathf.Max(0, OroActuales + Oro);
     int oroAplicado = OroActuales - oroAnterior;
     valueOro.text = "" + OroActuales;
+    ActualizarOroPuestoComercial();
 
     GameObject textoOrigen = valueOro != null ? valueOro.gameObject : null;
     await GenerarTextoRecursos(oroAplicado, textoOrigen, true);
@@ -10327,6 +10436,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void AbrirMenuDescanso()
   {
+    if (MoviendoCaravana) { return; }
     if (scTutorialManager.tutorialActivo && scTutorialManager.pasoActual < 24) { return; }
     if (scTutorialManager.tutorialActivo && scTutorialManager.pasoActual == 24) { scTutorialManager.SiguientePaso(); }
     if (asentamientoManager != null && asentamientoManager.TieneInteraccionActiva) { return; }

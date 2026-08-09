@@ -35,23 +35,6 @@ public class PosturaDefensiva : Habilidad
       ActualizarDescripcion();
     }
 
-    public override async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
-    {
-      ClaseCaballero caballero = scEstaUnidad as ClaseCaballero;
-      if (caballero != null)
-      {
-        caballero.NotificarInicioPosturaDefensiva();
-      }
-
-      await base.Resolver(Objetivos, casillaOrigenTrampas);
-
-      if (caballero != null && !caballero.TieneBuffNombre("Postura Defensiva"))
-      {
-        caballero.NotificarFinPosturaDefensiva();
-      }
-    }
-
-   
     public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
@@ -249,17 +232,17 @@ public class PosturaDefensiva : Habilidad
        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
        objetivo.Marcar(0);
 
-       if (objetivo is ClaseCaballero caballero)
-       {
-         caballero.NotificarInicioPosturaDefensiva();
-       }
-
        //Agrega la reacción 
        ReaccionPosturaDefensiva reaccion = new ReaccionPosturaDefensiva();
        reaccion.NIVEL = NIVEL;
        reaccion.permanente = false;
        reaccion.nombre = "Postura Defensiva";
        ReaccionPosturaDefensiva reaccionPosturaDefensiva = ComponentCopier.CopyComponent(reaccion, objetivo.gameObject);
+
+       if (objetivo is ClaseCaballero caballero)
+       {
+         caballero.NotificarInicioPosturaDefensiva();
+       }
 
        //Usarla termina el turno
        await BattleManager.DelayCombateAsync(PausaClaridadMs);

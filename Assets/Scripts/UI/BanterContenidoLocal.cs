@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public enum BanterDisparador
 {
     ComenzarBatalla,
+    EmboscadaEnemiga,
+    LlegadaEnemiga,
     IdleTurno,
     EnemigoDerrotado,
     AliadoDerrotado,

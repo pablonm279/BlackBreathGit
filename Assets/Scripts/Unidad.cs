@@ -377,6 +377,10 @@ public class Unidad : MonoBehaviour
     {
       gameObject.AddComponent<UnidadTurnStartLightFx>();
     }
+    if (GetComponent<UnidadGroundShadowFx>() == null)
+    {
+      gameObject.AddComponent<UnidadGroundShadowFx>();
+    }
     if (GetComponent<ClaseCanalizador>() != null && GetComponent<UnidadCanalizadorAuraFx>() == null)
     {
       gameObject.AddComponent<UnidadCanalizadorAuraFx>();
@@ -1486,7 +1490,7 @@ public bool movimientoEnCurso = false;
       sombraImagen = uImage.gameObject.AddComponent<Shadow>();
     }
 
-    sombraImagen.effectColor = new Color(0f, 0f, 0f, 0.87882354f);
+    sombraImagen.effectColor = new Color(0f, 0f, 0f, 0.85882354f);
     sombraImagen.effectDistance = new Vector2(0.157f, 0.33f);
     sombraImagen.useGraphicAlpha = true;
   }
@@ -1528,6 +1532,20 @@ public bool movimientoEnCurso = false;
   }
 
   public bool NoSonidoAlMover;
+  public void ReproducirSonidoMovimiento()
+  {
+    if (NoSonidoAlMover
+      || BattleManager.Instance == null
+      || BattleManager.Instance.contenedorPrefabs == null)
+    {
+      return;
+    }
+
+    AjustesAudio.ReproducirClipEnPunto(
+      BattleManager.Instance.contenedorPrefabs.sonidoMovimientoLigero,
+      transform.position);
+  }
+
   private bool EstaFueraDeCombate()
   {
     return yaMurio || yaSeRetiro || HP_actual <= 0f || !gameObject.activeInHierarchy;
@@ -1603,7 +1621,7 @@ public bool movimientoEnCurso = false;
         {
           if (poseController != null) { poseController.OnStartMove(); }
 
-          if (!NoSonidoAlMover) { AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoMovimientoLigero, transform.position); }
+          ReproducirSonidoMovimiento();
 
           // Guardar casilla origen y limpiar Presente una sola vez
           casillaOrigenEnMovimiento = CasillaPosicion;
@@ -1613,11 +1631,8 @@ public bool movimientoEnCurso = false;
           }
         }
         movimientoEnCurso = true;
-        // Calcula la dirección hacia la casilla deseada
-        Vector3 direccion = CasillaDeseadaMov.transform.position - transform.position;
-
-        // Calcula la nueva posición interpolando suavemente
-        Vector3 nuevaPosicion = transform.position + direccion.normalized * velocidadMovimiento * Time.fixedDeltaTime;
+        // Avanza sin sobrepasar la casilla para evitar oscilaciones alrededor del destino
+        Vector3 nuevaPosicion = Vector3.MoveTowards(transform.position, CasillaDeseadaMov.transform.position, velocidadMovimiento * Time.fixedDeltaTime);
 
         // Establece la nueva posición
         transform.position = nuevaPosicion;
@@ -1675,11 +1690,8 @@ public bool movimientoEnCurso = false;
           }
         }
         movimientoEnCurso = true;
-        // Calcula la dirección hacia la casilla deseada
-        Vector3 direccion = CasillaForzadoaMover.transform.position - transform.position;
-
-        // Calcula la nueva posición interpolando suavemente
-        Vector3 nuevaPosicion = transform.position + direccion.normalized * velocidadMovimiento * Time.fixedDeltaTime;
+        // Avanza sin sobrepasar la casilla para evitar oscilaciones alrededor del destino
+        Vector3 nuevaPosicion = Vector3.MoveTowards(transform.position, CasillaForzadoaMover.transform.position, velocidadMovimiento * Time.fixedDeltaTime);
 
         // Establece la nueva posición
         transform.position = nuevaPosicion;
@@ -5408,7 +5420,7 @@ public void OnMouseEnter()
       BattleManager.Instance.scUIInfoChar.MostrarHover(this);
     }
 
-     if(scBattleManager.SeleccionandoObjetivo)
+     if(scBattleManager.SeleccionandoObjetivo && !scBattleManager.SeleccionHabilidadSoloCasillaActiva)
      {
         CasillaPosicion.OnMouseOver();
         ActualizarVisualObjetivoHover();
@@ -5435,7 +5447,7 @@ public void OnMouseOver()
 
     ActualizarVisualObjetivoHover();
 
-    if(scBattleManager.SeleccionandoObjetivo)
+    if(scBattleManager.SeleccionandoObjetivo && !scBattleManager.SeleccionHabilidadSoloCasillaActiva)
     {
        CasillaPosicion.OnMouseOver();
     }
@@ -5462,7 +5474,7 @@ public void OnMouseExit()
       BattleManager.Instance.scUIInfoChar.LimpiarHover(this);
     }
 
-      if(scBattleManager.SeleccionandoObjetivo)
+      if(scBattleManager.SeleccionandoObjetivo && !scBattleManager.SeleccionHabilidadSoloCasillaActiva)
       {
         CasillaPosicion.OnMouseExit();
       }

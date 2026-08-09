@@ -203,18 +203,10 @@ public class Lamentodelbosque : IAHabilidad
 
   }
 
-       void VFXAplicar(GameObject objetivo)
-    {
-      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_LamentoDelBosque");
-
-    GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
-    vfx.transform.parent = objetivo.transform;
-     
-   //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
-   Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
-
-    }
+  void VFXAplicar(GameObject objetivo)
+  {
+    LamentoBosqueVFX.Crear(objetivo);
+  }
 
 
   public override object EstablecerObjetivoPrioritario() //Cuando hay 1 solo objetivo posible para la habilidad, determinar a cual prioritiza segun lógica

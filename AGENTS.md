@@ -62,3 +62,10 @@
 - Si la tarea queda resuelta quitando una llamada, condicion o valor puntual, preferir eso antes que una limpieza estructural.
 - Despues de editar, revisar el cambio puntual con `git diff -- <archivo>`.
 - Si existe una validacion rapida aplicable, correr solo una verificacion acotada antes de cerrar.
+
+## Proteccion del tutorial
+
+- El tutorial actualmente funciona y debe tratarse como un flujo protegido del proyecto.
+- Tener siempre presente su integridad al analizar, implementar y validar cualquier cambio.
+- Ante cada cambio grande, revisar explicitamente que no rompa el tutorial ni sus dependencias, estados, secuencias o UI asociada.
+- Si no es posible validar el tutorial de forma completa, indicar con claridad que aspecto quedo sin comprobar y el riesgo potencial antes de cerrar la tarea.

@@ -625,6 +625,7 @@ public class AsentamientoManager : MonoBehaviour
     private void MostrarUiEnTransicion()
     {
         AsegurarUi();
+        BanterBattleUI.CancelarCampania(true);
         OcultarInterfazCampaniaParaTransicion();
 
         if (canvasGroup != null)

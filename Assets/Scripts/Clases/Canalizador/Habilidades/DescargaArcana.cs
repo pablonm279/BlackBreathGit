@@ -35,6 +35,7 @@ public class DescargaArcana : Habilidad
       esHostil = true;
       forzarPoseHabilidad = false;
       fuerzaPoseAtaque = true;
+      omitirAnimacionDeUso = true;
       cooldownMax = 0;
       bAfectaObstaculos = true;
 
@@ -196,6 +197,23 @@ public class DescargaArcana : Habilidad
           BattleManager.Instance.HabilidadActiva = this;
 
         
+    }
+
+    public override async Task Resolver(List<object> objetivos, Casilla casillaOrigenTrampas = null)
+    {
+      UnidadPoseController poseController = scEstaUnidad != null
+        ? scEstaUnidad.GetComponent<UnidadPoseController>()
+        : null;
+
+      poseController?.EnterAttackPoseHold();
+      try
+      {
+        await base.Resolver(objetivos, casillaOrigenTrampas);
+      }
+      finally
+      {
+        poseController?.ExitAttackPoseHold();
+      }
     }
     
       

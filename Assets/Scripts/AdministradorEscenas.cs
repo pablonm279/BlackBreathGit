@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 public class AdministradorEscenas : MonoBehaviour
 {
+  private const float DuracionFadeReveladoBatalla = 0.35f;
   private static bool mantenerFaderNegroEnProximaCargaCampania;
 
   public GameObject EscenaCampaign;
@@ -65,6 +66,8 @@ public class AdministradorEscenas : MonoBehaviour
   bool faderHold = false;
   bool cargandoBatalla = false;
   bool cerrandoBatalla = false;
+  GameObject fadeReveladoBatallaRuntime;
+  Coroutine fadeReveladoBatallaRoutine;
   float CalcularEsperaCambioEscena(float fadeDuration, float holdDuration)
   {
     return Mathf.Max(fadeDuration + 0.05f, holdDuration);
@@ -1130,6 +1133,84 @@ public class AdministradorEscenas : MonoBehaviour
     StartCoroutine(FadeInOut(fadeDuration, holdDuration));
   }
 
+  void IniciarFadeReveladoCampoBatalla()
+  {
+    if (EscenaBatalla == null)
+    {
+      return;
+    }
+
+    if (fadeReveladoBatallaRoutine != null)
+    {
+      StopCoroutine(fadeReveladoBatallaRoutine);
+      fadeReveladoBatallaRoutine = null;
+    }
+    if (fadeReveladoBatallaRuntime != null)
+    {
+      Destroy(fadeReveladoBatallaRuntime);
+    }
+
+    fadeReveladoBatallaRuntime = new GameObject(
+      "BattleFieldRevealFade",
+      typeof(RectTransform),
+      typeof(Canvas),
+      typeof(CanvasGroup),
+      typeof(GraphicRaycaster));
+    fadeReveladoBatallaRuntime.transform.SetParent(EscenaBatalla.transform, false);
+
+    Canvas canvas = fadeReveladoBatallaRuntime.GetComponent<Canvas>();
+    canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+    canvas.overrideSorting = true;
+    canvas.sortingOrder = 32760;
+
+    CanvasGroup grupo = fadeReveladoBatallaRuntime.GetComponent<CanvasGroup>();
+    grupo.alpha = 1f;
+    grupo.interactable = false;
+    grupo.blocksRaycasts = true;
+
+    GameObject goFondo = new GameObject(
+      "Background",
+      typeof(RectTransform),
+      typeof(CanvasRenderer),
+      typeof(Image));
+    RectTransform rect = goFondo.GetComponent<RectTransform>();
+    rect.SetParent(fadeReveladoBatallaRuntime.transform, false);
+    rect.anchorMin = Vector2.zero;
+    rect.anchorMax = Vector2.one;
+    rect.offsetMin = Vector2.zero;
+    rect.offsetMax = Vector2.zero;
+
+    Image imagen = goFondo.GetComponent<Image>();
+    imagen.color = Color.black;
+    imagen.raycastTarget = true;
+
+    fadeReveladoBatallaRoutine = StartCoroutine(DesvanecerReveladoCampoBatalla(grupo));
+  }
+
+  IEnumerator DesvanecerReveladoCampoBatalla(CanvasGroup grupo)
+  {
+    float transcurrido = 0f;
+    while (transcurrido < DuracionFadeReveladoBatalla && grupo != null)
+    {
+      transcurrido += Time.unscaledDeltaTime;
+      float t = Mathf.Clamp01(transcurrido / DuracionFadeReveladoBatalla);
+      grupo.alpha = 1f - Mathf.SmoothStep(0f, 1f, t);
+      yield return null;
+    }
+
+    if (grupo != null)
+    {
+      grupo.alpha = 0f;
+      grupo.blocksRaycasts = false;
+    }
+    if (fadeReveladoBatallaRuntime != null)
+    {
+      Destroy(fadeReveladoBatallaRuntime);
+      fadeReveladoBatallaRuntime = null;
+    }
+    fadeReveladoBatallaRoutine = null;
+  }
+
   private IEnumerator FadeInOut(float fadeDuration, float holdDuration)
   {
     // Se oscurece (fade in)
@@ -1211,6 +1292,8 @@ public class AdministradorEscenas : MonoBehaviour
   private bool filtrandoUnicosEnComposicionInicial;
   private readonly HashSet<int> filasAliadasInicialesReservadas = new HashSet<int>();
   private readonly List<int> filasAliadasInicialesSeleccionadas = new List<int>();
+  private readonly List<Unidad> unidadesEnemigasInicialesEnOrden = new List<Unidad>();
+  private bool registrandoOrdenEnemigosIniciales;
   private int totalAliadosInicialesAColocar;
 
   public void CargarBatalla(int IDEncuentro, int esEmboscada = 0, EncounterDefinition encuentro = null, bool usarRefuerzosAliadosCaravana = false)
@@ -1312,8 +1395,10 @@ public class AdministradorEscenas : MonoBehaviour
     }
     campaignManager.scAdministradorEscenas.PlayFadeInOut(fadeTransicion, holdTransicion);
     await EsperarSegundosRealtime(esperaCambioEscena);
+    bool esEncuentroTutorialProtegido = IDEncuentro == 700 || IDEncuentro == 701;
     EscenaCampaign.SetActive(false);
     EscenaBatalla.SetActive(true);
+    IniciarFadeReveladoCampoBatalla();
     RefrescarUICompartidaSegunEscena();
     BattleManager battleManager = BattleManager.Instance;
     if (battleManager == null)
@@ -1325,6 +1410,10 @@ public class AdministradorEscenas : MonoBehaviour
       MusicManager.Instance?.VolverACampania();
       return;
     }
+    if (!esEncuentroTutorialProtegido)
+    {
+      battleManager.ObtenerOCrearControladorIntroBatalla().PrepararTextoComienzaBatalla();
+    }
     battleManager.RefrescarVfxClimaCalor(false);
     battleManager.ConfigurarOrdenIniciativaPorEmboscada(esEmboscada);
     battleManager.SetLogCombateActivoPorEscena(true);
@@ -1333,6 +1422,7 @@ public class AdministradorEscenas : MonoBehaviour
     battleManager.ReiniciarEstadoRefuerzos();
     filasAliadasInicialesReservadas.Clear();
     filasAliadasInicialesSeleccionadas.Clear();
+    unidadesEnemigasInicialesEnOrden.Clear();
     totalAliadosInicialesAColocar = 0;
     if (Personaje1 != null) { totalAliadosInicialesAColocar++; }
     if (Personaje2 != null) { totalAliadosInicialesAColocar++; }
@@ -1444,7 +1534,15 @@ public class AdministradorEscenas : MonoBehaviour
       }
     }
 
-    CrearEncuentroEnemigos(IDEncuentro, encuentroGeneradoActual);
+    registrandoOrdenEnemigosIniciales = true;
+    try
+    {
+      CrearEncuentroEnemigos(IDEncuentro, encuentroGeneradoActual);
+    }
+    finally
+    {
+      registrandoOrdenEnemigosIniciales = false;
+    }
 
     // Actualizar listas de unidades tras colocar aliados y enemigos
     if (BattleManager.Instance != null)
@@ -1948,6 +2046,25 @@ public class AdministradorEscenas : MonoBehaviour
       u.TirarIniciativa();
       u.ComienzoBatallaEnemigo();
     }
+    if (!esEncuentroTutorialProtegido)
+    {
+      ColocarunidadesEnCanvasUnidades();
+      BattleIntroController intro = BattleManager.Instance.ObtenerOCrearControladorIntroBatalla();
+      string nombreFaccionIntro = encuentroGeneradoActual != null && campaignManager.scMenuBatallas != null
+        ? campaignManager.scMenuBatallas.ObtenerNombreFaccionTraducido(
+          encuentroGeneradoActual.factionId,
+          encuentroGeneradoActual.factionName)
+        : string.Empty;
+      await intro.EjecutarAsync(
+        esEmboscada,
+        ObtenerEnemigosInicialesEnOrdenParaIntro(),
+        ObtenerHeroesInicialesEnOrdenParaIntro(),
+        nombreFaccionIntro);
+
+      BattleManager.Instance.ladoA.ActualizarListaDeUnidadesEnLado();
+      BattleManager.Instance.ladoB.ActualizarListaDeUnidadesEnLado();
+    }
+
     // El inicio de la primera ronda y el primer turno ya los gestiona BattleManager.RondaNueva()
     // Asegurar que la primera ronda comience en 1.
     // RondaNueva() incrementa el contador, por eso se inicializa en 0 aquí.
@@ -1972,7 +2089,10 @@ public class AdministradorEscenas : MonoBehaviour
     }
     BattleManager.Instance.SetLogCombateActivoPorEscena(true);
 
-    Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
+    if (esEncuentroTutorialProtegido)
+    {
+      Invoke("ColocarunidadesEnCanvasUnidades", 0.3f);
+    }
 
     bool modorapido = PlayerPrefs.GetInt("modoRapido", 0) == 1;
     if (modorapido)
@@ -4046,6 +4166,65 @@ public class AdministradorEscenas : MonoBehaviour
       BattleManager.Instance.RefrescarOrdenVisualBatalla();
     }
   }
+
+  List<Unidad> ObtenerEnemigosInicialesEnOrdenParaIntro()
+  {
+    List<Unidad> resultado = new List<Unidad>();
+    for (int i = 0; i < unidadesEnemigasInicialesEnOrden.Count; i++)
+    {
+      Unidad unidad = unidadesEnemigasInicialesEnOrden[i];
+      if (unidad != null && !resultado.Contains(unidad))
+      {
+        resultado.Add(unidad);
+      }
+    }
+
+    if (BattleManager.Instance != null && BattleManager.Instance.ladoA != null)
+    {
+      foreach (Unidad unidad in BattleManager.Instance.ladoA.unidadesLado)
+      {
+        if (unidad != null && !resultado.Contains(unidad))
+        {
+          resultado.Add(unidad);
+        }
+      }
+    }
+
+    return resultado;
+  }
+
+  List<Unidad> ObtenerHeroesInicialesEnOrdenParaIntro()
+  {
+    List<Unidad> resultado = new List<Unidad>();
+    AgregarHeroeSiCorresponde(unidadPers1, resultado);
+    AgregarHeroeSiCorresponde(unidadPers2, resultado);
+    AgregarHeroeSiCorresponde(unidadPers3, resultado);
+    AgregarHeroeSiCorresponde(unidadPers4, resultado);
+    return resultado;
+  }
+
+  void AgregarHeroeSiCorresponde(Unidad unidad, List<Unidad> resultado)
+  {
+    if (unidad != null && resultado != null && !resultado.Contains(unidad))
+    {
+      resultado.Add(unidad);
+    }
+  }
+
+  void RegistrarUnidadEnemigaInicial(GameObject go)
+  {
+    if (!registrandoOrdenEnemigosIniciales || go == null)
+    {
+      return;
+    }
+
+    Unidad unidad = go.GetComponent<Unidad>();
+    if (unidad != null && !unidadesEnemigasInicialesEnOrden.Contains(unidad))
+    {
+      unidadesEnemigasInicialesEnOrden.Add(unidad);
+    }
+  }
+
   void ColocarEnCasillaAleatoria(int iLado, GameObject GO)
   {
     bool IntentarColocar(GameObject unidad, LadoManager ladoObjetivo, List<int> columnasPreferidas)
@@ -4108,6 +4287,10 @@ public class AdministradorEscenas : MonoBehaviour
     if (!colocado)
     {
       Debug.LogError("No se pudo colocar el objeto en ninguna casilla despues de 100 intentos.");
+    }
+    else if (iLado != 1)
+    {
+      RegistrarUnidadEnemigaInicial(GO);
     }
   }
   void ColocarEnCasillaAleatoriaEnColumna(int iLado, int columna, GameObject GO)
@@ -4200,6 +4383,10 @@ public class AdministradorEscenas : MonoBehaviour
     if (!colocado)
     {
       Debug.LogError("No se pudo colocar el objeto en la columna " + columna + " después de 100 intentos.");
+    }
+    else if (iLado != 1)
+    {
+      RegistrarUnidadEnemigaInicial(GO);
     }
   }
 
@@ -4332,7 +4519,10 @@ public class AdministradorEscenas : MonoBehaviour
       return;
     }
 
-    lado.ColocarEnCasilla(GO, X, Y);
+    if (lado.ColocarEnCasilla(GO, X, Y) && iLado != 1)
+    {
+      RegistrarUnidadEnemigaInicial(GO);
+    }
 
   }
 

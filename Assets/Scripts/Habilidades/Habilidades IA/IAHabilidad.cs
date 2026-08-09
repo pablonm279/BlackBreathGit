@@ -61,6 +61,20 @@ public abstract class IAHabilidad : MonoBehaviour
 
   public abstract void AplicarEfectosHabilidad(object unidad);
 
+  protected bool PuedeResolverAccionIA()
+  {
+    if (scEstaUnidad == null)
+    {
+      scEstaUnidad = GetComponent<Unidad>();
+    }
+
+    return scEstaUnidad != null
+      && scEstaUnidad.HP_actual > 0f
+      && scEstaUnidad.gameObject.activeInHierarchy
+      && BattleManager.Instance != null
+      && BattleManager.Instance.unidadActiva == scEstaUnidad;
+  }
+
   /// <summary>
   /// Ejecuta la animación/pose según el tipo de alcance de la habilidad IA.
   /// </summary>
@@ -833,6 +847,11 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
 
     try
     {
+      if (!PuedeResolverAccionIA())
+      {
+        return;
+      }
+
       inicioSecuenciaVisual = Time.time;
       if (scEstaUnidad == null)
       {
@@ -945,7 +964,10 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
         await BattleManager.DelayCombateAsync(DelayPreImpactoMeleeMs);
       }
 
-      await resolverImpacto();
+      if (PuedeResolverAccionIA())
+      {
+        await resolverImpacto();
+      }
 
       if (esMelee && DelayPostImpactoMeleeMs > 0)
       {
@@ -1080,7 +1102,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
         await BattleManager.DelayCombateAsync(DelayPreImpactoMeleeMs);
       }
 
-      if (resolver != null)
+      if (resolver != null && PuedeResolverAccionIA())
       {
         await resolver();
       }

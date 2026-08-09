@@ -42,6 +42,13 @@ public abstract class Trampa : MonoBehaviour
     
     void Start()
     {
+        Casilla casilla = GetComponent<Casilla>();
+        if (casilla != null && casilla.Presente != null && casilla.Presente.GetComponent<Obstaculo>() != null)
+        {
+            DestruirTrampa();
+            return;
+        }
+
         Invoke("AplicarEfectosUnidadEnCasilla", 0.3f);
     }
 

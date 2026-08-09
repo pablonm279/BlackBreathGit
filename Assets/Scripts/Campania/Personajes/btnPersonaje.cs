@@ -8,6 +8,9 @@ using TMPro;
 public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
   private const float IntervaloAutoRefrescoRetratoCampania = 0.2f;
+  private const float EsperaCierreOpcionesActividad = 0.1f;
+  private const float DuracionAnimacionOpcionesActividad = 0.12f;
+  private const float EspaciadoOpcionesActividad = 21.5f;
   private static readonly Vector2 AnchorEstadosCampania = new Vector2(0.5f, 0f);
   private static readonly Vector2 PosicionEstadosCampania = new Vector2(-16.2f, 56.2f);
   private static readonly Vector2 AnchorEstadosMenuBatallas = new Vector2(0.5f, 0.5f);
@@ -33,6 +36,9 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
   bool reenvioArrastreConfigurado;
   float proximoAutoRefrescoRetratoCampania;
   int firmaVisualRetratoCampania = int.MinValue;
+  readonly List<btnActividad> opcionesActividadRetrato = new List<btnActividad>();
+  Coroutine rutinaCierreOpcionesActividad;
+  bool selectorActividadRetratoActivo;
 
   private void Awake()
   {
@@ -195,7 +201,11 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
   public void OnPointerEnter(PointerEventData eventData)
   {
-    if (!abreMenuPersonajesAlHover || personajeRepresentado == null || CampaignManager.Instance == null || CampaignManager.Instance.scMenuCaravana == null)
+    if (selectorActividadRetratoActivo
+      || !abreMenuPersonajesAlHover
+      || personajeRepresentado == null
+      || CampaignManager.Instance == null
+      || CampaignManager.Instance.scMenuCaravana == null)
     {
       return;
     }
@@ -390,6 +400,11 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     RepresentarTodo();
 
 
+  }
+
+  private void OnDisable()
+  {
+    CerrarOpcionesActividadRetrato(true);
   }
 
   private void Update()
@@ -606,6 +621,246 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     if (actividadRetrato.Recuadro != null)
     {
       actividadRetrato.Recuadro.SetActive(false);
+    }
+  }
+
+  public void NotificarEntradaActividadRetrato(btnActividad actividad)
+  {
+    if (rutinaCierreOpcionesActividad != null)
+    {
+      StopCoroutine(rutinaCierreOpcionesActividad);
+      rutinaCierreOpcionesActividad = null;
+    }
+
+    if (actividad == actividadRetrato)
+    {
+      MostrarOpcionesActividadRetrato();
+    }
+  }
+
+  public void NotificarSalidaActividadRetrato()
+  {
+    if (rutinaCierreOpcionesActividad != null)
+    {
+      StopCoroutine(rutinaCierreOpcionesActividad);
+    }
+
+    rutinaCierreOpcionesActividad = StartCoroutine(CerrarOpcionesActividadTrasEspera());
+  }
+
+  public void CerrarOpcionesActividadRetrato(bool inmediato = false)
+  {
+    if (rutinaCierreOpcionesActividad != null)
+    {
+      StopCoroutine(rutinaCierreOpcionesActividad);
+      rutinaCierreOpcionesActividad = null;
+    }
+
+    selectorActividadRetratoActivo = false;
+
+    TooltipStats.Instance?.HideTooltip();
+    TooltipItems.Instance?.HideTooltip();
+
+    for (int i = opcionesActividadRetrato.Count - 1; i >= 0; i--)
+    {
+      btnActividad opcion = opcionesActividadRetrato[i];
+      if (opcion == null)
+      {
+        continue;
+      }
+
+      if (inmediato || !gameObject.activeInHierarchy)
+      {
+        Destroy(opcion.gameObject);
+      }
+      else
+      {
+        StartCoroutine(AnimarSalidaOpcionActividad(opcion));
+      }
+    }
+
+    opcionesActividadRetrato.Clear();
+  }
+
+  private void MostrarOpcionesActividadRetrato()
+  {
+    if (opcionesActividadRetrato.Count > 0
+      || !abreMenuPersonajesAlHover
+      || personajeRepresentado == null
+      || personajeRepresentado.Camp_Muerto
+      || !personajeRepresentado.PuedeRealizarActividades()
+      || actividadRetrato == null
+      || EstaEnContenedorMenuBatallas())
+    {
+      return;
+    }
+
+    Actividades actividades = CampaignManager.Instance != null
+      && CampaignManager.Instance.scMenuPersonajes != null
+      ? CampaignManager.Instance.scMenuPersonajes.scActividades
+      : null;
+    if (actividades == null)
+    {
+      return;
+    }
+
+    int idActividadActual = actividadRetrato.actividadRepresentada != null
+      ? actividadRetrato.actividadRepresentada.IDActividad
+      : personajeRepresentado.ActividadSeleccionada;
+    List<Actividad> actividadesDisponibles = new List<Actividad>(personajeRepresentado.GetComponents<Actividad>());
+    actividadesDisponibles.RemoveAll(actividad => actividad == null || actividad.IDActividad == idActividadActual);
+    actividadesDisponibles.Sort((a, b) => a.IDActividad.CompareTo(b.IDActividad));
+
+    RectTransform rectActividadActual = actividadRetrato.transform as RectTransform;
+    if (rectActividadActual == null)
+    {
+      return;
+    }
+
+    selectorActividadRetratoActivo = true;
+    if (CampaignManager.Instance != null && CampaignManager.Instance.scMenuCaravana != null)
+    {
+      CampaignManager.Instance.scMenuCaravana.CerrarMenuPersonajesPorHover(personajeRepresentado);
+    }
+
+    Canvas canvasRaiz = actividadRetrato.GetComponentInParent<Canvas>();
+    int ordenOpciones = canvasRaiz != null ? canvasRaiz.sortingOrder : 0;
+    Canvas[] canvasesActivos = FindObjectsOfType<Canvas>();
+    foreach (Canvas canvasActivo in canvasesActivos)
+    {
+      if (canvasActivo != null
+        && canvasActivo.isActiveAndEnabled
+        && (canvasRaiz == null || canvasActivo.sortingLayerID == canvasRaiz.sortingLayerID))
+      {
+        ordenOpciones = Mathf.Max(ordenOpciones, canvasActivo.sortingOrder);
+      }
+    }
+    ordenOpciones++;
+
+    int cantidadOpciones = Mathf.Min(4, actividadesDisponibles.Count);
+    for (int i = 0; i < cantidadOpciones; i++)
+    {
+      btnActividad opcion = Instantiate(actividadRetrato, actividadRetrato.transform.parent);
+      opcion.name = "OpcionActividadRetrato";
+      opcion.ConfigurarOpcionRapidaRetrato(actividadesDisponibles[i], actividades, personajeRepresentado, this);
+      if (opcion.actImage != null)
+      {
+        opcion.actImage.sprite = actividades.ObtenerSpriteActividad(actividadesDisponibles[i].IDActividad);
+      }
+      if (opcion.Recuadro != null)
+      {
+        opcion.Recuadro.SetActive(false);
+      }
+
+      RectTransform rectOpcion = opcion.transform as RectTransform;
+      Vector2 posicionFinal = rectActividadActual.anchoredPosition + Vector2.up * EspaciadoOpcionesActividad * (i + 1);
+      rectOpcion.anchoredPosition = posicionFinal + Vector2.down * 4f;
+      rectOpcion.localScale = rectActividadActual.localScale * 0.82f;
+      opcion.transform.SetAsLastSibling();
+
+      Canvas canvasOpcion = opcion.GetComponent<Canvas>();
+      if (canvasOpcion == null)
+      {
+        canvasOpcion = opcion.gameObject.AddComponent<Canvas>();
+      }
+      canvasOpcion.overrideSorting = true;
+      canvasOpcion.sortingOrder = ordenOpciones;
+      if (canvasRaiz != null)
+      {
+        canvasOpcion.sortingLayerID = canvasRaiz.sortingLayerID;
+      }
+      if (opcion.GetComponent<GraphicRaycaster>() == null)
+      {
+        opcion.gameObject.AddComponent<GraphicRaycaster>();
+      }
+
+      CanvasGroup canvasGroup = opcion.GetComponent<CanvasGroup>();
+      if (canvasGroup == null)
+      {
+        canvasGroup = opcion.gameObject.AddComponent<CanvasGroup>();
+      }
+      canvasGroup.alpha = 0f;
+
+      opcionesActividadRetrato.Add(opcion);
+      StartCoroutine(AnimarEntradaOpcionActividad(rectOpcion, canvasGroup, posicionFinal, rectActividadActual.localScale, i * 0.025f));
+    }
+  }
+
+  private IEnumerator CerrarOpcionesActividadTrasEspera()
+  {
+    yield return new WaitForSecondsRealtime(EsperaCierreOpcionesActividad);
+    rutinaCierreOpcionesActividad = null;
+    CerrarOpcionesActividadRetrato();
+  }
+
+  private IEnumerator AnimarEntradaOpcionActividad(RectTransform rectOpcion, CanvasGroup canvasGroup, Vector2 posicionFinal, Vector3 escalaFinal, float demora)
+  {
+    if (demora > 0f)
+    {
+      yield return new WaitForSecondsRealtime(demora);
+    }
+
+    if (rectOpcion == null || canvasGroup == null)
+    {
+      yield break;
+    }
+
+    Vector2 posicionInicial = rectOpcion.anchoredPosition;
+    Vector3 escalaInicial = rectOpcion.localScale;
+    float tiempo = 0f;
+    while (tiempo < DuracionAnimacionOpcionesActividad && rectOpcion != null)
+    {
+      tiempo += Time.unscaledDeltaTime;
+      float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(tiempo / DuracionAnimacionOpcionesActividad));
+      rectOpcion.anchoredPosition = Vector2.LerpUnclamped(posicionInicial, posicionFinal, t);
+      rectOpcion.localScale = Vector3.LerpUnclamped(escalaInicial, escalaFinal, t);
+      canvasGroup.alpha = t;
+      yield return null;
+    }
+
+    if (rectOpcion != null)
+    {
+      rectOpcion.anchoredPosition = posicionFinal;
+      rectOpcion.localScale = escalaFinal;
+      canvasGroup.alpha = 1f;
+    }
+  }
+
+  private IEnumerator AnimarSalidaOpcionActividad(btnActividad opcion)
+  {
+    if (opcion == null)
+    {
+      yield break;
+    }
+
+    CanvasGroup canvasGroup = opcion.GetComponent<CanvasGroup>();
+    RectTransform rectOpcion = opcion.transform as RectTransform;
+    if (canvasGroup != null)
+    {
+      canvasGroup.blocksRaycasts = false;
+      canvasGroup.interactable = false;
+    }
+    float alphaInicial = canvasGroup != null ? canvasGroup.alpha : 1f;
+    Vector3 escalaInicial = rectOpcion != null ? rectOpcion.localScale : Vector3.one;
+    float tiempo = 0f;
+    while (tiempo < DuracionAnimacionOpcionesActividad * 0.75f && opcion != null)
+    {
+      tiempo += Time.unscaledDeltaTime;
+      float t = Mathf.Clamp01(tiempo / (DuracionAnimacionOpcionesActividad * 0.75f));
+      if (canvasGroup != null)
+      {
+        canvasGroup.alpha = Mathf.Lerp(alphaInicial, 0f, t);
+      }
+      if (rectOpcion != null)
+      {
+        rectOpcion.localScale = Vector3.LerpUnclamped(escalaInicial, escalaInicial * 0.85f, t);
+      }
+      yield return null;
+    }
+
+    if (opcion != null)
+    {
+      Destroy(opcion.gameObject);
     }
   }
 

@@ -146,6 +146,28 @@ public class UIBotonesHabilidades : MonoBehaviour
         }
     }
 
+    public void MostrarDisponibilidadTrasMovimiento(int costoMovimiento)
+    {
+        foreach (BotonHabilidad boton in listaBotonesHabilidad)
+        {
+            if (boton != null)
+            {
+                boton.MostrarDisponibilidadTrasMovimiento(costoMovimiento);
+            }
+        }
+    }
+
+    public void LimpiarDisponibilidadTrasMovimiento()
+    {
+        foreach (BotonHabilidad boton in listaBotonesHabilidad)
+        {
+            if (boton != null)
+            {
+                boton.LimpiarDisponibilidadTrasMovimiento();
+            }
+        }
+    }
+
     bool EsHabilidadContextualDeCombate(Habilidad habilidad)
     {
         return habilidad is DestruirObstaculo || habilidad is Escapar;

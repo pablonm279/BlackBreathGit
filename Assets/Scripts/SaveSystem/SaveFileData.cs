@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 public class SaveFileData
 {
   public const int MinimumCompatibleVersion = 1;
-  public const int CurrentVersion = 23;
+  public const int CurrentVersion = 24;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -255,6 +255,7 @@ public class NodeSaveData
   public string faccionScoutReveladaNombre;
   public bool visibilidadForzadaEspecial;
   public bool reveladoPorZonaCartografiada;
+  public bool descubiertoPorMecanicaEspecial;
   public List<CaminoConexionSaveData> conexiones = new List<CaminoConexionSaveData>();
 }
 

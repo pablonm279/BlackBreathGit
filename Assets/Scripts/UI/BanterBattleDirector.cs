@@ -40,11 +40,61 @@ public class BanterBattleDirector : MonoBehaviour
             "Let us fight! So we may reach Serria...",
             "Lutemos! Para chegarmos a Serria...")
     };
+    private static readonly BanterLineaLocal[] lineasEmboscadaEnemiga =
+    {
+        new BanterLineaLocal(
+            "emboscada_enemiga_01",
+            BanterDisparador.EmboscadaEnemiga,
+            "¡Emboscada! ¡A las armas!",
+            "Ambush! To arms!",
+            "Emboscada! Às armas!"),
+        new BanterLineaLocal(
+            "emboscada_enemiga_02",
+            BanterDisparador.EmboscadaEnemiga,
+            "¡Enemigos a la vista! ¡En guardia!",
+            "Enemies in sight! On your guard!",
+            "Inimigos à vista! Em guarda!"),
+        new BanterLineaLocal(
+            "emboscada_enemiga_03",
+            BanterDisparador.EmboscadaEnemiga,
+            "¡Nos atacan! ¡Mantengan la formación!",
+            "We’re under attack! Hold formation!",
+            "Estamos sob ataque! Mantenham a formação!")
+    };
+    private static readonly BanterLineaLocal[] lineasLlegadaEnemiga =
+    {
+        new BanterLineaLocal(
+            "llegada_enemiga_01",
+            BanterDisparador.LlegadaEnemiga,
+            "\u00A1Son {0}! \u00A1Cuidado!",
+            "{0}! Watch out!",
+            "S\u00E3o {0}! Cuidado!"),
+        new BanterLineaLocal(
+            "llegada_enemiga_02",
+            BanterDisparador.LlegadaEnemiga,
+            "\u00A1Ah\u00ED vienen {0}! \u00A1Prep\u00E1rense!",
+            "{0} incoming! Get ready!",
+            "L\u00E1 v\u00EAm {0}! Preparem-se!"),
+        new BanterLineaLocal(
+            "llegada_enemiga_03",
+            BanterDisparador.LlegadaEnemiga,
+            "\u00A1{0}! \u00A1Mantengan la formaci\u00F3n!",
+            "{0}! Hold formation!",
+            "{0}! Mantenham a forma\u00E7\u00E3o!")
+    };
+    private static readonly BanterLineaLocal lineaLlegadaEnemigaSinFaccion =
+        new BanterLineaLocal(
+            "llegada_enemiga_failsafe",
+            BanterDisparador.LlegadaEnemiga,
+            "\u00A1A luchar!",
+            "To battle!",
+            "\u00C0 luta!");
     private BattleManager battleManager;
     private AdministradorEscenas administradorEscenas;
     private Coroutine idleTurnoRoutine;
     private Unidad unidadTurnoObservada;
     private bool batallaIniciada;
+    private bool suprimirBanterComienzoPorIntroEmboscada;
     private bool etapaMoralInicializada;
     private EtapaMoral ultimaEtapaMoral;
     private int ultimoFramePifia = -1;
@@ -84,6 +134,18 @@ public class BanterBattleDirector : MonoBehaviour
         instance?.ProcesarInicioTurno(unidad);
     }
 
+    public static void NotificarIntroEmboscadaEnemiga(IReadOnlyList<Unidad> heroes)
+    {
+        instance?.EmitirAlertaIntroEmboscada(heroes);
+    }
+
+    public static void NotificarIntroBatallaNormal(
+        IReadOnlyList<Unidad> heroes,
+        string nombreFaccionEnemiga)
+    {
+        instance?.EmitirAlertaIntroBatallaNormal(heroes, nombreFaccionEnemiga);
+    }
+
     public static void NotificarEscapeAliado(Unidad unidadQueEscapa)
     {
         if (instance == null)
@@ -115,6 +177,7 @@ public class BanterBattleDirector : MonoBehaviour
         criticosRecibidosPendientes.Clear();
         unidadTurnoObservada = null;
         batallaIniciada = false;
+        suprimirBanterComienzoPorIntroEmboscada = false;
         etapaMoralInicializada = false;
         ultimoFramePifia = -1;
         ultimoActorPifia = 0;
@@ -307,7 +370,11 @@ public class BanterBattleDirector : MonoBehaviour
         if (EsAliadoVivo(unidad)
             && primerosTurnosProcesados.Add(unidad.GetInstanceID()))
         {
-            if (EsProtectorCaravana(unidad))
+            if (suprimirBanterComienzoPorIntroEmboscada)
+            {
+                suprimirBanterComienzoPorIntroEmboscada = false;
+            }
+            else if (EsProtectorCaravana(unidad))
             {
                 BanterLineaLocal lineaProtector =
                     lineasProtectorCaravana[Random.Range(0, lineasProtectorCaravana.Length)];
@@ -329,13 +396,96 @@ public class BanterBattleDirector : MonoBehaviour
         if (idleTurnoRoutine != null)
         {
             StopCoroutine(idleTurnoRoutine);
+            idleTurnoRoutine = null;
         }
-        idleTurnoRoutine = StartCoroutine(EsperarIdleTurno(unidad));
+
+        if (!TutorialCombateActivo())
+        {
+            idleTurnoRoutine = StartCoroutine(EsperarIdleTurno(unidad));
+        }
+    }
+
+    private void EmitirAlertaIntroEmboscada(IReadOnlyList<Unidad> heroes)
+    {
+        if (heroes == null || heroes.Count < 1)
+        {
+            return;
+        }
+
+        List<Unidad> candidatos = new List<Unidad>();
+        for (int i = 0; i < heroes.Count; i++)
+        {
+            Unidad heroe = heroes[i];
+            if (EsAliadoVivo(heroe))
+            {
+                candidatos.Add(heroe);
+            }
+        }
+
+        if (candidatos.Count < 1)
+        {
+            return;
+        }
+
+        Unidad hablante = candidatos[Random.Range(0, candidatos.Count)];
+        BanterLineaLocal linea = lineasEmboscadaEnemiga[Random.Range(0, lineasEmboscadaEnemiga.Length)];
+        suprimirBanterComienzoPorIntroEmboscada = true;
+        EmitirLinea(hablante, linea, BanterDisparador.EmboscadaEnemiga);
+    }
+
+    private void EmitirAlertaIntroBatallaNormal(
+        IReadOnlyList<Unidad> heroes,
+        string nombreFaccionEnemiga)
+    {
+        if (heroes == null || heroes.Count < 1)
+        {
+            return;
+        }
+
+        List<Unidad> candidatos = new List<Unidad>();
+        for (int i = 0; i < heroes.Count; i++)
+        {
+            Unidad heroe = heroes[i];
+            if (EsAliadoVivo(heroe))
+            {
+                candidatos.Add(heroe);
+            }
+        }
+
+        if (candidatos.Count < 1)
+        {
+            return;
+        }
+
+        Unidad hablante = candidatos[Random.Range(0, candidatos.Count)];
+        BanterLineaLocal linea = string.IsNullOrWhiteSpace(nombreFaccionEnemiga)
+            ? lineaLlegadaEnemigaSinFaccion
+            : lineasLlegadaEnemiga[Random.Range(0, lineasLlegadaEnemiga.Length)];
+        string texto = linea.ObtenerTextoActual();
+        if (!string.IsNullOrWhiteSpace(nombreFaccionEnemiga))
+        {
+            texto = string.Format(texto, nombreFaccionEnemiga);
+        }
+
+        suprimirBanterComienzoPorIntroEmboscada = true;
+        lineasUsadas.Add(ClaveLinea(hablante, linea));
+        BanterBattleUI.Emitir(
+            hablante,
+            texto,
+            DuracionParaTexto(texto),
+            Prioridad(BanterDisparador.LlegadaEnemiga),
+            false);
     }
 
     private IEnumerator EsperarIdleTurno(Unidad unidad)
     {
         yield return new WaitForSecondsRealtime(30f);
+
+        if (TutorialCombateActivo())
+        {
+            idleTurnoRoutine = null;
+            yield break;
+        }
 
         while (battleManager != null
             && battleManager.unidadActiva == unidad
@@ -346,7 +496,8 @@ public class BanterBattleDirector : MonoBehaviour
 
         if (battleManager != null
             && battleManager.unidadActiva == unidad
-            && unidadTurnoObservada == unidad)
+            && unidadTurnoObservada == unidad
+            && !TutorialCombateActivo())
         {
             IntentarDisparar(
                 BanterDisparador.IdleTurno,
@@ -355,6 +506,13 @@ public class BanterBattleDirector : MonoBehaviour
         }
 
         idleTurnoRoutine = null;
+    }
+
+    private bool TutorialCombateActivo()
+    {
+        return battleManager != null
+            && battleManager.scTutorialCombate != null
+            && battleManager.scTutorialCombate.tutorialCombateActivo;
     }
 
     private void ProcesarMoral(float porcentaje)
@@ -572,6 +730,8 @@ public class BanterBattleDirector : MonoBehaviour
     {
         switch (disparador)
         {
+            case BanterDisparador.EmboscadaEnemiga:
+            case BanterDisparador.LlegadaEnemiga:
             case BanterDisparador.AliadoDerrotado:
                 return 3;
             case BanterDisparador.MoralAumentaEtapa:

@@ -13,6 +13,8 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
    public Personaje personajeSeleccionado;
    public GameObject Recuadro;
    [SerializeField] private bool usarComoIndicadorRetrato;
+   private bool usarComoOpcionRapidaRetrato;
+   private btnPersonaje propietarioRetrato;
 
    void Awake()
    {
@@ -38,15 +40,23 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
    public void OnPointerEnter(PointerEventData eventData)
    {
       MostrarDescripcionHover();
+      propietarioRetrato?.NotificarEntradaActividadRetrato(this);
    }
 
    public void OnPointerExit(PointerEventData eventData)
    {
       RestaurarDescripcionSeleccionada();
+      propietarioRetrato?.NotificarSalidaActividadRetrato();
    }
 
    public void OnClick()
    {
+      if (usarComoOpcionRapidaRetrato)
+      {
+        SeleccionarOpcionRapidaRetrato();
+        return;
+      }
+
       if (usarComoIndicadorRetrato)
       {
         btnPersonaje btnRetrato = GetComponentInParent<btnPersonaje>();
@@ -278,6 +288,62 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
       scActividades = actividades;
       personajeSeleccionado = personaje;
       usarComoIndicadorRetrato = true;
+      usarComoOpcionRapidaRetrato = false;
+      propietarioRetrato = GetComponentInParent<btnPersonaje>();
+   }
+
+   public void ConfigurarOpcionRapidaRetrato(Actividad actividad, Actividades actividades, Personaje personaje, btnPersonaje propietario)
+   {
+      actividadRepresentada = actividad;
+      scActividades = actividades;
+      personajeSeleccionado = personaje;
+      usarComoIndicadorRetrato = true;
+      usarComoOpcionRapidaRetrato = true;
+      propietarioRetrato = propietario;
+   }
+
+   private void SeleccionarOpcionRapidaRetrato()
+   {
+      propietarioRetrato?.CerrarOpcionesActividadRetrato();
+
+      if (personajeSeleccionado == null
+        || actividadRepresentada == null
+        || personajeSeleccionado.Camp_Muerto
+        || !personajeSeleccionado.PuedeRealizarActividades())
+      {
+        return;
+      }
+
+      if (HayBatallaPendiente())
+      {
+        MostrarLogActividadBloqueadaPorBatallaPendiente();
+        return;
+      }
+
+      if (!PuedeSeleccionarActividadConClima())
+      {
+        MostrarLogActividadBloqueadaPorNieve();
+        return;
+      }
+
+      CambiarActividadPersonaje(personajeSeleccionado);
+
+      if (CampaignManager.Instance != null)
+      {
+        CampaignManager.Instance.GetCapacidadDeCargaActual();
+        CampaignManager.Instance.CambiarBueyesActuales(0);
+      }
+
+      propietarioRetrato?.RepresentarTodo();
+      if (scActividades != null && scActividades.scMenuPersonajes != null)
+      {
+        scActividades.scMenuPersonajes.RefrescarListaVisual();
+      }
+
+      RuntimeAnalytics.TrackDesign(
+        "campaign",
+        "activity_selected",
+        RuntimeAnalytics.ActivityToken(actividadRepresentada) + "_" + RuntimeAnalytics.ClassToken(personajeSeleccionado));
    }
 
    private void ToggleActividadFijadaDesdeRetrato()

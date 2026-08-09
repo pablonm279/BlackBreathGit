@@ -62,8 +62,21 @@ public class ReaccionPosturaDefensiva : Reaccion
         usos--;
         if(usos == 0)
         {
+          if (scEstaUnidad is ClaseCaballero caballero)
+          {
+            caballero.NotificarFinPosturaDefensiva();
+          }
           Destroy(this);
         }
+      }
+    }
+
+    private void OnDestroy()
+    {
+      ClaseCaballero caballero = gameObject != null ? gameObject.GetComponent<ClaseCaballero>() : null;
+      if (caballero != null)
+      {
+        caballero.NotificarFinPosturaDefensiva();
       }
     }
 

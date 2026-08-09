@@ -47,6 +47,7 @@ public class BattleManager : MonoBehaviour
   public TutorialCombate scTutorialCombate;
 
   [SerializeField] public Image retratoPers;
+  [SerializeField] private TextMeshProUGUI nombrePersonaje;
   public GameObject prefabUnidad;
   public GameObject prefabUnidadCaballero;
   public GameObject prefabUnidadExplorador;
@@ -60,6 +61,8 @@ public class BattleManager : MonoBehaviour
   public ContenedorPrefabs contenedorPrefabs;
 
   public static BattleManager Instance { get; private set; }
+  public BattleIntroController ControladorIntroBatalla { get; private set; }
+  public bool IntroBatallaActiva => ControladorIntroBatalla != null && ControladorIntroBatalla.IntroActiva;
   public int RondaNro;
   public Unidad unidadActiva;
   // Silencia logs de combate durante preparación (buffs/estados iniciales)
@@ -143,6 +146,13 @@ public class BattleManager : MonoBehaviour
   private Unidad unidadHoverBajoMouse;
   private Unidad unidadMarcadaHoverObjetivoHabilidad;
   private bool redirigiendoClickUnidadCentralizado;
+  private int frameUltimoClickUnidadCentralizado = -1;
+  private GameObject panelSuperiorIntroBatalla;
+  private bool panelSuperiorActivoAntesIntro;
+  private bool textoRondaActivoAntesIntro;
+  private bool uiSuperiorOcultaPorIntro;
+  private Coroutine fadeUISuperiorIntroRoutine;
+  private const float DuracionFadeUISuperiorIntro = 0.22f;
 
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
   private static void ResetearEstadoEstaticoCombate()
@@ -248,6 +258,175 @@ public class BattleManager : MonoBehaviour
     CancelarCambioEstadoPausaDelay();
     AplicarEscalaTiempoCombate();
     Instance = null;
+  }
+
+  public BattleIntroController ObtenerOCrearControladorIntroBatalla()
+  {
+    if (ControladorIntroBatalla == null)
+    {
+      ControladorIntroBatalla = GetComponent<BattleIntroController>();
+      if (ControladorIntroBatalla == null)
+      {
+        ControladorIntroBatalla = gameObject.AddComponent<BattleIntroController>();
+      }
+    }
+
+    ControladorIntroBatalla.Inicializar(this);
+    return ControladorIntroBatalla;
+  }
+
+  public void PrepararUIParaIntroBatalla()
+  {
+    if (!uiSuperiorOcultaPorIntro)
+    {
+      FinalizarFadeUISuperiorInmediato();
+      panelSuperiorIntroBatalla = ObtenerPanelSuperiorBatalla();
+      panelSuperiorActivoAntesIntro = panelSuperiorIntroBatalla != null && panelSuperiorIntroBatalla.activeSelf;
+      textoRondaActivoAntesIntro = rondaText != null && rondaText.gameObject.activeSelf;
+
+      panelSuperiorIntroBatalla?.SetActive(false);
+      if (rondaText != null)
+      {
+        rondaText.gameObject.SetActive(false);
+      }
+      uiSuperiorOcultaPorIntro = true;
+    }
+
+    if (UICanvasTurnoJugador != null)
+    {
+      UICanvasTurnoJugador.SetActive(false);
+    }
+
+    if (UICanvasTurnoAI != null)
+    {
+      for (int i = 0; i < UICanvasTurnoAI.transform.childCount; i++)
+      {
+        UICanvasTurnoAI.transform.GetChild(i).gameObject.SetActive(false);
+      }
+    }
+
+    if (UIGOPasarTurno != null)
+    {
+      UIGOPasarTurno.SetActive(false);
+    }
+
+    scUIBotonesHab?.UIDesactivarBotones();
+  }
+
+  private GameObject ObtenerPanelSuperiorBatalla()
+  {
+    Transform canvasBatalla = rondaText != null ? rondaText.transform.parent : null;
+    Transform candidato = scUIBarraOrdenTurno != null ? scUIBarraOrdenTurno.transform : null;
+    while (candidato != null && candidato.parent != null && candidato.parent != canvasBatalla)
+    {
+      candidato = candidato.parent;
+    }
+
+    if (candidato != null && candidato.parent == canvasBatalla)
+    {
+      return candidato.gameObject;
+    }
+
+    return canvasBatalla != null ? canvasBatalla.Find("imTopBar")?.gameObject : null;
+  }
+
+  private void RestaurarUISuperiorTrasIntroBatalla()
+  {
+    if (!uiSuperiorOcultaPorIntro)
+    {
+      return;
+    }
+
+    if (panelSuperiorIntroBatalla != null)
+    {
+      panelSuperiorIntroBatalla.SetActive(panelSuperiorActivoAntesIntro);
+    }
+    if (rondaText != null)
+    {
+      rondaText.gameObject.SetActive(textoRondaActivoAntesIntro);
+    }
+
+    uiSuperiorOcultaPorIntro = false;
+    IniciarFadeUISuperiorTrasIntro();
+  }
+
+  private void IniciarFadeUISuperiorTrasIntro()
+  {
+    List<CanvasGroup> grupos = new List<CanvasGroup>();
+    if (panelSuperiorActivoAntesIntro && panelSuperiorIntroBatalla != null)
+    {
+      grupos.Add(ObtenerOCrearCanvasGroup(panelSuperiorIntroBatalla));
+    }
+    if (textoRondaActivoAntesIntro && rondaText != null)
+    {
+      grupos.Add(ObtenerOCrearCanvasGroup(rondaText.gameObject));
+    }
+
+    grupos.RemoveAll(grupo => grupo == null);
+    if (grupos.Count < 1)
+    {
+      return;
+    }
+
+    for (int i = 0; i < grupos.Count; i++)
+    {
+      grupos[i].alpha = 0f;
+    }
+    fadeUISuperiorIntroRoutine = StartCoroutine(FadeUISuperiorTrasIntro(grupos));
+  }
+
+  private IEnumerator FadeUISuperiorTrasIntro(List<CanvasGroup> grupos)
+  {
+    float transcurrido = 0f;
+    while (transcurrido < DuracionFadeUISuperiorIntro)
+    {
+      transcurrido += Time.unscaledDeltaTime;
+      float alpha = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(transcurrido / DuracionFadeUISuperiorIntro));
+      for (int i = 0; i < grupos.Count; i++)
+      {
+        if (grupos[i] != null)
+        {
+          grupos[i].alpha = alpha;
+        }
+      }
+      yield return null;
+    }
+
+    for (int i = 0; i < grupos.Count; i++)
+    {
+      if (grupos[i] != null)
+      {
+        grupos[i].alpha = 1f;
+      }
+    }
+    fadeUISuperiorIntroRoutine = null;
+  }
+
+  private void FinalizarFadeUISuperiorInmediato()
+  {
+    if (fadeUISuperiorIntroRoutine != null)
+    {
+      StopCoroutine(fadeUISuperiorIntroRoutine);
+      fadeUISuperiorIntroRoutine = null;
+    }
+
+    CanvasGroup grupoPanel = panelSuperiorIntroBatalla != null
+      ? panelSuperiorIntroBatalla.GetComponent<CanvasGroup>()
+      : null;
+    CanvasGroup grupoRonda = rondaText != null ? rondaText.GetComponent<CanvasGroup>() : null;
+    if (grupoPanel != null) { grupoPanel.alpha = 1f; }
+    if (grupoRonda != null) { grupoRonda.alpha = 1f; }
+  }
+
+  private static CanvasGroup ObtenerOCrearCanvasGroup(GameObject objetivo)
+  {
+    if (objetivo == null)
+    {
+      return null;
+    }
+
+    CanvasGroup grupo = objetivo.GetComponent<CanvasGroup>();
+    return grupo != null ? grupo : objetivo.AddComponent<CanvasGroup>();
   }
   public int indexTurno = 0;
 
@@ -516,6 +695,8 @@ public class BattleManager : MonoBehaviour
         retratoPers.enabled = retratoActual != null;
       }
 
+      ActualizarNombrePersonajeTurno();
+
       //Control si corresponde a IA o Jugador para activar UI correspondiente
       if (unidadActiva.GetComponent<IAUnidad>() != null)
       {
@@ -555,6 +736,24 @@ public class BattleManager : MonoBehaviour
       indexTurno++;
 
     }
+  }
+
+  private void ActualizarNombrePersonajeTurno()
+  {
+    if (nombrePersonaje == null && UICanvasTurnoJugador != null)
+    {
+      TextMeshProUGUI[] textosTurnoJugador = UICanvasTurnoJugador.GetComponentsInChildren<TextMeshProUGUI>(true);
+      nombrePersonaje = textosTurnoJugador.FirstOrDefault(texto => texto != null && texto.gameObject.name == "NombrePersonaje");
+    }
+
+    if (nombrePersonaje == null || unidadActiva == null)
+    {
+      return;
+    }
+
+    nombrePersonaje.text = TRADU.i != null
+      ? TRADU.i.Traducir(unidadActiva.uNombre)
+      : unidadActiva.uNombre;
   }
 
   [SerializeField] private TextMeshProUGUI textoTurno;
@@ -648,6 +847,7 @@ public class BattleManager : MonoBehaviour
   }
   public void RondaNueva() //Finaliza la ronda y se reordenan las unidades según iniciativa
   {
+    RestaurarUISuperiorTrasIntroBatalla();
 
     RondaNro++;
     huidasMoralEstaRonda = 0;
@@ -2392,7 +2592,12 @@ public class BattleManager : MonoBehaviour
       casillaObjetivo = obstaculoObjetivo.CasillaPosicion;
     }
 
-    if (casillaObjetivo == null)
+    return EsCasillaMeleeAdyacentePermitida(atacante, casillaObjetivo);
+  }
+
+  private bool EsCasillaMeleeAdyacentePermitida(Unidad atacante, Casilla casillaObjetivo)
+  {
+    if (atacante == null || atacante.CasillaPosicion == null || casillaObjetivo == null)
     {
       return false;
     }
@@ -2556,6 +2761,8 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
+    ProcesarClickUnidadCentralizadoSinCollider();
+
     // Si el jugador hace clic derecho o ESC mientras hay una habilidad activa, cancelarla
     if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape)) && (unidadActiva != null && HabilidadActiva != null))
     {
@@ -2613,9 +2820,18 @@ public class BattleManager : MonoBehaviour
   }
 
   public bool HoverUnidadesCentralizadoActivo => true;
+  public bool SeleccionHabilidadSoloCasillaActiva => !TutorialCombateActivo()
+    && SeleccionandoObjetivo
+    && HabilidadActivaSeleccionaCasilla();
 
   public bool TryRedirigirClickUnidadCentralizado(Unidad unidadQueRecibioClick)
   {
+    if (!redirigiendoClickUnidadCentralizado
+      && frameUltimoClickUnidadCentralizado == Time.frameCount)
+    {
+      return true;
+    }
+
     if (unidadQueRecibioClick == null
       || redirigiendoClickUnidadCentralizado
       || vistaTacticaActiva
@@ -2625,13 +2841,24 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
-    if (EstaPunteroSobreUIExterna())
+    if (!TutorialCombateActivo() && HabilidadActivaSeleccionaCasilla())
+    {
+      return TryRedirigirClickACasillaCentralizada();
+    }
+
+    bool punteroSobreUIExterna = EstaPunteroSobreUIExterna();
+    if (punteroSobreUIExterna && !TutorialCombateActivo())
     {
       return true;
     }
 
     Unidad unidadObjetivo = ObtenerUnidadBajoMousePorRectImagen(Input.mousePosition, MargenHoverUnidadPixeles);
-    if (unidadObjetivo == null || unidadObjetivo == unidadQueRecibioClick)
+    if (unidadObjetivo == null)
+    {
+      return punteroSobreUIExterna;
+    }
+
+    if (unidadObjetivo == unidadQueRecibioClick)
     {
       return false;
     }
@@ -2649,12 +2876,197 @@ public class BattleManager : MonoBehaviour
     return true;
   }
 
+  public bool TryRedirigirClickObstaculoCentralizado(Obstaculo obstaculoQueRecibioClick)
+  {
+    if (!redirigiendoClickUnidadCentralizado
+      && frameUltimoClickUnidadCentralizado == Time.frameCount)
+    {
+      return true;
+    }
+
+    if (obstaculoQueRecibioClick == null
+      || redirigiendoClickUnidadCentralizado
+      || vistaTacticaActiva
+      || !SeleccionandoObjetivo
+      || HabilidadActiva == null)
+    {
+      return false;
+    }
+
+    if (!TutorialCombateActivo() && HabilidadActivaSeleccionaCasilla())
+    {
+      return TryRedirigirClickACasillaCentralizada();
+    }
+
+    bool punteroSobreUIExterna = EstaPunteroSobreUIExterna();
+    if (punteroSobreUIExterna && !TutorialCombateActivo())
+    {
+      return true;
+    }
+
+    Unidad unidadObjetivo = ObtenerUnidadBajoMousePorRectImagen(Input.mousePosition, MargenHoverUnidadPixeles);
+    if (unidadObjetivo == null)
+    {
+      return punteroSobreUIExterna;
+    }
+
+    redirigiendoClickUnidadCentralizado = true;
+    try
+    {
+      unidadObjetivo.OnMouseDown();
+    }
+    finally
+    {
+      redirigiendoClickUnidadCentralizado = false;
+    }
+
+    return true;
+  }
+
+  public bool DebeConsumirClickCasillaPorUnidadCentralizada()
+  {
+    if (redirigiendoClickUnidadCentralizado)
+    {
+      return false;
+    }
+
+    if (frameUltimoClickUnidadCentralizado == Time.frameCount)
+    {
+      return true;
+    }
+
+    if (TutorialCombateActivo()
+      || vistaTacticaActiva
+      || !SeleccionandoObjetivo
+      || HabilidadActiva == null
+      || HabilidadActivaSeleccionaCasilla()
+      || bOcupado
+      || EstaPunteroSobreUIExterna())
+    {
+      return false;
+    }
+
+    return ObtenerUnidadBajoMousePorRectImagen(Input.mousePosition, MargenHoverUnidadPixeles) != null;
+  }
+
+  private void ProcesarClickUnidadCentralizadoSinCollider()
+  {
+    if (!Input.GetMouseButtonDown(0)
+      || TutorialCombateActivo()
+      || vistaTacticaActiva
+      || !SeleccionandoObjetivo
+      || HabilidadActiva == null
+      || HabilidadActivaSeleccionaCasilla()
+      || bOcupado
+      || EstaPunteroSobreUIExterna())
+    {
+      return;
+    }
+
+    Unidad unidadObjetivo = ObtenerUnidadBajoMousePorRectImagen(Input.mousePosition, MargenHoverUnidadPixeles);
+    if (unidadObjetivo == null || PrimerColliderBajoMouseEsUnidadUObstaculo())
+    {
+      return;
+    }
+
+    frameUltimoClickUnidadCentralizado = Time.frameCount;
+    redirigiendoClickUnidadCentralizado = true;
+    try
+    {
+      unidadObjetivo.OnMouseDown();
+    }
+    finally
+    {
+      redirigiendoClickUnidadCentralizado = false;
+    }
+  }
+
+  private bool TryRedirigirClickACasillaCentralizada()
+  {
+    if (EstaPunteroSobreUIExterna())
+    {
+      return true;
+    }
+
+    Casilla casillaObjetivo = ObtenerCasillaBajoMouse();
+    if (casillaObjetivo == null)
+    {
+      return true;
+    }
+
+    redirigiendoClickUnidadCentralizado = true;
+    try
+    {
+      casillaObjetivo.OnMouseDown();
+    }
+    finally
+    {
+      redirigiendoClickUnidadCentralizado = false;
+    }
+
+    return true;
+  }
+
+  private bool HabilidadActivaSeleccionaCasilla()
+  {
+    return HabilidadActiva != null
+      && (HabilidadActiva.esZonal
+        || HabilidadActiva.enArea > 0
+        || HabilidadActiva.targetEspecial > 0
+        || HabilidadActiva.poneTrampas
+        || HabilidadActiva.poneObstaculo);
+  }
+
+  private bool PrimerColliderBajoMouseEsUnidadUObstaculo()
+  {
+    Camera cam = Camera.main;
+    if (cam == null)
+    {
+      cam = Camera.allCameras.FirstOrDefault(c => c != null && c.enabled);
+    }
+
+    if (cam == null)
+    {
+      return false;
+    }
+
+    Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+    RaycastHit[] hits3D = Physics.RaycastAll(ray, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide)
+      .OrderBy(h => h.distance)
+      .ToArray();
+
+    for (int i = 0; i < hits3D.Length; i++)
+    {
+      Collider collider = hits3D[i].collider;
+      if (collider == null)
+      {
+        continue;
+      }
+
+      return collider.GetComponentInParent<Unidad>() != null
+        || collider.GetComponentInParent<Obstaculo>() != null;
+    }
+
+    return false;
+  }
+
   private void ActualizarHoverUnidadBajoMouse()
   {
     UIInfoChar infoChar = scUIInfoChar;
-    Unidad nuevaUnidadHover = !vistaTacticaActiva && !EstaPunteroSobreUIExterna()
-      ? ObtenerUnidadHoverCentralizada()
-      : null;
+    bool tutorialCombateActivo = TutorialCombateActivo();
+    bool punteroSobreUIExterna = EstaPunteroSobreUIExterna();
+    Unidad nuevaUnidadHover = null;
+    if (!vistaTacticaActiva)
+    {
+      if (!punteroSobreUIExterna)
+      {
+        nuevaUnidadHover = ObtenerUnidadHoverCentralizada();
+      }
+      else if (tutorialCombateActivo && SeleccionandoObjetivo)
+      {
+        nuevaUnidadHover = ObtenerUnidadBajoMouse(true, MargenHoverUnidadPixeles);
+      }
+    }
 
     if (nuevaUnidadHover != unidadHoverBajoMouse)
     {
@@ -2678,10 +3090,20 @@ public class BattleManager : MonoBehaviour
     ActualizarMarcadoHoverObjetivoHabilidad(nuevaUnidadHover, infoChar);
   }
 
+  private bool TutorialCombateActivo()
+  {
+    return scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
+  }
+
   private Unidad ObtenerUnidadHoverCentralizada()
   {
     if (SeleccionandoObjetivo)
     {
+      if (!TutorialCombateActivo() && HabilidadActivaSeleccionaCasilla())
+      {
+        return null;
+      }
+
       return ObtenerUnidadBajoMouse(true, MargenHoverUnidadPixeles);
     }
 
@@ -2796,6 +3218,11 @@ public class BattleManager : MonoBehaviour
       unidadesVistaTactica.Add(unidad);
     }
 
+    if (lCasillasTotal == null)
+    {
+      return;
+    }
+
     foreach (Casilla casilla in lCasillasTotal)
     {
       if (casilla == null)
@@ -2874,9 +3301,10 @@ public class BattleManager : MonoBehaviour
         ? CampaignManager.Instance.scAdministradorEscenas
         : ObtenerAdministradorEscenasActual();
 
-      return administradorEscenas != null
-        && ((administradorEscenas.MenuOpciones != null && administradorEscenas.MenuOpciones.activeInHierarchy)
-          || administradorEscenas.HandbookBatallaAbierto);
+      return IntroBatallaActiva
+        || (administradorEscenas != null
+          && ((administradorEscenas.MenuOpciones != null && administradorEscenas.MenuOpciones.activeInHierarchy)
+            || administradorEscenas.HandbookBatallaAbierto));
     }
   }
 
@@ -2973,8 +3401,17 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
-    Unidad unidadBajoMouse = ObtenerUnidadBajoMouse();
-    Casilla casillaBajoMouse = unidadBajoMouse != null ? unidadBajoMouse.CasillaPosicion : ObtenerCasillaBajoMouse();
+    Casilla casillaBajoMouse;
+    if (!TutorialCombateActivo() && HabilidadActivaSeleccionaCasilla())
+    {
+      casillaBajoMouse = ObtenerCasillaBajoMouse();
+    }
+    else
+    {
+      Unidad unidadBajoMouse = ObtenerUnidadBajoMouse();
+      casillaBajoMouse = unidadBajoMouse != null ? unidadBajoMouse.CasillaPosicion : ObtenerCasillaBajoMouse();
+    }
+
     if (casillaBajoMouse == null)
     {
       LimpiarFadeHoverObjetivoHabilidad();
@@ -3264,6 +3701,25 @@ public class BattleManager : MonoBehaviour
     if (lObstaculosPosiblesHabilidadActiva != null)
     {
       lObstaculosPosiblesHabilidadActiva.RemoveAll(obstaculoObjetivo => !EsObjetivoMeleeAdyacentePermitido(unidadActiva, obstaculoObjetivo));
+    }
+
+    foreach (Casilla casilla in lCasillasTotal)
+    {
+      if (casilla == null)
+      {
+        continue;
+      }
+
+      bool estabaMarcadaComoAlcanzable = casilla.TieneCapaHostilActiva();
+      casilla.DesactivarCapaColorNegro();
+      if (estabaMarcadaComoAlcanzable && EsCasillaMeleeAdyacentePermitida(unidadActiva, casilla))
+      {
+        casilla.ActivarCapaColorRojo();
+      }
+      else
+      {
+        casilla.DesactivarCapaColorRojo();
+      }
     }
   }
 

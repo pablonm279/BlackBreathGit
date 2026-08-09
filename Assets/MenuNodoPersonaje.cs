@@ -199,7 +199,7 @@ public class MenuNodoPersonaje : MonoBehaviour
         descSequito.text = "<size=100%><b>" + nombreSequitoTraducido + "</b></size>";
         descSequito.text += "\n\n<size=85%><i>" + descripcion + "</i></size>";
         descSequito.text += "\n<size=85%><b>" + civilesRepresentados + "</b></size>\n";
-        descSequito.text += "\n<size=95%><color=#000000><b>" + mecanicas + "</b></color></size>";
+        descSequito.text += "\n<size=95%><color=#9C7128><b>" + mecanicas + "</b></color></size>";
     }
 
     string ObtenerNombreSequitoTraducido(int idSequito)

@@ -55,6 +55,11 @@ public class IAArcoGoblin : IAHabilidad
   object Objetivo;
    public async override Task ActivarHabilidad()
    {
+    if (!PuedeResolverAccionIA())
+    {
+      return;
+    }
+
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
      
       ReproducirAnimacionSegunTipo();
@@ -66,6 +71,12 @@ public class IAArcoGoblin : IAHabilidad
      
     
       await BattleManager.DelayCombateAsync(1300);
+
+      if (!PuedeResolverAccionIA())
+      {
+        return;
+      }
+
       //Esto es cuando el objetivo es uno solo,
       AplicarEfectosHabilidad(Objetivo);
      
@@ -73,6 +84,11 @@ public class IAArcoGoblin : IAHabilidad
 
    void CrearProyectil()
    {
+      if (!PuedeResolverAccionIA())
+      {
+        return;
+      }
+
       GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.Flecha;
       GameObject Proyectil = Instantiate(flechaPrefab);
       Proyectil.GetComponent<ArrowFlight>().startMarker = transform;

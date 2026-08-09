@@ -205,7 +205,6 @@ public class MenuDescanso : MonoBehaviour
 
 
     Actualizar();
-    SincronizarVisualesClimaDesdeEstadoActual();
     if (n == 1) //Suministros
     {
      /* btnRecoleccionSum.transform.gameObject.SetActive(false);

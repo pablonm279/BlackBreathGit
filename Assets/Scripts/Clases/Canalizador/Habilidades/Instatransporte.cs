@@ -240,6 +240,11 @@ public class Instatransporte : Habilidad
     if (NIVEL == 4) { alre = 2; }
     foreach (Casilla ady in cas.ObtenerCasillasAlrededor(alre))
     {
+      if (ady.Presente != null && ady.Presente.GetComponent<Obstaculo>() != null)
+      {
+        continue;
+      }
+
       ady.AddComponent<ResiduoEnergetico>();
       ady.GetComponent<ResiduoEnergetico>().InicializarCreador(scEstaUnidad, NIVEL);
 

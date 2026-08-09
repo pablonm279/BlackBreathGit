@@ -18,17 +18,6 @@ public class IAUnidad : MonoBehaviour
       new Vector2Int(0, -1),
       new Vector2Int(-1, 0)
    };
-   private static readonly Vector2Int[] DireccionesConDiagonales =
-   {
-      new Vector2Int(1, 0),
-      new Vector2Int(0, 1),
-      new Vector2Int(0, -1),
-      new Vector2Int(-1, 0),
-      new Vector2Int(1, 1),
-      new Vector2Int(1, -1),
-      new Vector2Int(-1, 1),
-      new Vector2Int(-1, -1)
-   };
   
 
    public bool esRango; //Tiende a mantenerse atras
@@ -47,6 +36,9 @@ public class IAUnidad : MonoBehaviour
    public IAHabilidad HabilidadIAEnEjecucion { get; private set; }
    private const int MaxIntentosPorTurno = 8;
    private readonly List<Task> _habilidadesEnCurso = new List<Task>();
+   private readonly HashSet<Casilla> _casillasVisitadasTurnoIA = new HashSet<Casilla>();
+   private Casilla _casillaInicialTurnoIA;
+   private bool _memoriaMovimientoTurnoActiva;
    private bool _turnoIAEnCurso;
 
    private struct AITurnTimings
@@ -126,12 +118,19 @@ public class IAUnidad : MonoBehaviour
          return;
       }
 
+      if (AbortarTurnoSiUnidadNoPuedeActuar())
+      {
+         return;
+      }
+
+      ReiniciarMemoriaMovimientoTurno();
+
       int contadorIteraciones = MaxIntentosPorTurno;
       bool turnoTerminado = false;
       bool forzarFinalPorHabilidad = false;
       bool realizoAccion = false;
 
-      while (scUnidad.ObtenerAPActual() > 0 && contadorIteraciones > 0 && !turnoTerminado)
+      while (PuedeContinuarTurnoIA() && scUnidad.ObtenerAPActual() > 0 && contadorIteraciones > 0 && !turnoTerminado)
       {
          AITurnTimings timings = ObtenerTimingsActuales();
          contadorIteraciones--;
@@ -151,7 +150,7 @@ public class IAUnidad : MonoBehaviour
          }
 
          if (!PuedeAtacarUnidadDesdePosicionActual(habilidadesDisponibles)
-            && await IntentarDestruirObstaculoPrioritarioDeBorde(timings))
+            && await IntentarDestruirObstaculoBloqueante(timings))
          {
             realizoAccion = true;
             turnoTerminado = true;
@@ -165,6 +164,11 @@ public class IAUnidad : MonoBehaviour
             BattleManager.Instance.RestaurarCamaraHabilidad();
             await ForzarRetornoMeleeVisualSiCorresponde();
             await DelayIA(timings.DelaySinObjetivosMs);
+
+            if (AbortarTurnoSiUnidadNoPuedeActuar() || scUnidad.ObtenerAPActual() <= 0)
+            {
+               break;
+            }
 
             if (scUnidad.esInmobil)
             {
@@ -208,7 +212,6 @@ public class IAUnidad : MonoBehaviour
                if (puedeMoverHorizontal)
                {
                   destinoX = posXActual + pasoX;
-                  tendenciaMovX -= pasoX;
                   intentoDeMovimiento = true;
                }
                else
@@ -223,7 +226,6 @@ public class IAUnidad : MonoBehaviour
                if (candidatoY >= 1 && candidatoY <= 5)
                {
                   destinoY = candidatoY;
-                  tendenciaMovY -= pasoY;
                   intentoDeMovimiento = true;
                }
                else
@@ -235,9 +237,8 @@ public class IAUnidad : MonoBehaviour
             if (!intentoDeMovimiento)
             {
                Casilla reposicionLateral = BuscarReposicionLateralGenerica(lado, scUnidad.CasillaPosicion);
-               if (reposicionLateral != null)
+               if (reposicionLateral != null && await MoverACasilla(reposicionLateral))
                {
-                  await MoverACasilla(reposicionLateral);
                   await DelayIA(timings.DelayMovimientoFallbackMs);
                   continue;
                }
@@ -252,20 +253,23 @@ public class IAUnidad : MonoBehaviour
                tendenciaMovX = 0;
                tendenciaMovY = 0;
                await DelayIA(timings.DelayMovimientoFallbackMs);
-               continue;
+               break;
             }
 
             Casilla destPosible = lado.ObtenerCasillaPorIndex(destinoX, destinoY);
+            bool seMovioEnDireccionDeseada = false;
             if (destPosible != null)
             {
-               if (destPosible.Presente == null)
+               if (destPosible.Presente == null && PuedeVisitarCasillaEnTurno(destPosible))
                {
-                  await MoverACasilla(destPosible);
+                  seMovioEnDireccionDeseada = await MoverACasilla(destPosible);
                }
                else
                {
-                  await ChequearCasillasAlrededorParaMover(destPosible, timings); // Intento alternativo para moverse
-                  continue;
+                  if (await ChequearCasillasAlrededorParaMover(destPosible, timings))
+                  {
+                     continue;
+                  }
                }
             }
             else
@@ -273,14 +277,47 @@ public class IAUnidad : MonoBehaviour
                tendenciaMovX = 0;
                tendenciaMovY = 0;
             }
+
+            if (seMovioEnDireccionDeseada)
+            {
+               if (destinoX != posXActual)
+               {
+                  tendenciaMovX -= pasoX;
+               }
+               else if (destinoY != posYActual)
+               {
+                  tendenciaMovY -= pasoY;
+               }
+            }
+            else
+            {
+               break;
+            }
          }
          else if (scUnidad.HP_actual > 0) // Hay habilidades posibles y no murio por algun efecto
          {
             int delay = timings.DelayPreAccionMs + (esRango ? timings.ExtraRangoMs : 0);
             await DelayIA(delay); // Intervalo entre acciones
+
+            if (AbortarTurnoSiUnidadNoPuedeActuar() || scUnidad.ObtenerAPActual() <= 0)
+            {
+               break;
+            }
+
             bool ejecutoHabilidad = await EjecutarHabilidadConSalvaguarda(habilidadesDisponibles, timings);
+
+            if (AbortarTurnoSiUnidadNoPuedeActuar())
+            {
+               return;
+            }
+
             await EsperarHabilidadesPendientes(timings.GraciaHabilidadMs);
             await DelayIA(timings.DelayPostAccionMs + (esRango ? timings.ExtraRangoMs / 2 : 0));
+
+            if (AbortarTurnoSiUnidadNoPuedeActuar())
+            {
+               return;
+            }
 
             if (!ejecutoHabilidad)
             {
@@ -299,10 +336,15 @@ public class IAUnidad : MonoBehaviour
          }
       }
 
+      if (AbortarTurnoSiUnidadNoPuedeActuar())
+      {
+         return;
+      }
+
       if (!realizoAccion && BattleManager.Instance != null && BattleManager.Instance.unidadActiva == scUnidad)
       {
          AITurnTimings timingsFinales = ObtenerTimingsActuales();
-         if (await IntentarDestruirObstaculoComoFallback(timingsFinales))
+         if (await IntentarDestruirObstaculoBloqueante(timingsFinales))
          {
             return;
          }
@@ -335,10 +377,15 @@ public class IAUnidad : MonoBehaviour
          {
             await TerminarTurnoSeguro(false, finTimings);
          }
+         else
+         {
+            await TerminarTurnoSeguro(false, finTimings, "sin movimientos utiles disponibles");
+         }
       }
       }
       finally
       {
+         _memoriaMovimientoTurnoActiva = false;
          _turnoIAEnCurso = false;
       }
    }
@@ -346,6 +393,83 @@ public class IAUnidad : MonoBehaviour
    private static Task DelayIA(int milliseconds)
    {
       return BattleManager.DelayCombateAsync(Mathf.Max(0, milliseconds));
+   }
+
+   private void ReiniciarMemoriaMovimientoTurno()
+   {
+      tendenciaMovX = 0;
+      tendenciaMovY = 0;
+      _casillaInicialTurnoIA = scUnidad != null ? scUnidad.CasillaPosicion : null;
+      _casillasVisitadasTurnoIA.Clear();
+      if (_casillaInicialTurnoIA != null)
+      {
+         _casillasVisitadasTurnoIA.Add(_casillaInicialTurnoIA);
+      }
+
+      _memoriaMovimientoTurnoActiva = true;
+   }
+
+   private bool PuedeVisitarCasillaEnTurno(Casilla casilla)
+   {
+      if (casilla == null)
+      {
+         return false;
+      }
+
+      if (!_memoriaMovimientoTurnoActiva)
+      {
+         return true;
+      }
+
+      if (casilla == _casillaInicialTurnoIA && scUnidad != null && scUnidad.CasillaPosicion != _casillaInicialTurnoIA)
+      {
+         return false;
+      }
+
+      return !_casillasVisitadasTurnoIA.Contains(casilla);
+   }
+
+   private void RegistrarMovimientoTurno(Casilla origen, Casilla destino)
+   {
+      if (!_memoriaMovimientoTurnoActiva)
+      {
+         return;
+      }
+
+      if (origen != null)
+      {
+         _casillasVisitadasTurnoIA.Add(origen);
+      }
+
+      if (destino != null)
+      {
+         _casillasVisitadasTurnoIA.Add(destino);
+      }
+   }
+
+   private bool PuedeContinuarTurnoIA()
+   {
+      return scUnidad != null
+         && scUnidad.HP_actual > 0f
+         && scUnidad.gameObject.activeInHierarchy
+         && BattleManager.Instance != null
+         && BattleManager.Instance.unidadActiva == scUnidad;
+   }
+
+   private bool AbortarTurnoSiUnidadNoPuedeActuar()
+   {
+      if (PuedeContinuarTurnoIA())
+      {
+         return false;
+      }
+
+      BattleManager battleManager = BattleManager.Instance;
+      if (battleManager != null && scUnidad != null && battleManager.unidadActiva == scUnidad)
+      {
+         battleManager.TerminarTurno();
+      }
+
+      return true;
    }
 
    private async Task<bool> IntentarEscaparSiDisponible(AITurnTimings timings)
@@ -377,46 +501,38 @@ public class IAUnidad : MonoBehaviour
       return true;
    }
 
-   private async Task<bool> IntentarDestruirObstaculoComoFallback(AITurnTimings timings)
+   private async Task<bool> IntentarDestruirObstaculoBloqueante(AITurnTimings timings)
    {
       if (scUnidad == null || scUnidad.CasillaPosicion == null || BattleManager.Instance == null)
       {
          return false;
       }
 
-      int vecinosMismoLado = ContarVecinosMismoLadoParaDestruirObstaculo();
-      if (vecinosMismoLado < 2)
-      {
-         return false;
-      }
-
       List<Obstaculo> obstaculosAdyacentes = ObtenerObstaculosAdyacentesOrtogonales();
-      Obstaculo objetivo = ObtenerObstaculoDestruiblePreferido(obstaculosAdyacentes);
-      if (objetivo == null)
+      Obstaculo objetivo = ObtenerObstaculoEnDireccionDeseada(obstaculosAdyacentes);
+      if (objetivo == null && !HaySalidaMovimientoDisponible())
       {
-         return false;
+         objetivo = ObtenerObstaculoDestruiblePreferido(obstaculosAdyacentes);
       }
 
-      await ResolverDestruccionObstaculoIA(objetivo, timings, "fallback de destruccion de obstaculo");
-      return true;
-   }
-
-   private async Task<bool> IntentarDestruirObstaculoPrioritarioDeBorde(AITurnTimings timings)
-   {
-      Obstaculo objetivo = ObtenerObstaculoPrioritarioBordeFrontal();
       if (objetivo == null)
       {
          return false;
       }
 
       await DelayIA(timings.DelayPreAccionMs);
-      await ResolverDestruccionObstaculoIA(objetivo, timings, "prioridad de obstaculo en borde frontal");
+      if (!PuedeContinuarTurnoIA())
+      {
+         return false;
+      }
+
+      await ResolverDestruccionObstaculoIA(objetivo, timings, "obstaculo bloqueando movimiento de IA");
       return true;
    }
 
    private async Task ResolverDestruccionObstaculoIA(Obstaculo objetivo, AITurnTimings timings, string motivo)
    {
-      if (objetivo == null || scUnidad == null || BattleManager.Instance == null)
+      if (objetivo == null || !PuedeContinuarTurnoIA())
       {
          return;
       }
@@ -429,6 +545,11 @@ public class IAUnidad : MonoBehaviour
 
       scUnidad.ReproducirAnimacionAtaque(true);
       await DelayIA(250);
+
+      if (AbortarTurnoSiUnidadNoPuedeActuar())
+      {
+         return;
+      }
 
       if (objetivo.CasillaPosicion != null && objetivo.CasillaPosicion.Presente == objetivo.gameObject)
       {
@@ -540,72 +661,100 @@ public class IAUnidad : MonoBehaviour
       return false;
    }
 
-   private Obstaculo ObtenerObstaculoPrioritarioBordeFrontal()
+   private Obstaculo ObtenerObstaculoEnDireccionDeseada(List<Obstaculo> obstaculosAdyacentes)
    {
-      if (scUnidad == null || scUnidad.CasillaPosicion == null)
+      if (obstaculosAdyacentes == null || obstaculosAdyacentes.Count == 0)
       {
          return null;
       }
 
-      Casilla origen = scUnidad.CasillaPosicion;
-      if (origen.posX != 3 || (origen.posY != 1 && origen.posY != 5))
+      Vector2Int direccion = ObtenerDireccionMovimientoDeseada();
+      if (direccion == Vector2Int.zero)
       {
          return null;
       }
 
       LadoManager lado = ObtenerLadoActual();
-      if (lado == null)
-      {
-         return null;
-      }
-
-      int filaInterior = origen.posY == 1 ? 2 : 4;
-      Casilla casillaObjetivo = lado.ObtenerCasillaPorIndex(origen.posX, filaInterior);
+      Casilla casillaObjetivo = ObtenerCasillaVecina(lado, direccion);
       if (casillaObjetivo == null || casillaObjetivo.Presente == null)
       {
          return null;
       }
 
       Obstaculo obstaculo = casillaObjetivo.Presente.GetComponent<Obstaculo>();
-      if (obstaculo == null || !obstaculo.destruiblePorMismoLado)
-      {
-         return null;
-      }
-
-      if (obstaculo.CasillaPosicion == null || obstaculo.CasillaPosicion.lado != origen.lado)
-      {
-         return null;
-      }
-
-      return obstaculo;
+      return obstaculo != null && obstaculosAdyacentes.Contains(obstaculo) ? obstaculo : null;
    }
 
-   private int ContarVecinosMismoLadoParaDestruirObstaculo()
+   private Vector2Int ObtenerDireccionMovimientoDeseada()
    {
       if (scUnidad == null || scUnidad.CasillaPosicion == null)
       {
-         return 0;
+         return Vector2Int.zero;
+      }
+
+      Casilla actual = scUnidad.CasillaPosicion;
+      int pasoX = Math.Sign(tendenciaMovX);
+      if (pasoX > 0 && (actual.posX >= 3 || (esRango && actual.posX != 1)))
+      {
+         pasoX = 0;
+      }
+      else if (pasoX < 0 && actual.posX <= 1)
+      {
+         pasoX = 0;
+      }
+
+      if (pasoX != 0)
+      {
+         return new Vector2Int(pasoX, 0);
+      }
+
+      int pasoY = Math.Sign(tendenciaMovY);
+      int destinoY = actual.posY + pasoY;
+      return pasoY != 0 && destinoY >= 1 && destinoY <= 5
+         ? new Vector2Int(0, pasoY)
+         : Vector2Int.zero;
+   }
+
+   private bool HaySalidaMovimientoDisponible()
+   {
+      if (scUnidad == null || scUnidad.CasillaPosicion == null)
+      {
+         return false;
       }
 
       LadoManager lado = ObtenerLadoActual();
       if (lado == null)
       {
-         return 0;
+         return false;
       }
 
-      int cantidad = 0;
-      foreach (Vector2Int direccion in DireccionesConDiagonales)
+      foreach (Vector2Int direccion in DireccionesOrtogonales)
       {
-         Casilla casillaVecina = ObtenerCasillaVecina(lado, direccion);
-         if (!EsVecinoMismoLadoContabilizable(casillaVecina))
+         if (direccion.x > 0 && esRango && scUnidad.CasillaPosicion.posX != 1)
          {
             continue;
          }
 
-         cantidad++;
+         Casilla candidata = ObtenerCasillaVecina(lado, direccion);
+         if (candidata == null || !PuedeVisitarCasillaEnTurno(candidata))
+         {
+            continue;
+         }
+
+         if (candidata.Presente == null)
+         {
+            return true;
+         }
+
+         if (direccion.x == 0
+            && scUnidad.EsEnemigoParaJugador()
+            && ObtenerAliadoIntercambiableParaIntercambioLateral(candidata) != null)
+         {
+            return true;
+         }
       }
 
-      return cantidad;
+      return false;
    }
 
    private List<Obstaculo> ObtenerObstaculosAdyacentesOrtogonales()
@@ -677,31 +826,6 @@ public class IAUnidad : MonoBehaviour
       }
 
       return lado.ObtenerCasillaPorIndex(nx, ny);
-   }
-
-   private bool EsVecinoMismoLadoContabilizable(Casilla casillaVecina)
-   {
-      if (casillaVecina == null || casillaVecina.Presente == null || scUnidad == null || scUnidad.CasillaPosicion == null)
-      {
-         return false;
-      }
-
-      Obstaculo obstaculo = casillaVecina.Presente.GetComponent<Obstaculo>();
-      if (obstaculo != null)
-      {
-         return obstaculo.CasillaPosicion != null
-            && obstaculo.CasillaPosicion.lado == scUnidad.CasillaPosicion.lado;
-      }
-
-      Unidad unidad = casillaVecina.Presente.GetComponent<Unidad>();
-      if (unidad != null && unidad != scUnidad)
-      {
-         return unidad.HP_actual > 0
-            && unidad.CasillaPosicion != null
-            && unidad.CasillaPosicion.lado == scUnidad.CasillaPosicion.lado;
-      }
-
-      return false;
    }
 
    private static Obstaculo ObtenerObstaculoDestruiblePreferido(List<Obstaculo> obstaculos)
@@ -837,7 +961,7 @@ public class IAUnidad : MonoBehaviour
          }
 
          Casilla candidata = lado.ObtenerCasillaPorIndex(nx, ny);
-         if (candidata == null || candidata.Presente != null)
+         if (candidata == null || candidata.Presente != null || !PuedeVisitarCasillaEnTurno(candidata))
          {
            continue;
          }
@@ -870,31 +994,12 @@ public class IAUnidad : MonoBehaviour
       }
 
       int direccionPreferida = ObtenerDireccionFilaHaciaEnemigo(casillaActual);
-      int[] intentos = direccionPreferida != 0
-         ? new int[] { direccionPreferida, -direccionPreferida }
-         : new int[] { 1, -1 };
-
-      foreach (int dy in intentos)
-      {
-         Casilla candidata = ObtenerCasillaLateralDisponible(lado, casillaActual, dy);
-         if (candidata != null)
-         {
-            return candidata;
-         }
-      }
-
-      if (!HayBloqueoFrontal(lado, casillaActual))
+      if (direccionPreferida == 0)
       {
          return null;
       }
 
-      Casilla lateralArriba = ObtenerCasillaLateralDisponible(lado, casillaActual, 1);
-      if (lateralArriba != null)
-      {
-         return lateralArriba;
-      }
-
-      return ObtenerCasillaLateralDisponible(lado, casillaActual, -1);
+      return ObtenerCasillaLateralDisponible(lado, casillaActual, direccionPreferida);
    }
 
    private Casilla BuscarIntercambioLateralGenerico(LadoManager lado, Casilla casillaActual)
@@ -910,20 +1015,12 @@ public class IAUnidad : MonoBehaviour
       }
 
       int direccionPreferida = ObtenerDireccionFilaHaciaEnemigo(casillaActual);
-      int[] intentos = direccionPreferida != 0
-         ? new int[] { direccionPreferida, -direccionPreferida }
-         : new int[] { 1, -1 };
-
-      foreach (int dy in intentos)
+      if (direccionPreferida == 0)
       {
-         Casilla candidata = ObtenerCasillaLateralConAliadoIntercambiable(lado, casillaActual, dy);
-         if (candidata != null)
-         {
-            return candidata;
-         }
+         return null;
       }
 
-      return null;
+      return ObtenerCasillaLateralConAliadoIntercambiable(lado, casillaActual, direccionPreferida);
    }
 
    private Casilla ObtenerCasillaLateralDisponible(LadoManager lado, Casilla origen, int deltaY)
@@ -940,7 +1037,7 @@ public class IAUnidad : MonoBehaviour
       }
 
       Casilla candidata = lado.ObtenerCasillaPorIndex(origen.posX, nuevoY);
-      if (candidata == null || candidata.Presente != null)
+      if (candidata == null || candidata.Presente != null || !PuedeVisitarCasillaEnTurno(candidata))
       {
          return null;
       }
@@ -962,12 +1059,14 @@ public class IAUnidad : MonoBehaviour
       }
 
       Casilla candidata = lado.ObtenerCasillaPorIndex(origen.posX, nuevoY);
-      return ObtenerAliadoIntercambiableParaIntercambioLateral(candidata) != null ? candidata : null;
+      return PuedeVisitarCasillaEnTurno(candidata) && ObtenerAliadoIntercambiableParaIntercambioLateral(candidata) != null
+         ? candidata
+         : null;
    }
 
    private async Task<bool> IntentarIntercambioLateralConAliado(Casilla casillaObjetivo)
    {
-      if (casillaObjetivo == null || scUnidad == null || scUnidad.CasillaPosicion == null)
+      if (casillaObjetivo == null || scUnidad == null || scUnidad.CasillaPosicion == null || !PuedeContinuarTurnoIA())
       {
          return false;
       }
@@ -992,6 +1091,11 @@ public class IAUnidad : MonoBehaviour
          return false;
       }
 
+      if (!PuedeVisitarCasillaEnTurno(casillaObjetivo))
+      {
+         return false;
+      }
+
       Unidad aliado = ObtenerAliadoIntercambiableParaIntercambioLateral(casillaObjetivo);
       if (aliado == null)
       {
@@ -1011,12 +1115,18 @@ public class IAUnidad : MonoBehaviour
 
       await BattleManager.DelayCombateAsync(450);
 
+      if (AbortarTurnoSiUnidadNoPuedeActuar())
+      {
+         return false;
+      }
+
       if (scUnidad.CasillaDeseadaMov != null)
       {
          scUnidad.CasillaPosicion = scUnidad.CasillaDeseadaMov;
          scUnidad.CasillaDeseadaMov = null;
       }
 
+      RegistrarMovimientoTurno(origen, casillaObjetivo);
       return true;
    }
 
@@ -1255,7 +1365,7 @@ public class IAUnidad : MonoBehaviour
 
    async Task<bool> EjecutarHabilidadConSalvaguarda(List<IAHabilidad> habilidadesDisponibles, AITurnTimings timings)
    {
-      if (habilidadesDisponibles == null || habilidadesDisponibles.Count == 0)
+      if (habilidadesDisponibles == null || habilidadesDisponibles.Count == 0 || !PuedeContinuarTurnoIA() || scUnidad.ObtenerAPActual() <= 0)
       {
          return false;
       }
@@ -1264,6 +1374,11 @@ public class IAUnidad : MonoBehaviour
 
       foreach (IAHabilidad habilidad in habilidadesOrdenadas)
       {
+         if (!PuedeContinuarTurnoIA() || scUnidad.ObtenerAPActual() <= 0)
+         {
+            return false;
+         }
+
          if (habilidad == null)
          {
             continue;
@@ -1437,7 +1552,7 @@ public class IAUnidad : MonoBehaviour
 
    public async Task<bool> MoverACasilla(Casilla casillaObjetivo)
     {
-        if (casillaObjetivo == null || scUnidad.CasillaPosicion == null)
+        if (casillaObjetivo == null || scUnidad.CasillaPosicion == null || !PuedeContinuarTurnoIA() || !PuedeVisitarCasillaEnTurno(casillaObjetivo))
         {
             return false;
         }
@@ -1461,14 +1576,30 @@ public class IAUnidad : MonoBehaviour
             return false;
         }
 
+        Casilla origen = scUnidad.CasillaPosicion;
         scUnidad.CasillaDeseadaMov = casillaObjetivo;
         scUnidad.CambiarAPActual(-costoMovimientoAP);
         // Simulacion de un retraso de movimiento
         await BattleManager.DelayCombateAsync(450);
 
-        scUnidad.CasillaPosicion =  scUnidad.CasillaDeseadaMov;
-        scUnidad.CasillaDeseadaMov = null;
-        return true;
+        if (AbortarTurnoSiUnidadNoPuedeActuar())
+        {
+            return false;
+        }
+
+        if (scUnidad.CasillaDeseadaMov != null)
+        {
+            scUnidad.CasillaPosicion = scUnidad.CasillaDeseadaMov;
+            scUnidad.CasillaDeseadaMov = null;
+        }
+
+        bool movimientoCompletado = scUnidad.CasillaPosicion == casillaObjetivo;
+        if (movimientoCompletado)
+        {
+            RegistrarMovimientoTurno(origen, casillaObjetivo);
+        }
+
+        return movimientoCompletado;
     }
 
 

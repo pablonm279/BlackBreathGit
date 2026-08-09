@@ -8,6 +8,7 @@ using System.Net;
 
 public class BotonHabilidad : MonoBehaviour
 {
+    private int costoMovimientoPreview = -1;
     private const string TooltipEsforzarId = "combate_esforzar";
 
     public Habilidad HabilidadRepresentada;
@@ -603,11 +604,16 @@ public class BotonHabilidad : MonoBehaviour
         if (Oscurecedor != null && HabilidadRepresentada != null && BattleManager.Instance != null && BattleManager.Instance.unidadActiva != null)
         {
             int apActualInt = Mathf.Max(0, (int)BattleManager.Instance.unidadActiva.ObtenerAPActual());
+            if (costoMovimientoPreview >= 0)
+            {
+                apActualInt = Mathf.Max(0, apActualInt - costoMovimientoPreview);
+            }
             int apNecesarios = Mathf.Max(0, (int)HabilidadRepresentada.costoAP);
             int disponible = apActualInt + HabilidadRepresentada.esforzable;
             bool bloqueoMelee = HabilidadRepresentada.esMelee && !PuedeUsarHabilidadMelee();
+            bool sinAPParaEsforzarse = apActualInt < apNecesarios && apActualInt < 1;
 
-            Oscurecedor.SetActive(disponible < apNecesarios || bloqueoMelee);
+            Oscurecedor.SetActive(disponible < apNecesarios || sinAPParaEsforzarse || bloqueoMelee);
 
             if (HabilidadRepresentada.esMelee)
             {
@@ -663,6 +669,16 @@ public class BotonHabilidad : MonoBehaviour
                 seleccionada.SetActive(false);
             }
         }
+    }
+
+    public void MostrarDisponibilidadTrasMovimiento(int costoMovimiento)
+    {
+        costoMovimientoPreview = Mathf.Max(0, costoMovimiento);
+    }
+
+    public void LimpiarDisponibilidadTrasMovimiento()
+    {
+        costoMovimientoPreview = -1;
     }
 
     private void CrearRealceInteraccion()

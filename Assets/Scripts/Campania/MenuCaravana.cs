@@ -310,19 +310,9 @@ public class MenuCaravana : MonoBehaviour
         return 4 + Mathf.Max(0, tier - 1);
     }
 
-    private int ObtenerBonusCatalejos(int tier)
-    {
-        return 3 + ((tier - 1) * 2);
-    }
-
     private int ObtenerBonusVisionCatalejos(int tier)
     {
         return Mathf.Max(0, tier - 1);
-    }
-
-    private int ObtenerBonusScoutCatalejos(int tier)
-    {
-        return Mathf.Max(0, tier - 1) * 5;
     }
 
     private int ObtenerReduccionConsumoAlmacen(int tier)
@@ -343,7 +333,10 @@ public class MenuCaravana : MonoBehaviour
         }
 
         float progreso = Mathf.Clamp01((tierActual - 1f) / (MaxTierMejoraCaravana - 1f));
-        return Mathf.RoundToInt(Mathf.Lerp(costoTier1Viejo, costoTier3Viejo, progreso));
+        int costoBase = Mathf.RoundToInt(Mathf.Lerp(costoTier1Viejo, costoTier3Viejo, progreso));
+        int tierObjetivo = tierActual + 1;
+        float aumentoPorTier = tierObjetivo >= 3 ? 0.10f + ((tierObjetivo - 3) * 0.02f) : 0f;
+        return Mathf.RoundToInt(costoBase * (1f + aumentoPorTier));
     }
 
     private void ActualizarDescripcionMejora(TextMeshProUGUI txtDescripcion, string textoEs, string textoEn, string textoPt)
@@ -754,7 +747,7 @@ public class MenuCaravana : MonoBehaviour
 
         //Catalejos
         costoMejorarCatalejos = CampaignManager.Instance.AplicarCostoMejoraCaravanaTraits(
-            CalcularCostoEscaladoDesdeSistemaViejo(CampaignManager.Instance.mejoraCaravanaCatalejos, 46, 68));
+            CalcularCostoEscaladoDesdeSistemaViejo(CampaignManager.Instance.mejoraCaravanaCatalejos, 45, 68));
         txtTierMejoraCatalejos.text = ObtenerTierRomano(CampaignManager.Instance.mejoraCaravanaCatalejos);
         txtCostoMejoraCatalejos.text = "" + costoMejorarCatalejos + TRADU.i.Traducir(" Materiales");
         ActualizarColorCosto(txtCostoMejoraCatalejos, costoMejorarCatalejos, colorCostoCatalejosNormal);
@@ -940,22 +933,19 @@ public class MenuCaravana : MonoBehaviour
     private string ObtenerDescripcionCatalejosEs(int tier)
     {
         return "Catalejos:\n"
-            + "Aumentan en +" + ObtenerBonusVisionCatalejos(tier) + " el Rango de Visión de la caravana.\n"
-            + "Además mejoran en " + ObtenerBonusCatalejos(tier) + "% la Exploración Pasiva.";
+            + "Disipan la niebla y aumentan en +" + ObtenerBonusVisionCatalejos(tier) + " el Rango de Visión de la caravana.";
     }
 
     private string ObtenerDescripcionCatalejosEn(int tier)
     {
         return "Spyglasses:\n"
-            + "Increase the caravan's Vision Range by +" + ObtenerBonusVisionCatalejos(tier) + ".\n"
-            + "They also improve Passive Exploration by " + ObtenerBonusCatalejos(tier) + "%.";
+            + "Dispel the fog and increase the caravan's Vision Range by +" + ObtenerBonusVisionCatalejos(tier) + ".";
     }
 
     private string ObtenerDescripcionCatalejosPt(int tier)
     {
         return "Lunetas:\n"
-            + "Aumentam em +" + ObtenerBonusVisionCatalejos(tier) + " o Alcance de Visão da caravana.\n"
-            + "Além disso, melhoram a Exploração Passiva em " + ObtenerBonusCatalejos(tier) + "%.";
+            + "Dissipam a névoa e aumentam em +" + ObtenerBonusVisionCatalejos(tier) + " o Alcance de Visão da caravana.";
     }
 
     private string ObtenerDescripcionAlmacenEs(int tier)
@@ -982,21 +972,21 @@ public class MenuCaravana : MonoBehaviour
     private string ObtenerExplicacionVistaLejanaEs(int tierCatalejos)
     {
         return "<u>Rango de Visión:</u>\n"
-            + "Determina la cantidad de nodos hacia adelante que la caravana puede divisar en el mapa. Permite planear mejor y prever cómo los caminos se van conformando."
+            + "Determina cuántos nodos y caminos hacia adelante quedan dentro del claro de la niebla. Permite planear mejor y prever cómo se va conformando el mapa."
             + ObtenerFactoresVistaLejanaEs(tierCatalejos);
     }
 
     private string ObtenerExplicacionVistaLejanaEn(int tierCatalejos)
     {
         return "<u>Vision Range:</u>\n"
-            + "Determines how many nodes ahead the caravan can spot on the map. It helps you plan ahead and predict how roads will branch."
+            + "Determines how many nodes and roads ahead remain inside the clearing in the fog. It helps you plan ahead and predict how the map will unfold."
             + ObtenerFactoresVistaLejanaEn(tierCatalejos);
     }
 
     private string ObtenerExplicacionVistaLejanaPt(int tierCatalejos)
     {
         return "<u>Alcance de Visão:</u>\n"
-            + "Determina quantos nós à frente a caravana consegue avistar no mapa. Permite planejar melhor e prever como os caminhos vão se formando."
+            + "Determina quantos nós e caminhos à frente ficam dentro da clareira na névoa. Permite planejar melhor e prever como o mapa vai se formando."
             + ObtenerFactoresVistaLejanaPt(tierCatalejos);
     }
 
@@ -1059,16 +1049,18 @@ public class MenuCaravana : MonoBehaviour
         int bonusVisionCatalejos = cm != null ? cm.ObtenerBonusDistanciaVisionCatalejos() : ObtenerBonusVisionCatalejos(tierCatalejos);
         int penalizacionVisionClima = cm != null ? cm.ObtenerPenalizacionClimaVision() : 0;
         int minimoVision = cm != null ? cm.ObtenerDistanciaVisionMinima() : 1;
-        int visionActual = cm != null ? cm.ObtenerDistanciaVisionEfectiva() : Mathf.Max(minimoVision, baseVision + bonusVisionCatalejos - penalizacionVisionClima);
+        float visionActual = cm != null
+            ? cm.ObtenerAlcanceVisionEnPasos()
+            : (Mathf.Max(minimoVision, baseVision + bonusVisionCatalejos) + 0.25f) * 1.10f;
 
         List<string> lineas = new List<string>
         {
-            etiquetaActual + ": " + visionActual
+            etiquetaActual + ": " + visionActual.ToString("0.###")
         };
 
         if (penalizacionVisionClima != 0)
         {
-            lineas.Add(etiquetaClima + " (" + nombreClima + "): " + FormatearModificadorEntero(-penalizacionVisionClima));
+            lineas.Add(etiquetaClima + " (" + nombreClima + "): " + FormatearModificadorPorcentaje(-penalizacionVisionClima));
         }
 
         return ObtenerTextoFactoresGris(lineas);
@@ -1116,7 +1108,7 @@ public class MenuCaravana : MonoBehaviour
         int tierCatalejos)
     {
         CampaignManager cm = CampaignManager.Instance;
-        int chancePasiva = cm != null ? cm.ObtenerChanceExploracionPasiva() : 55 + ObtenerBonusCatalejos(tierCatalejos);
+        int chancePasiva = cm != null ? cm.ObtenerChanceExploracionPasiva() : 55;
         int modZona = cm != null && cm.scAtributosZona != null ? cm.scAtributosZona.modChanceExploracion : 0;
         int modClimaExploracion = cm != null && cm.intTipoClima == 5 ? -20 : 0;
         int modPresagio = cm != null && cm.TienePresagioActivo(PresagioCatalog.ZonaDesconocida) ? -10 : 0;

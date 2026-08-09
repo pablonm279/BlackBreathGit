@@ -2583,9 +2583,9 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef><b>+1 Fatiga, -4 Esperanza</b></color>":
                 r = "<color=#ba3fef><b>+1 Fatigue, -4 Hope</b></color>"; break;
             case "Ya entrada la noche, un tronco que parecía apagado vuelve a encenderse cerca de los carros.\n\n":
-                r = "Well into the night, a log that seemed spent catches fire again near the carts.\n\n"; break;
+                r = "Well into the night, a log thought to be extinguished catches fire again near the carts.\n\n"; break;
             case "Logran contenerlo antes de que pase a mayores, pero se consumen recursos en el apuro.\n\n":
-                r = "They manage to contain it before it gets worse, but resources are spent in the rush.\n\n"; break;
+                r = "They manage to contain it before it spreads, but some of the supplies are lost to the flames.\n\n"; break;
             case "<color=#ba3fef><b>-12 Suministros</b></color>":
                 r = "<color=#ba3fef><b>-12 Supplies</b></color>"; break;
             case "El suelo todavía guarda un calor tenue bajo la ceniza y por una vez el descanso no se siente hostil.\n\n":
@@ -10050,9 +10050,9 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef><b>+1 Fatiga, -4 Esperanza</b></color>":
                 r = "<color=#ba3fef><b>+1 Fadiga, -4 Esperança</b></color>"; break;
             case "Ya entrada la noche, un tronco que parecía apagado vuelve a encenderse cerca de los carros.\n\n":
-                r = "Já noite alta, um tronco que parecia apagado volta a se acender perto das carroças.\n\n"; break;
+                r = "Já noite alta, um tronco que se acreditava estar apagado volta a pegar fogo perto das carroças.\n\n"; break;
             case "Logran contenerlo antes de que pase a mayores, pero se consumen recursos en el apuro.\n\n":
-                r = "Eles conseguem conter isso antes que piore, mas recursos são gastos na pressa.\n\n"; break;
+                r = "Eles conseguem conter o fogo antes que se espalhe, mas parte dos suprimentos é consumida pelas chamas.\n\n"; break;
             case "<color=#ba3fef><b>-12 Suministros</b></color>":
                 r = "<color=#ba3fef><b>-12 Suprimentos</b></color>"; break;
             case "El suelo todavía guarda un calor tenue bajo la ceniza y por una vez el descanso no se siente hostil.\n\n":

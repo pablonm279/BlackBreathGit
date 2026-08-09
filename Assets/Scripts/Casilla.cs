@@ -1292,11 +1292,13 @@ public class Casilla : MonoBehaviour
   {
     if (!TryObtenerCostoMovimientoHover(out int costoMovimientoTotal, out bool alcanzable))
     {
+      BattleManager.Instance?.scUIBotonesHab?.LimpiarDisponibilidadTrasMovimiento();
       OcultarPreviewCostoMovimiento();
       ResetearPreviewCostoMovimientoUI();
       return;
     }
 
+    BattleManager.Instance.scUIBotonesHab?.MostrarDisponibilidadTrasMovimiento(costoMovimientoTotal);
     MostrarPreviewCostoMovimiento(costoMovimientoTotal, alcanzable);
     MostrarTooltipCostoMovimiento(costoMovimientoTotal);
 
@@ -1326,12 +1328,23 @@ public class Casilla : MonoBehaviour
       return;
     }
 
+    if (BattleManager.Instance.ControladorIntroBatalla != null
+      && BattleManager.Instance.ControladorIntroBatalla.ProcesarClickCasilla(this))
+    {
+      return;
+    }
+
     if (BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
     {
       return;
     }
 
     if (TutorialTooltipManager.Instance != null && TutorialTooltipManager.Instance.EstaMostrandoTooltip)
+    {
+      return;
+    }
+
+    if (BattleManager.Instance.DebeConsumirClickCasillaPorUnidadCentralizada())
     {
       return;
     }
@@ -2166,6 +2179,20 @@ public class Casilla : MonoBehaviour
       MarcaMeleeAtraviesa.SetActive(true);
     }
   }
+  public void DesactivarCapaColorNegro()
+  {
+    transform.GetChild(2).gameObject.SetActive(false);
+    GetComponent<MeshRenderer>().enabled = true;
+
+    if (MarcaMeleeAtraviesa != null)
+    {
+      MarcaMeleeAtraviesa.SetActive(false);
+    }
+  }
+  public bool TieneCapaHostilActiva()
+  {
+    return transform.GetChild(1).gameObject.activeSelf || transform.GetChild(2).gameObject.activeSelf;
+  }
   public void ActivarCapaColorAzul()
   {
     transform.GetChild(0).gameObject.SetActive(true);
@@ -2200,6 +2227,13 @@ public class Casilla : MonoBehaviour
   [SerializeField] public List<Obstaculo> obstaculosEnCasAzul = new List<Obstaculo>();
   public void OnMouseOver()
   {
+    if (BattleManager.Instance != null
+      && BattleManager.Instance.ControladorIntroBatalla != null
+      && BattleManager.Instance.ControladorIntroBatalla.ProcesarHoverCasilla(this))
+    {
+      return;
+    }
+
     if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
     {
       return;
@@ -2788,12 +2822,20 @@ public class Casilla : MonoBehaviour
 
   public void OnMouseExit()
   {
+    if (BattleManager.Instance != null
+      && BattleManager.Instance.ControladorIntroBatalla != null
+      && BattleManager.Instance.ControladorIntroBatalla.ProcesarSalidaCasilla(this))
+    {
+      return;
+    }
+
     BattleManager.Instance?.HabilidadActiva?.LimpiarPreviewCasilla();
     SetHoverVistaTactica(false);
     hoverMovimientoValido = false;
     RestablecerGlowMovimientoHover();
     RestablecerPulsoObjetivoHabilidad();
     OcultarPreviewCostoMovimiento();
+    BattleManager.Instance?.scUIBotonesHab?.LimpiarDisponibilidadTrasMovimiento();
     ResetearPreviewCostoMovimientoUI();
     if (TryGetUnidadActiva(out Unidad unidadActiva) && unidadActiva.CasillaPosicion != null)
     {
@@ -3246,21 +3288,7 @@ public class Casilla : MonoBehaviour
     }
     else if (casillaEnRangoMovimiento && unidadPresente != null && !unidad.movimientoEnCurso && !battleManager.SeleccionandoObjetivo && unidad.estado_inmovil < 1)
     {
-      if (unidadPresente != null)
-      {
-        if (!unidadPresente.TieneBuffNombre("Desplazado"))
-        {
-
-          res = 10; //Desplazable
-        }
-        else
-        {
-          res = 0;
-        }
-
-
-      }
-
+      res = PuedeIntercambiarConUnidadActiva() ? 10 : 0; //Desplazable
     }
     else
     {

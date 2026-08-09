@@ -203,8 +203,8 @@ Transform:
   m_GameObject: {fileID: 4948109475767131408}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -4.64, y: 0.539, z: 4}
-  m_LocalScale: {x: 0.25, y: 0.5, z: 0.5}
+  m_LocalPosition: {x: -4.64, y: 0.541, z: 4}
+  m_LocalScale: {x: 0.256375, y: 0.55065, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3606423354356659533}
@@ -284,6 +284,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -305,9 +308,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &4273123573182047390
 MonoBehaviour:

@@ -97,8 +97,9 @@ public class Enredar : IAHabilidad
             buff.AplicarBuff(objetivo);
 
             //Aplica VFX del estado
-            GameObject goVFX = Instantiate(VFXEstadoPrefab, objetivo.transform.position, objetivo.transform.rotation);
-            goVFX.transform.parent = objetivo.transform;
+            GameObject goVFX = Instantiate(VFXEstadoPrefab, objetivo.transform);
+            goVFX.transform.localPosition = Vector3.zero;
+            goVFX.transform.localRotation = Quaternion.identity;
             buff.goVFX =  goVFX;
             //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
             Canvas canvasObjeto = goVFX.GetComponentInChildren<Canvas>();

@@ -56,17 +56,17 @@ public class armaBaculoPurificador : Arma
          if (TRADU.i.nIdioma == 1)
          {
             sNombreItem = "Báculo del Último Rito " + nmejora;
-            itemDescripcion = "Un báculo funerario que resquebraja el alma del enemigo al impactar.\n\nHabilidad de ataque: Golpe de Bastón.\nEfecto del arma: Alma Quebrada (-TS Mental, -Res Divino, -Res Necro).";
+            itemDescripcion = "Resquebraja el alma al impactar.\n\nHabilidad de ataque: Golpe de Bastón.\nEfecto: Alma Quebrada (-TS Mental, -Res Divino, -Res Necro).";
          }
          else if (TRADU.i.nIdioma == 2)
          {
             sNombreItem = "Staff of the Final Rite " + nmejora;
-            itemDescripcion = "A funerary staff that splinters the enemy's soul on impact.\n\nAttack ability: Staff Strike.\nWeapon effect: Shattered Soul (-Mental Save, -Divine Res, -Necro Res).";
+            itemDescripcion = "Shatters the soul on impact.\n\nAttack ability: Staff Strike.\nEffect: Shattered Soul (-Mental Save, -Divine Res, -Necro Res).";
          }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Cajado do Ultimo Rito " + nmejora;
-            itemDescripcion = "Um cajado funerario que estilhaca a alma do inimigo ao impactar.\n\nHabilidade de ataque: Golpe de Bastao.\nEfeito da arma: Alma Quebrada (-TS Mental, -Res Divino, -Res Necro).";
+            itemDescripcion = "Estilhaça a alma ao impactar.\n\nHabilidade de ataque: Golpe de Bastão.\nEfeito: Alma Estilhaçada (-TS Mental, -Res Divino, -Res Necro).";
          }
       }
 

@@ -51,6 +51,11 @@ public class IAPatada : IAHabilidad
 
    public async override Task ActivarHabilidad()
    {
+    if (!PuedeResolverAccionIA())
+    {
+      return;
+    }
+
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
       object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
       bool hayOtraMeleePendiente = false; // Fuerza retorno antes de otro ataque

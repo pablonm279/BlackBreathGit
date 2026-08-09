@@ -7,6 +7,8 @@ public class EdgePanCameraZ : MonoBehaviour
     private const float ZoomSmoothMultiplier = 1.35f;
     private const float ZoomOutRange = 0.18f;
     private const float ZoomInOffsetMultiplier = 1.10f;
+    private const float GeneralPanMarginMultiplier = 1.10f;
+    private const float ForwardPanMarginMultiplier = 1.20f;
 
     [Header("Bordes de pantalla")]
     [SerializeField] private int edgeThickness = 16;
@@ -214,21 +216,27 @@ public class EdgePanCameraZ : MonoBehaviour
         panXObjetivo -= inputTeclado.y * keyboardPanSpeedX * Time.deltaTime;
         panZReposoObjetivo += inputTeclado.x * keyboardPanSpeedZ * Time.deltaTime;
 
-        panXObjetivo = Mathf.Clamp(panXObjetivo, startLocalX - Mathf.Max(0f, maxLeftOffsetX), startLocalX + Mathf.Max(0f, maxRightOffsetX));
+        panXObjetivo = Mathf.Clamp(
+            panXObjetivo,
+            startLocalX - Mathf.Max(0f, maxLeftOffsetX) * ForwardPanMarginMultiplier,
+            startLocalX + Mathf.Max(0f, maxRightOffsetX) * GeneralPanMarginMultiplier);
         panZReposoObjetivo = Mathf.Clamp(
             panZReposoObjetivo,
-            startLocalZ - Mathf.Max(0f, maxBackwardOffsetZ),
-            startLocalZ + Mathf.Max(0f, maxForwardOffsetZ));
+            startLocalZ - Mathf.Max(0f, maxBackwardOffsetZ) * GeneralPanMarginMultiplier,
+            startLocalZ + Mathf.Max(0f, maxForwardOffsetZ) * GeneralPanMarginMultiplier);
 
         float smoothTime = Mathf.Max(0.01f, keyboardPanSmoothTime);
         panXActual = Mathf.SmoothDamp(panXActual, panXObjetivo, ref panXVelocidad, smoothTime);
         panZReposoActual = Mathf.SmoothDamp(panZReposoActual, panZReposoObjetivo, ref panZReposoVelocidad, smoothTime);
 
-        panXActual = Mathf.Clamp(panXActual, startLocalX - Mathf.Max(0f, maxLeftOffsetX), startLocalX + Mathf.Max(0f, maxRightOffsetX));
+        panXActual = Mathf.Clamp(
+            panXActual,
+            startLocalX - Mathf.Max(0f, maxLeftOffsetX) * ForwardPanMarginMultiplier,
+            startLocalX + Mathf.Max(0f, maxRightOffsetX) * GeneralPanMarginMultiplier);
         panZReposoActual = Mathf.Clamp(
             panZReposoActual,
-            startLocalZ - Mathf.Max(0f, maxBackwardOffsetZ),
-            startLocalZ + Mathf.Max(0f, maxForwardOffsetZ));
+            startLocalZ - Mathf.Max(0f, maxBackwardOffsetZ) * GeneralPanMarginMultiplier,
+            startLocalZ + Mathf.Max(0f, maxForwardOffsetZ) * GeneralPanMarginMultiplier);
         panZActual = Mathf.Clamp(panZActual, panZReposoActual, forwardLimitLocalZ);
     }
 
@@ -339,7 +347,7 @@ public class EdgePanCameraZ : MonoBehaviour
     private void RecalcularTopeAdelanteLocal()
     {
         float worldWidth = CalcularAnchoVisibleMundo();
-        float offsetForwardWorld = worldWidth * Mathf.Clamp01(maxForwardOffsetPercent);
+        float offsetForwardWorld = worldWidth * Mathf.Clamp01(maxForwardOffsetPercent * GeneralPanMarginMultiplier);
 
         float parentScaleZ = 1f;
         if (transform.parent != null)

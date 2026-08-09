@@ -195,8 +195,9 @@ void AplicaEnredadoTirada(Unidad unidad, int extraDC)
             buff.AplicarBuff(unidad);
 
             //Aplica VFX del estado
-            GameObject goVFX = Instantiate(VFXEstadoPrefab, unidad.transform.position, unidad.transform.rotation);
-            goVFX.transform.parent = unidad.transform;
+            GameObject goVFX = Instantiate(VFXEstadoPrefab, unidad.transform);
+            goVFX.transform.localPosition = Vector3.zero;
+            goVFX.transform.localRotation = Quaternion.identity;
 
             //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
             Canvas canvasObjeto = goVFX.GetComponentInChildren<Canvas>();

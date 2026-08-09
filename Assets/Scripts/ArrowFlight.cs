@@ -14,7 +14,7 @@ public class ArrowFlight : MonoBehaviour
     private float parabolaBase;
     public float velocidad;
     [SerializeField] private float alturaMinimaParabola = 0.05f;
-    [SerializeField] private float duracionContinuacionFallo = 0.15f;
+    [SerializeField] private float duracionContinuacionFallo = 0.07f;
     [SerializeField] private float esperaResultadoMaxima = 0.12f;
 
     TaskCompletionSource<bool> impactoTcs;

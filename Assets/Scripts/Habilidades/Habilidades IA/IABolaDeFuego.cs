@@ -61,11 +61,21 @@ public class IABolaDeFuego : IAHabilidad
 
    public async override Task ActivarHabilidad()
    {
+    if (!PuedeResolverAccionIA())
+    {
+      return;
+    }
    
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
     
     ReproducirAnimacionSegunTipo();
     await BattleManager.DelayCombateAsync(2000);
+
+    if (!PuedeResolverAccionIA())
+    {
+      return;
+    }
+
     object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
     
     AplicarEfectosEnZona(ObtenerAfectadosZonaObjetivo(zonaX, zonaY, Objetivo)); //aca se determina la zona del Ataque relativo al objetivo
@@ -78,6 +88,11 @@ public class IABolaDeFuego : IAHabilidad
      
      foreach(Casilla cas in casillas)
      {
+      if (!PuedeResolverAccionIA())
+      {
+        return;
+      }
+
         //-----
         //Acá aplicar efectos visuales a la casilla si corresponde
         //-----

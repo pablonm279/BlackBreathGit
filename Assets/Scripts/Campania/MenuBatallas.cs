@@ -1701,7 +1701,7 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
     faccionBatalla.gameObject.SetActive(true);
  }
 
- string ObtenerNombreFaccionTraducido(string factionId, string factionName)
+ public string ObtenerNombreFaccionTraducido(string factionId, string factionName)
  {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
     string nombreBase = !string.IsNullOrWhiteSpace(factionName) ? factionName : factionId;
