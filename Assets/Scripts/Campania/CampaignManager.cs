@@ -24,6 +24,15 @@ public enum TipoHighlightNodoCampania
   MisionSalvamento
 }
 
+public enum TipoAvanceTiempoCampania
+{
+  Viaje,
+  Descanso,
+  Posada,
+  Asentamiento,
+  Exploradores
+}
+
 public class CampaignManager : MonoBehaviour
 {
   public class ResultadoExploradoresCampania
@@ -68,8 +77,10 @@ public class CampaignManager : MonoBehaviour
   private const bool DEBUG_ABRIR_MENU_SERRIA_AL_INICIAR = false;
   private const int DistanciaVisionBase = 1;
   private const int DistanciaVisionMinima = 1;
-  private const float AlcanceVisionMinimoPasos = 1.5f;
-  private const float MultiplicadorVisionNiebla = 0.80f;
+  private const float AlcanceVisionMinimoPasos = 1.20f;
+  private const float MultiplicadorAlcanceVisionCatalejos = 0.85f;
+  private const float MultiplicadorAlcanceVisionAntorchas = 0.80f;
+  private const float MultiplicadorVisionNiebla = 0.85f;
   private static readonly float[] AlcanceVisionCatalejosPorTier =
   {
     1.5f,
@@ -78,7 +89,8 @@ public class CampaignManager : MonoBehaviour
     2.9f,
     3.5f
   };
-  private const float DuracionEnvioExploradoresSegundos = 6.5f;
+  private const float DuracionEnvioExploradoresHoras = 3f;
+  private const float DuracionAnimacionEnvioExploradoresSegundos = 5f;
   private const float DuracionResultadoExploradoresSegundos = 1.2f;
   private const float RetrasoInicioEnvioExploradoresSegundos = 0.25f;
   private const float RetrasoEntreTextosExploradoresSegundos = 0.9f;
@@ -169,7 +181,7 @@ public class CampaignManager : MonoBehaviour
   public int mejoraCaravanaCatalejos;
   public int mejoraCaravanaAlmacen;
   public int mejoraCaravanaDefensas;
-  private int estadisticaDiasViajados;
+  private float estadisticaHorasViajadas;
   private int estadisticaBatallasLibradas;
   private int estadisticaCivilesPerdidos;
   private int estadisticaAsentamientosVisitados;
@@ -183,8 +195,8 @@ public class CampaignManager : MonoBehaviour
   private AudioSource sfxMovimientoSource;
   private Coroutine rutinaDesvanecerSfxMovimiento;
 
-  public int sequitoHerrerosMantArmas;
-  public int sequitoHerrerosMantArmaduras;
+  public float sequitoHerrerosMantArmasHoras;
+  public float sequitoHerrerosMantArmadurasHoras;
   public int sequitoMercaderesTier;
   public TextMeshProUGUI distanciaAlientotxt;
   public SequitoMercaderes scSequitoMercaderes;
@@ -200,7 +212,39 @@ public class CampaignManager : MonoBehaviour
   public float sequitoCuranderosMejoraCuracion;
   public EstadosCaravana estadosCaravana = new EstadosCaravana();
 
-  public int numeroTurno;
+  private const double HoraInicioCampania = 9d;
+  [SerializeField] private double horasTotales = HoraInicioCampania;
+  public int numeroTurno => ObtenerDiaCalendario();
+  [SerializeField] private bool antorchasEncendidas = true;
+  private CaravanTorchLight[] lucesAntorchasCaravana;
+  [SerializeField] private float progresoFatigaHoras;
+  [SerializeField] private float acumuladorEfectosSequitosHoras;
+  [SerializeField] private bool combateHoraCapturada;
+  [SerializeField] private bool combateNocturno;
+  [SerializeField] private bool descansoInterrumpidoPendiente;
+  [SerializeField] private bool descansoResultadosPendientes;
+  [SerializeField] private bool descansoTuvoEmboscada;
+  [SerializeField] private bool descansoRitualElegible;
+  [SerializeField] private string descansoRitualPersonajeId;
+  [SerializeField] private int descansoClimaInicial;
+  [SerializeField] private float descansoValorTarea;
+  [SerializeField] private int descansoChanceExploracion;
+  [SerializeField] private int descansoChanceEmboscada;
+  [SerializeField] private bool descansoEmboscadaPendiente;
+  [SerializeField] private float descansoHorasHastaEmboscada;
+  [SerializeField] private int descansoTiradaEmboscada;
+  [SerializeField] private float descansoHorasRestantes;
+  [SerializeField] private int descansoTareaCivil;
+  [SerializeField] private bool descansoEnClaro;
+  [SerializeField] private float descansoHoraCombate;
+  [SerializeField] private float creditoPrevencionAlientoHoras;
+  private bool viajeActualIncluyoNoche;
+  [SerializeField] private int viajeClimaInicial;
+  [SerializeField] private float horasViajeActual;
+  private bool continuacionDescansoGestionadaPorMenu;
+  public const float HorasPorPasoMapa = 5f;
+  private const float HoraInicioNoche = 21f;
+  private const float HoraFinNoche = 6f;
   private const string TEXTO_LOG_INICIO_CAMPANIA = "El viaje de la caravana ha comenzado.";
   private bool logInicioCampaniaEscrito;
   public bool MoviendoCaravana = false;
@@ -1248,7 +1292,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (savePendiente.version < SaveFileData.MinimumCompatibleVersion)
     {
-      error = "El save pertenece a una version anterior incompatible.";
+      error = "Esta partida usa un formato anterior a v26 y no puede cargarse. Inicia una campaña nueva.";
       Debug.LogWarning("[CampaignManager] " + error);
       if (iniciarNuevaCampaniaSiFalla)
       {
@@ -1337,6 +1381,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     EMBOSCADA_EnCurso = 0;
     emboscadaViajeCalculada = false;
     logEmboscadaViajePendiente = null;
+    horasViajeActual = 0f;
+    viajeActualIncluyoNoche = false;
+    viajeClimaInicial = 0;
+    multiplicadorVelocidadVisualViajeActual = 1f;
+    pausandoTextoDistanciaAliento = false;
     resolviendoJefeZona = false;
     abriendoCiudadPuerto = false;
   }
@@ -1385,7 +1434,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     CambiarOroActual(400);
-    CambiarValorAlientoNegro(DebeUsarConfiguracionTutorial() ? 2 : 1);
+    CambiarValorAlientoNegroHoras(DebeUsarConfiguracionTutorial() ? 10f : 5f);
   }
 
   private void InicializarZonaNuevaCampania()
@@ -1506,24 +1555,24 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     if (TienePresagioActivo(PresagioCatalog.VientoAFavor))
     {
-      CambiarValorAlientoNegro(1);
+      CambiarValorAlientoNegroHoras(5f);
       int idioma = PresagioCatalog.ObtenerIdiomaActual();
       EncolarLogPresagioInicio(idioma switch
       {
-        TRADU.IdiomaIngles => "-Tailwind: the Black Breath starts 1 advance farther ahead.",
-        TRADU.IdiomaPortugues => "-Vento a Favor: o Hálito Negro começa 1 avanço mais adiante.",
-        _ => "-Viento a favor: el Aliento Negro comienza 1 avance más adelante."
+        TRADU.IdiomaIngles => "-Tailwind: the Black Breath starts 5 h farther ahead.",
+        TRADU.IdiomaPortugues => "-Vento a Favor: o Hálito Negro começa 5 h mais adiante.",
+        _ => "-Viento a favor: el Aliento Negro comienza 5 h más adelante."
       });
     }
     else if (TienePresagioActivo(PresagioCatalog.VientoEnContra))
     {
-      CambiarValorAlientoNegro(-2);
+      CambiarValorAlientoNegroHoras(-10f);
       int idioma = PresagioCatalog.ObtenerIdiomaActual();
       EncolarLogPresagioInicio(idioma switch
       {
-        TRADU.IdiomaIngles => "-Headwind: the Black Breath starts 2 advances farther behind.",
-        TRADU.IdiomaPortugues => "-Vento Contrário: o Hálito Negro começa 2 avanços mais atrás.",
-        _ => "-Viento en contra: el Aliento Negro comienza 2 avances más atrás."
+        TRADU.IdiomaIngles => "-Headwind: the Black Breath starts 10 h farther behind.",
+        TRADU.IdiomaPortugues => "-Vento Contrário: o Hálito Negro começa 10 h mais atrás.",
+        _ => "-Viento en contra: el Aliento Negro comienza 10 h más atrás."
       });
     }
   }
@@ -1641,13 +1690,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         continue;
       }
 
-      int dias = UnityEngine.Random.Range(3, 6);
-      personaje.Camp_Enfermo = Mathf.Max(personaje.Camp_Enfermo, dias);
+      int[] duracionesEnfermoHoras = { 72, 96, 120 };
+      int horasEnfermo = duracionesEnfermoHoras[UnityEngine.Random.Range(0, duracionesEnfermoHoras.Length)];
+      personaje.AplicarEnfermoHoras(horasEnfermo);
       EscribirLog(idioma switch
       {
-        TRADU.IdiomaIngles => $"-{personaje.sNombre} fails Fortitude DC 10 and becomes Sick for {dias} days.",
-        TRADU.IdiomaPortugues => $"-{personaje.sNombre} falha em Fortitude CD 10 e fica Doente por {dias} dias.",
-        _ => $"-{personaje.sNombre} falla Fortaleza DC 10 y obtiene Enfermo por {dias} días."
+        TRADU.IdiomaIngles => $"-{personaje.sNombre} fails Fortitude DC 10 and becomes Sick for {horasEnfermo} h.",
+        TRADU.IdiomaPortugues => $"-{personaje.sNombre} falha em Fortitude CD 10 e fica Doente por {horasEnfermo} h.",
+        _ => $"-{personaje.sNombre} falla Fortaleza DC 10 y obtiene Enfermo por {horasEnfermo} h."
       });
     }
   }
@@ -1719,12 +1769,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         continue;
       }
 
-      personaje.AgregarCampBendecido(4);
+      personaje.AplicarBendecidoHoras(96f);
       EncolarLogPresagioInicio(idioma switch
       {
-        TRADU.IdiomaIngles => $"-{personaje.sNombre} passes Mental DC 13 and becomes Blessed for 4 days.",
-        TRADU.IdiomaPortugues => $"-{personaje.sNombre} passa em Mental CD 13 e fica Abençoado por 4 dias.",
-        _ => $"-{personaje.sNombre} supera Mental DC 13 y obtiene Bendecido por 4 días."
+        TRADU.IdiomaIngles => $"-{personaje.sNombre} passes Mental DC 13 and becomes Blessed for 96 h.",
+        TRADU.IdiomaPortugues => $"-{personaje.sNombre} passa em Mental CD 13 e fica Abençoado por 96 h.",
+        _ => $"-{personaje.sNombre} supera Mental DC 13 y obtiene Bendecido por 96 h."
       });
     }
 
@@ -2148,7 +2198,31 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private void InicializarProgresoNuevaCampania()
   {
     InicializarMejorasCaravanaNuevaCampania();
-    numeroTurno = 1;
+    horasTotales = HoraInicioCampania;
+    antorchasEncendidas = true;
+    progresoFatigaHoras = 0f;
+    creditoPrevencionAlientoHoras = 0f;
+    acumuladorEfectosSequitosHoras = 0f;
+    combateHoraCapturada = false;
+    combateNocturno = false;
+    descansoInterrumpidoPendiente = false;
+    descansoResultadosPendientes = false;
+    descansoTuvoEmboscada = false;
+    descansoRitualElegible = false;
+    descansoRitualPersonajeId = string.Empty;
+    descansoClimaInicial = 0;
+    descansoValorTarea = 0f;
+    descansoChanceExploracion = 0;
+    descansoChanceEmboscada = 0;
+    descansoEmboscadaPendiente = false;
+    descansoHorasHastaEmboscada = 0f;
+    descansoTiradaEmboscada = 0;
+    descansoHorasRestantes = 0f;
+    descansoTareaCivil = 0;
+    descansoEnClaro = false;
+    descansoHoraCombate = 0f;
+    horasViajeActual = 0f;
+    viajeClimaInicial = 0;
     posicionCaravana = 1;
     ResetearEstadisticasCampania();
     if (estadosCaravana == null)
@@ -2174,11 +2248,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     mejoraCaravanaCatalejos = MinTierMejoraCaravana;
     mejoraCaravanaAlmacen = MinTierMejoraCaravana;
     mejoraCaravanaDefensas = MinTierMejoraCaravana;
+    sequitoCuranderosMejoraCuracion = 0.10f;
   }
 
   private void ResetearEstadisticasCampania()
   {
-    estadisticaDiasViajados = 0;
+    estadisticaHorasViajadas = 0f;
     estadisticaBatallasLibradas = 0;
     estadisticaCivilesPerdidos = 0;
     estadisticaAsentamientosVisitados = 0;
@@ -2469,17 +2544,461 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     RestaurarCursorCampaniaPredeterminado();
     BanterBattleUI.FinalizarCampania();
   }
-  [SerializeField]private TextMeshProUGUI txtDia;
+  [Header("Reloj horario")]
+  [Tooltip("Texto que muestra Día N · HH:MM.")]
+  [SerializeField] private TextMeshProUGUI txtDia;
+  [Tooltip("Arrastrar aquí el objeto con el componente Image del círculo (actualmente RelojRota).")]
+  [SerializeField] private Image relojHoraFill;
+  private float relojHoraFillObjetivo;
+  private Color relojHoraColorObjetivo;
+  private bool relojHoraInicializado;
 
   private void ActualizarTextoDia()
   {
-    if (txtDia == null)
+    AsegurarReferenciasRelojHora();
+
+    string textoDia = TRADU.i != null ? TRADU.i.Traducir("Día") : "Día";
+    if (txtDia != null)
+    {
+      txtDia.text = textoDia + " " + ObtenerDiaCalendario() + " · " + FormatearHoraCampania(ObtenerHoraActual());
+    }
+
+    float hora = ObtenerHoraActual();
+    relojHoraFillObjetivo = Mathf.Clamp01(hora / 24f);
+    relojHoraColorObjetivo = ObtenerColorRelojHora(hora);
+    if (!relojHoraInicializado && relojHoraFill != null)
+    {
+      relojHoraFill.fillAmount = relojHoraFillObjetivo;
+      relojHoraFill.color = relojHoraColorObjetivo;
+      relojHoraInicializado = true;
+    }
+  }
+
+  private void AsegurarReferenciasRelojHora()
+  {
+    if (relojHoraFill != null && txtDia != null)
     {
       return;
     }
 
-    string textoDia = TRADU.i != null ? TRADU.i.Traducir("Día") : "Día";
-    txtDia.text = textoDia + " " + numeroTurno;
+    GameObject relojHora = GameObject.Find("RelojHora");
+    if (relojHora == null)
+    {
+      relojHora = GameObject.Find("RelojRota");
+    }
+    if (relojHora == null)
+    {
+      return;
+    }
+
+    if (relojHoraFill == null)
+    {
+      relojHoraFill = relojHora.GetComponent<Image>();
+      if (relojHoraFill == null)
+      {
+        relojHoraFill = relojHora.GetComponentInChildren<Image>(true);
+      }
+      if (relojHoraFill != null)
+      {
+        relojHoraFill.type = Image.Type.Filled;
+        relojHoraFill.fillMethod = Image.FillMethod.Radial360;
+        relojHoraFill.fillOrigin = (int)Image.Origin360.Top;
+        relojHoraFill.fillClockwise = true;
+        relojHoraFill.raycastTarget = false;
+      }
+    }
+
+    if (txtDia == null || txtDia.transform.parent != relojHora.transform.parent)
+    {
+      Transform textoDiaNuevo = relojHora.transform.parent != null
+        ? relojHora.transform.parent.Find("Dia")
+        : null;
+      if (textoDiaNuevo != null)
+      {
+        TextMeshProUGUI texto = textoDiaNuevo.GetComponent<TextMeshProUGUI>();
+        if (texto != null)
+        {
+          txtDia = texto;
+        }
+      }
+    }
+  }
+
+  private static Color ObtenerColorRelojHora(float hora)
+  {
+    float h = Mathf.Repeat(hora, 24f);
+    Color violeta = new Color(0.30f, 0.20f, 0.43f, 1f);
+    Color verde = new Color(0.28f, 0.48f, 0.31f, 1f);
+    Color amarillo = new Color(0.62f, 0.52f, 0.24f, 1f);
+    Color rojo = new Color(0.55f, 0.25f, 0.20f, 1f);
+
+    if (h < 6f || h >= 21f) return violeta;
+    if (h < 8f) return Color.Lerp(violeta, verde, Mathf.SmoothStep(0f, 1f, (h - 6f) / 2f));
+    if (h < 12f) return Color.Lerp(verde, amarillo, Mathf.SmoothStep(0f, 1f, (h - 8f) / 4f));
+    if (h < 19f) return Color.Lerp(amarillo, rojo, Mathf.SmoothStep(0f, 1f, (h - 12f) / 7f));
+    if (h < 21f) return Color.Lerp(rojo, violeta, Mathf.SmoothStep(0f, 1f, (h - 19f) / 2f));
+    return violeta;
+  }
+
+  private void AnimarRelojHora()
+  {
+    if (relojHoraFill == null)
+    {
+      return;
+    }
+
+    if (relojHoraFill.fillAmount - relojHoraFillObjetivo > 0.5f)
+    {
+      relojHoraFill.fillAmount = relojHoraFillObjetivo;
+    }
+    float suavizado = 1f - Mathf.Exp(-7f * Time.unscaledDeltaTime);
+    relojHoraFill.fillAmount = Mathf.Lerp(relojHoraFill.fillAmount, relojHoraFillObjetivo, suavizado);
+    relojHoraFill.color = Color.Lerp(relojHoraFill.color, relojHoraColorObjetivo, suavizado);
+  }
+
+  public int ObtenerDiaCalendario()
+  {
+    return Mathf.Max(1, Mathf.FloorToInt((float)(horasTotales / 24d)) + 1);
+  }
+
+  public float ObtenerHoraActual()
+  {
+    return Mathf.Repeat((float)horasTotales, 24f);
+  }
+
+  public double ObtenerHorasTotales()
+  {
+    return Math.Max(0d, horasTotales);
+  }
+
+  public bool EsNocheActual()
+  {
+    return EsHoraNocturna(ObtenerHoraActual());
+  }
+
+  public static bool EsHoraNocturna(float hora)
+  {
+    float horaNormalizada = Mathf.Repeat(hora, 24f);
+    return horaNormalizada >= HoraInicioNoche || horaNormalizada < HoraFinNoche;
+  }
+
+  public string FormatearHoraCampania(float hora)
+  {
+    int minutosTotales = Mathf.RoundToInt(Mathf.Repeat(hora, 24f) * 60f) % (24 * 60);
+    int horas = minutosTotales / 60;
+    int minutos = minutosTotales % 60;
+    return horas.ToString("00") + ":" + minutos.ToString("00");
+  }
+
+  public string FormatearDuracionHoras(float horas, bool redondearHaciaArriba = false)
+  {
+    int minutosTotales = redondearHaciaArriba
+      ? Mathf.CeilToInt(Mathf.Max(0f, horas)) * 60
+      : Mathf.RoundToInt(Mathf.Max(0f, horas) * 60f);
+    int dias = minutosTotales / (24 * 60);
+    int horasEnteras = minutosTotales / 60 % 24;
+    int minutos = minutosTotales % 60;
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    string etiquetaDia = idioma == TRADU.IdiomaIngles
+      ? (dias == 1 ? "day" : "days")
+      : idioma == TRADU.IdiomaPortugues
+        ? (dias == 1 ? "dia" : "dias")
+        : (dias == 1 ? "día" : "días");
+    if (dias > 0)
+    {
+      string duracion = dias + " " + etiquetaDia;
+      if (horasEnteras > 0)
+      {
+        duracion += " " + horasEnteras + " h";
+      }
+      if (minutos > 0 && !redondearHaciaArriba)
+      {
+        duracion += " " + minutos + " min";
+      }
+      return duracion;
+    }
+    if (minutos > 0 && !redondearHaciaArriba)
+    {
+      return horasEnteras + " h " + minutos + " min";
+    }
+    return horasEnteras + " h";
+  }
+
+  public bool PuedeCambiarAntorchas()
+  {
+    return !MoviendoCaravana && !HayBatallaPendiente();
+  }
+
+  public bool AntorchasEncendidas => antorchasEncendidas;
+
+  public bool SetAntorchasEncendidas(bool encendidas)
+  {
+    if (antorchasEncendidas == encendidas)
+    {
+      return true;
+    }
+    if (!PuedeCambiarAntorchas())
+    {
+      return false;
+    }
+
+    antorchasEncendidas = encendidas;
+    EscribirLog(ObtenerTextoLogEstadoAntorchas(encendidas));
+    if (scMapaManager != null)
+    {
+      scMapaManager.RefrescarVisibilidadExploracion();
+    }
+    return true;
+  }
+
+  private string ObtenerTextoLogEstadoAntorchas(bool encendidas)
+  {
+    int idioma = TRADU.i != null
+      ? TRADU.i.nIdioma
+      : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaIngles);
+
+    return idioma switch
+    {
+      TRADU.IdiomaPortugues => encendidas
+        ? "As tochas foram acesas."
+        : "As tochas foram apagadas.",
+      TRADU.IdiomaIngles => encendidas
+        ? "The torches have been lit."
+        : "The torches have been extinguished.",
+      _ => encendidas
+        ? "Las antorchas han sido prendidas."
+        : "Las antorchas han sido apagadas."
+    };
+  }
+
+  private void AsegurarLuzAntorchasCaravana()
+  {
+    if (scMapaManager == null || scMapaManager.goCaravana == null)
+    {
+      return;
+    }
+
+    if (lucesAntorchasCaravana == null || lucesAntorchasCaravana.Length == 0)
+    {
+      lucesAntorchasCaravana = scMapaManager.goCaravana.GetComponentsInChildren<CaravanTorchLight>(true);
+    }
+
+    for (int i = 0; i < lucesAntorchasCaravana.Length; i++)
+    {
+      CaravanTorchLight luzAntorcha = lucesAntorchasCaravana[i];
+      if (luzAntorcha != null)
+      {
+        luzAntorcha.ActualizarEstado(this, scMapaManager);
+      }
+    }
+  }
+
+  public void AvanzarTiempoCampania(
+    float horas,
+    TipoAvanceTiempoCampania tipo,
+    float multiplicadorAliento = 1f,
+    float multiplicadorCuracion = 1f,
+    bool progresarActividades = true)
+  {
+    if (horas <= 0f)
+    {
+      return;
+    }
+
+    float horasRestantes = horas;
+    while (horasRestantes > 0.0001f)
+    {
+      double siguienteAmanecer = ObtenerSiguienteHoraAbsoluta(horasTotales, HoraFinNoche);
+      float horasHastaAmanecer = Mathf.Max(0f, (float)(siguienteAmanecer - horasTotales));
+      bool alcanzaAmanecer = horasHastaAmanecer <= horasRestantes + 0.0001f;
+      float horasTramo = alcanzaAmanecer
+        ? Mathf.Min(horasRestantes, horasHastaAmanecer)
+        : horasRestantes;
+
+      if (horasTramo > 0.000001f)
+      {
+        AvanzarTramoTiempoCampania(
+          horasTramo,
+          tipo,
+          multiplicadorAliento,
+          multiplicadorCuracion,
+          progresarActividades);
+        horasRestantes -= horasTramo;
+      }
+
+      if (alcanzaAmanecer)
+      {
+        horasTotales = siguienteAmanecer;
+        ForzarTiradaClima();
+        ActualizarTextoDia();
+      }
+      else
+      {
+        break;
+      }
+    }
+  }
+
+  private void AvanzarTramoTiempoCampania(
+    float horas,
+    TipoAvanceTiempoCampania tipo,
+    float multiplicadorAliento,
+    float multiplicadorCuracion,
+    bool progresarActividades)
+  {
+    int diaAnterior = ObtenerDiaCalendario();
+    bool eraNoche = EsNocheActual();
+    horasTotales = Math.Max(0d, horasTotales + horas);
+
+    bool esNoche = EsNocheActual();
+    if (eraNoche != esNoche && scMapaManager != null)
+    {
+      scMapaManager.RefrescarVisibilidadExploracion();
+    }
+
+    if (sunController != null)
+    {
+      sunController.SetCampaignHour(ObtenerHoraActual());
+    }
+
+    if (multiplicadorAliento > 0f)
+    {
+      float avanceAliento = horas * multiplicadorAliento;
+      float prevenido = Mathf.Min(avanceAliento, creditoPrevencionAlientoHoras);
+      creditoPrevencionAlientoHoras = Mathf.Max(0f, creditoPrevencionAlientoHoras - prevenido);
+      avanceAliento -= prevenido;
+      if (avanceAliento > 0f)
+      {
+        CambiarValorAlientoNegroHoras(avanceAliento);
+      }
+    }
+
+    ProcesarHorasPersonajes(horas, tipo, multiplicadorCuracion, progresarActividades);
+    ProcesarAcumuladoresGlobales(horas);
+
+    if (numeroTurno != diaAnterior && logDeCampania != null)
+    {
+      logDeCampania.RegistrarInicioDia(
+        numeroTurno,
+        GetEsperanzaActual(),
+        GetOroActuales(),
+        GetMaterialesActuales(),
+        GetSuministrosActuales(),
+        intTipoClima);
+    }
+
+    ActualizarTextoDia();
+  }
+
+  public IEnumerator TranscurrirAccionCampania(
+    float horas,
+    TipoAvanceTiempoCampania tipo,
+    float multiplicadorAliento = 1f,
+    float multiplicadorCuracion = 1f,
+    bool progresarActividades = true)
+  {
+    float restantes = Mathf.Max(0f, horas);
+    while (restantes > 0.0001f)
+    {
+      float delta = Mathf.Min(restantes, Mathf.Max(0f, Time.deltaTime));
+      if (delta <= 0f)
+      {
+        yield return null;
+        continue;
+      }
+      AvanzarTiempoCampania(delta, tipo, multiplicadorAliento, multiplicadorCuracion, progresarActividades);
+      restantes -= delta;
+      yield return null;
+    }
+  }
+
+  public void FinalizarAccionTemporal()
+  {
+    if (scAlientoNegroVFX != null)
+    {
+      scAlientoNegroVFX.AvanzarAlientoNegro(0);
+    }
+    creditoPrevencionAlientoHoras = 0f;
+    RefrescarBarraPersonajesCampania(true);
+  }
+
+  public void PrepararPrevencionAlientoAccion(float horas)
+  {
+    creditoPrevencionAlientoHoras = Mathf.Max(creditoPrevencionAlientoHoras, Mathf.Max(0f, horas));
+  }
+
+  private static double ObtenerSiguienteHoraAbsoluta(double inicio, float horaObjetivo)
+  {
+    double siguiente = Math.Floor((inicio - horaObjetivo) / 24d + 1d) * 24d + horaObjetivo;
+    if (siguiente <= inicio + 0.000001d)
+    {
+      siguiente += 24d;
+    }
+    return siguiente;
+  }
+
+  private void ProcesarHorasPersonajes(
+    float horas,
+    TipoAvanceTiempoCampania tipo,
+    float multiplicadorCuracion,
+    bool progresarActividades)
+  {
+    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
+    {
+      return;
+    }
+
+    bool esPosada = tipo == TipoAvanceTiempoCampania.Posada;
+    bool esViaje = tipo == TipoAvanceTiempoCampania.Viaje;
+    float colaboradores = CuantosPersonajesHacenTalActividad(12);
+    float bonusHerboristas = scMenuSequito != null && scMenuSequito.TieneSequito(5) && scSequitoHerboristas != null
+      ? 0.03f + 0.03f * scSequitoHerboristas.vecesEnClaro
+      : 0f;
+    float multiplicadorMejorasGlobales = 1f
+      + Mathf.Max(0f, sequitoCuranderosMejoraCuracion)
+      + Mathf.Max(0f, colaboradores) * 0.05f
+      + bonusHerboristas
+      + (esViaje ? ObtenerBonusCuracionPasivaViajePresagios() : 0f);
+
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje == null || personaje.Camp_Muerto)
+      {
+        continue;
+      }
+
+      personaje.ProcesarHorasEstadosCampania(horas);
+      bool descansa = esPosada || personaje.ActividadSeleccionada == 1 || !personaje.PuedeRealizarActividades();
+      float porcentajePorHora = descansa ? 0.04f : 0.02f;
+      float curacion = personaje.fVidaMaxima
+        * porcentajePorHora
+        * horas
+        * multiplicadorMejorasGlobales
+        * Mathf.Max(0f, multiplicadorCuracion);
+      personaje.RecibirCuracion(personaje.AplicarMultiplicadorCuracionCampaniaTraits(curacion));
+
+      if (!esPosada && progresarActividades && personaje.PuedeRealizarActividades() && EsActividadPermitidaPorClimaCampania(personaje.ActividadSeleccionada))
+      {
+        int ciclos = personaje.AgregarHorasActividad(personaje.ActividadSeleccionada, horas);
+        for (int i = 0; i < ciclos; i++)
+        {
+          ResolverCicloActividad(personaje);
+        }
+      }
+    }
+  }
+
+  private void ProcesarAcumuladoresGlobales(float horas)
+  {
+    sequitoHerrerosMantArmadurasHoras = Mathf.Max(0f, sequitoHerrerosMantArmadurasHoras - horas);
+    sequitoHerrerosMantArmasHoras = Mathf.Max(0f, sequitoHerrerosMantArmasHoras - horas);
+
+    acumuladorEfectosSequitosHoras += horas;
+    while (acumuladorEfectosSequitosHoras >= 24f)
+    {
+      acumuladorEfectosSequitosHoras -= 24f;
+      EfectosdeSequitos();
+    }
   }
 
   private void Start()
@@ -2492,6 +3011,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     RefrescarRetratosPersonajesCampania();
     StartCoroutine(RefrescarRetratosPersonajesCampaniaDiferido());
     ActualizarTextoDia();
+    if (sunController != null)
+    {
+      sunController.SetCampaignHour(ObtenerHoraActual());
+    }
 
     MenuOpciones.GetComponent<OpcionesCargarPlayerPrefsUI>().AplicarEfectosEnUI();
     RefrescarVfxClimaCalor();
@@ -2737,12 +3260,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return false;
     }
 
-    if (MoviendoCaravana)
-    {
-      motivo = "No se puede guardar mientras la caravana esta viajando.";
-      return false;
-    }
-
     if (enviandoExploradores)
     {
       motivo = "No se puede guardar mientras los exploradores estan fuera.";
@@ -2823,7 +3340,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public int ObtenerDistanciaVisionEfectiva()
   {
-    return Mathf.Max(ObtenerDistanciaVisionMinima(), ObtenerDistanciaVisionCalculada());
+    return Mathf.Max(ObtenerDistanciaVisionMinima(), Mathf.FloorToInt(ObtenerAlcanceVisionEnPasos()));
   }
 
   public int ObtenerDistanciaVisionCalculada()
@@ -2835,10 +3352,37 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public float ObtenerAlcanceVisionEnPasos()
   {
+    if (intTipoClima == 5)
+    {
+      return AlcanceVisionMinimoPasos * MultiplicadorVisionNiebla;
+    }
+
+    if (EsNocheActual())
+    {
+      if (!antorchasEncendidas)
+      {
+        float alcanceNocturno = Mathf.Max(
+          AlcanceVisionMinimoPasos,
+          ObtenerAlcanceVisionNormalEnPasos() * ObtenerMultiplicadorClimaVision());
+        return alcanceNocturno * MultiplicadorAlcanceVisionAntorchas;
+      }
+
+      return ObtenerAlcanceVisionAntorchasEnPasos();
+    }
+
     float alcanceNormal = ObtenerAlcanceVisionNormalEnPasos();
     return Mathf.Max(
       AlcanceVisionMinimoPasos,
       alcanceNormal * ObtenerMultiplicadorClimaVision());
+  }
+
+  public float ObtenerAlcanceVisionAntorchasEnPasos()
+  {
+    int tierAntorchas = Mathf.Clamp(mejoraCaravanaAntorchas, MinTierMejoraCaravana, MaxTierMejoraCaravana);
+    float alcanceAntorchas = AlcanceVisionCatalejosPorTier[tierAntorchas - MinTierMejoraCaravana]
+      * 0.90f
+      * MultiplicadorAlcanceVisionAntorchas;
+    return Mathf.Max(AlcanceVisionMinimoPasos, alcanceAntorchas * ObtenerMultiplicadorClimaVision());
   }
 
   public float ObtenerAlcanceVisionNormalEnPasos()
@@ -2847,7 +3391,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       mejoraCaravanaCatalejos,
       MinTierMejoraCaravana,
       MaxTierMejoraCaravana);
-    return AlcanceVisionCatalejosPorTier[tier - MinTierMejoraCaravana];
+    return AlcanceVisionCatalejosPorTier[tier - MinTierMejoraCaravana]
+      * MultiplicadorAlcanceVisionCatalejos;
   }
 
   public int ObtenerDistanciaVisionBase()
@@ -2867,7 +3412,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public int ObtenerPenalizacionClimaVision()
   {
-    if (intTipoClima == 5) return 20;
+    if (intTipoClima == 5) return 15;
     return 0;
   }
 
@@ -2883,7 +3428,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public int ObtenerChanceExploracionPasiva(int modificadorContextual = 0)
   {
-    int chance = 55;
+    int chance = 75;
     chance += scAtributosZona != null ? scAtributosZona.modChanceExploracion : 0;
     chance += MetaprogresionManager.Instance != null ? MetaprogresionManager.Instance.SerriaTierAlmenaras * 3 : 0;
     chance += ExploracionSumadaPorActividades();
@@ -2897,7 +3442,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     if (intTipoClima == 5)
     {
-      chance -= 20;
+      chance -= 10;
+    }
+
+    if (EsNocheActual())
+    {
+      chance -= 15;
     }
 
     if (scTutorialManager != null && scTutorialManager.tutorialActivo)
@@ -2987,7 +3537,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return false;
     }
 
-    if (scMapaManager == null || !scMapaManager.NodoDentroDeVision(destino))
+    bool ignorarAlcanceTutorial = scTutorialManager != null
+      && scTutorialManager.tutorialActivo
+      && scTutorialManager.EsClaroMisteriosoTutorial(destino);
+    bool ignorarAlcanceMisteriosoAdyacente = destino.ObtenerEstadoMisterioso();
+    if (!ignorarAlcanceTutorial && !ignorarAlcanceMisteriosoAdyacente
+      && (scMapaManager == null || !scMapaManager.NodoDentroDeVision(destino)))
     {
       motivo = LocExploradores(
         "-Ese destino esta fuera de la distancia de vision.",
@@ -3046,18 +3601,17 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     CambiarOroActual(-50);
     CambiarCivilesActuales(-5);
-    CambiarValorAlientoNegro(1);
-
-    if (sunController != null)
-    {
-      float duracionSolOriginal = sunController.duracion;
-      sunController.duracion = DuracionEnvioExploradoresSegundos;
-      sunController.OnTravelStart();
-      sunController.duracion = duracionSolOriginal;
-    }
 
     Nodo origenExploradores = scMapaManager != null ? scMapaManager.nodoActual : null;
-    yield return ScoutExplorationSequenceFx.ReproducirTrayecto(origenExploradores, destino, DuracionEnvioExploradoresSegundos);
+    Coroutine tiempoExploradores = StartCoroutine(TranscurrirAccionCampania(
+      DuracionEnvioExploradoresHoras,
+      TipoAvanceTiempoCampania.Exploradores,
+      1f,
+      1f,
+      true));
+    yield return ScoutExplorationSequenceFx.ReproducirTrayecto(origenExploradores, destino, DuracionAnimacionEnvioExploradoresSegundos);
+    yield return tiempoExploradores;
+    FinalizarAccionTemporal();
 
     ResultadoExploradoresCampania resultado = ResolverResultadoExploradores(destino);
     List<(string texto, Color color)> textosBufferizados = FinalizarBufferTextosFlotantesCampania();
@@ -3587,10 +4141,41 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.presagiosRegionId = presagiosRegionActivaId;
     data.presagiosActivos = new List<int>(presagiosActivosRegion);
     data.primeraBatallaPresagioEnemigosConsumida = primeraBatallaPresagioEnemigosConsumida;
-    data.numeroTurno = numeroTurno;
+    data.horasTotales = horasTotales;
     data.posicionCaravana = posicionCaravana;
     data.tipoClima = intTipoClima;
-    data.alientoNegro = GetValorAlientoNegro();
+    data.alientoNegroHoras = GetValorAlientoNegro();
+    data.antorchasEncendidas = antorchasEncendidas;
+    data.progresoFatigaHoras = progresoFatigaHoras;
+    data.creditoPrevencionAlientoHoras = creditoPrevencionAlientoHoras;
+    data.horasViajadas = estadisticaHorasViajadas;
+    data.viajeEnCurso = MoviendoCaravana && nodoDestinoActual != null;
+    data.viajeProgresoNormalizado = data.viajeEnCurso ? ObtenerProgresoViajeActual() : 0f;
+    data.viajeHorasTranscurridas = data.viajeEnCurso ? horasViajeActual : 0f;
+    data.viajeActualIncluyoNoche = data.viajeEnCurso && viajeActualIncluyoNoche;
+    data.viajeClimaInicial = data.viajeEnCurso ? viajeClimaInicial : 0;
+    data.viajeMultiplicadorVelocidad = data.viajeEnCurso ? multiplicadorVelocidadVisualViajeActual : 1f;
+    data.emboscadaViajeCalculada = data.viajeEnCurso && emboscadaViajeCalculada;
+    data.logEmboscadaViajePendiente = data.viajeEnCurso ? logEmboscadaViajePendiente : null;
+    data.acumuladorEfectosSequitosHoras = acumuladorEfectosSequitosHoras;
+    data.combateHoraCapturada = combateHoraCapturada;
+    data.combateNocturno = combateNocturno;
+    data.descansoInterrumpidoPendiente = descansoInterrumpidoPendiente;
+    data.descansoResultadosPendientes = descansoResultadosPendientes;
+    data.descansoTuvoEmboscada = descansoTuvoEmboscada;
+    data.descansoRitualElegible = descansoRitualElegible;
+    data.descansoRitualPersonajeId = descansoRitualPersonajeId;
+    data.descansoClimaInicial = descansoClimaInicial;
+    data.descansoValorTarea = descansoValorTarea;
+    data.descansoChanceExploracion = descansoChanceExploracion;
+    data.descansoChanceEmboscada = descansoChanceEmboscada;
+    data.descansoEmboscadaPendiente = descansoEmboscadaPendiente;
+    data.descansoHorasHastaEmboscada = descansoHorasHastaEmboscada;
+    data.descansoTiradaEmboscada = descansoTiradaEmboscada;
+    data.descansoHorasRestantes = descansoHorasRestantes;
+    data.descansoTareaCivil = descansoTareaCivil;
+    data.descansoEnClaro = descansoEnClaro;
+    data.descansoHoraCombate = descansoHoraCombate;
     data.fatiga = GetFatigaActual();
     data.esperanza = GetEsperanzaActual();
     data.civiles = Mathf.RoundToInt(GetCivilesActual());
@@ -3604,8 +4189,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.mejoraCaravanaCatalejos = mejoraCaravanaCatalejos;
     data.mejoraCaravanaAlmacen = mejoraCaravanaAlmacen;
     data.mejoraCaravanaDefensas = mejoraCaravanaDefensas;
-    data.sequitoHerrerosMantArmas = sequitoHerrerosMantArmas;
-    data.sequitoHerrerosMantArmaduras = sequitoHerrerosMantArmaduras;
+    data.sequitoHerrerosMantArmasHoras = sequitoHerrerosMantArmasHoras;
+    data.sequitoHerrerosMantArmadurasHoras = sequitoHerrerosMantArmadurasHoras;
     data.sequitoMercaderesTier = sequitoMercaderesTier;
     data.sequitoCuranderosMejoraCuracion = sequitoCuranderosMejoraCuracion;
     data.miliciasMejoras = miliciasMejoras;
@@ -3623,7 +4208,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.tutorialNuevoPasoId = tutorialNuevo != null ? tutorialNuevo.CurrentStepId : string.Empty;
     data.tutorialNuevoPendienteTrasDescripcionZona = PlayerPrefs.GetInt(TutorialDirector.PendingStartAfterZoneDescriptionKey, 0) == 1;
     TutorialTooltipProgress.CopiarASave(data);
-    data.estadisticaDiasViajados = estadisticaDiasViajados;
     data.estadisticaBatallasLibradas = estadisticaBatallasLibradas;
     data.estadisticaCivilesPerdidos = estadisticaCivilesPerdidos;
     data.estadisticaAsentamientosVisitados = estadisticaAsentamientosVisitados;
@@ -3808,11 +4392,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.nivelPuntoHabilidad = personaje.NivelPuntoHabilidad;
     data.nivelNuevaHabilidadBase = personaje.NivelNuevaHabilidadBase;
     data.campFatigado = personaje.Camp_Fatigado;
-    data.campBendecidoSequitoClerigos = personaje.TieneCampBendecido();
-    data.campBendecidoDias = personaje.Camp_Bendecido;
+    data.campBendecidoHoras = personaje.ObtenerHorasRestantesBendecido();
     data.campHerido = personaje.Camp_Herido;
-    data.campEnfermo = personaje.Camp_Enfermo;
-    data.campMoral = personaje.Camp_Moral;
+    data.campEnfermoHoras = personaje.ObtenerHorasRestantesEnfermo();
+    data.campMoralEstado = (int)personaje.ObtenerEstadoMoralCampania();
+    data.campMoralHoras = personaje.ObtenerHorasRestantesMoral();
     data.campAvergonzado = personaje.Camp_Avergonzado;
     data.campMuerto = personaje.Camp_Muerto;
     data.campCorrupto = personaje.Camp_Corrupto;
@@ -3821,7 +4405,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.traitLiderCaravanaPenalidadMuerteAplicada = personaje.TraitLiderCaravanaPenalidadMuerteAplicada;
     data.traitEjemploASeguirAplicado = personaje.TraitEjemploASeguirAplicado;
     data.traitHerenciaItemOtorgado = personaje.TraitHerenciaItemOtorgado;
-    data.diasViajado = personaje.DiasViajado;
+    data.horasViajadas = personaje.HorasViajadas;
+    data.progresoActividades = personaje.ExportarProgresoActividades();
     data.enemigosEliminados = personaje.EnemigosEliminados;
     data.danioHecho = personaje.DanioHecho;
     data.danioRecibido = personaje.DanioRecibido;
@@ -4170,7 +4755,39 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return;
     }
 
-    numeroTurno = Mathf.Max(1, data.numeroTurno);
+    horasTotales = Math.Max(0d, data.horasTotales);
+    antorchasEncendidas = data.antorchasEncendidas;
+    progresoFatigaHoras = Mathf.Max(0f, data.progresoFatigaHoras);
+    creditoPrevencionAlientoHoras = Mathf.Max(0f, data.creditoPrevencionAlientoHoras);
+    estadisticaHorasViajadas = Mathf.Max(0f, data.horasViajadas);
+    horasViajeActual = data.viajeEnCurso ? Mathf.Max(0f, data.viajeHorasTranscurridas) : 0f;
+    viajeActualIncluyoNoche = data.viajeEnCurso && data.viajeActualIncluyoNoche;
+    viajeClimaInicial = data.viajeEnCurso ? data.viajeClimaInicial : 0;
+    multiplicadorVelocidadVisualViajeActual = data.viajeEnCurso
+      ? Mathf.Max(0.01f, data.viajeMultiplicadorVelocidad)
+      : 1f;
+    emboscadaViajeCalculada = data.viajeEnCurso && data.emboscadaViajeCalculada;
+    logEmboscadaViajePendiente = data.viajeEnCurso ? data.logEmboscadaViajePendiente : null;
+    acumuladorEfectosSequitosHoras = Mathf.Repeat(Mathf.Max(0f, data.acumuladorEfectosSequitosHoras), 24f);
+    combateHoraCapturada = data.combateHoraCapturada;
+    combateNocturno = data.combateNocturno;
+    descansoInterrumpidoPendiente = data.descansoInterrumpidoPendiente;
+    descansoResultadosPendientes = data.descansoResultadosPendientes;
+    descansoTuvoEmboscada = data.descansoTuvoEmboscada;
+    descansoRitualElegible = data.descansoRitualElegible;
+    descansoRitualPersonajeId = data.descansoRitualPersonajeId ?? string.Empty;
+    descansoClimaInicial = data.descansoClimaInicial;
+    descansoValorTarea = data.descansoValorTarea;
+    descansoChanceExploracion = data.descansoChanceExploracion;
+    descansoChanceEmboscada = data.descansoChanceEmboscada;
+    descansoEmboscadaPendiente = data.descansoEmboscadaPendiente;
+    descansoHorasHastaEmboscada = Mathf.Max(0f, data.descansoHorasHastaEmboscada);
+    descansoTiradaEmboscada = data.descansoTiradaEmboscada;
+    descansoHorasRestantes = Mathf.Max(0f, data.descansoHorasRestantes);
+    descansoTareaCivil = data.descansoTareaCivil;
+    descansoEnClaro = data.descansoEnClaro;
+    descansoHoraCombate = data.descansoHoraCombate;
+    continuacionDescansoGestionadaPorMenu = false;
     posicionCaravana = Mathf.Max(0, data.posicionCaravana);
     presagiosRegionActivaId = Mathf.Max(0, data.presagiosRegionId);
     presagiosActivosRegion.Clear();
@@ -4185,22 +4802,20 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     mejoraCaravanaCatalejos = NormalizarTierMejoraCaravana(data.mejoraCaravanaCatalejos);
     mejoraCaravanaAlmacen = NormalizarTierMejoraCaravana(data.mejoraCaravanaAlmacen);
     mejoraCaravanaDefensas = NormalizarTierMejoraCaravana(data.mejoraCaravanaDefensas);
-    sequitoHerrerosMantArmas = data.sequitoHerrerosMantArmas;
-    sequitoHerrerosMantArmaduras = data.sequitoHerrerosMantArmaduras;
+    sequitoHerrerosMantArmasHoras = Mathf.Max(0f, data.sequitoHerrerosMantArmasHoras);
+    sequitoHerrerosMantArmadurasHoras = Mathf.Max(0f, data.sequitoHerrerosMantArmadurasHoras);
     sequitoMercaderesTier = data.sequitoMercaderesTier;
-    sequitoCuranderosMejoraCuracion = data.sequitoCuranderosMejoraCuracion;
+    sequitoCuranderosMejoraCuracion = Mathf.Clamp(data.sequitoCuranderosMejoraCuracion, 0.10f, 0.30f);
     miliciasMejoras = data.miliciasMejoras;
     peligrozonaanterior = data.peligroZonaAnterior;
     pComercialSuministrosDisp = data.puestoComercialSuministrosDisp;
     pComercialMaterialesDisp = data.puestoComercialMaterialesDisp;
     pComercialBueyesDisp = data.puestoComercialBueyesDisp;
-    estadisticaDiasViajados = Mathf.Max(0, data.estadisticaDiasViajados);
     estadisticaBatallasLibradas = Mathf.Max(0, data.estadisticaBatallasLibradas);
     estadisticaCivilesPerdidos = Mathf.Max(0, data.estadisticaCivilesPerdidos);
     estadisticaAsentamientosVisitados = Mathf.Max(0, data.estadisticaAsentamientosVisitados);
     MoviendoCaravana = false;
     nodoDestinoActual = null;
-    multiplicadorVelocidadVisualViajeActual = 1f;
     if (estadosCaravana == null)
     {
       estadosCaravana = new EstadosCaravana();
@@ -4649,10 +5264,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     personaje.NivelNuevaHabilidadBase = data.nivelNuevaHabilidadBase;
     personaje.NormalizarPuntosPendientesPorNivelActual();
     personaje.SetCampFatigado(data.campFatigado);
-    personaje.SetCampBendecido(data.campBendecidoDias > 0 ? data.campBendecidoDias : (data.campBendecidoSequitoClerigos ? 1 : 0));
     personaje.Camp_Herido = data.campHerido;
-    personaje.Camp_Enfermo = data.campEnfermo;
-    personaje.Camp_Moral = data.campMoral;
+    personaje.RestaurarEstadosCampaniaHorarios(
+      data.campEnfermoHoras,
+      data.campBendecidoHoras,
+      (EstadoMoralCampania)Mathf.Clamp(data.campMoralEstado, -1, 1),
+      data.campMoralHoras);
+    personaje.RestaurarProgresoActividades(data.progresoActividades);
     personaje.Camp_Avergonzado = data.campAvergonzado;
     personaje.Camp_Muerto = data.campMuerto;
     personaje.Camp_Corrupto = data.campCorrupto;
@@ -4661,7 +5279,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     personaje.TraitLiderCaravanaPenalidadMuerteAplicada = data.traitLiderCaravanaPenalidadMuerteAplicada;
     personaje.TraitEjemploASeguirAplicado = data.traitEjemploASeguirAplicado;
     personaje.TraitHerenciaItemOtorgado = data.traitHerenciaItemOtorgado;
-    personaje.DiasViajado = data.diasViajado;
+    personaje.HorasViajadas = Mathf.Max(0f, data.horasViajadas);
     personaje.EnemigosEliminados = data.enemigosEliminados;
     personaje.DanioHecho = data.danioHecho;
     personaje.DanioRecibido = data.danioRecibido;
@@ -4861,6 +5479,77 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       asentamientoManager.RestaurarEstadoDesdeSave(saveFileData.campaign);
     }
+
+    if (saveFileData.campaign != null && saveFileData.campaign.viajeEnCurso)
+    {
+      StartCoroutine(ReanudarViajeTrasCarga(saveFileData.campaign));
+    }
+    else if ((descansoInterrumpidoPendiente || descansoResultadosPendientes) && BATALLA_EnCurso <= 0)
+    {
+      StartCoroutine(CompletarContinuacionDescansoTrasCarga());
+    }
+  }
+
+  private IEnumerator ReanudarViajeTrasCarga(CampaignSaveData data)
+  {
+    yield return null;
+    if (data == null || scMapaManager == null || scMapaManager.nodoActual == null || scMapaManager.scContenedordeNodos == null)
+    {
+      yield break;
+    }
+
+    Nodo destino = null;
+    NodeReferenceSaveData referenciaDestino = data.nodoDestinoActual;
+    foreach (Nodo nodo in scMapaManager.scContenedordeNodos.listTodosNodos)
+    {
+      if (nodo != null
+          && referenciaDestino != null
+          && nodo.posXNodo == referenciaDestino.x
+          && nodo.posYNodo == referenciaDestino.y)
+      {
+        destino = nodo;
+        break;
+      }
+    }
+
+    if (destino == null || scMapaManager.nodoActual.ObtenerConexionHacia(destino) == null)
+    {
+      horasViajeActual = 0f;
+      multiplicadorVelocidadVisualViajeActual = 1f;
+      creditoPrevencionAlientoHoras = 0f;
+      estadosCaravana?.FinalizarViajeActual();
+      Debug.LogWarning("[CampaignManager] No se pudo reanudar el viaje guardado porque su conexión ya no existe.");
+      yield break;
+    }
+
+    nodoDestinoActual = destino;
+    MoviendoCaravana = true;
+    pausandoTextoDistanciaAliento = true;
+    if (menuDescanso != null)
+    {
+      menuDescanso.SetActive(false);
+    }
+    if (sunController != null)
+    {
+      sunController.OnTravelStart();
+    }
+    if (animCaravana != null)
+    {
+      animCaravana.SetBool("IsWalking", true);
+      animCaravana.speed = multiplicadorVelocidadVisualViajeActual;
+    }
+    IniciarSonidoMovimientoCaravana(Mathf.Max(0.05f, sfxMovimientoFadeIn));
+
+    if (!destino.ReanudarViajeDesdeGuardado(scMapaManager.nodoActual, data.viajeProgresoNormalizado))
+    {
+      MoviendoCaravana = false;
+      nodoDestinoActual = null;
+      horasViajeActual = 0f;
+      pausandoTextoDistanciaAliento = false;
+      DetenerSonidoMovimientoCaravanaIntro();
+      Debug.LogWarning("[CampaignManager] No se pudo iniciar la rutina del viaje guardado.");
+    }
+    ActualizarBotonesAccionNodoActual();
   }
 
   private void RestaurarBitacoraDesdeSave(CampaignSaveData data)
@@ -5508,7 +6197,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     intTipoClima = data.tipoClima;
     RegistrarClimaExclusivoDescubierto(intTipoClima);
-    EstadoAlientoNegro = Mathf.Max(0f, data.alientoNegro);
+    EstadoAlientoNegro = Mathf.Max(0f, data.alientoNegroHoras);
     FatigaActual = data.fatiga;
     EsperanzaActual = Mathf.Clamp(data.esperanza, 0, 100);
     civilesActuales = Mathf.Max(0, data.civiles);
@@ -5710,7 +6399,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     if (sliderAlientoNegro != null)
     {
-      sliderAlientoNegro.value = Mathf.InverseLerp(0f, 20f, EstadoAlientoNegro);
+      sliderAlientoNegro.value = Mathf.InverseLerp(0f, 100f, EstadoAlientoNegro);
     }
 
     if (scAlientoNegroVFX != null)
@@ -5733,7 +6422,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public float GetDistanciaAlientoACaravana()
   {
-    return 7f - (EstadoAlientoNegro - posicionCaravana);
+    return 35f - (EstadoAlientoNegro - posicionCaravana * HorasPorPasoMapa);
   }
 
   private void RefrescarTextoDistanciaAliento(bool forzar = false)
@@ -5763,12 +6452,18 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private string ObtenerTextoDistanciaAliento(string distancia)
   {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    string distanciaFormateada = distancia;
+    if (int.TryParse(distancia, out int horasDistancia))
+    {
+      string signo = horasDistancia < 0 ? "-" : string.Empty;
+      distanciaFormateada = signo + FormatearDuracionHoras(Mathf.Abs(horasDistancia));
+    }
 
     return idioma switch
     {
-      TRADU.IdiomaIngles => "Distance: " + distancia,
-      TRADU.IdiomaPortugues => "Distância: " + distancia,
-      _ => "Distancia: " + distancia
+      TRADU.IdiomaIngles => "Distance: " + distanciaFormateada,
+      TRADU.IdiomaPortugues => "Distância: " + distanciaFormateada,
+      _ => "Distancia: " + distanciaFormateada
     };
   }
 
@@ -5784,12 +6479,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return Color.Lerp(rojo, rojoProfundo, Mathf.InverseLerp(0f, -10f, distancia));
     }
 
-    if (distancia < 3)
+    if (distancia < 15)
     {
-      return Color.Lerp(rojo, amarillo, Mathf.InverseLerp(0f, 3f, distancia));
+      return Color.Lerp(rojo, amarillo, Mathf.InverseLerp(0f, 15f, distancia));
     }
 
-    return Color.Lerp(amarillo, verde, Mathf.InverseLerp(3f, 7f, distancia));
+    return Color.Lerp(amarillo, verde, Mathf.InverseLerp(15f, 35f, distancia));
   }
 
   private void AplicarSpriteClimaDesdeEstadoActual()
@@ -6083,8 +6778,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     // Reutiliza el mismo umbral que el estado "Dentro" del tooltip (tier 3+).
-    float cercaniaAliento = -(posicionCaravana - EstadoAlientoNegro);
-    return cercaniaAliento >= 7f;
+    float cercaniaAliento = EstadoAlientoNegro - posicionCaravana * HorasPorPasoMapa;
+    return cercaniaAliento >= 35f;
   }
 
   public bool EstaDentroOpeorDelAlientoNegro()
@@ -6119,6 +6814,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     BATALLA_EnCurso = 0;
     EMBOSCADA_EnCurso = 0;
+    FinalizarSnapshotCombate();
 
     Nodo nodoActual = scMapaManager != null ? scMapaManager.nodoActual : null;
     if (nodoActual != null && nodoActual.tipoNodo == tipoCombate)
@@ -6154,6 +6850,251 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   public bool HayBatallaPendiente()
   {
     return ObtenerTipoCombatePendiente() > 0;
+  }
+
+  public void CapturarHoraCombatePendiente()
+  {
+    if (combateHoraCapturada)
+    {
+      return;
+    }
+    combateHoraCapturada = true;
+    combateNocturno = EsNocheActual();
+  }
+
+  public void CapturarHoraCombatePendiente(float hora)
+  {
+    combateHoraCapturada = true;
+    combateNocturno = EsHoraNocturna(hora);
+  }
+
+  public bool EsCombatePendienteNocturno()
+  {
+    return combateHoraCapturada ? combateNocturno : EsNocheActual();
+  }
+
+  public void FinalizarSnapshotCombate()
+  {
+    combateHoraCapturada = false;
+    combateNocturno = false;
+    if ((descansoInterrumpidoPendiente || descansoResultadosPendientes) && !continuacionDescansoGestionadaPorMenu)
+    {
+      StartCoroutine(CompletarContinuacionDescansoTrasCarga());
+    }
+  }
+
+  public void GuardarContinuacionDescanso(
+    float horasRestantes,
+    int tareaCivil,
+    bool enClaro,
+    float horaCombate,
+    Personaje purificadoraRitual,
+    int climaInicial,
+    float valorTarea,
+    int chanceExploracion,
+    int chanceEmboscada,
+    bool emboscadaPendiente,
+    float horasHastaEmboscada,
+    int tiradaEmboscada)
+  {
+    descansoInterrumpidoPendiente = true;
+    descansoResultadosPendientes = true;
+    descansoTuvoEmboscada = false;
+    descansoHorasRestantes = Mathf.Max(0f, horasRestantes);
+    descansoTareaCivil = tareaCivil;
+    descansoEnClaro = enClaro;
+    descansoHoraCombate = Mathf.Repeat(horaCombate, 24f);
+    descansoRitualElegible = purificadoraRitual != null;
+    descansoRitualPersonajeId = purificadoraRitual != null
+      ? purificadoraRitual.EnsurePersistentId()
+      : string.Empty;
+    descansoClimaInicial = climaInicial;
+    descansoValorTarea = valorTarea;
+    descansoChanceExploracion = chanceExploracion;
+    descansoChanceEmboscada = chanceEmboscada;
+    descansoEmboscadaPendiente = emboscadaPendiente;
+    descansoHorasHastaEmboscada = emboscadaPendiente ? Mathf.Max(0f, horasHastaEmboscada) : 0f;
+    descansoTiradaEmboscada = emboscadaPendiente ? tiradaEmboscada : 0;
+    continuacionDescansoGestionadaPorMenu = true;
+  }
+
+  public void ObtenerSnapshotResultadosDescanso(
+    out int climaInicial,
+    out float valorTarea,
+    out int chanceExploracion,
+    out int chanceEmboscada)
+  {
+    climaInicial = descansoClimaInicial;
+    valorTarea = descansoValorTarea;
+    chanceExploracion = descansoChanceExploracion;
+    chanceEmboscada = descansoChanceEmboscada;
+  }
+
+  public Personaje ObtenerPurificadoraRitualDescansoPendiente()
+  {
+    if (!descansoRitualElegible
+      || string.IsNullOrWhiteSpace(descansoRitualPersonajeId)
+      || scMenuPersonajes == null
+      || scMenuPersonajes.listaPersonajes == null)
+    {
+      return null;
+    }
+
+    return scMenuPersonajes.listaPersonajes.Find(personaje =>
+      personaje != null && personaje.GetPersistentId() == descansoRitualPersonajeId);
+  }
+
+  public void AvanzarProgresoDescansoPendiente(float horas)
+  {
+    float horasValidas = Mathf.Max(0f, horas);
+    descansoHorasRestantes = Mathf.Max(0f, descansoHorasRestantes - horasValidas);
+    if (descansoEmboscadaPendiente)
+    {
+      descansoHorasHastaEmboscada = Mathf.Max(0f, descansoHorasHastaEmboscada - horasValidas);
+    }
+  }
+
+  public void MarcarEmboscadaDescansoConsumida(float horaCombate)
+  {
+    descansoTuvoEmboscada = true;
+    descansoEmboscadaPendiente = false;
+    descansoHorasHastaEmboscada = 0f;
+    descansoTiradaEmboscada = 0;
+    descansoHoraCombate = Mathf.Repeat(horaCombate, 24f);
+  }
+
+  public bool DescansoTuvoEmboscadaPendienteResultados()
+  {
+    return descansoResultadosPendientes && descansoTuvoEmboscada;
+  }
+
+  public void FinalizarContinuacionDescanso()
+  {
+    descansoInterrumpidoPendiente = false;
+    descansoHorasRestantes = 0f;
+    descansoEmboscadaPendiente = false;
+    descansoHorasHastaEmboscada = 0f;
+    descansoTiradaEmboscada = 0;
+    continuacionDescansoGestionadaPorMenu = false;
+  }
+
+  public void MarcarResultadosDescansoCompletados()
+  {
+    descansoResultadosPendientes = false;
+    descansoTuvoEmboscada = false;
+    descansoRitualElegible = false;
+    descansoRitualPersonajeId = string.Empty;
+    descansoClimaInicial = 0;
+    descansoValorTarea = 0f;
+    descansoChanceExploracion = 0;
+    descansoChanceEmboscada = 0;
+    descansoTareaCivil = 0;
+    descansoEnClaro = false;
+    descansoHoraCombate = 0f;
+    descansoEmboscadaPendiente = false;
+    descansoHorasHastaEmboscada = 0f;
+    descansoTiradaEmboscada = 0;
+  }
+
+  private IEnumerator CompletarContinuacionDescansoTrasCarga()
+  {
+    continuacionDescansoGestionadaPorMenu = true;
+    yield return null;
+    int tareaCivilPendiente = descansoTareaCivil;
+    float multiplicadorAliento = descansoEnClaro ? 0.5f : 1f;
+    float multiplicadorCuracion = descansoEnClaro ? 1.1f : 1f;
+    Nodo nodoDescanso = scMapaManager != null ? scMapaManager.nodoActual : null;
+    if (nodoDescanso != null && nodoDescanso.tipoNodo == 5) multiplicadorCuracion *= 1.2f;
+    if (descansoTareaCivil == 4) multiplicadorCuracion *= 1.1f;
+    if (descansoInterrumpidoPendiente && descansoHorasRestantes > 0.0001f)
+    {
+      if (descansoEmboscadaPendiente)
+      {
+        float horasHastaEmboscada = Mathf.Min(descansoHorasRestantes, descansoHorasHastaEmboscada);
+        yield return TranscurrirDescansoPendienteTrasCarga(
+          horasHastaEmboscada,
+          multiplicadorAliento,
+          multiplicadorCuracion);
+
+        int tiradaEmboscada = descansoTiradaEmboscada;
+        int chanceEmboscada = descansoChanceEmboscada;
+        MarcarEmboscadaDescansoConsumida(ObtenerHoraActual());
+        CapturarHoraCombatePendiente(ObtenerHoraActual());
+        BATALLA_EnCurso = 11;
+        EMBOSCADA_EnCurso = 3;
+        EscribirLog(TRADU.i.Traducir("-La caravana ha sufrido un Ataque durante el descanso. Probabilidades ")
+          + chanceEmboscada
+          + TRADU.i.Traducir("% - Tirada: 1d100 = ")
+          + tiradaEmboscada);
+        TryAutosaveCampania("descanso_interrumpido_reanudado", out _);
+        scMenuBatallas.EventoBatallaCaravana(0, 3);
+
+        while (BATALLA_EnCurso > 0)
+        {
+          yield return null;
+        }
+      }
+
+      if (descansoHorasRestantes > 0.0001f)
+      {
+        yield return TranscurrirDescansoPendienteTrasCarga(
+          descansoHorasRestantes,
+          multiplicadorAliento,
+          multiplicadorCuracion);
+      }
+    }
+    FinalizarContinuacionDescanso();
+
+    MenuDescanso controladorDescanso = menuDescanso != null
+      ? menuDescanso.GetComponent<MenuDescanso>()
+      : null;
+    if (controladorDescanso == null)
+    {
+      MarcarResultadosDescansoCompletados();
+      FinalizarAccionTemporal();
+      yield break;
+    }
+
+    Task resultadosDescanso = controladorDescanso.CompletarResultadosDescansoTrasCarga(tareaCivilPendiente);
+    while (!resultadosDescanso.IsCompleted)
+    {
+      yield return null;
+    }
+
+    if (resultadosDescanso.IsFaulted)
+    {
+      Debug.LogException(resultadosDescanso.Exception, controladorDescanso);
+      FinalizarAccionTemporal();
+    }
+
+    MarcarResultadosDescansoCompletados();
+  }
+
+  private IEnumerator TranscurrirDescansoPendienteTrasCarga(
+    float horas,
+    float multiplicadorAliento,
+    float multiplicadorCuracion)
+  {
+    float restantes = Mathf.Max(0f, horas);
+    while (restantes > 0.0001f)
+    {
+      float delta = Mathf.Min(restantes, Mathf.Max(0f, Time.deltaTime));
+      if (delta <= 0f)
+      {
+        yield return null;
+        continue;
+      }
+
+      AvanzarTiempoCampania(
+        delta,
+        TipoAvanceTiempoCampania.Descanso,
+        multiplicadorAliento,
+        multiplicadorCuracion,
+        true);
+      AvanzarProgresoDescansoPendiente(delta);
+      restantes -= delta;
+      yield return null;
+    }
   }
 
   bool PuedeAcamparEnNodo(Nodo nodo)
@@ -6206,6 +7147,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return false;
     }
 
+    CapturarHoraCombatePendiente();
     menuBatallas.SetActive(true);
     return true;
   }
@@ -6228,13 +7170,16 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     int chancesemboscada = scAtributosZona.modChanceEmboscada + modEmboscadaViajeActual;
     chancesemboscada -= CuantosPersonajesHacenTalActividad(14) * 5;
     chancesemboscada += ObtenerModificadorChanceEmboscadaTraits();
-    chancesemboscada -= mejoraCaravanaAntorchas * 2;
+    if (viajeActualIncluyoNoche && antorchasEncendidas)
+    {
+      chancesemboscada += 15;
+    }
 
     if (scMenuSequito.TieneSequito(9))
     {
       chancesemboscada += 4;
     }
-    if (intTipoClima == 6)
+    if (viajeClimaInicial == 6)
     {
       chancesemboscada -= 100;
     }
@@ -6248,6 +7193,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     int chanceEmboscadaAliada = ReducirFrecuenciaEmboscada(Mathf.Max(0, 51 - chanceEmboscadaNormalizada));
     chanceEmboscadaEnemiga = AjustarChanceEmboscadaEnemigaPresagios(chanceEmboscadaEnemiga);
     chanceEmboscadaAliada = AjustarChanceEmboscadaAliadaPresagios(chanceEmboscadaAliada);
+    if (viajeClimaInicial == 5)
+    {
+      chanceEmboscadaEnemiga = Mathf.Max(0, chanceEmboscadaEnemiga - 20);
+      chanceEmboscadaAliada = Mathf.Max(0, chanceEmboscadaAliada - 20);
+    }
     bool emboscadaEnemiga = randomEmboscada <= chanceEmboscadaEnemiga;
     bool emboscadaAliada = !emboscadaEnemiga && chanceEmboscadaAliada > 0 && randomEmboscada > 100 - chanceEmboscadaAliada;
 
@@ -6427,17 +7377,25 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     bool viajeAtajoSuperficie = conexion.EsAtajoSuperficie;
     ActivarLog(0);
 
+    float duracionViajePrevista = CalcularDuracionViajeHoras(conexion);
+    viajeActualIncluyoNoche = IntervaloContieneNoche(ObtenerHoraActual(), duracionViajePrevista);
+    viajeClimaInicial = intTipoClima;
+
     EfectosViajeCaravana efectosViajeCaravana = estadosCaravana != null
       ? estadosCaravana.IniciarViajeActual()
       : default;
 
-    bool sePrevieneAvanceAliento = false;
+    creditoPrevencionAlientoHoras = 0f;
+    horasViajeActual = 0f;
     BATALLA_EnCurso = 0;
     EMBOSCADA_EnCurso = 0;
     emboscadaViajeCalculada = false;
     logEmboscadaViajePendiente = null;
     nodoDestinoActual = destino;
-    sunController.OnTravelStart(); // duración en segundos
+    if (sunController != null)
+    {
+      sunController.OnTravelStart(); // Amanecer, día, atardecer y noche durante el viaje.
+    }
     animCaravana.SetBool("IsWalking", true);
     multiplicadorVelocidadVisualViajeActual = efectosViajeCaravana.multiplicadorVelocidadVisual <= 0f
       ? 1f
@@ -6457,72 +7415,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     int random2 = UnityEngine.Random.Range(0, 100);
     if (scMenuSequito.TieneSequito(10) && random2 < 21) //Clérigos !!! 21
     {
-      sePrevieneAvanceAliento = true;
-      EscribirLog(TRADU.i.Traducir("-Los rezos constantes del Séquito de Clérigos han logrado frenar el avance del Aliento Negro."));
+      PrepararPrevencionAlientoAccion(HorasPorPasoMapa);
+      EscribirLog(TRADU.i.Traducir("-Los rezos constantes del Séquito de Clérigos previenen 5 h de Aliento Negro."));
 
-    }
-
-    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
-    {
-      if (pers == null || pers.Camp_Muerto)
-      {
-        continue;
-      }
-
-      pers.SumarDiasViajado();
-    }
-
-    estadisticaDiasViajados++;
-
-    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
-    {
-      if (pers == null || pers.Camp_Muerto)
-      {
-        continue;
-      }
-
-      int random = UnityEngine.Random.Range(0, 100);
-      if (pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == 10 && random < 15 && !sePrevieneAvanceAliento) //Ritual de Limpieza
-      {
-        sePrevieneAvanceAliento = true;
-        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha realizado con Éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro."));
-        break;
-      }
-
-      //Aca solamente va esa actividad! las demas van mas abajo
-    }
-
-    if (efectosViajeCaravana.previeneAvanceAliento)
-    {
-      sePrevieneAvanceAliento = true;
-      EscribirLog(TRADU.i.Traducir("-La Presteza de la Caravana ha evitado el avance del Aliento Negro durante el viaje."));
-    }
-
-    int avanceAlientoViaje = DebeUsarConfiguracionTutorial()
-      ? Mathf.Min(conexion.costoMovimiento, 1)
-      : conexion.costoMovimiento;
-
-    if (!sePrevieneAvanceAliento)
-    {
-      CambiarValorAlientoNegro(avanceAlientoViaje); //Avance Aliento Negro por día, si no es prevenido por Purificadora o Clérigos
-    }
-
-
-    numeroTurno++;
-    if (logDeCampania != null)
-    {
-      logDeCampania.RegistrarInicioDia(
-        numeroTurno,
-        GetEsperanzaActual(),
-        GetOroActuales(),
-        GetMaterialesActuales(),
-        GetSuministrosActuales(),
-        intTipoClima);
-    }
-    ActualizarTextoDia();
-    if (avanceAlientoViaje > 1 && !sePrevieneAvanceAliento)
-    {
-      EscribirLog(TRADU.i.Traducir("-El viaje por el camino sinuoso ha retrasado la caravana. +") + (conexion.costoMovimiento - 1) + TRADU.i.Traducir(" Avance del Aliento Negro"));
     }
 
     //Si nieva, viajar desgasta la esperanza de la caravana.
@@ -6531,12 +7426,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       int perdidaEsperanzaNieve = 3 * Mathf.Max(1, conexion.costoMovimiento);
       CambiarEsperanzaActual(-perdidaEsperanzaNieve);
       EscribirLog(ObtenerTextoLogViajeNieve(perdidaEsperanzaNieve));
-    }
-
-    if (efectosViajeCaravana.avanceAlientoExtra > 0)
-    {
-      EscribirLog(TRADU.i.Traducir("-La Caravana se mueve con Aletargamiento. +1 Avance del Aliento Negro."));
-      CambiarValorAlientoNegro(efectosViajeCaravana.avanceAlientoExtra);
     }
 
     if (intTipoClima == 6)
@@ -6582,11 +7471,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     AplicarTraitsMoraleAmbientales();
 
-    if (sequitoHerrerosMantArmaduras > 0) { sequitoHerrerosMantArmaduras--; }
-    if (sequitoHerrerosMantArmas > 0) { sequitoHerrerosMantArmas--; }
-
-    EfectosdeActividades(1f, true);
-    EfectosdeSequitos();
     RefrescarBarraPersonajesCampania(true);
     ActualizarBotonesAccionNodoActual();
   }
@@ -6761,7 +7645,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       estadosCaravana.FinalizarViajeActual();
     }
     
-    if (scTutorialManager.pasoActual == 18) { scTutorialManager.SiguientePaso(); CambiarValorAlientoNegro(2); }
+    if (scTutorialManager.pasoActual == 18) { scTutorialManager.SiguientePaso(); CambiarValorAlientoNegroHoras(10f); }
     if (scTutorialManager.pasoActual == 31) { scTutorialManager.SiguientePaso();  }
 
 
@@ -6959,7 +7843,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
 
       goUISantuario.SetActive(true);
-      txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>");
+      txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 96 h.</i>");
 
       CambiarEsperanzaActual(10);
       EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza."));
@@ -7339,10 +8223,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       pers.ResetearEstadoTraitsCombate();
       pers.SetCampFatigado(false);
-      pers.SetCampBendecido(0);
+      pers.LimpiarBendecido();
       pers.Camp_Herido = false;
-      pers.Camp_Enfermo = 0;
-      pers.Camp_Moral = 0;
+      pers.LimpiarEnfermo();
+      pers.LimpiarMoral();
       pers.Camp_Avergonzado = false;
 
       if (pers.Camp_Muerto)
@@ -7666,8 +8550,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     CambiarOroActual(-200);
-    CambiarValorAlientoNegro(-3);
-    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se ha gastado 200 de oro."));
+    CambiarValorAlientoNegroHoras(-15f);
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han gastado 200 de oro."));
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -7699,8 +8583,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     CambiarBueyesActuales(-3);
-    CambiarValorAlientoNegro(-3);
-    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se han sacrificado 3 bueyes."));
+    CambiarValorAlientoNegroHoras(-15f);
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han sacrificado 3 bueyes."));
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -7722,7 +8606,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   }
   #endregion
 
-  public void BendecirPersonajesSantuario(int dias)
+  public void BendecirPersonajesSantuario(float horas)
   {
     if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
     {
@@ -7736,7 +8620,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         continue;
       }
 
-      personaje.AgregarCampBendecido(dias);
+      personaje.AplicarBendecidoHoras(horas);
     }
   }
 
@@ -8067,7 +8951,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (personaje.itemArmadura != null) total += personaje.itemArmadura.buffTSMental;
     if (personaje.Accesorio1 != null) total += personaje.Accesorio1.buffTSMental;
     if (personaje.Accesorio2 != null) total += personaje.Accesorio2.buffTSMental;
-    if (personaje.TieneCampBendecido()) total += 3;
+    if (personaje.EstaBendecido()) total += 3;
 
     return total;
   }
@@ -8121,7 +9005,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       if (actividadAnterior != idActividad
         && personaje.TieneRasgo(PersonajeTraitCatalog.TraitDesganado))
       {
-        personaje.Camp_Moral = Mathf.Min(personaje.Camp_Moral, -2);
+        personaje.AplicarMoralBajaHoras(48f);
       }
     }
 
@@ -8358,7 +9242,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       if (pers.TieneRasgo(PersonajeTraitCatalog.TraitFeInquebrantable))
       {
-        pers.Camp_Moral = Mathf.Max(pers.Camp_Moral, 4);
+        pers.AplicarMoralAltaHoras(96f);
         string mensajeFe = idiomaTrait switch
         {
           TRADU.IdiomaIngles => pers.sNombre + " is uplifted by the Sanctuary. Gains High Morale for 4 days.",
@@ -8370,7 +9254,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       if (pers.TieneRasgo(PersonajeTraitCatalog.TraitPagano))
       {
-        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -3);
+        pers.AplicarMoralBajaHoras(72f);
         string mensajePagano = idiomaTrait switch
         {
           TRADU.IdiomaIngles => pers.sNombre + " rejects the Sanctuary. Gains Low Morale for 3 days.",
@@ -8417,7 +9301,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       if (pers.TieneRasgo(PersonajeTraitCatalog.TraitAventurero))
       {
-        pers.Camp_Moral = Mathf.Max(pers.Camp_Moral, 4);
+        pers.AplicarMoralAltaHoras(96f);
         string mensajeAventurero = idiomaTrait switch
         {
           TRADU.IdiomaIngles => pers.sNombre + " embraces the new region. Gains High Morale for 4 days.",
@@ -8429,7 +9313,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       if (pers.TieneRasgo(PersonajeTraitCatalog.TraitArrastrado))
       {
-        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -3);
+        pers.AplicarMoralBajaHoras(72f);
         string mensajeArrastrado = idiomaTrait switch
         {
           TRADU.IdiomaIngles => pers.sNombre + " dreads the new region. Gains Low Morale for 3 days.",
@@ -8441,7 +9325,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       if (TieneTraitDetestaZonaActual(pers))
       {
-        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -6);
+        pers.AplicarMoralBajaHoras(144f);
         string mensajeDetesta = idiomaTrait switch
         {
           TRADU.IdiomaIngles => pers.sNombre + " dreads " + nombreZona + ". Gains Low Morale for 6 days.",
@@ -8508,7 +9392,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       if (pers.TieneRasgo(PersonajeTraitCatalog.TraitHermitano))
       {
-        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -2);
+        pers.AplicarMoralBajaHoras(48f);
         string mensajeHermitano = idiomaTrait switch
         {
           TRADU.IdiomaIngles => pers.sNombre + " withdraws from settlement life. Gains Low Morale for 2 days.",
@@ -8520,7 +9404,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       if (pers.TieneRasgo(PersonajeTraitCatalog.TraitCitadino))
       {
-        pers.Camp_Moral = Mathf.Max(pers.Camp_Moral, 3);
+        pers.AplicarMoralAltaHoras(72f);
         string mensajeCitadino = idiomaTrait switch
         {
           TRADU.IdiomaIngles => pers.sNombre + " thrives in the settlement. Gains High Morale for 3 days.",
@@ -8764,7 +9648,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           continue;
         }
 
-        aliado.Camp_Moral = Mathf.Min(aliado.Camp_Moral, -4);
+        aliado.AplicarMoralBajaHoras(96f);
       }
     }
 
@@ -8807,7 +9691,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return;
     }
 
-    pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -3);
+    pers.AplicarMoralBajaHoras(72f);
     string mensajeSinOro = idiomaTrait switch
     {
       TRADU.IdiomaIngles => pers.sNombre + " cannot be paid. Gains Low Morale for 3 days.",
@@ -8927,12 +9811,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       if (climaHostil && pers.TieneRasgo(PersonajeTraitCatalog.TraitOdiaLaLluvia))
       {
-        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -1);
+        pers.AplicarMoralBajaHoras(24f);
       }
 
       if (alientoIntenso && pers.TieneRasgo(PersonajeTraitCatalog.TraitAlmaDebil))
       {
-        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -1);
+        pers.AplicarMoralBajaHoras(24f);
       }
     }
   }
@@ -9020,53 +9904,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return true;
   }
 
-  private void ActualizarEstadoPersonajesTrasPasoDeDia()
-  {
-    if (scMenuPersonajes == null || scMenuPersonajes.listaPersonajes == null)
-    {
-      return;
-    }
-
-    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
-    {
-      if (pers == null || pers.Camp_Muerto)
-      {
-        continue;
-      }
-
-      if (pers.Camp_Enfermo > 0)
-      {
-        pers.Camp_Enfermo -= 1;
-      }
-
-      if (pers.Camp_Moral > 0)
-      {
-        pers.Camp_Moral -= 1;
-      }
-      else if (pers.Camp_Moral < 0)
-      {
-        pers.Camp_Moral += 1;
-      }
-    }
-  }
-
-  public void ProcesarPasoDeDiaEnAsentamiento(float multiplicadorCuracionDescanso = 1.1f, bool aplicarActividades = true, bool aplicarEfectosSequitos = true)
-  {
-    ActualizarEstadoPersonajesTrasPasoDeDia();
-
-    if (aplicarActividades)
-    {
-      EfectosdeActividades(multiplicadorCuracionDescanso);
-    }
-
-    if (aplicarEfectosSequitos)
-    {
-      EfectosdeSequitos();
-    }
-
-    RefrescarBarraPersonajesCampania(true);
-  }
-
   void EfectosdeSequitos()
   {
 
@@ -9089,136 +9926,298 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
   }
-  void EfectosdeActividades(float multiplicadorCuracionDescanso = 1f, bool esViaje = false)
+  private float ObtenerProgresoViajeActual()
   {
-
-    foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
+    Nodo origen = scMapaManager != null ? scMapaManager.nodoActual : null;
+    CaminoConexion conexion = origen != null && nodoDestinoActual != null
+      ? origen.ObtenerConexionHacia(nodoDestinoActual)
+      : null;
+    LineRenderer linea = conexion != null && conexion.linea != null
+      ? conexion.linea.GetComponent<LineRenderer>()
+      : null;
+    if (linea == null || linea.positionCount < 2 || scMapaManager == null || scMapaManager.goCaravana == null)
     {
-      if (pers == null || pers.Camp_Muerto)
-      {
-        continue;
-      }
-
-      if (pers.ActividadSeleccionada == 1) //Descanso
-      {
-
-        float cantPurificadorasColaborando = CuantosPersonajesHacenTalActividad(12); //Colaborar con los Curanderos
-
-        float cantHerboristasVecesClaro = 0;
-        if (scMenuSequito.TieneSequito(5)) //Herboristas
-        {
-          cantHerboristasVecesClaro = 0.03f + 0.03f * scSequitoHerboristas.vecesEnClaro; //3+3% por cada Claro visitado
-        }
-
-
-        float bonusPlantasCurativas = esViaje ? ObtenerBonusCuracionPasivaViajePresagios() : 0f;
-        float curacionFinalSequito = sequitoCuranderosMejoraCuracion + (cantPurificadorasColaborando * 0.05f) + cantHerboristasVecesClaro + bonusPlantasCurativas; //5% por cada Purificadora colaborando
-
-        float porcentajeVidaMax = pers.fVidaMaxima * curacionFinalSequito * Mathf.Max(0f, multiplicadorCuracionDescanso);
-        porcentajeVidaMax = pers.AplicarMultiplicadorCuracionCampaniaTraits(porcentajeVidaMax);
-        pers.RecibirCuracion(porcentajeVidaMax);
-
-      }
-
-      if (!pers.PuedeRealizarActividades())
-      {
-        continue;
-      }
-
-      if (!EsActividadPermitidaPorClimaCampania(pers.ActividadSeleccionada))
-      {
-        continue;
-      }
-   
-   
-      if (pers.ActividadSeleccionada == 2) //Entrenar
-      {
-        int exp = 20;
-        if (scMenuSequito.TieneSequito(6)) //Desertores
-        {
-          exp += 10;
-        }
-        pers.RecibirExperiencia(exp);
-
-        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" gana ") + exp + TRADU.i.Traducir(" Experiencia por su Actividad de <b>Entrenamiento</b>."));
-
-      }
-      if (pers.ActividadSeleccionada == 4) //Caballero: Relatos de Batalla
-      {
-
-        foreach (Personaje pers2 in scMenuPersonajes.listaPersonajes)
-        {
-          if (pers2.fNivelActual < pers.fNivelActual)
-          {
-            pers2.RecibirExperiencia(10);
-          }
-        }
-
-
-        EscribirLog($"-" + pers.sNombre + TRADU.i.Traducir(" brinda 10 Experiencia a sus compañeros de menor nivel por su Actividad de <b>Relatos de Batalla</b>."));
-
-      }
-      if (pers.ActividadSeleccionada == 7) //Explorador: Caza Nocturna
-      {
-        int rand = UnityEngine.Random.Range(1, 5);
-        CambiarSuministrosActuales(rand);
-        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" consigue ") + rand + TRADU.i.Traducir(" suministros por su Actividad de <b>Caza Nocturna</b>."));
-      }
-      if (pers.ActividadSeleccionada == 11) //Purificadora: Ayudar a los Desamparados
-      {
-        int rand = UnityEngine.Random.Range(1, 4);
-        CambiarEsperanzaActual(rand);
-        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" realiza su actividad <b>Ayudar a los Desamparados</b> y la esperanza aumenta en ") + rand + ".");
-      }
-      if (pers.ActividadSeleccionada == 15) //Acechador: Coerción
-      {
-        int rand = UnityEngine.Random.Range(1, 10);
-        CambiarEsperanzaActual(-1);
-        CambiarOroActual(rand);
-        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" obtiene ") + rand + TRADU.i.Traducir(" de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -1 Esperanza"));
-      }
-      if (pers.ActividadSeleccionada == 18) //Canalizador: Simbolo de Proteccion Arcano
-      {
-
-        GameObject consumible = Instantiate(scContprefab.SimboloProtArcano.gameObject);
-        scMenuPersonajes.scEquipo.listInventario.Add(consumible);
-        RuntimeAnalytics.TrackItemAcquired(consumible.GetComponent<Item>(), "character_activity");
-        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha creado un Símbolo de Protección Arcano."));
-
-      }
-      if (pers.ActividadSeleccionada == 20) //Duelista: Socializar
-      {
-        const int dificultad = 16;
-        List<string> beneficiados = new List<string>();
-
-        foreach (Personaje pers2 in scMenuPersonajes.listaPersonajes)
-        {
-          if (pers2 == null || pers2 == pers || pers2.Camp_Muerto)
-          {
-            continue;
-          }
-
-          int tsMental = ObtenerTSMentalTotalCampania(pers2);
-          int tirada = UnityEngine.Random.Range(1, 21);
-          int resultado = tirada + tsMental;
-
-          if (resultado >= dificultad)
-          {
-            // Se fija en 2 para que al llegar al próximo nodo siga quedando 1 día visible.
-            pers2.Camp_Moral = Mathf.Max(pers2.Camp_Moral, 2);
-            beneficiados.Add(pers2.sNombre);
-          }
-        }
-
-        string resumenBeneficiados = beneficiados.Count > 0
-          ? string.Join(", ", beneficiados)
-          : TRADU.i.Traducir("nadie");
-
-        EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" socializa con la caravana. Beneficiados: ") + resumenBeneficiados + ".");
-      }
+      return 0f;
     }
 
-    EvaluarTooltipPersonajeDescansando();
+    Vector3 posicion = scMapaManager.goCaravana.transform.position;
+    posicion.y = 0f;
+    float longitudTotal = 0f;
+    float mejorDistancia = 0f;
+    float mejorError = float.PositiveInfinity;
+    Vector3 anterior = linea.useWorldSpace ? linea.GetPosition(0) : linea.transform.TransformPoint(linea.GetPosition(0));
+    anterior.y = 0f;
+
+    for (int i = 1; i < linea.positionCount; i++)
+    {
+      Vector3 actual = linea.useWorldSpace ? linea.GetPosition(i) : linea.transform.TransformPoint(linea.GetPosition(i));
+      actual.y = 0f;
+      Vector3 segmento = actual - anterior;
+      float longitudSegmento = segmento.magnitude;
+      if (longitudSegmento > 0.0001f)
+      {
+        float t = Mathf.Clamp01(Vector3.Dot(posicion - anterior, segmento) / (longitudSegmento * longitudSegmento));
+        float error = (posicion - (anterior + segmento * t)).sqrMagnitude;
+        if (error < mejorError)
+        {
+          mejorError = error;
+          mejorDistancia = longitudTotal + longitudSegmento * t;
+        }
+      }
+      longitudTotal += longitudSegmento;
+      anterior = actual;
+    }
+
+    return longitudTotal > 0.0001f ? Mathf.Clamp01(mejorDistancia / longitudTotal) : 0f;
+  }
+
+  public float CalcularLongitudRealCamino(CaminoConexion conexion)
+  {
+    LineRenderer linea = conexion != null && conexion.linea != null
+      ? conexion.linea.GetComponent<LineRenderer>()
+      : null;
+    if (linea == null || linea.positionCount < 2)
+    {
+      return scMapaManager != null ? scMapaManager.ObtenerPasoMapa() : 1f;
+    }
+
+    float longitud = 0f;
+    Vector3 anterior = linea.useWorldSpace ? linea.GetPosition(0) : linea.transform.TransformPoint(linea.GetPosition(0));
+    for (int i = 1; i < linea.positionCount; i++)
+    {
+      Vector3 actual = linea.useWorldSpace ? linea.GetPosition(i) : linea.transform.TransformPoint(linea.GetPosition(i));
+      longitud += Vector3.Distance(anterior, actual);
+      anterior = actual;
+    }
+    return Mathf.Max(0.001f, longitud);
+  }
+
+  public float ObtenerVelocidadViajeUnidadesPorHora(CaminoConexion conexion, float hora, bool usarEstadoPendiente)
+  {
+    float pasoMapa = scMapaManager != null ? Mathf.Max(0.001f, scMapaManager.ObtenerPasoMapa()) : 1f;
+    float velocidad = pasoMapa / HorasPorPasoMapa;
+    float multiplicadorFatiga = Mathf.Max(0.60f, 1f - GetFatigaActual() * (0.07f / 1.35f));
+    velocidad *= multiplicadorFatiga;
+    if (conexion != null && conexion.tipo == TipoCaminoCampania.Dificil)
+    {
+      velocidad *= 0.90f;
+    }
+
+    float multiplicadorEstado = usarEstadoPendiente
+      ? (estadosCaravana != null ? estadosCaravana.ObtenerMultiplicadorVelocidadViajePendiente() : 1f)
+      : Mathf.Max(0.01f, multiplicadorVelocidadVisualViajeActual);
+    velocidad *= multiplicadorEstado;
+
+    if (intTipoClima == 4)
+    {
+      velocidad *= 0.85f;
+    }
+    if (EsHoraNocturna(hora) && !antorchasEncendidas)
+    {
+      velocidad *= 0.85f;
+    }
+    return Mathf.Max(0.001f, velocidad);
+  }
+
+  public float CalcularDuracionViajeHoras(CaminoConexion conexion)
+  {
+    float restante = CalcularLongitudRealCamino(conexion);
+    float hora = ObtenerHoraActual();
+    float duracion = 0f;
+    const float pasoIntegracion = 1f / 60f;
+    while (restante > 0.0001f && duracion < 240f)
+    {
+      float velocidad = ObtenerVelocidadViajeUnidadesPorHora(conexion, hora + duracion, true);
+      float delta = Mathf.Min(pasoIntegracion, restante / velocidad);
+      restante -= velocidad * delta;
+      duracion += delta;
+    }
+    return Mathf.Max(0.01f, duracion);
+  }
+
+  public string ObtenerTextoDuracionViaje(CaminoConexion conexion)
+  {
+    float duracion = CalcularDuracionViajeHoras(conexion);
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    bool cruzaAmanecer = horasTotales + duracion >= ObtenerSiguienteHoraAbsoluta(horasTotales, HoraFinNoche) - 0.0001d;
+    string marcaEstimacion = cruzaAmanecer
+      ? idioma switch
+      {
+        TRADU.IdiomaIngles => " (estimated)",
+        TRADU.IdiomaPortugues => " (estimada)",
+        _ => " (estimada)"
+      }
+      : string.Empty;
+    string texto = idioma switch
+    {
+      TRADU.IdiomaIngles => "Travel Time: " + FormatearDuracionHoras(duracion, true) + marcaEstimacion,
+      TRADU.IdiomaPortugues => "Duração: " + FormatearDuracionHoras(duracion, true) + marcaEstimacion,
+      _ => "Duración: " + FormatearDuracionHoras(duracion, true) + marcaEstimacion
+    };
+    return "<size=95%><color=#C8C8C8>" + texto + "</color></size>";
+  }
+
+  private bool IntervaloContieneNoche(float horaInicial, float duracion)
+  {
+    if (duracion <= 0f)
+    {
+      return EsHoraNocturna(horaInicial);
+    }
+    if (duracion >= 15f)
+    {
+      return true;
+    }
+    const float paso = 0.25f;
+    for (float t = 0f; t <= duracion; t += paso)
+    {
+      if (EsHoraNocturna(horaInicial + t))
+      {
+        return true;
+      }
+    }
+    return EsHoraNocturna(horaInicial + duracion);
+  }
+
+  public bool AccionIncluyeNoche(float duracionHoras)
+  {
+    return IntervaloContieneNoche(ObtenerHoraActual(), Mathf.Max(0f, duracionHoras));
+  }
+
+  public void AvanzarTiempoDuranteViaje(float horas)
+  {
+    if (EsNocheActual() || EsHoraNocturna(ObtenerHoraActual() + horas))
+    {
+      viajeActualIncluyoNoche = true;
+    }
+    horasViajeActual += Mathf.Max(0f, horas);
+    AvanzarTiempoCampania(horas, TipoAvanceTiempoCampania.Viaje);
+  }
+
+  public void RegistrarFinViaje(float horas)
+  {
+    float horasValidas = Mathf.Max(Mathf.Max(0f, horas), horasViajeActual);
+    horasViajeActual = 0f;
+    estadisticaHorasViajadas += horasValidas;
+    foreach (Personaje personaje in scMenuPersonajes.listaPersonajes)
+    {
+      if (personaje == null || personaje.Camp_Muerto)
+      {
+        continue;
+      }
+      personaje.HorasViajadas += horasValidas;
+    }
+
+    float progreso = horasValidas;
+    if (SeLlevaDemasiadaCarga())
+    {
+      progreso *= 2f;
+    }
+    progresoFatigaHoras += progreso;
+    int fatigaGanada = Mathf.FloorToInt(progresoFatigaHoras / HorasPorPasoMapa);
+    if (fatigaGanada > 0)
+    {
+      progresoFatigaHoras -= fatigaGanada * HorasPorPasoMapa;
+      CambiarFatigaActual(fatigaGanada);
+    }
+    FinalizarAccionTemporal();
+  }
+
+  public static bool ActividadTieneResultadoCada24Horas(int actividadId)
+  {
+    return actividadId == 2
+      || actividadId == 4
+      || actividadId == 7
+      || actividadId == 10
+      || actividadId == 11
+      || actividadId == 15
+      || actividadId == 18
+      || actividadId == 20;
+  }
+
+  private void ResolverCicloActividad(Personaje pers)
+  {
+    if (pers == null || pers.Camp_Muerto || !pers.PuedeRealizarActividades()
+      || !EsActividadPermitidaPorClimaCampania(pers.ActividadSeleccionada))
+    {
+      return;
+    }
+
+    if (pers.ActividadSeleccionada == 2)
+    {
+      int exp = scMenuSequito.TieneSequito(6) ? 30 : 20;
+      pers.RecibirExperiencia(exp);
+      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" gana ") + exp + TRADU.i.Traducir(" Experiencia por su Actividad de <b>Entrenamiento</b>."));
+    }
+    else if (pers.ActividadSeleccionada == 4)
+    {
+      foreach (Personaje pers2 in scMenuPersonajes.listaPersonajes)
+      {
+        if (pers2 != null && pers2.fNivelActual < pers.fNivelActual)
+        {
+          pers2.RecibirExperiencia(10);
+        }
+      }
+      CambiarEsperanzaActual(4);
+      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" brinda 10 Experiencia a sus compañeros de menor nivel por su Actividad de <b>Relatos de Batalla</b>."));
+      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" comparte sus historias de batalla con los civiles. +4 Esperanza"));
+    }
+    else if (pers.ActividadSeleccionada == 7)
+    {
+      int cantidad = UnityEngine.Random.Range(1, 5);
+      CambiarSuministrosActuales(cantidad);
+      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" consigue ") + cantidad + TRADU.i.Traducir(" suministros por su Actividad de <b>Caza Nocturna</b>."));
+    }
+    else if (pers.ActividadSeleccionada == 10)
+    {
+      CambiarValorAlientoNegroHoras(-4f);
+      string mensajeRitual = TRADU.i.nIdioma switch
+      {
+        TRADU.IdiomaIngles => ", after a full day of rites and prayers, weakens the march of corruption. The Black Breath recedes by 4 h.",
+        TRADU.IdiomaPortugues => ", após um dia inteiro de ritos e orações, enfraquece o avanço da corrupção. O Sopro Negro recua 4 h.",
+        _ => ", tras una jornada de ritos y oraciones, debilita la marcha de la corrupción. El Aliento Negro retrocede 4 h."
+      };
+      EscribirLog("-" + pers.sNombre + mensajeRitual);
+    }
+    else if (pers.ActividadSeleccionada == 11)
+    {
+      int cantidad = UnityEngine.Random.Range(1, 4);
+      CambiarEsperanzaActual(cantidad);
+      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" realiza su actividad <b>Ayudar a los Desamparados</b> y la esperanza aumenta en ") + cantidad + ".");
+    }
+    else if (pers.ActividadSeleccionada == 15)
+    {
+      int cantidad = UnityEngine.Random.Range(1, 10);
+      CambiarEsperanzaActual(-1);
+      CambiarOroActual(cantidad);
+      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" obtiene ") + cantidad + TRADU.i.Traducir(" de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -1 Esperanza"));
+    }
+    else if (pers.ActividadSeleccionada == 18)
+    {
+      GameObject consumible = Instantiate(scContprefab.SimboloProtArcano.gameObject);
+      scMenuPersonajes.scEquipo.listInventario.Add(consumible);
+      RuntimeAnalytics.TrackItemAcquired(consumible.GetComponent<Item>(), "character_activity");
+      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha creado un Símbolo de Protección Arcano."));
+    }
+    else if (pers.ActividadSeleccionada == 20)
+    {
+      const int dificultad = 16;
+      List<string> beneficiados = new List<string>();
+      foreach (Personaje pers2 in scMenuPersonajes.listaPersonajes)
+      {
+        if (pers2 == null || pers2 == pers || pers2.Camp_Muerto)
+        {
+          continue;
+        }
+        int resultado = UnityEngine.Random.Range(1, 21) + ObtenerTSMentalTotalCampania(pers2);
+        if (resultado >= dificultad)
+        {
+          pers2.AplicarMoralAltaHoras(48f);
+          beneficiados.Add(pers2.sNombre);
+        }
+      }
+      string resumenBeneficiados = beneficiados.Count > 0 ? string.Join(", ", beneficiados) : TRADU.i.Traducir("nadie");
+      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" socializa con la caravana. Beneficiados: ") + resumenBeneficiados + ".");
+    }
   }
 
   public int ExploracionSumadaPorActividades()
@@ -9285,7 +10284,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
   }
-  private float EstadoAlientoNegro; //Va de 1 a 20, arranca en 3. Tier I 0-5 - Tier II 6-10 - Tier III 11-15 - Tier IV 16-20
+  private float EstadoAlientoNegro; //Horas acumuladas del Aliento Negro.
   private float TierAlientoNegro; //
   public float GetValorAlientoNegro()
   {
@@ -9298,37 +10297,39 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     return TierAlientoNegro;
   }
-  public void CambiarValorAlientoNegro(int aliento)
+  public void CambiarValorAlientoNegroHoras(float horas)
   {
-    if (scAtributosZona.ID == 3) { return; }  //Nedukazal no tiene Aliento Negro 
+    if (Mathf.Approximately(horas, 0f) || (scAtributosZona != null && scAtributosZona.ID == 3))
+    {
+      return;
+    }
 
-
-    EstadoAlientoNegro += aliento;
-
-    if (EstadoAlientoNegro < 0) { EstadoAlientoNegro = 0; }
-
+    EstadoAlientoNegro = Mathf.Max(0f, EstadoAlientoNegro + horas);
     ActualizarTierAlientoNegro();
+    RefrescarTextoDistanciaAliento();
+    if (Mathf.Abs(horas) >= HorasPorPasoMapa)
+    {
+      AvanzarAlientoNegro(Mathf.RoundToInt(horas / HorasPorPasoMapa));
+    }
 
-    AvanzarAlientoNegro(aliento);
-
-    if (EstadoAlientoNegro > 16 && scMenuSequito.TieneSequito(10)) //Sequito de Clérigos
+    if (GetDistanciaAlientoACaravana() < 0f && scMenuSequito != null && scMenuSequito.TieneSequito(10))
     {
       scMenuSequito.RemoverSequito(10);
       EscribirLog(TRADU.i.Traducir("-El Séquito de Clérigos ha perecido, ya que el Aliento Negro ha alcanzado un nivel crítico. -20 Esperanza"));
     }
-
-    
-
   }
 
   public void ResetearAlientoNegro()
   { 
-    EstadoAlientoNegro = 3;
+    EstadoAlientoNegro = 15f;
     ActualizarTierAlientoNegro();
   }
   public void AvanzarAlientoNegro(int n)
   {
-    scAlientoNegroVFX.AvanzarAlientoNegro(n);
+    if (scAlientoNegroVFX != null)
+    {
+      scAlientoNegroVFX.AvanzarAlientoNegro(n);
+    }
 
   }
 
@@ -9404,30 +10405,28 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   void ActualizarTierAlientoNegro()
   {
-    Image handleSliderCalavera = sliderAlientoNegro.gameObject.transform.GetChild(2).GetChild(0).gameObject.GetComponent<Image>();
+    float cercaniaAliento = EstadoAlientoNegro - posicionCaravana * HorasPorPasoMapa;
 
-    float cercaniaAliento = -(posicionCaravana - EstadoAlientoNegro);
-
-    if (cercaniaAliento < 4)
+    if (cercaniaAliento < 20f)
     {
       TierAlientoNegro = 1;
 
       //  handleSliderCalavera.color = new Color(0.15f, 0.15f, 0.15f);
 
     }
-    else if (cercaniaAliento < 7)
+    else if (cercaniaAliento < 35f)
     {
       TierAlientoNegro = 2;
 
       //  handleSliderCalavera.color = new Color(0.15f, 0.12f, 0.12f);
     }
-    else if (cercaniaAliento < 10)
+    else if (cercaniaAliento < 50f)
     {
       TierAlientoNegro = 3;
 
       //  handleSliderCalavera.color = new Color(0.18f, 0.3f, 0.3f);
     }
-    else if (cercaniaAliento >= 10)
+    else
     {
       TierAlientoNegro = 4;
 
@@ -9594,7 +10593,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public int ObtenerEstadisticaDiasViajados()
   {
-    return estadisticaDiasViajados;
+    return Mathf.FloorToInt(Mathf.Max(0f, estadisticaHorasViajadas) / 24f);
+  }
+
+  public float ObtenerEstadisticaHorasViajadas()
+  {
+    return estadisticaHorasViajadas;
   }
 
   public int ObtenerEstadisticaBatallasLibradas()
@@ -10238,6 +11242,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   public GameObject tooltipGOFatiga;
   public GameObject tooltipGOMecanicaZona;
   public GameObject tooltipGOPresagios;
+  public GameObject tooltipGOAntorcha;
 
 
   public void TooltipRecursoEntrar(int n)
@@ -10403,6 +11408,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           : PresagioCatalog.ObtenerTextoSinPresagios();
       }
     }
+    else if (n == 10) //tooltipantorcha
+    {
+      tooltipGOAntorcha.SetActive(true);
+    }
 
 
 
@@ -10418,6 +11427,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     tooltipGOOro.SetActive(false);
     tooltipGOFatiga.SetActive(false);
     tooltipGOMecanicaZona.SetActive(false);
+    tooltipGOAntorcha.SetActive(false);
+
     if (tooltipGOPresagios != null)
     {
       tooltipGOPresagios.SetActive(false);
@@ -10493,21 +11504,38 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       if (intTipoClima == 4)
       {
-        textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + ":\n" + TRADU.i.Traducir("Nieve: solo permite Descansar o Guardia. -15% Recolecciones, -20% Emboscada. Viajar da -3 Esperanza por día.");
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+        string descripcionNieve = idioma switch
+        {
+          TRADU.IdiomaIngles => "Snow: only Rest or Guard activities are allowed. -15% Gatherings, -20% Ambush, -15% travel speed. Traveling costs -3 Hope per map section.",
+          TRADU.IdiomaPortugues => "Neve: permite apenas Descansar ou Guarda. -15% Coletas, -20% Emboscada, -15% velocidade de viagem. Viajar custa -3 Esperança por trecho do mapa.",
+          _ => "Nieve: solo permite Descansar o Guardia. -15% Recolecciones, -20% Emboscada, -15% velocidad de viaje. Viajar da -3 Esperanza por tramo del mapa."
+        };
+        textClimaTooltip.text = descripcionNieve;
         return;
       }
 
       switch (intTipoClima)
       {
-        case 1: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + ":\n" + TRADU.i.Traducir("Soleado: +5 Esperanza."); break;
-        case 2: textClimaTooltip.text = TRADU.i.Traducir("Día ") + numeroTurno + ":\n" + TRADU.i.Traducir("Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3."); break;
-        case 3: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada."); break;
-        case 4: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Nieve: +3 Esperanza. -15% Recolecciones, -20% Emboscada. Viajar lleva el doble de tiempo."); break;
-        case 5: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Niebla: -20% Recolecciones, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos."); break;
-        case 6: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Almas Danzantes: +3 Esperanza por viaje, -100% de probabilidad de Emboscada."); break;
-        case 7: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Aurora Boreal: +10 Esperanza."); break;
-        case 8: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Nedukazal está a oscuras."); break;
-        case 9: textClimaTooltip.text = TRADU.i.Traducir("Día ")   + numeroTurno + ":\n" + TRADU.i.Traducir("Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zúrkil están potenciados."); break;
+        case 1: textClimaTooltip.text = TRADU.i.Traducir("Soleado: +5 Esperanza."); break;
+        case 2: textClimaTooltip.text = TRADU.i.Traducir("Ola de Calor: +1 Fatiga. Día Libre da +5 Esperanza, otras Tareas Civiles dan -3."); break;
+        case 3: textClimaTooltip.text = TRADU.i.Traducir("Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada."); break;
+        case 4: break;
+        case 5:
+        {
+          int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+          textClimaTooltip.text = idioma switch
+          {
+            TRADU.IdiomaIngles => "Fog: -15% Vision, -20% Gatherings, -10% Exploration, -20% Ambush.",
+            TRADU.IdiomaPortugues => "Névoa: -15% Visão, -20% Coletas, -10% Exploração, -20% Emboscada.",
+            _ => "Niebla: -15% Visión, -20% Recolecciones, -10% Exploración, -20% Emboscada."
+          };
+          break;
+        }
+        case 6: textClimaTooltip.text = TRADU.i.Traducir("Almas Danzantes: +3 Esperanza por viaje, -100% de probabilidad de Emboscada."); break;
+        case 7: textClimaTooltip.text = TRADU.i.Traducir("Aurora Boreal: +10 Esperanza."); break;
+        case 8: textClimaTooltip.text = TRADU.i.Traducir("Nedukazal está a oscuras."); break;
+        case 9: textClimaTooltip.text = TRADU.i.Traducir("Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zúrkil están potenciados."); break;
 
 
       }
@@ -10644,6 +11672,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   void Update()
   {
+    AsegurarLuzAntorchasCaravana();
+    AnimarRelojHora();
+
     if (BattleManager.Instance != null && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
     {
       return;
@@ -11290,17 +12321,20 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     string logInicio = TRADU.i != null ? TRADU.i.Traducir(TEXTO_LOG_INICIO_CAMPANIA) : TEXTO_LOG_INICIO_CAMPANIA;
     logDeCampania.SetDiaActual(numeroTurno);
-    logDeCampania.Escribir(logInicio);
+    logDeCampania.Escribir(AgregarHoraABitacora(logInicio));
     logInicioCampaniaEscrito = true;
   }
   public void EscribirLog(string log, bool forzarAunqueNumeroTurno1 = false)
   {
     if (logDeCampania == null) return;
-    if (!forzarAunqueNumeroTurno1 && numeroTurno <= 1) return;
 
     // Asegura que el logger sabe el día actual
     logDeCampania.SetDiaActual(numeroTurno);
-    logDeCampania.Escribir(log);
+    logDeCampania.Escribir(AgregarHoraABitacora(log));
+
+    // Durante la intro se conserva la bitácora, pero no se crean mensajes
+    // flotantes sobre el mapa. Al terminar la intro se habilitan también en el Día 1.
+    if (!forzarAunqueNumeroTurno1 && IntroCampaniaActivaOPendiente) return;
 
     if (bloqueoTextosFlotantesCampania > 0)
     {
@@ -11316,10 +12350,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private void EscribirLogEnBitacoraSinTextoFlotante(string log, bool forzarAunqueNumeroTurno1 = false)
   {
     if (logDeCampania == null) return;
-    if (!forzarAunqueNumeroTurno1 && numeroTurno <= 1) return;
 
     logDeCampania.SetDiaActual(numeroTurno);
-    logDeCampania.Escribir(log);
+    logDeCampania.Escribir(AgregarHoraABitacora(log));
+  }
+
+  private string AgregarHoraABitacora(string texto)
+  {
+    return "[" + FormatearHoraCampania(ObtenerHoraActual()) + "] " + texto;
   }
 
   public void EscribirAdvertenciaLog(string log, bool forzarAunqueNumeroTurno1 = false)
@@ -11330,7 +12368,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private void EscribirLogSinBitacora(string log, bool forzarAunqueNumeroTurno1 = false)
   {
     if (logDeCampania == null) return;
-    if (!forzarAunqueNumeroTurno1 && numeroTurno <= 1) return;
+
+    if (!forzarAunqueNumeroTurno1 && IntroCampaniaActivaOPendiente) return;
 
     if (bloqueoTextosFlotantesCampania > 0)
     {
@@ -11430,6 +12469,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         Transform padre = contenedor != null ? contenedor : puntoPantalla.transform;
         GameObject goTextoFlotante = Instantiate(prefabTextoCampaña, padre, false);
         RectTransform rt = goTextoFlotante.GetComponent<RectTransform>();
+        if (rt != null)
+        {
+          Vector2 posicionTexto = rt.anchoredPosition;
+          posicionTexto.x = -Mathf.Abs(posicionTexto.x);
+          rt.anchoredPosition = posicionTexto;
+        }
 
         TextMeshProUGUI txtMesh = goTextoFlotante.GetComponentInChildren<TextMeshProUGUI>();
         FloatingTextBackground fondoTexto = null;
@@ -11441,9 +12486,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
             txtMesh.spriteAsset = spriteAssetRecursos;
           }
 
+          txtMesh.horizontalAlignment = HorizontalAlignmentOptions.Right;
+          Vector4 margenTexto = txtMesh.margin;
+          txtMesh.margin = new Vector4(margenTexto.z, margenTexto.y, margenTexto.x, margenTexto.w);
           txtMesh.text = tx;
           txtMesh.color = col;
-          fondoTexto = FloatingTextBackground.Attach(txtMesh);
+          fondoTexto = FloatingTextBackground.Attach(txtMesh, true);
           txtMesh.ForceMeshUpdate();
         }
 
@@ -12618,7 +13666,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     //Templo
     int templo = MetaprogresionManager.Instance.SerriaTierTemplo;
-    CambiarValorAlientoNegro(-templo);
+    CambiarValorAlientoNegroHoras(-templo * 5f);
     List<Personaje> personajesDisponibles = scMenuPersonajes.listaPersonajes;
     foreach (Personaje personaje in personajesDisponibles)
     {
@@ -12628,7 +13676,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
     }
     if (templo > 0)
-    { EscribirLog(TRADU.i.Traducir("-Las oraciones de los Purificadores del Templo de Serria merman el avance del Aliento Negro en: " + templo + "")); }
+    { EscribirLog(TRADU.i.Traducir("-Las oraciones de los Purificadores del Templo de Serria reducen el Aliento Negro en: ") + (templo * 5) + " h"); }
     //---
     //Almenaras
     int almenaras = MetaprogresionManager.Instance.SerriaTierAlmenaras;

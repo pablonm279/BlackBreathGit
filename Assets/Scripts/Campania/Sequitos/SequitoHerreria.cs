@@ -38,17 +38,17 @@ public class SequitoHerreria : MonoBehaviour
    {
    if(txtDescrMejoraMilicia!=null)
    {
-    txtDescrMantArma.text = TRADU.i.Traducir("Mantenimiento Armas: El Herrero se encargará de hacer un mantenimiento general de las armas de los personajes. Aumentando su Ataque en 1 y su daño en 2. Este efecto Dura 3 días.");
-    txtDescrMantArmaduras.text = TRADU.i.Traducir("Mantenimiento Armaduras: El Herrero se encargará de hacer un mantenimiento general de las armaduras de los personajes. Aumentando su Defensa en 1 y su Armadura en 2. Este efecto dura 3 días.");
+    txtDescrMantArma.text = TRADU.i.Traducir("Mantenimiento Armas: El Herrero realizará un mantenimiento general de las armas de los personajes. Aumenta su Ataque en 1 y su daño en 2 durante 72 h.");
+    txtDescrMantArmaduras.text = TRADU.i.Traducir("Mantenimiento Armaduras: El Herrero realizará un mantenimiento general de las armaduras de los personajes. Aumenta su Defensa en 1 y su Armadura en 2 durante 72 h.");
     //Mantenimiento Armas
-    if( CampaignManager.Instance.sequitoHerrerosMantArmas == 0)
+    if( CampaignManager.Instance.sequitoHerrerosMantArmasHoras <= 0f)
     {txtCostoMantArma.text = TRADU.i.Traducir("Realizar: 200 Oro"); txtCostoMantArma.color = Color.yellow;}
-    else{txtCostoMantArma.text = TRADU.i.Traducir("Activo por ")+ CampaignManager.Instance.sequitoHerrerosMantArmas + TRADU.i.Traducir(" Días");txtCostoMantArma.color = Color.green;}
+    else{txtCostoMantArma.text = TRADU.i.Traducir("Activo por ")+ CampaignManager.Instance.FormatearDuracionHoras(CampaignManager.Instance.sequitoHerrerosMantArmasHoras);txtCostoMantArma.color = Color.green;}
 
     //Mantenimiento Armaduras
-    if( CampaignManager.Instance.sequitoHerrerosMantArmaduras == 0)
+    if( CampaignManager.Instance.sequitoHerrerosMantArmadurasHoras <= 0f)
     {txtCostoMantArmaduras.text = TRADU.i.Traducir("Realizar: 200 Oro"); txtCostoMantArmaduras.color = Color.yellow;}
-    else{txtCostoMantArmaduras.text = TRADU.i.Traducir("Activo por ")+ CampaignManager.Instance.sequitoHerrerosMantArmaduras + TRADU.i.Traducir(" Días");txtCostoMantArmaduras.color = Color.green;}
+    else{txtCostoMantArmaduras.text = TRADU.i.Traducir("Activo por ")+ CampaignManager.Instance.FormatearDuracionHoras(CampaignManager.Instance.sequitoHerrerosMantArmadurasHoras);txtCostoMantArmaduras.color = Color.green;}
 
 
 
@@ -79,18 +79,18 @@ public class SequitoHerreria : MonoBehaviour
    
    public void MantenerArmas()
    {
-     if( CampaignManager.Instance.sequitoHerrerosMantArmas == 0 && CampaignManager.Instance.GetOroActuales() > 199)
+     if( CampaignManager.Instance.sequitoHerrerosMantArmasHoras <= 0f && CampaignManager.Instance.GetOroActuales() > 199)
      {
-         CampaignManager.Instance.sequitoHerrerosMantArmas = 4;
+         CampaignManager.Instance.sequitoHerrerosMantArmasHoras = 72f;
         CampaignManager.Instance.CambiarOroActual(-200);
      }
       Actualizar();
    }
    public void MantenerArmaduras()
    {
-     if( CampaignManager.Instance.sequitoHerrerosMantArmaduras == 0 && CampaignManager.Instance.GetOroActuales() > 199)
+     if( CampaignManager.Instance.sequitoHerrerosMantArmadurasHoras <= 0f && CampaignManager.Instance.GetOroActuales() > 199)
      {
-         CampaignManager.Instance.sequitoHerrerosMantArmaduras = 4;
+         CampaignManager.Instance.sequitoHerrerosMantArmadurasHoras = 72f;
         CampaignManager.Instance.CambiarOroActual(-200);
      }
       Actualizar();

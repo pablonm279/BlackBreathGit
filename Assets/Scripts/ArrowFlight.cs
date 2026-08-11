@@ -88,7 +88,47 @@ public class ArrowFlight : MonoBehaviour
     void Destruir()
     {
         CompletarImpacto();
+        DesacoplarAudioEnReproduccion();
         Destroy(gameObject);
+    }
+
+    void DesacoplarAudioEnReproduccion()
+    {
+        AudioSource[] fuentes = GetComponentsInChildren<AudioSource>();
+        for (int i = 0; i < fuentes.Length; i++)
+        {
+            AudioSource fuente = fuentes[i];
+            if (fuente == null || !fuente.isPlaying || fuente.clip == null)
+            {
+                continue;
+            }
+
+            GameObject audioPersistente = new GameObject("TempSFX_Proyectil");
+            audioPersistente.transform.position = fuente.transform.position;
+            AudioSource copia = audioPersistente.AddComponent<AudioSource>();
+            copia.clip = fuente.clip;
+            copia.outputAudioMixerGroup = fuente.outputAudioMixerGroup;
+            copia.mute = fuente.mute;
+            copia.bypassEffects = fuente.bypassEffects;
+            copia.bypassListenerEffects = fuente.bypassListenerEffects;
+            copia.bypassReverbZones = fuente.bypassReverbZones;
+            copia.loop = false;
+            copia.priority = fuente.priority;
+            copia.volume = fuente.volume;
+            copia.pitch = fuente.pitch;
+            copia.panStereo = fuente.panStereo;
+            copia.spatialBlend = fuente.spatialBlend;
+            copia.reverbZoneMix = fuente.reverbZoneMix;
+            copia.dopplerLevel = fuente.dopplerLevel;
+            copia.minDistance = fuente.minDistance;
+            copia.maxDistance = fuente.maxDistance;
+            copia.rolloffMode = fuente.rolloffMode;
+            copia.time = fuente.time;
+            copia.Play();
+
+            float duracionRestante = Mathf.Max(0.05f, (fuente.clip.length - fuente.time) / Mathf.Max(0.01f, Mathf.Abs(fuente.pitch)));
+            Destroy(audioPersistente, duracionRestante + 0.05f);
+        }
     }
 
     void CompletarImpacto()

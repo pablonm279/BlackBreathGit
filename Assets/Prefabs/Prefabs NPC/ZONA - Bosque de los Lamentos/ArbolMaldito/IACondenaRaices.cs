@@ -59,7 +59,7 @@ public class IACondenaRaices : IAHabilidad
     }
 
     scEstaUnidad.CambiarAPActual(-costoAP);
-    PrepararInicioAnimacion(null, objetivos[0]);
+    PrepararInicioAnimacion(objetivos.Cast<object>().ToList(), null);
     scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
 
     await BattleManager.DelayCombateAsync(450);

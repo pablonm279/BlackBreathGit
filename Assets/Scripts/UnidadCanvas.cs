@@ -635,6 +635,7 @@ public class UnidadCanvas : MonoBehaviour
             h = MezclarHash(h, unidad.estado_Corrupto ? 1 : 0);
             h = MezclarHash(h, unidad.estado_Volando ? 1 : 0);
             h = MezclarHash(h, unidad.estado_Condenado);
+            h = MezclarHash(h, unidad.estado_CondenadoTurnosSeguidos);
             h = MezclarHash(h, unidad.estado_Escudado);
             h = MezclarHash(h, unidad.estado_MovimientoAbaratado);
 
@@ -1187,7 +1188,7 @@ public class UnidadCanvas : MonoBehaviour
       if (scUnidadMostrada.estado_Condenado > 0)
       {
          GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorCasillasEstados.transform);
-         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(29, scUnidadMostrada.estado_Condenado, true);
+         GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(29, scUnidadMostrada.estado_Condenado, true, scUnidadMostrada.estado_CondenadoTurnosSeguidos + 1);
       }
       if (scUnidadMostrada.estado_Escudado > 0)
       {

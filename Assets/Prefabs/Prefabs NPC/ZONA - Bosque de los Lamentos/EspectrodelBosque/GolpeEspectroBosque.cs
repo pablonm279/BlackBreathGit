@@ -224,9 +224,8 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
     [SerializeField] private Color colorFlashEntradaPlanoMaterial = new Color(0.72f, 1f, 0.93f, 1f);
     [SerializeField] private float duracionFlash = 0.08f;
     [SerializeField] private float duracionTransicion = 0.18f;
-    [SerializeField] private string prefabVfxEntradaPlanoMaterial = "VFX/VFX_RefuerzosLlamadaEspectral";
-    [SerializeField][Range(0.2f, 1f)] private float escalaVfxEntradaPlanoMaterial = 0.55f;
-    [SerializeField][Min(0.1f)] private float duracionVfxEntradaPlanoMaterial = 0.9f;
+    [SerializeField][Range(0.2f, 1f)] private float escalaVfxTransicionPlano = 0.55f;
+    [SerializeField][Min(0.1f)] private float duracionVfxTransicionPlano = 0.9f;
 
     private Unidad unidad;
     private Image imagenUnidad;
@@ -235,7 +234,7 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
     private bool estadoInicializado;
     private bool estabaEnPlanoMaterial;
     private Coroutine rutinaTransicion;
-    private GameObject vfxEntradaPlanoMaterial;
+    private GameObject vfxTransicionPlano;
     private Color colorBase = Color.white;
 
     void Awake()
@@ -307,47 +306,69 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
         bool entrarPlanoMaterial = enPlanoMaterial && !estabaEnPlanoMaterial;
         AplicarSpritesSegunPlano(enPlanoMaterial);
         estabaEnPlanoMaterial = enPlanoMaterial;
-        if (entrarPlanoMaterial)
-        {
-            ReproducirVfxEntradaPlanoMaterial();
-        }
+        ReproducirVfxTransicionPlano();
         IniciarTransicion(instantaneo, AlphaObjetivo(enPlanoMaterial), entrarPlanoMaterial);
     }
 
-    private void ReproducirVfxEntradaPlanoMaterial()
+    private void ReproducirVfxTransicionPlano()
     {
         if (!gameObject.activeInHierarchy)
         {
             return;
         }
 
-        if (vfxEntradaPlanoMaterial != null)
+        if (vfxTransicionPlano != null)
         {
-            Destroy(vfxEntradaPlanoMaterial);
+            Destroy(vfxTransicionPlano);
         }
 
-        GameObject prefabVfx = Resources.Load<GameObject>(prefabVfxEntradaPlanoMaterial);
-        if (prefabVfx == null)
+        vfxTransicionPlano = new GameObject("VFX_TransicionPlanoEspectro");
+        vfxTransicionPlano.transform.SetParent(transform, false);
+        vfxTransicionPlano.transform.localScale = Vector3.one * escalaVfxTransicionPlano;
+        ParticleSystem particles = vfxTransicionPlano.AddComponent<ParticleSystem>();
+        ParticleSystem.MainModule main = particles.main;
+        main.duration = duracionVfxTransicionPlano;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(0.45f, 0.9f);
+        main.startSpeed = new ParticleSystem.MinMaxCurve(0.15f, 0.55f);
+        main.startSize = new ParticleSystem.MinMaxCurve(0.035f, 0.09f);
+        main.startColor = new ParticleSystem.MinMaxGradient(
+            new Color(0.34f, 0.95f, 1f, 0.95f),
+            new Color(0.12f, 0.72f, 0.86f, 0.9f));
+        main.maxParticles = 48;
+        main.simulationSpace = ParticleSystemSimulationSpace.Local;
+        main.stopAction = ParticleSystemStopAction.Destroy;
+
+        ParticleSystem.EmissionModule emission = particles.emission;
+        emission.enabled = true;
+        emission.rateOverTime = 0f;
+        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, 30) });
+
+        ParticleSystem.ShapeModule shape = particles.shape;
+        shape.shapeType = ParticleSystemShapeType.Sphere;
+        shape.radius = 0.42f;
+        shape.radiusThickness = 0.15f;
+
+        ParticleSystem.VelocityOverLifetimeModule velocity = particles.velocityOverLifetime;
+        velocity.enabled = true;
+        velocity.orbitalY = new ParticleSystem.MinMaxCurve(-0.8f, 0.8f);
+
+        ParticleSystem.ColorOverLifetimeModule fade = particles.colorOverLifetime;
+        fade.enabled = true;
+        Gradient gradient = new Gradient();
+        gradient.SetKeys(
+            new[] { new GradientColorKey(new Color(0.4f, 0.95f, 1f), 0f), new GradientColorKey(new Color(0.08f, 0.68f, 0.82f), 1f) },
+            new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(1f, 0.12f), new GradientAlphaKey(0f, 1f) });
+        fade.color = new ParticleSystem.MinMaxGradient(gradient);
+
+        ParticleSystemRenderer renderer = vfxTransicionPlano.GetComponent<ParticleSystemRenderer>();
+        renderer.renderMode = ParticleSystemRenderMode.Billboard;
+        Shader shader = Shader.Find("Particles/Standard Unlit") ?? Shader.Find("Sprites/Default");
+        if (shader != null)
         {
-            return;
+            renderer.material = new Material(shader) { color = Color.white };
         }
 
-        vfxEntradaPlanoMaterial = Instantiate(prefabVfx, transform.position, Quaternion.identity, transform);
-        vfxEntradaPlanoMaterial.transform.localPosition = Vector3.zero;
-        vfxEntradaPlanoMaterial.transform.localScale *= escalaVfxEntradaPlanoMaterial;
-
-        foreach (AudioSource audioSource in vfxEntradaPlanoMaterial.GetComponentsInChildren<AudioSource>(true))
-        {
-            audioSource.enabled = false;
-        }
-
-        Canvas canvasVfx = vfxEntradaPlanoMaterial.GetComponentInChildren<Canvas>();
-        if (canvasVfx != null)
-        {
-            RenderOrderHelper.OrdenarCanvasEncima(canvasVfx, transform, 2);
-        }
-
-        Destroy(vfxEntradaPlanoMaterial, duracionVfxEntradaPlanoMaterial);
+        particles.Play();
     }
 
     private float AlphaObjetivo(bool enPlanoMaterial)
@@ -452,4 +473,3 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
   
  
   
-

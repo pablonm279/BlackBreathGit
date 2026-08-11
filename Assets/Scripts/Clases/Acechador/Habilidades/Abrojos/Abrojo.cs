@@ -48,7 +48,7 @@ public class Abrojo : Trampa
 
     }
 
-      objetivo.RecibirDanio(rand,2,false, unidadCreadora);
+      objetivo.RecibirDanio(rand, 2, false, unidadCreadora, 0, true);
 
       
 

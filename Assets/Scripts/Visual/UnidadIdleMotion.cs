@@ -704,10 +704,7 @@ public sealed class UnidadStatusVfxController : MonoBehaviour
 
   private bool DebeMostrarEscudado()
   {
-    return unidad != null
-      && unidad.estado_Escudado > 0
-      && unidad.HP_actual > 0f
-      && gameObject.activeInHierarchy;
+    return false;
   }
 
   private bool DebeMostrarBarrera()

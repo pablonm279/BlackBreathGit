@@ -32,6 +32,21 @@ public class MenuCaravana : MonoBehaviour
     [SerializeField] TextMeshProUGUI txtStatsViaje;
 
 
+    [Header("Botón antorchas")]
+    [SerializeField] GameObject antorchaBoton;
+    [SerializeField, Min(0.05f)] float duracionAnimacionBotonAntorcha = 0.45f;
+    [SerializeField, Min(0f)] float margenOcultoBotonAntorcha = 40f;
+    [SerializeField, Min(0f)] float delayEntreAntorchas = 0.12f;
+    private RectTransform rectTransformBotonAntorcha;
+    private CanvasGroup canvasGroupBotonAntorcha;
+    private Image imagenBotonAntorcha;
+    private Sprite spriteAntorchaApagada;
+    private Sprite spriteAntorchaEncendida;
+    private Vector2 posicionVisibleBotonAntorcha;
+    private Vector2 posicionOcultaBotonAntorcha;
+    private bool botonAntorchaInicializado;
+
+
     public bool TieneMenuAbierto =>
         (MenuMejoras != null && MenuMejoras.activeInHierarchy)
         || (MenuSequitos != null && MenuSequitos.activeInHierarchy)
@@ -40,7 +55,7 @@ public class MenuCaravana : MonoBehaviour
         || (panelResultadoExploradores != null && panelResultadoExploradores.activeInHierarchy)
         || (CampaignManager.Instance != null && CampaignManager.Instance.LogEstaAbierto());
 
-     //Antorchas de Pie
+     //Antorchas de Caravana
     [SerializeField] TextMeshProUGUI txtTierMejoraAntorchas;
     [SerializeField] TextMeshProUGUI txtCostoMejoraAntorchas;
     [SerializeField] GameObject AntorchasDiamantes;
@@ -209,6 +224,130 @@ public class MenuCaravana : MonoBehaviour
     void Awake()
     {
         InicializarColoresCostoSiHaceFalta();
+        InicializarBotonAntorcha();
+    }
+
+    void Update()
+    {
+        ActualizarBotonAntorcha();
+    }
+
+    private void InicializarBotonAntorcha()
+    {
+        if (antorchaBoton == null)
+        {
+            return;
+        }
+
+        rectTransformBotonAntorcha = antorchaBoton.GetComponent<RectTransform>();
+        imagenBotonAntorcha = antorchaBoton.GetComponent<Image>();
+        canvasGroupBotonAntorcha = antorchaBoton.GetComponent<CanvasGroup>();
+        if (canvasGroupBotonAntorcha == null)
+        {
+            canvasGroupBotonAntorcha = antorchaBoton.AddComponent<CanvasGroup>();
+        }
+
+        spriteAntorchaApagada = Resources.Load<Sprite>("uiANTORCHA");
+        spriteAntorchaEncendida = Resources.Load<Sprite>("uiANTORCHA2");
+
+        if (rectTransformBotonAntorcha != null)
+        {
+            posicionVisibleBotonAntorcha = rectTransformBotonAntorcha.anchoredPosition;
+            float ancho = Mathf.Max(rectTransformBotonAntorcha.rect.width, rectTransformBotonAntorcha.sizeDelta.x);
+            posicionOcultaBotonAntorcha = posicionVisibleBotonAntorcha + Vector2.right * (ancho + margenOcultoBotonAntorcha);
+            rectTransformBotonAntorcha.anchoredPosition = posicionOcultaBotonAntorcha;
+        }
+
+        canvasGroupBotonAntorcha.alpha = 0f;
+        canvasGroupBotonAntorcha.interactable = false;
+        canvasGroupBotonAntorcha.blocksRaycasts = false;
+        antorchaBoton.SetActive(false);
+        botonAntorchaInicializado = true;
+    }
+
+    private void ActualizarBotonAntorcha()
+    {
+        if (!botonAntorchaInicializado || rectTransformBotonAntorcha == null)
+        {
+            return;
+        }
+
+        CampaignManager campaignManager = CampaignManager.Instance;
+        bool menuMejorasAbierto = MenuMejoras != null && MenuMejoras.activeInHierarchy;
+        bool mostrarDesdeMejoras = menuMejorasAbierto
+            && campaignManager != null
+            && !campaignManager.DebeUsarConfiguracionTutorial();
+        bool debeMostrarse = campaignManager != null
+            && (campaignManager.EsNocheActual() || mostrarDesdeMejoras);
+        if (debeMostrarse && !antorchaBoton.activeSelf)
+        {
+            antorchaBoton.SetActive(true);
+        }
+
+        Vector2 posicionObjetivo = debeMostrarse ? posicionVisibleBotonAntorcha : posicionOcultaBotonAntorcha;
+        float alphaObjetivo = debeMostrarse ? 1f : 0f;
+        float delta = Time.unscaledDeltaTime / Mathf.Max(0.05f, duracionAnimacionBotonAntorcha);
+        float distanciaAnimacion = Vector2.Distance(posicionVisibleBotonAntorcha, posicionOcultaBotonAntorcha);
+
+        rectTransformBotonAntorcha.anchoredPosition = Vector2.MoveTowards(
+            rectTransformBotonAntorcha.anchoredPosition,
+            posicionObjetivo,
+            distanciaAnimacion * delta);
+        canvasGroupBotonAntorcha.alpha = Mathf.MoveTowards(canvasGroupBotonAntorcha.alpha, alphaObjetivo, delta);
+        canvasGroupBotonAntorcha.interactable = debeMostrarse && campaignManager.PuedeCambiarAntorchas();
+        canvasGroupBotonAntorcha.blocksRaycasts = debeMostrarse;
+
+        ActualizarImagenBotonAntorcha(campaignManager);
+
+        if (!debeMostrarse && canvasGroupBotonAntorcha.alpha <= 0f)
+        {
+            antorchaBoton.SetActive(false);
+        }
+    }
+
+    private void ActualizarImagenBotonAntorcha(CampaignManager campaignManager)
+    {
+        if (imagenBotonAntorcha == null || campaignManager == null)
+        {
+            return;
+        }
+
+        Sprite spriteObjetivo = campaignManager.AntorchasEncendidas
+            ? spriteAntorchaEncendida
+            : spriteAntorchaApagada;
+        if (spriteObjetivo != null && imagenBotonAntorcha.sprite != spriteObjetivo)
+        {
+            imagenBotonAntorcha.sprite = spriteObjetivo;
+        }
+    }
+
+    public void ClickAntorcha()
+    {
+        CampaignManager campaignManager = CampaignManager.Instance;
+        if (campaignManager == null)
+        {
+            return;
+        }
+
+        bool encender = !campaignManager.AntorchasEncendidas;
+        if (!campaignManager.SetAntorchasEncendidas(encender))
+        {
+            return;
+        }
+
+        ActualizarImagenBotonAntorcha(campaignManager);
+
+        if (campaignManager.scMapaManager == null || campaignManager.scMapaManager.goCaravana == null)
+        {
+            return;
+        }
+
+        CaravanTorchLight[] antorchas = campaignManager.scMapaManager.goCaravana
+            .GetComponentsInChildren<CaravanTorchLight>(true);
+        for (int i = 0; i < antorchas.Length; i++)
+        {
+            antorchas[i].ProgramarEstado(encender, i * delayEntreAntorchas);
+        }
     }
 
     private void InicializarColoresCostoSiHaceFalta()
@@ -283,16 +422,6 @@ public class MenuCaravana : MonoBehaviour
     private int ObtenerChanceFinalPerderSequitoDefensas(int tier)
     {
         return Mathf.Clamp(ProbabilidadBasePerderSequitoPorDerrota - ObtenerReduccionPerdidaSequitoDefensas(tier), 0, 100);
-    }
-
-    private int ObtenerReduccionEmboscadaAntorchas(int tier)
-    {
-        return tier * 2;
-    }
-
-    private int ObtenerBonusObjetosAntorchas(int tier)
-    {
-        return 3 + ((tier - 1) * 2);
     }
 
     private int ObtenerBonusCargaPorBueyAlforjas(int tier)
@@ -540,8 +669,8 @@ public class MenuCaravana : MonoBehaviour
         CampaignManager campaignManager = CampaignManager.Instance;
         StringBuilder sb = new StringBuilder(160);
         sb.AppendLine(FormatearLineaStat(
-            ObtenerTextoStats("Días viajados", "Days traveled", "Dias viajados"),
-            campaignManager.ObtenerEstadisticaDiasViajados()));
+            ObtenerTextoStats("Tiempo viajado", "Travel time", "Tempo viajado"),
+            campaignManager.FormatearDuracionHoras(campaignManager.ObtenerEstadisticaHorasViajadas())));
         sb.AppendLine(FormatearLineaStat(
             ObtenerTextoStats("Batallas libradas", "Battles fought", "Batalhas travadas"),
             campaignManager.ObtenerEstadisticaBatallasLibradas()));
@@ -571,6 +700,11 @@ public class MenuCaravana : MonoBehaviour
     }
 
     private static string FormatearLineaStat(string etiqueta, int valor)
+    {
+        return etiqueta + "... " + valor;
+    }
+
+    private static string FormatearLineaStat(string etiqueta, string valor)
     {
         return etiqueta + "... " + valor;
     }
@@ -869,23 +1003,33 @@ public class MenuCaravana : MonoBehaviour
 
     private string ObtenerDescripcionAntorchasEs(int tier)
     {
-        return "Antorchas de Pie:\n"
-            + "Disminuyen en " + ObtenerReduccionEmboscadaAntorchas(tier) + "% las chances de sufrir emboscadas al viajar o descansar.\n"
-            + "Además aumentan en " + ObtenerBonusObjetosAntorchas(tier) + "% las chances de encontrar objetos tras una batalla.";
+        return "Antorchas de Caravana:\n"
+            + "De noche, si están prendidas, aumentan el rango de visión de la caravana por "
+            + Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f) + ".\n"
+            + "Además aumentan las chances de encontrar items tras una batalla.";
     }
 
     private string ObtenerDescripcionAntorchasEn(int tier)
     {
-        return "Standing Torches:\n"
-            + "Reduce the chance of ambushes while traveling or resting by " + ObtenerReduccionEmboscadaAntorchas(tier) + "%.\n"
-            + "They also increase the chance to find items after a battle by " + ObtenerBonusObjetosAntorchas(tier) + "%.";
+        return "Caravan Torches:\n"
+            + "At night, when lit, they increase the caravan's Vision Range by "
+            + Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f) + ".\n"
+            + "They also increase the chance to find items after a battle.";
     }
 
     private string ObtenerDescripcionAntorchasPt(int tier)
     {
-        return "Tochas de Pé:\n"
-            + "Reduzem em " + ObtenerReduccionEmboscadaAntorchas(tier) + "% as chances de sofrer emboscadas ao viajar ou descansar.\n"
-            + "Além disso, aumentam em " + ObtenerBonusObjetosAntorchas(tier) + "% as chances de encontrar itens após uma batalha.";
+        return "Tochas da Caravana:\n"
+            + "À noite, quando acesas, aumentam o Alcance de Visão da caravana em "
+            + Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f) + ".\n"
+            + "Além disso, aumentam as chances de encontrar itens após uma batalha.";
+    }
+
+    private float ObtenerAlcanceVisionAntorchas(int tier)
+    {
+        float[] alcances = { 1.5f, 1.9f, 2.5f, 2.9f, 3.5f };
+        int indice = Mathf.Clamp(tier - 1, 0, alcances.Length - 1);
+        return Mathf.Max(1.5f, alcances[indice] * 0.90f);
     }
 
     private string ObtenerDescripcionAlforjasEs(int tier)
@@ -933,19 +1077,19 @@ public class MenuCaravana : MonoBehaviour
     private string ObtenerDescripcionCatalejosEs(int tier)
     {
         return "Catalejos:\n"
-            + "Disipan la niebla y aumentan en +" + ObtenerBonusVisionCatalejos(tier) + " el Rango de Visión de la caravana.";
+            + "Disipan la niebla y aumentan en +" + ObtenerBonusVisionCatalejos(tier) * 10 + " el Rango de Visión de la caravana.";
     }
 
     private string ObtenerDescripcionCatalejosEn(int tier)
     {
         return "Spyglasses:\n"
-            + "Dispel the fog and increase the caravan's Vision Range by +" + ObtenerBonusVisionCatalejos(tier) + ".";
+            + "Dispel the fog and increase the caravan's Vision Range by +" + ObtenerBonusVisionCatalejos(tier) * 10 + ".";
     }
 
     private string ObtenerDescripcionCatalejosPt(int tier)
     {
         return "Lunetas:\n"
-            + "Dissipam a névoa e aumentam em +" + ObtenerBonusVisionCatalejos(tier) + " o Alcance de Visão da caravana.";
+            + "Dissipam a névoa e aumentam em +" + ObtenerBonusVisionCatalejos(tier) * 10 + " o Alcance de Visão da caravana.";
     }
 
     private string ObtenerDescripcionAlmacenEs(int tier)
@@ -1017,6 +1161,9 @@ public class MenuCaravana : MonoBehaviour
             "Valor actual",
             "Clima",
             ObtenerNombreClimaVisionEs(),
+            "Noche",
+            "Antorchas encendidas",
+            "Antorchas apagadas",
             tierCatalejos);
     }
 
@@ -1026,6 +1173,9 @@ public class MenuCaravana : MonoBehaviour
             "Current value",
             "Weather",
             ObtenerNombreClimaVisionEn(),
+            "Night",
+            "Torches lit",
+            "Torches extinguished",
             tierCatalejos);
     }
 
@@ -1035,6 +1185,9 @@ public class MenuCaravana : MonoBehaviour
             "Valor atual",
             "Clima",
             ObtenerNombreClimaVisionPt(),
+            "Noite",
+            "Tochas acesas",
+            "Tochas apagadas",
             tierCatalejos);
     }
 
@@ -1042,6 +1195,9 @@ public class MenuCaravana : MonoBehaviour
         string etiquetaActual,
         string etiquetaClima,
         string nombreClima,
+        string etiquetaNoche,
+        string antorchasEncendidas,
+        string antorchasApagadas,
         int tierCatalejos)
     {
         CampaignManager cm = CampaignManager.Instance;
@@ -1055,12 +1211,17 @@ public class MenuCaravana : MonoBehaviour
 
         List<string> lineas = new List<string>
         {
-            etiquetaActual + ": " + visionActual.ToString("0.###")
+            etiquetaActual + ": " + (visionActual * 10f).ToString("0.###")
         };
 
         if (penalizacionVisionClima != 0)
         {
             lineas.Add(etiquetaClima + " (" + nombreClima + "): " + FormatearModificadorPorcentaje(-penalizacionVisionClima));
+        }
+
+        if (cm != null && cm.EsNocheActual())
+        {
+            lineas.Add(etiquetaNoche + " (" + (cm.AntorchasEncendidas ? antorchasEncendidas : antorchasApagadas) + ")");
         }
 
         return ObtenerTextoFactoresGris(lineas);
@@ -1074,6 +1235,7 @@ public class MenuCaravana : MonoBehaviour
             "Clima",
             ObtenerNombreClimaVisionEs(),
             "Presagio",
+            "Noche",
             tierCatalejos);
     }
 
@@ -1085,6 +1247,7 @@ public class MenuCaravana : MonoBehaviour
             "Weather",
             ObtenerNombreClimaVisionEn(),
             "Omen",
+            "Night",
             tierCatalejos);
     }
 
@@ -1096,6 +1259,7 @@ public class MenuCaravana : MonoBehaviour
             "Clima",
             ObtenerNombreClimaVisionPt(),
             "Presságio",
+            "Noite",
             tierCatalejos);
     }
 
@@ -1105,13 +1269,15 @@ public class MenuCaravana : MonoBehaviour
         string etiquetaClima,
         string nombreClima,
         string etiquetaPresagio,
+        string etiquetaNoche,
         int tierCatalejos)
     {
         CampaignManager cm = CampaignManager.Instance;
         int chancePasiva = cm != null ? cm.ObtenerChanceExploracionPasiva() : 55;
         int modZona = cm != null && cm.scAtributosZona != null ? cm.scAtributosZona.modChanceExploracion : 0;
-        int modClimaExploracion = cm != null && cm.intTipoClima == 5 ? -20 : 0;
+        int modClimaExploracion = cm != null && cm.intTipoClima == 5 ? -10 : 0;
         int modPresagio = cm != null && cm.TienePresagioActivo(PresagioCatalog.ZonaDesconocida) ? -10 : 0;
+        int modNoche = cm != null && cm.EsNocheActual() ? -15 : 0;
 
         List<string> lineas = new List<string>
         {
@@ -1132,6 +1298,11 @@ public class MenuCaravana : MonoBehaviour
         {
             lineas.Add(etiquetaPresagio + " (" + PresagioCatalog.ObtenerNombreLocalizado(PresagioCatalog.ZonaDesconocida) + "): "
                 + FormatearModificadorPorcentaje(modPresagio));
+        }
+
+        if (modNoche != 0)
+        {
+            lineas.Add(etiquetaNoche + ": " + FormatearModificadorPorcentaje(modNoche));
         }
 
         return ObtenerTextoFactoresGris(lineas);

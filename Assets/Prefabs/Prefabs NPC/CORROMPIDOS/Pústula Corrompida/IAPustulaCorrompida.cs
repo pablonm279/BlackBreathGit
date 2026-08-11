@@ -9,7 +9,7 @@ public class IAPustulaCorrompida : IAHabilidad
     private const int ColumnaFrontal = 3;
     private const int DificultadReflejos = 13;
     private const int DificultadFortaleza = 11;
-    private const int DuracionEnfermoCampania = 3;
+    private const float DuracionEnfermoCampaniaHoras = 72f;
     private const int DadosDanio = 4;
     private const int CarasDanio = 10;
     private const int DanioAcidoBase = 5;
@@ -337,7 +337,7 @@ public class IAPustulaCorrompida : IAHabilidad
             : null;
         if (personaje != null)
         {
-            personaje.Camp_Enfermo += DuracionEnfermoCampania;
+            personaje.AplicarEnfermoHoras(DuracionEnfermoCampaniaHoras);
         }
     }
 

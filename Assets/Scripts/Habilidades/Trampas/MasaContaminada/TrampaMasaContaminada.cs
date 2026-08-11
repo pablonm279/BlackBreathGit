@@ -27,12 +27,12 @@ public class TrampaMasaContaminada : Trampa
     if (!unidad.TieneTag("Corrupto"))
     {
       int rand =UnityEngine.Random.Range(1, 9);
-      unidad.RecibirDanio(rand, 7, true, null); //Daño acido CRITICO
+      unidad.RecibirDanio(rand, 7, true, null, 0, true); //Daño acido CRITICO
 
       if (unidad.estado_Corrupto) //Hace daño necrótico a personajes corruptas
       {
         rand =UnityEngine.Random.Range(1, 12);
-        unidad.RecibirDanio(rand, 9, false, null);
+        unidad.RecibirDanio(rand, 9, false, null, 0, true);
       }
     }
     else

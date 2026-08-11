@@ -523,7 +523,12 @@ public class MenuPersonajes : MonoBehaviour
     txtResAcido.text = "" + pSel.ObtenerResElementalConPoder(pSel.iResAcido, scEquipo.BuffTOTALEQUIPOResAcido, scEquipo.BuffTOTALEQUIPOPoder);
     txtResNecro.text = "" + (pSel.iResNecro + scEquipo.BuffTOTALEQUIPOResNecro);
     txtResDivino.text = "" + (pSel.iResDivino + scEquipo.BuffTOTALEQUIPOResDivino);
-    if (txtDiasViajado != null) { txtDiasViajado.text = pSel.DiasViajado.ToString(); }
+    if (txtDiasViajado != null)
+    {
+      txtDiasViajado.text = CampaignManager.Instance != null
+        ? CampaignManager.Instance.FormatearDuracionHoras(pSel.HorasViajadas)
+        : pSel.DiasViajado.ToString();
+    }
     if (txtEnemigosEliminados != null) { txtEnemigosEliminados.text = pSel.EnemigosEliminados.ToString(); }
     if (txtDanioHecho != null) { txtDanioHecho.text = pSel.DanioHecho.ToString(); }
     if (txtDanioRecibido != null) { txtDanioRecibido.text = pSel.DanioRecibido.ToString(); }
@@ -569,17 +574,17 @@ public class MenuPersonajes : MonoBehaviour
       CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Corrupto);
     }
 
-    if (pSel.Camp_Enfermo > 0)
+    if (pSel.EstaEnfermo())
     {
       CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Enfermo);
     }
 
-    if (pSel.Camp_Moral < 0)
+    if (pSel.TieneMoralBaja())
     {
       CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.BajaMoral);
     }
 
-    if (pSel.Camp_Moral > 0)
+    if (pSel.TieneMoralAlta())
     {
       CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.AltaMoral);
     }
@@ -589,7 +594,7 @@ public class MenuPersonajes : MonoBehaviour
       CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Fatigado);
     }
 
-    if (pSel.TieneCampBendecido())
+    if (pSel.EstaBendecido())
     {
       CrearEstadoCampaniaSeleccionado(UIEstadoPersonajeCamp.TipoEstadoCampania.Bendecido);
     }
@@ -841,7 +846,7 @@ public class MenuPersonajes : MonoBehaviour
       //itemDesc.text = pSel.itemArma.itemDescrpicion;
       Vector3 pos = Input.mousePosition;
       string total = ItemTooltipFormatter.ConstruirTooltip(pSel.itemArma, true);
-      TooltipItems.Instance.ShowTooltip(total, pos);
+      TooltipItems.Instance.ShowTooltip(total, pos, pSel.itemArma);
 
     }
   }
@@ -855,7 +860,7 @@ public class MenuPersonajes : MonoBehaviour
         // itemDesc.text = pSel.itemArmadura.itemDescrpicion;
          Vector3 pos = Input.mousePosition;
      string total = ItemTooltipFormatter.ConstruirTooltip(pSel.itemArmadura, true);
-      TooltipItems.Instance.ShowTooltip(total, pos);
+      TooltipItems.Instance.ShowTooltip(total, pos, pSel.itemArmadura);
 
       }
     }
@@ -887,7 +892,7 @@ public class MenuPersonajes : MonoBehaviour
       //itemDesc.text = pSel.Accesorio1.itemDescrpicion;
       Vector3 pos = Input.mousePosition;
       string total = ItemTooltipFormatter.ConstruirTooltip(pSel.Accesorio1, true);
-      TooltipItems.Instance.ShowTooltip(total, pos);
+      TooltipItems.Instance.ShowTooltip(total, pos, pSel.Accesorio1);
 
     }
   }
@@ -917,7 +922,7 @@ public class MenuPersonajes : MonoBehaviour
       //itemDesc.text = pSel.Accesorio2.itemDescrpicion;
       Vector3 pos = Input.mousePosition;
       string total = ItemTooltipFormatter.ConstruirTooltip(pSel.Accesorio2, true);
-      TooltipItems.Instance.ShowTooltip(total, pos);
+      TooltipItems.Instance.ShowTooltip(total, pos, pSel.Accesorio2);
 
     }
   }
@@ -948,7 +953,7 @@ public class MenuPersonajes : MonoBehaviour
       //itemDesc.text = pSel.Consumible1.itemDescrpicion;
         Vector3 pos = Input.mousePosition;
      string total = ItemTooltipFormatter.ConstruirTooltip(pSel.Consumible1, true);
-      TooltipItems.Instance.ShowTooltip(total, pos);
+      TooltipItems.Instance.ShowTooltip(total, pos, pSel.Consumible1);
 
     }
   }
@@ -978,7 +983,7 @@ public class MenuPersonajes : MonoBehaviour
       //itemDesc.text = pSel.Consumible2.itemDescrpicion;
       Vector3 pos = Input.mousePosition;
      string total = ItemTooltipFormatter.ConstruirTooltip(pSel.Consumible2, true);
-      TooltipItems.Instance.ShowTooltip(total, pos);
+      TooltipItems.Instance.ShowTooltip(total, pos, pSel.Consumible2);
 
     }
   }
@@ -1082,6 +1087,56 @@ public class MenuPersonajes : MonoBehaviour
     {
       scEquipo.listInventario.Add(itemGO);
     }
+  }
+
+  public Item ObtenerItemEquipadoQueReemplazaria(Item nuevoItem)
+  {
+    if (nuevoItem == null || pSel == null || !nuevoItem.PuedeUsarClase(pSel.IDClase))
+    {
+      return null;
+    }
+
+    Arma nuevaArma = nuevoItem as Arma;
+    if (nuevaArma != null)
+    {
+      if (nuevaArma.requisitoAgi > pSel.iAgi || nuevaArma.requisitoFue > pSel.iFuerza || nuevaArma.requisitoPoder > pSel.iPoder)
+      {
+        return null;
+      }
+
+      return pSel.itemArma;
+    }
+
+    Armadura nuevaArmadura = nuevoItem as Armadura;
+    if (nuevaArmadura != null)
+    {
+      if (nuevaArmadura.requisitoAgi > pSel.iAgi || nuevaArmadura.requisitoFue > pSel.iFuerza || nuevaArmadura.requisitoPoder > pSel.iPoder)
+      {
+        return null;
+      }
+
+      return pSel.itemArmadura;
+    }
+
+    Accesorio nuevoAccesorio = nuevoItem as Accesorio;
+    if (nuevoAccesorio != null)
+    {
+      if (nuevoAccesorio.requisitoAgi > pSel.iAgi || nuevoAccesorio.requisitoFue > pSel.iFuerza || nuevoAccesorio.requisitoPoder > pSel.iPoder)
+      {
+        return null;
+      }
+
+      bool cambiarSlot2 = scEquipo != null && scEquipo.accesorioACambiar == 2;
+      return cambiarSlot2 ? pSel.Accesorio2 : pSel.Accesorio1;
+    }
+
+    if (nuevoItem is Consumible)
+    {
+      bool cambiarSlot2 = scEquipo != null && scEquipo.consumibleACambiar == 2;
+      return cambiarSlot2 ? pSel.Consumible2 : pSel.Consumible1;
+    }
+
+    return null;
   }
 
   public bool EquiparArmaDesdeInventario(Arma nuevaArma)

@@ -1011,11 +1011,13 @@ private void Update()
   estado_Condenado = Mathf.Clamp(estado_Condenado, 0, 3);
 
  if(BattleManager.Instance.unidadActiva == this)
- {
-    transform.GetChild(3).GetChild(0).GetChild(0).gameObject.SetActive(true);
- }
-  else
- { transform.GetChild(3).GetChild(0).GetChild(0).gameObject.SetActive(false); }
+    {
+        transform.GetChild(1).gameObject.SetActive(true);
+    }
+    else
+    {
+        transform.GetChild(1).gameObject.SetActive(false);
+    }
 
     if (animator != null && unidadVoladora)
     {
@@ -2893,7 +2895,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     }
 
     string bonusHex = ColorUtility.ToHtmlStringRGB(color);
-    return "<size=80%><color=#" + bonusHex + ">(+" + bonus + IconoDanioFlotante(tipoDanio) + ")</color></size>";
+    return "<size=80%><color=#" + bonusHex + ">(" + bonus + IconoDanioFlotante(tipoDanio) + ")</color></size>";
   }
 
   private int daniosPendientesSinBonusElemental;

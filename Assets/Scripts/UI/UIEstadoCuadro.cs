@@ -154,7 +154,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
   public Sprite imMovimientoAbaratado;
   public Sprite imProvocado;
   public Sprite imTierEnergia; //Canalizador
-  public void RepresentarEstado(int index, int stacks, bool desdeBarraVida = false)
+  public void RepresentarEstado(int index, int stacks, bool desdeBarraVida = false, int turnosCondenaAcumulados = 0)
   {
     AsegurarRetrato();
     debarravida = desdeBarraVida;
@@ -222,7 +222,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
       case 26: Retrato.sprite = ResolverSprite(imTierEnergia, "Imagenes/Estado_acumularenergia"); AsignarTextoTooltip(TRADU.i.Traducir("Energía: Nivel de Energía Acumulada por el Canalizador.")); break;
       case 27: Retrato.sprite = ResolverSprite(imCorrupto, "Imagenes/Estado_Corrupto"); AsignarTextoTooltip(TRADU.i.Traducir("Corrupto: Recibe daño adicional de enemigos Corrompidos que además se curan al dañarlo. Si lo deja fuera de combate un enemigo corrompido, muere.")); break;
       case 28: Retrato.sprite = ResolverSprite(imVolador, "Imagenes/estado_volando"); AsignarTextoTooltip(TRADU.i.Traducir("Volador: Esta unidad no puede ser alcanzada por ataques melee, puede perder el vuelo al ser dañado o fallar un ataque.")); break;
-      case 29: Retrato.sprite = ResolverSprite(imCondena, "Imagenes/Estado_condena"); AsignarTextoTooltip(TRADU.i.Traducir("Condena: En X cantidad de turnos recibirá daño verdadero igual al 10% de su vida máxima por turno con el efecto.")); break;
+      case 29: Retrato.sprite = ResolverSprite(imCondena, "Imagenes/Estado_condena"); AsignarTextoTooltip(GenerarTextoTooltipCondena(stacks, turnosCondenaAcumulados)); break;
       case 30: Retrato.sprite = ResolverSprite(imEscudado, "Imagenes/Estado_escudado"); AsignarTextoTooltip(TRADU.i.Traducir("Escudado: 10% chances por stack de evitar un ataque físico. Al evitar uno, pierde un stack.")); break;
       case 31: Retrato.sprite = ResolverSprite(imMovimientoAbaratado, "Imagenes/Estado_movimientoabaratado"); AsignarTextoTooltip(TRADU.i.Traducir("Impulso: el próximo movimiento a casilla o intercambio cuesta 1 PA menos y consume 1 stack.")); break;
       case 32: Retrato.sprite = ResolverSprite(imProvocado, "Imagenes/Estado_Provocado"); AsignarTextoTooltip(TRADU.i.Traducir("Provocado: solo puede usar acciones hostiles contra quien aplicó este estado.")); break;
@@ -550,6 +550,33 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
     }
 
     return textoEs;
+  }
+
+  private string GenerarTextoTooltipCondena(int turnosRestantes, int turnosAcumulados)
+  {
+    string texto = TraducirSeguro("Condena: En X cantidad de turnos recibirá daño verdadero igual al 10% de su vida máxima por turno con el efecto.");
+    texto = texto.Replace("X", Mathf.Max(1, turnosRestantes).ToString());
+
+    int porcentajeAcumulado = Mathf.Max(1, turnosAcumulados) * 10;
+    return texto + "\n" + EtiquetaCondenaAcumulado() + porcentajeAcumulado + "%";
+  }
+
+  private string EtiquetaCondenaAcumulado()
+  {
+    if (TRADU.i == null)
+    {
+      return "Acumulado: ";
+    }
+
+    switch (TRADU.i.nIdioma)
+    {
+      case TRADU.IdiomaIngles:
+        return "Accumulated: ";
+      case TRADU.IdiomaPortugues:
+        return "Acumulado: ";
+      default:
+        return "Acumulado: ";
+    }
   }
 
   private static string TraducirSeguro(string texto)

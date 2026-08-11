@@ -24,6 +24,8 @@ public sealed class EstadosCaravanaSaveData
     public int aletargados;
     public int desmotivacion;
     public int descuidados;
+    public bool viajeActualVigilante;
+    public bool viajeActualDescuidados;
 }
 
 public struct EfectosViajeCaravana
@@ -52,7 +54,7 @@ public sealed class EstadosCaravana
     public const int ModEmboscadaVigilante = -10;
     public const int ModExploracionDescuidados = -10;
     public const int ModEmboscadaDescuidados = 10;
-    public const float MultiplicadorVelocidadVisualPresteza = 1.15f;
+    public const float MultiplicadorVelocidadVisualPresteza = 1.20f;
     public const float MultiplicadorVelocidadVisualAletargados = 0.80f;
 
     [SerializeField] private int inspiracion;
@@ -265,10 +267,18 @@ public sealed class EstadosCaravana
 
         return new EfectosViajeCaravana
         {
-            previeneAvanceAliento = prestezaActiva,
-            avanceAlientoExtra = aletargadosActivos ? 1 : 0,
+            previeneAvanceAliento = false,
+            avanceAlientoExtra = 0,
             multiplicadorVelocidadVisual = multiplicadorVelocidadVisual
         };
+    }
+
+    public float ObtenerMultiplicadorVelocidadViajePendiente()
+    {
+        float multiplicador = 1f;
+        if (presteza > 0) multiplicador *= MultiplicadorVelocidadVisualPresteza;
+        if (aletargados > 0) multiplicador *= MultiplicadorVelocidadVisualAletargados;
+        return multiplicador;
     }
 
     public void FinalizarViajeActual()
@@ -337,7 +347,9 @@ public sealed class EstadosCaravana
             acobardados = acobardados,
             aletargados = aletargados,
             desmotivacion = desmotivacion,
-            descuidados = descuidados
+            descuidados = descuidados,
+            viajeActualVigilante = viajeActualVigilante,
+            viajeActualDescuidados = viajeActualDescuidados
         };
     }
 
@@ -352,7 +364,8 @@ public sealed class EstadosCaravana
         desmotivacion = Mathf.Max(0, data != null ? data.desmotivacion : 0);
         descuidados = Mathf.Max(0, data != null ? data.descuidados : 0);
 
-        FinalizarViajeActual();
+        viajeActualVigilante = data != null && data.viajeActualVigilante;
+        viajeActualDescuidados = data != null && data.viajeActualDescuidados;
         FinalizarCombateActual();
     }
 }

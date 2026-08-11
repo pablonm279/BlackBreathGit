@@ -289,7 +289,7 @@ public class ManagerListaEstadosCaravana : MonoBehaviour
             case TipoEstadoCaravana.Inspiracion:
                 return "+2 VAL a toda la Caravana en el próximo combate.";
             case TipoEstadoCaravana.Presteza:
-                return "El Aliento Negro no avanza en el próximo viaje.";
+                return "+20% velocidad de caravana en el próximo viaje.";
             case TipoEstadoCaravana.Compromiso:
                 return "+20% Experiencia en el próximo combate.";
             case TipoEstadoCaravana.Vigilante:
@@ -297,7 +297,7 @@ public class ManagerListaEstadosCaravana : MonoBehaviour
             case TipoEstadoCaravana.Acobardados:
                 return "-2 VAL a toda la Caravana en el próximo combate.";
             case TipoEstadoCaravana.Aletargados:
-                return "+1 avance del Aliento Negro en el próximo viaje.";
+                return "-20% velocidad de caravana en el próximo viaje.";
             case TipoEstadoCaravana.Desmotivacion:
                 return "-20% Experiencia en el próximo combate.";
             case TipoEstadoCaravana.Descuidados:

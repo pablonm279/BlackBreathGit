@@ -12,6 +12,7 @@ public class FloatingTextBackground : MonoBehaviour
     private const float DefaultVerticalPadding = 6f;
 
     private static Sprite sharedSprite;
+    private static Sprite sharedSpriteFromRight;
 
     private TextMeshProUGUI targetText;
     private RectTransform targetRect;
@@ -22,8 +23,14 @@ public class FloatingTextBackground : MonoBehaviour
     private float verticalPadding = DefaultVerticalPadding;
     private float alpha = DefaultAlpha;
     private float externalAlpha = 1f;
+    private bool extendFromRight;
 
     public static FloatingTextBackground Attach(TextMeshProUGUI target)
+    {
+        return Attach(target, false);
+    }
+
+    public static FloatingTextBackground Attach(TextMeshProUGUI target, bool extendFromRight)
     {
         if (target == null)
         {
@@ -36,11 +43,11 @@ public class FloatingTextBackground : MonoBehaviour
             background = target.gameObject.AddComponent<FloatingTextBackground>();
         }
 
-        background.Initialize(target, DefaultHorizontalPadding, DefaultVerticalPadding, DefaultAlpha);
+        background.Initialize(target, DefaultHorizontalPadding, DefaultVerticalPadding, DefaultAlpha, extendFromRight);
         return background;
     }
 
-    private void Initialize(TextMeshProUGUI target, Vector2 horizontalPaddingValue, float verticalPaddingValue, float alphaValue)
+    private void Initialize(TextMeshProUGUI target, Vector2 horizontalPaddingValue, float verticalPaddingValue, float alphaValue, bool extendFromRightValue)
     {
         targetText = target;
         targetRect = target.GetComponent<RectTransform>();
@@ -50,6 +57,7 @@ public class FloatingTextBackground : MonoBehaviour
         verticalPadding = verticalPaddingValue;
         alpha = Mathf.Clamp01(alphaValue);
         externalAlpha = 1f;
+        extendFromRight = extendFromRightValue;
 
         RectTransform parentRect = canvasRect != null ? canvasRect : targetRect != null ? targetRect.parent as RectTransform : null;
         if (targetRect == null || parentRect == null)
@@ -71,7 +79,7 @@ public class FloatingTextBackground : MonoBehaviour
             backgroundImage = backgroundRect.GetComponent<Image>();
         }
 
-        backgroundImage.sprite = GetSharedSprite();
+        backgroundImage.sprite = GetSharedSprite(extendFromRight);
         backgroundImage.type = Image.Type.Simple;
         backgroundImage.raycastTarget = false;
     }
@@ -91,23 +99,25 @@ public class FloatingTextBackground : MonoBehaviour
 
         targetText.ForceMeshUpdate();
         Bounds textBounds = targetText.textBounds;
+        Vector3 leftWorld = targetRect.TransformPoint(new Vector3(textBounds.min.x - horizontalPadding.x, textBounds.center.y, 0f));
         Vector3 rightWorld = targetRect.TransformPoint(new Vector3(textBounds.max.x + horizontalPadding.y, textBounds.center.y, 0f));
         Vector3 bottomWorld = targetRect.TransformPoint(new Vector3(textBounds.center.x, textBounds.min.y - verticalPadding, 0f));
         Vector3 topWorld = targetRect.TransformPoint(new Vector3(textBounds.center.x, textBounds.max.y + verticalPadding, 0f));
 
+        Vector2 leftLocal = parentRect.InverseTransformPoint(leftWorld);
         Vector2 rightLocal = parentRect.InverseTransformPoint(rightWorld);
         Vector2 bottomLocal = parentRect.InverseTransformPoint(bottomWorld);
         Vector2 topLocal = parentRect.InverseTransformPoint(topWorld);
-        float leftX = parentRect.rect.xMin;
-        float rightX = rightLocal.x;
+        float leftX = extendFromRight ? leftLocal.x : parentRect.rect.xMin;
+        float rightX = extendFromRight ? parentRect.rect.xMax : rightLocal.x;
         float centerY = (bottomLocal.y + topLocal.y) * 0.5f;
         float width = Mathf.Max(1f, rightX - leftX);
         float height = Mathf.Max(1f, Mathf.Abs(topLocal.y - bottomLocal.y));
 
         backgroundRect.anchorMin = new Vector2(0.5f, 0.5f);
         backgroundRect.anchorMax = new Vector2(0.5f, 0.5f);
-        backgroundRect.pivot = new Vector2(0f, 0.5f);
-        backgroundRect.anchoredPosition = new Vector2(leftX, centerY);
+        backgroundRect.pivot = new Vector2(extendFromRight ? 1f : 0f, 0.5f);
+        backgroundRect.anchoredPosition = new Vector2(extendFromRight ? rightX : leftX, centerY);
         backgroundRect.localRotation = Quaternion.identity;
         backgroundRect.localScale = Vector3.one;
         backgroundRect.sizeDelta = new Vector2(width, height);
@@ -125,11 +135,12 @@ public class FloatingTextBackground : MonoBehaviour
         }
     }
 
-    private static Sprite GetSharedSprite()
+    private static Sprite GetSharedSprite(bool fromRight)
     {
-        if (sharedSprite != null)
+        Sprite cachedSprite = fromRight ? sharedSpriteFromRight : sharedSprite;
+        if (cachedSprite != null)
         {
-            return sharedSprite;
+            return cachedSprite;
         }
 
         Texture2D texture = new Texture2D(TextureWidth, TextureHeight, TextureFormat.RGBA32, false)
@@ -147,14 +158,24 @@ public class FloatingTextBackground : MonoBehaviour
             for (int x = 0; x < TextureWidth; x++)
             {
                 float normalizedX = x / (float)(TextureWidth - 1);
-                float rightFade = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((normalizedX - 0.97f) / 0.03f));
-                float alphaValue = vertical * rightFade;
+                float edgeFade = fromRight
+                    ? Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(normalizedX / 0.03f))
+                    : 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((normalizedX - 0.97f) / 0.03f));
+                float alphaValue = vertical * edgeFade;
                 texture.SetPixel(x, y, new Color(1f, 1f, 1f, alphaValue));
             }
         }
 
         texture.Apply(false, true);
-        sharedSprite = Sprite.Create(texture, new Rect(0f, 0f, TextureWidth, TextureHeight), new Vector2(0.5f, 0.5f), 100f);
-        return sharedSprite;
+        Sprite sprite = Sprite.Create(texture, new Rect(0f, 0f, TextureWidth, TextureHeight), new Vector2(0.5f, 0.5f), 100f);
+        if (fromRight)
+        {
+            sharedSpriteFromRight = sprite;
+        }
+        else
+        {
+            sharedSprite = sprite;
+        }
+        return sprite;
     }
 }

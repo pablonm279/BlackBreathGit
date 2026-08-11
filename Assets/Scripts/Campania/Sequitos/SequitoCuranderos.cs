@@ -50,8 +50,14 @@ public class SequitoCuranderos : MonoBehaviour
       else { bonusHerboristas = 0; }
 
     string bonusText = bonusHerboristas > 0 ? " +" + bonusHerboristas + TRADU.i.Traducir("% por Herboristas") : "";
+    string descripcionCuracion = TRADU.i.nIdioma switch
+    {
+      TRADU.IdiomaIngles => "Treatment Wagons: Their initial bonus is +10%; each tier adds another +5%, up to +30%, and reduces the cost of Treat Wounds. This bonus is added to the global healing multiplier and affects both the 4%/h resting rate and the 2%/h active rate.\nCurrent global bonus: ",
+      TRADU.IdiomaPortugues => "Carros de Tratamento: O bônus inicial é +10%; cada tier adiciona outros +5%, até +30%, e reduz o custo de Tratar Feridas. Este bônus é somado ao multiplicador global de cura e afeta tanto a taxa de 4%/h em descanso quanto a taxa de 2%/h em atividade.\nBônus global atual: ",
+      _ => "Carros de Tratamiento: Su bonificación inicial es +10%; cada tier suma otro +5%, hasta +30%, y reduce el costo de Tratar Heridas. Esta bonificación se suma al multiplicador global de curación y afecta tanto la tasa de 4%/h al descansar como la de 2%/h en actividad.\nBonificación global actual: "
+    };
 
-    txtDescMejoraCuracion.text = TRADU.i.Traducir("Carros de Tratamiento: Mejorar los carros utilizados por el Séquito de Curanderos para tratar heridos significará una mejora en los tratamientos recibidos por los heridos y su tiempo de recuperación. \nCada Tier aumenta en 5% la curación diaria de los personajes que Descansen y reduce el costo de Tratar Heridas. \nAdemás cada tier da un 10% extra a las posibilidades de reducir Enfermedades al Descansar (20% base). \nCuración proporcionada: ") + (CampaignManager.Instance.sequitoCuranderosMejoraCuracion * 100) + "%" + bonusText;
+    txtDescMejoraCuracion.text = descripcionCuracion + (CampaignManager.Instance.sequitoCuranderosMejoraCuracion * 100) + "%" + bonusText;
     float tier =((CampaignManager.Instance.sequitoCuranderosMejoraCuracion*100)-10)/5;
     txtTierCuracion.text = "Tier "+(int)tier;
     valormejora =(int)( 30+(CampaignManager.Instance.sequitoCuranderosMejoraCuracion*150));

@@ -222,6 +222,7 @@ public class TutorialManager : MonoBehaviour
         ConfigurarVisualNodoTutorial(Nodotut5, 11);
         ConfigurarVisualNodoTutorial(Nodotut6, 3);
         ConfigurarVisualNodoTutorial(Nodotut7, 1);
+        RevelarNodoTutorial(Nodotut7);
         ConfigurarClaroMisteriosoTutorial();
 
         ForzarEleccionInicialVisible();

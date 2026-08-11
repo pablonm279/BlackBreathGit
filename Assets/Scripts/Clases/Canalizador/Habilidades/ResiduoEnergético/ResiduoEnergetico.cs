@@ -55,7 +55,7 @@ public class ResiduoEnergetico : Trampa
     }
     else
     { 
-      objetivo.RecibirDanio(rand, 8,false,unidadCreadora);
+      objetivo.RecibirDanio(rand, 8, false, unidadCreadora, 0, true);
     }
 
     

@@ -371,7 +371,7 @@ public class BanterBattleUI : MonoBehaviour
             graficos[i].raycastTarget = false;
         }
 
-        bool apareceDesdeDerecha = sistema == TipoSistema.Campania;
+        bool apareceDesdeDerecha = false;
         panel.anchorMin = new Vector2(apareceDesdeDerecha ? 1f : 0f, 0.76f);
         panel.anchorMax = panel.anchorMin;
         panel.pivot = new Vector2(0.5f, 0.5f);

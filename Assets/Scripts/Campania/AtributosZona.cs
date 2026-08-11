@@ -758,10 +758,10 @@ public class AtributosZona : MonoBehaviour
       modChanceExploracion = 5;
 
       Clima_chances_Sol = 40;
-      Clima_chances_Calor = 50;
-      Clima_chances_Lluvia = 60;
-      Clima_chances_Nieve = 60;
-      Clima_chances_Niebla = 80;
+      Clima_chances_Calor = 60;
+      Clima_chances_Lluvia = 70;
+      Clima_chances_Nieve = 70;
+      Clima_chances_Niebla = 85;
       Clima_chances_EspecialZona1 = 100;
 
 
@@ -911,7 +911,7 @@ public class AtributosZona : MonoBehaviour
          kOverride: 20);
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Llama,
-         cantidad: 15,
+         cantidad: 13,
          sector: 2,
          distCaminoOverride: 0.74f,
           distNodoOverride: 0.80f,

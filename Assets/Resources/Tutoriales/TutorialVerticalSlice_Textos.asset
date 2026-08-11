@@ -116,31 +116,9 @@ MonoBehaviour:
       e qualquer demora pode ser mortal.\n\r\nN\xE3o poderemos det\xEA-lo... s\xF3
       seguir \xE0 frente dele e tentar chegar ao porto.\u201D\r\n"
   - key: tutorial.intro3.body
-    es: "El <b>Aliento Negro</b> avanzar\xE1 a medida que la caravana viaje, descanse
-      o se retrase.\r\nCuanto m\xE1s cerca se encuentre, m\xE1s peligrosos ser\xE1n
-      los caminos y mayores los efectos nocivos sobre la caravana.\n\r\nLa flecha
-      se\xF1ala el avance actual del Aliento Negro.\n\n\r\n\r\n"
-    en: 'The <b>Black Breath</b> will advance as the caravan travels, rests, or falls
-      behind.
-
-      The closer it gets, the more dangerous the roads become, and
-      the harsher its harmful effects on the caravan.
-
-
-
-      The arrow shows the
-      current advance of the Black Breath.
-
-
-
-
-
-
-'
-    pt: "O <b>Respiro Negro</b> avan\xE7ar\xE1 conforme a caravana viaje, descanse
-      ou se atrase.\r\nQuanto mais perto estiver, mais perigosos ser\xE3o os caminhos
-      e maiores seus efeitos nocivos sobre a caravana.\n\r\nA seta indica o avan\xE7o
-      atual do Respiro Negro.\n\n\r\n\r\n"
+    es: "El <b>Aliento Negro</b> acumula tiempo de forma continua: <b>1 h por cada hora de campa\xF1a</b>. Durante los descansos en <b>Claros</b> acumula tiempo al 50%. Cuanto m\xE1s cerca se encuentre, m\xE1s peligrosos ser\xE1n los caminos y mayores sus efectos nocivos.\n\nLa flecha muestra su distancia actual en horas.\n"
+    en: "The <b>Black Breath</b> accumulates time continuously: <b>1 h per campaign hour</b>. During rests in <b>Clearings</b>, it accumulates time at 50%. The closer it gets, the more dangerous the roads and its harmful effects become.\n\nThe arrow shows its current distance in hours.\n"
+    pt: "O <b>Respiro Negro</b> acumula tempo continuamente: <b>1 h por hora de campanha</b>. Durante descansos em <b>Clareiras</b>, acumula tempo a 50%. Quanto mais perto estiver, mais perigosos ser\xE3o os caminhos e maiores seus efeitos nocivos.\n\nA seta mostra sua dist\xE2ncia atual em horas.\n"
   - key: tutorial.intro4.title
     es: Esperanza
     en: Hope
@@ -296,9 +274,9 @@ MonoBehaviour:
     en: Battle
     pt: Batalha
   - key: tutorial.postbatalla1.narrator
-    es: ''
-    en: ''
-    pt: ''
+    es: 
+    en: 
+    pt: 
   - key: tutorial.postbatalla2.title
     es: Personajes
     en: Characters
@@ -380,31 +358,9 @@ MonoBehaviour:
       seus homens vivos por tempo suficiente, e acabar\xE3o se tornando combatentes
       muito mais capazes.\u201D"
   - key: tutorial.personaje2.body
-    es: "Las <b>Actividades de Campa\xF1a</b> permiten asignar tareas a los Personajes
-      mientras la caravana viaja o descansa.\n\nCada Actividad otorga distintos beneficios,
-      y cada Personaje posee opciones \xFAnicas seg\xFAn su clase.\nCuando quieras
-      cambiar de actividad, puedes hacerlo en el panel se\xF1alado.\n\n<color=#FFD54A><b>Cierra
-      el menu de Personajes Tecla \"C\" para continuar.</b></color>\n"
-    en: '<b>Campaign Activities</b> let you assign tasks to Characters while the
-      caravan travels or rests.
-
-
-      Each Activity grants different benefits,
-      and each Character has unique options based on their class.
-
-      When you
-      want to change activity, you can do it in the marked panel.
-
-
-      <color=#FFD54A><b>Close
-      the Characters menu with the "C" key to continue.</b></color>
-
-'
-    pt: "As <b>Atividades de Campanha</b> permitem atribuir tarefas aos Personagens
-      enquanto a caravana viaja ou descansa.\n\nCada Atividade concede benef\xEDcios
-      diferentes, e cada Personagem possui op\xE7\xF5es \xFAnicas conforme sua classe.\nQuando
-      quiser mudar de atividade, use o painel marcado.\n\n<color=#FFD54A><b>Feche
-      o menu de Personagens com a tecla \"C\" para continuar.</b></color>\n"
+    es: "Las <b>Actividades de Campa\xF1a</b> permiten asignar tareas a los Personajes mientras la caravana viaja o descansa. Cada actividad acumula horas activas y aplica su resultado al completar <b>24 h activas</b>. Cambiar de actividad conserva por separado el progreso de cada una.\n\nCada Personaje posee opciones \xFAnicas seg\xFAn su clase.\n\n<color=#FFD54A><b>Cierra el men\xFA de Personajes con la tecla \"C\" para continuar.</b></color>\n"
+    en: "<b>Campaign Activities</b> let you assign tasks to Characters while the caravan travels or rests. Each activity accumulates active hours and applies its result after <b>24 active h</b>. Switching activities preserves each activity's progress separately.\n\nEach Character has unique options based on their class.\n\n<color=#FFD54A><b>Close the Characters menu with the \"C\" key to continue.</b></color>\n"
+    pt: "As <b>Atividades de Campanha</b> permitem atribuir tarefas aos Personagens enquanto a caravana viaja ou descansa. Cada atividade acumula horas ativas e aplica seu resultado ao completar <b>24 h ativas</b>. Mudar de atividade preserva separadamente o progresso de cada uma.\n\nCada Personagem possui op\xE7\xF5es \xFAnicas conforme sua classe.\n\n<color=#FFD54A><b>Feche o menu de Personagens com a tecla \"C\" para continuar.</b></color>\n"
   - key: tutorial.personaje2.title
     es: Actividades
     en: Activities
@@ -538,9 +494,9 @@ MonoBehaviour:
     pt: Melhorias
   - key: tutorial.alforjas1.narrator
     es: "\u201CNuestra caravana puede beneficiarse de diversas mejoras, seg\xFAn
-      la situaci\xF3n, la regi\xF3n que atravesemos y los muchos imprevistos del camino.\n\nPor
-      el momento, creo que a los bueyes les vendr\xEDan bien unas alforjas. Con ellas
-      podremos llevar m\xE1s carga sin retrasar la marcha.\u201D"
+      la situaci\xF3n, la regi\xF3n que atravesemos y los muchos imprevistos del
+      camino.\n\nPor el momento, creo que a los bueyes les vendr\xEDan bien unas
+      alforjas. Con ellas podremos llevar m\xE1s carga sin retrasar la marcha.\u201D"
     en: "\u201COur caravan can benefit from various upgrades, depending on the situation,
       the region we cross, and the many surprises on the road.\n\nFor now, I think
       the oxen could use some saddlebags. With them we can carry more load without
@@ -669,26 +625,9 @@ MonoBehaviour:
       n\xF3s permanecer\xE3o <b>Misteriosos</b>, e seu conte\xFAdo ser\xE1 desconhecido
       at\xE9 alcan\xE7\xE1-los."
   - key: tutorial.exp2.body
-    es: "<Size=85%><i><color=#A94444>---Los nodos de Regi\xF3n Expuesta garantizan que
-      la caravana ser\xE1 emboscada si se viaja all\xED. \nSon combates m\xE1s dif\xEDciles
-      y extensos en los cuales si eres derrotado, perder\xE1s la partida.---</color></i></Size>\n\nLa
-      <b>Exploraci\xF3n Activa</b> te deja enviar 5 <b>Civiles</b> a revelar  un
-      <b>Nodo Misterioso</b> esto provocar\xE1 que el Aliento Negro avance levemente
-      y a veces pueden no regresar.\n\n<color=#FFD54A><b>Haz click con el <b>Bot\xF3n
-      Derecho</b> en el Nodo seleccionado para enviar Exploradores.</b></color>"
-    en: "<Size=85%><i><color=#A94444>---Exposed Region nodes guarantee the caravan
-      will be ambushed if it travels there. \nThese are harder, longer fights where
-      defeat will end the game.---</color></i></Size>\n\n<b>Active Exploration</b>
-      lets you send 5 <b>Civilians</b> to reveal a <b>Mysterious Node</b>. This will
-      make the Black Breath advance slightly, and sometimes they may not return.\n\n<color=#FFD54A><b>Right-click
-      the selected Node to send Scouts.</b></color>"
-    pt: "<Size=85%><i><color=#A94444>---N\xF3s de Regi\xE3o Exposta garantem que a caravana
-      ser\xE1 emboscada se viajar para l\xE1. \nS\xE3o combates mais dif\xEDceis
-      e longos nos quais, se voc\xEA for derrotado, perder\xE1 a partida.---</color></i></Size>\n\nA
-      <b>Explora\xE7\xE3o Ativa</b> permite enviar 5 <b>Civis</b> para revelar um
-      <b>N\xF3 Misterioso</b>. Isso far\xE1 o Respiro Negro avan\xE7ar um pouco,
-      e \xE0s vezes eles podem n\xE3o voltar.\n\n<color=#FFD54A><b>Clique com o <b>Bot\xE3o
-      Direito</b> no N\xF3 selecionado para enviar Exploradores.</b></color>"
+    es: "<Size=85%><i><color=#A94444>---Los nodos de Regi\xF3n Expuesta garantizan una emboscada al viajar all\xED. Son combates m\xE1s dif\xEDciles y extensos; si eres derrotado, perder\xE1s la partida.---</color></i></Size>\n\nLa <b>Exploraci\xF3n Activa</b> permite enviar 5 <b>Civiles</b> a revelar un <b>Nodo Misterioso</b>. La expedici\xF3n dura <b>5 h</b>, por lo que el Aliento Negro tambi\xE9n acumula 5 h, y a veces los exploradores pueden no regresar.\n\n<color=#FFD54A><b>Haz clic con el <b>Bot\xF3n Derecho</b> en el Nodo seleccionado para enviar Exploradores.</b></color>"
+    en: "<Size=85%><i><color=#A94444>---Exposed Region nodes guarantee an ambush when traveling there. These are harder, longer fights; defeat will end the game.---</color></i></Size>\n\n<b>Active Exploration</b> lets you send 5 <b>Civilians</b> to reveal a <b>Mysterious Node</b>. The expedition lasts <b>5 h</b>, so the Black Breath also accumulates 5 h, and sometimes the scouts may not return.\n\n<color=#FFD54A><b>Right-click the selected Node to send Scouts.</b></color>"
+    pt: "<Size=85%><i><color=#A94444>---N\xF3s de Regi\xE3o Exposta garantem uma emboscada ao viajar para l\xE1. S\xE3o combates mais dif\xEDceis e longos; se voc\xEA for derrotado, perder\xE1 a partida.---</color></i></Size>\n\nA <b>Explora\xE7\xE3o Ativa</b> permite enviar 5 <b>Civis</b> para revelar um <b>N\xF3 Misterioso</b>. A expedi\xE7\xE3o dura <b>5 h</b>, por isso o Respiro Negro tamb\xE9m acumula 5 h, e \xE0s vezes os exploradores podem n\xE3o voltar.\n\n<color=#FFD54A><b>Clique com o <b>Bot\xE3o Direito</b> no N\xF3 selecionado para enviar Exploradores.</b></color>"
   - key: tutorial.exp2.narrator
     es: "\u201CEs crucial evitar la emboscada enemiga.\n\nNuestra mejor opci\xF3n
       es enviar un grupo de exploradores al sureste y esperar a su regreso. \nEsto
@@ -770,16 +709,9 @@ MonoBehaviour:
       come\xE7ar\xE1 a ter um impacto negativo progressivo na <b>Esperan\xE7a</b>.\n\nDescansar
       permite reduzir a Fadiga e recuperar for\xE7as antes de continuar.\n"
   - key: tutorial.fatiga1.narrator
-    es: "\u201CExcelente\u2026 la caravana necesita este descanso. Han sido cuatro
-      d\xEDas de viaje casi ininterrumpido, con apenas unas pocas pausas breves.\n\nSi
-      exigimos demasiado a la caravana sin acampar\u2026 tarde o temprano terminar\xE1
-      quebr\xE1ndose.\u201D"
-    en: "\u201CExcellent... the caravan needs this rest. It has been four days of
-      almost nonstop travel, with only a few short pauses.\n\nIf we demand too much
-      from the caravan without camping... sooner or later it will break.\u201D"
-    pt: "\u201CExcelente... a caravana precisa deste descanso. Foram quatro dias
-      de viagem quase sem parar, com apenas algumas pausas breves.\n\nSe exigirmos
-      demais da caravana sem acampar... cedo ou tarde ela acabar\xE1 quebrando.\u201D"
+    es: "\u201CExcelente\u2026 la caravana necesita este descanso. Han sido muchas horas de viaje casi ininterrumpido, con apenas unas pocas pausas breves.\n\nSi exigimos demasiado a la caravana sin acampar\u2026 tarde o temprano terminar\xE1 quebr\xE1ndose.\u201D"
+    en: "\u201CExcellent... the caravan needs this rest. It has been many hours of almost nonstop travel, with only a few short pauses.\n\nIf we demand too much from the caravan without camping... sooner or later it will break.\u201D"
+    pt: "\u201CExcelente... a caravana precisa deste descanso. Foram muitas horas de viagem quase sem parar, com apenas algumas pausas breves.\n\nSe exigirmos demais da caravana sem acampar... cedo ou tarde ela acabar\xE1 quebrando.\u201D"
   - key: tutorial.fatiga2.narrator
     es: "\u201CLos claros como este son ideales para acampar. Aqu\xED estaremos m\xE1s
       resguardados de posibles emboscadas y la caravana podr\xE1 recuperar fuerzas
@@ -800,84 +732,21 @@ MonoBehaviour:
     en: Rest
     pt: Descanso
   - key: tutorial.fatiga2.body
-    es: "Acampar implica que la caravana parar\xE1 un d\xEDa entero para recobrar
-      fuerzas y reacomodarse.\n\nAl descansar:\n-La <b>Fatiga</b> se restablecer\xE1.\n-Los
-      <b>Personajes</b> recuperar\xE1n mas salud.\n-Cada <b>Civil</b> consumir\xE1
-      1 <b>Suministro</b>. (Cada Buey 2)\n-El <b>Aliento Negro</b> avanzar\xE1 2
-      posiciones. (1 en <b>Claros</b>)\n-Se dar\xE1 un <b>Evento</b> Aleatorio de
-      descanso.\n-Se podr\xE1 seleccionar una <b>Tarea Civil</b>.\n\n<color=#FFD54A>Presiona
-      el bot\xF3n de <b>Acampar</b></color>"
-    en: 'Camping means the caravan will stop for a full day to recover strength and
-      reorganize.
-
-
-      When resting:
-
-      -<b>Fatigue</b> will reset.
-
-      -<b>Characters</b>
-      will recover more health.
-
-      -Each <b>Civilian</b> will consume 1 <b>Supply</b>.
-      (Each Ox 2)
-
-      -The <b>Black Breath</b> will advance 2 positions. (1 in
-      <b>Clearings</b>)
-
-      -A random rest <b>Event</b> will occur.
-
-      -A
-      <b>Civil Task</b> can be selected.
-
-
-      <color=#FFD54A>Press the <b>Camp</b>
-      button</color>'
-    pt: "Acampar implica que a caravana parar\xE1 um dia inteiro para recuperar for\xE7as
-      e se reorganizar.\n\nAo descansar:\n-A <b>Fadiga</b> ser\xE1 restaurada.\n-Os
-      <b>Personagens</b> recuperar\xE3o mais sa\xFAde.\n-Cada <b>Civil</b> consumir\xE1
-      1 <b>Suprimento</b>. (Cada Boi 2)\n-O <b>Respiro Negro</b> avan\xE7ar\xE1 2
-      posi\xE7\xF5es. (1 em <b>Clareiras</b>)\n-Ocorrer\xE1 um <b>Evento</b> aleat\xF3rio
-      de descanso.\n-Ser\xE1 poss\xEDvel selecionar uma <b>Tarefa Civil</b>.\n\n<color=#FFD54A>Pressione
-      o bot\xE3o <b>Acampar</b></color>"
+    es: "Acampar implica que la caravana se detendr\xE1 para recobrar fuerzas y reacomodarse.\n\nAl descansar:\n-La <b>Fatiga</b> se restablecer\xE1.\n-Los <b>Personajes</b> recuperar\xE1n m\xE1s salud.\n-Cada <b>Civil</b> consumir\xE1 1 <b>Suministro</b>. (Cada Buey 2)\n-El <b>Aliento Negro</b> seguir\xE1 avanzando.\n-Se dar\xE1 un <b>Evento</b> aleatorio de descanso.\n-Se podr\xE1 seleccionar una <b>Tarea Civil</b>.\n\n<color=#FFD54A>Presiona el bot\xF3n de <b>Acampar</b></color>"
+    en: "Camping means the caravan will stop to recover strength and reorganize.\n\nWhen resting:\n-<b>Fatigue</b> will reset.\n-<b>Characters</b> will recover more health.\n-Each <b>Civilian</b> will consume 1 <b>Supply</b>. (Each Ox 2)\n-The <b>Black Breath</b> will keep advancing.\n-A random rest <b>Event</b> will occur.\n-A <b>Civil Task</b> can be selected.\n\n<color=#FFD54A>Press the <b>Camp</b> button</color>"
+    pt: "Acampar implica que a caravana parar\xE1 para recuperar for\xE7as e se reorganizar.\n\nAo descansar:\n-A <b>Fadiga</b> ser\xE1 restaurada.\n-Os <b>Personagens</b> recuperar\xE3o mais sa\xFAde.\n-Cada <b>Civil</b> consumir\xE1 1 <b>Suprimento</b>. (Cada Boi 2)\n-O <b>Respiro Negro</b> continuar\xE1 avan\xE7ando.\n-Ocorrer\xE1 um <b>Evento</b> aleat\xF3rio de descanso.\n-Ser\xE1 poss\xEDvel selecionar uma <b>Tarefa Civil</b>.\n\n<color=#FFD54A>Pressione o bot\xE3o <b>Acampar</b></color>"
   - key: tutorial.descanso1.title
     es: Tarea Civil
     en: Civil Task
     pt: Tarefa Civil
   - key: tutorial.descanso1.body
-    es: "Durante cada <b>Descanso</b>, podr\xE1s asignar una <b>Tarea Civil</b> a
-      los miembros de la caravana.\n\nEstas tareas pueden ayudarte a conseguir recursos,
-      reducir riesgos o incluso a aumentar la Esperanza.\n\n<color=#FFD54A>Elige
-      una Tarea Civil y presiona el bot\xF3n de <b>Descanso</b></color>"
-    en: 'During each <b>Rest</b>, you can assign a <b>Civil Task</b> to the caravan
-      members.
-
-
-      These tasks can help you obtain resources, reduce risks, or
-      even increase Hope.
-
-
-      <color=#FFD54A>Choose a Civil Task and press the
-      <b>Rest</b> button</color>'
-    pt: "Durante cada <b>Descanso</b>, voc\xEA poder\xE1 atribuir uma <b>Tarefa Civil</b>
-      aos membros da caravana.\n\nEssas tarefas podem ajudar a obter recursos, reduzir
-      riscos ou at\xE9 aumentar a Esperan\xE7a.\n\n<color=#FFD54A>Escolha uma Tarefa
-      Civil e pressione o bot\xE3o de <b>Descanso</b></color>"
+    es: "Durante cada <b>Descanso</b>, podr\xE1s asignar una <b>Tarea Civil</b> a la caravana. Sus condiciones quedan decididas al comenzar y sus resultados se aplican al finalizar las 6, 8 o 10 h correspondientes.\n\nEstas tareas pueden conseguir recursos, reducir riesgos o aumentar la Esperanza.\n\n<color=#FFD54A>Elige una Tarea Civil y presiona el bot\xF3n de <b>Descanso</b></color>"
+    en: "During each <b>Rest</b>, you can assign a <b>Civil Task</b> to the caravan. Its conditions are decided when the rest begins, and its results are applied when the corresponding 6, 8, or 10 h duration ends.\n\nThese tasks can obtain resources, reduce risks, or increase Hope.\n\n<color=#FFD54A>Choose a Civil Task and press the <b>Rest</b> button</color>"
+    pt: "Durante cada <b>Descanso</b>, voc\xEA pode atribuir uma <b>Tarefa Civil</b> \xE0 caravana. Suas condi\xE7\xF5es s\xE3o decididas ao come\xE7ar, e seus resultados s\xE3o aplicados ao fim das 6, 8 ou 10 h correspondentes.\n\nEssas tarefas podem obter recursos, reduzir riscos ou aumentar a Esperan\xE7a.\n\n<color=#FFD54A>Escolha uma Tarefa Civil e pressione o bot\xE3o de <b>Descanso</b></color>"
   - key: tutorial.descanso1.narrator
-    es: "\"El campamento est\xE1 montado, y hoy no avanzaremos, nos centraremos en
-      descansar y recobrar fuerzas.\n\nPero no ser\xE1 un descanso ocioso, podremos
-      asignar una tarea a los miembros de la caravana que realizar\xE1n durante el
-      d\xEDa. Hay que hacer valer el tiempo disponible.\""
-    en: '"The camp is set, and today we will not advance; we will focus on resting
-      and recovering strength.
-
-
-      But it will not be an idle rest. We can assign
-      a task to the caravan members to perform during the day. We must make the available
-      time count."'
-    pt: "\"O acampamento est\xE1 montado, e hoje n\xE3o avan\xE7aremos; vamos nos
-      concentrar em descansar e recuperar for\xE7as.\n\nMas n\xE3o ser\xE1 um descanso
-      ocioso. Poderemos atribuir uma tarefa aos membros da caravana para realizar
-      durante o dia. \xC9 preciso aproveitar o tempo dispon\xEDvel.\""
+    es: "\"El campamento est\xE1 montado. Durante estas horas no avanzaremos: descansaremos y tambi\xE9n podremos asignar una tarea a la caravana. Sus resultados llegar\xE1n cuando termine el descanso.\""
+    en: "\"The camp is set. During these hours we will not move forward: we will rest and can also assign a task to the caravan. Its results will arrive when the rest ends.\""
+    pt: "\"O acampamento est\xE1 montado. Durante estas horas n\xE3o avan\xE7aremos: vamos descansar e tamb\xE9m poderemos atribuir uma tarefa \xE0 caravana. Seus resultados chegar\xE3o quando o descanso terminar.\""
   - key: tutorial.clima.title
     es: Clima
     en: Weather
@@ -896,27 +765,9 @@ MonoBehaviour:
       benevolentes, provavelmente animais benignos que pereceram nas chamas, querem
       nos guiar por caminhos seguros, longe do perigo.\""
   - key: tutorial.clima.body
-    es: "Cada vez que la caravana <b>Descansa</b>, se realiza una <b>Tirada de Clima</b>,
-      que puede cambiar las condiciones de la campa\xF1a.\n\n<color=#FFD54A>Puedes
-      ver el Clima actual y sus efectos en el \xE1rea marcada.</color>\n\nCada regi\xF3n
-      puede tener sus propios climas, e incluso condiciones especiales, como las
-      <b>Almas Danzantes</b> del <b>Bosque Ardiente</b>."
-    en: 'Each time the caravan <b>Rests</b>, a <b>Weather Roll</b> is made, which
-      can change campaign conditions.
-
-
-      <color=#FFD54A>You can see the current
-      Weather and its effects in the marked area.</color>
-
-
-      Each region can have
-      its own weather, and even special conditions, such as the <b>Dancing Souls</b>
-      of the <b>Burning Forest</b>.'
-    pt: "Cada vez que a caravana <b>Descansa</b>, \xE9 feita uma <b>Rolagem de Clima</b>,
-      que pode mudar as condi\xE7\xF5es da campanha.\n\n<color=#FFD54A>Voc\xEA pode
-      ver o Clima atual e seus efeitos na \xE1rea marcada.</color>\n\nCada regi\xE3o pode
-      ter seus pr\xF3prios climas, e at\xE9 condi\xE7\xF5es especiais, como as <b>Almas
-      Dan\xE7antes</b> da <b>Floresta Ardente</b>."
+    es: "Cada d\xEDa se realiza una <b>Tirada de Clima</b>, que puede cambiar las condiciones de la campa\xF1a.\n\n<color=#FFD54A>Puedes ver el Clima actual y sus efectos en el \xE1rea marcada.</color>\n\nCada regi\xF3n puede tener sus propios climas e incluso condiciones especiales, como las <b>Almas Danzantes</b> del <b>Bosque Ardiente</b>."
+    en: "Each day, a <b>Weather Roll</b> is made, which can change campaign conditions.\n\n<color=#FFD54A>You can see the current Weather and its effects in the marked area.</color>\n\nEach region can have its own weather, and even special conditions, such as the <b>Dancing Souls</b> of the <b>Burning Forest</b>."
+    pt: "A cada dia, \xE9 feita uma <b>Rolagem de Clima</b>, que pode mudar as condi\xE7\xF5es da campanha.\n\n<color=#FFD54A>Voc\xEA pode ver o Clima atual e seus efeitos na \xE1rea marcada.</color>\n\nCada regi\xE3o pode ter seus pr\xF3prios climas e at\xE9 condi\xE7\xF5es especiais, como as <b>Almas Dan\xE7antes</b> da <b>Floresta Ardente</b>."
   - key: tutorial.sequitos1.body
     es: "Los <b>S\xE9quitos</b> son grupos especializados que viajan junto a la caravana
       y brindan servicios durante la expedici\xF3n.\n\nLos <b>S\xE9quitos</b> cobrar\xE1n
@@ -1010,34 +861,9 @@ MonoBehaviour:
       enquanto tiverem m\xE3os firmes e algo com que trabalhar, cuidar\xE3o dos nossos
       feridos e doentes.\u201D"
   - key: tutorial.sequitos3.body
-    es: "El <b>S\xE9quito de Curanderos</b> proporciona curaci\xF3n pasiva a los
-      <b>Personajes</b> heridos tras el combate. Cada d\xEDa restaurar\xE1 un <b>5%</b>
-      de su vida m\xE1xima.\n\nEsta curaci\xF3n puede mejorarse gastando <b>Materiales</b>.\n\nAdem\xE1s,
-      los Curanderos pueden tratar a Personajes con el estado <b>Herido</b>, aunque
-      hacerlo no ser\xE1 barato.\n\n<color=#A94444><size=90%><i>Un Personaje queda
-      Herido si cae en combate. Si vuelve a caer mientras ya tiene una Herida, morir\xE1.</i></size></color>"
-    en: 'The <b>Healer Retinue</b> provides passive healing to <b>Characters</b>
-      wounded after combat. Each day it will restore <b>5%</b> of their maximum health.
-
-
-      This
-      healing can be improved by spending <b>Materials</b>.
-
-
-      Healers can also
-      treat Characters with the <b>Wounded</b> state, though doing so will not be
-      cheap.
-
-
-      <color=#A94444><size=90%><i>A Character becomes Wounded if they
-      fall in combat. If they fall again while already Wounded, they will die.</i></size></color>'
-    pt: "O <b>S\xE9quito de Curandeiros</b> fornece cura passiva aos <b>Personagens</b>
-      feridos ap\xF3s o combate. Cada dia restaurar\xE1 <b>5%</b> da vida m\xE1xima
-      deles.\n\nEssa cura pode ser melhorada gastando <b>Materiais</b>.\n\nAl\xE9m
-      disso, os Curandeiros podem tratar Personagens com o estado <b>Ferido</b>,
-      embora isso n\xE3o seja barato.\n\n<color=#A94444><size=90%><i>Um Personagem
-      fica Ferido se cair em combate. Se cair novamente enquanto j\xE1 tem uma Ferida,
-      morrer\xE1.</i></size></color>"
+    es: "El <b>S\xE9quito de Curanderos</b> suma <b>+10%</b> al multiplicador global de curaci\xF3n. Cada mejora suma +5%, hasta +30%. Este total se suma con las dem\xE1s mejoras globales y luego multiplica tanto la tasa de <b>4% por hora</b> al descansar como la de <b>2% por hora</b> al realizar otra actividad.\n\nAdem\xE1s, los Curanderos pueden tratar a Personajes con el estado <b>Herido</b>, aunque hacerlo no ser\xE1 barato.\n\n<color=#A94444><size=90%><i>Un Personaje queda Herido si cae en combate. Si vuelve a caer mientras ya tiene una Herida, morir\xE1.</i></size></color>"
+    en: "The <b>Healer Retinue</b> adds <b>+10%</b> to the global healing multiplier. Each upgrade adds +5%, up to +30%. This total is added to the other global upgrades and then multiplies both the <b>4% per hour</b> resting rate and the <b>2% per hour</b> rate while performing another activity.\n\nHealers can also treat Characters with the <b>Wounded</b> state, though doing so will not be cheap.\n\n<color=#A94444><size=90%><i>A Character becomes Wounded if they fall in combat. If they fall again while already Wounded, they will die.</i></size></color>"
+    pt: "O <b>S\xE9quito de Curandeiros</b> soma <b>+10%</b> ao multiplicador global de cura. Cada melhoria soma +5%, at\xE9 +30%. Esse total \xE9 somado \xE0s demais aprimoramentos globais e depois multiplica tanto a taxa de <b>4% por hora</b> ao descansar quanto a de <b>2% por hora</b> ao realizar outra atividade.\n\nAl\xE9m disso, os Curandeiros podem tratar Personagens com o estado <b>Ferido</b>, embora isso n\xE3o seja barato.\n\n<color=#A94444><size=90%><i>Um Personagem fica Ferido se cair em combate. Se cair novamente enquanto j\xE1 tem uma Ferida, morrer\xE1.</i></size></color>"
   - key: tutorial.sequitos4.narrator
     es: "\u201CLos carros de los mercaderes ofrecen objetos que podr\xEDan ser \xFAtiles
       para nuestros combatientes. No cuentan con demasiada variedad, pero conviene
@@ -1117,21 +943,23 @@ MonoBehaviour:
       a sa\xEDda.\n\nSe quisermos atravessar, teremos que enfrent\xE1-lo.\u201D"
   - key: tutorial.batfinpre1.body
     es: "El pr\xF3ximo nodo es la <b>Batalla Final</b> del tutorial.\n\nNormalmente,
-      las Regiones son mucho m\xE1s extensas, pero por motivos del tutorial, esta terminar\xE1
-      al superar la siguiente batalla.\n\n<color=#FFD54A><b>Viaja al siguiente nodo.</b></color>"
+      las Regiones son mucho m\xE1s extensas, pero por motivos del tutorial, esta
+      terminar\xE1 al superar la siguiente batalla.\n\n<color=#FFD54A><b>Viaja al
+      siguiente nodo.</b></color>"
     en: 'The next node is the tutorial''s <b>Final Battle</b>.
 
 
       Normally,
-      Regions are much larger, but for tutorial reasons, this one will end after you
-      overcome the next battle.
+      Regions are much larger, but for tutorial reasons, this one will end after
+      you overcome the next battle.
 
 
-      <color=#FFD54A><b>Travel to the next node.</b></color>'
+      <color=#FFD54A><b>Travel to the next
+      node.</b></color>'
     pt: "O pr\xF3ximo n\xF3 \xE9 a <b>Batalha Final</b> do tutorial.\n\nNormalmente,
-      as Regi\xF5es s\xE3o muito mais extensas, mas por motivos do tutorial, esta terminar\xE1
-      ao superar a pr\xF3xima batalha.\n\n<color=#FFD54A><b>Viaje para o pr\xF3ximo
-      n\xF3.</b></color>"
+      as Regi\xF5es s\xE3o muito mais extensas, mas por motivos do tutorial, esta
+      terminar\xE1 ao superar a pr\xF3xima batalha.\n\n<color=#FFD54A><b>Viaje para
+      o pr\xF3ximo n\xF3.</b></color>"
   - key: tutorial.batfinpre2.body
     es: "Presiona el bot\xF3n para Resolver Batalla"
     en: Press the button to Resolve Battle
@@ -1162,16 +990,16 @@ MonoBehaviour:
     pt: "Tutorial Conclu\xEDdo"
   - key: tutorial.postbatfinal1.narrator
     es: "\u201CEl camino queda abierto. La caravana sigue en pie, y eso basta por
-      ahora.\n\nA partir de aqu\xED, cada regi\xF3n ser\xE1 m\xE1s amplia y menos predecible.
-      Mantenga a su gente con vida, elija bien sus descansos y no deje que el miedo
-      decida por usted.\u201D"
+      ahora.\n\nA partir de aqu\xED, cada regi\xF3n ser\xE1 m\xE1s amplia y menos
+      predecible. Mantenga a su gente con vida, elija bien sus descansos y no deje
+      que el miedo decida por usted.\u201D"
     en: "\u201CThe road is open. The caravan still stands, and that is enough for
-      now.\n\nFrom here on, each region will be larger and less predictable. Keep your
-      people alive, choose your rests well, and do not let fear decide for you.\u201D"
+      now.\n\nFrom here on, each region will be larger and less predictable. Keep
+      your people alive, choose your rests well, and do not let fear decide for you.\u201D"
     pt: "\u201CO caminho est\xE1 aberto. A caravana segue de p\xE9, e isso basta
-      por enquanto.\n\nA partir daqui, cada regi\xE3o ser\xE1 mais ampla e menos previs\xEDvel.
-      Mantenha sua gente viva, escolha bem seus descansos e n\xE3o deixe que o medo
-      decida por voc\xEA.\u201D"
+      por enquanto.\n\nA partir daqui, cada regi\xE3o ser\xE1 mais ampla e menos
+      previs\xEDvel. Mantenha sua gente viva, escolha bem seus descansos e n\xE3o
+      deixe que o medo decida por voc\xEA.\u201D"
   - key: tutorial.postbatfinal1.body
     es: "<b>\xA1Felicidades!</b>\n\nSuperaste el tutorial y has adquirido los conocimientos
       b\xE1sicos para arrancar a jugar.\n\n<b>Presionar Continuar te llevar\xE1 de

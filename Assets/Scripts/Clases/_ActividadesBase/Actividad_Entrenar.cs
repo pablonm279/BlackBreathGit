@@ -8,7 +8,7 @@ public class Actividad_Entrenar : Actividad
     {
       IDActividad = 2; //Entrenar
 
-      desc = TRADU.i.Traducir("<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada día que pase ganará 20 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.");
+      desc = TRADU.i.Traducir("<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada 24 h activas gana 20 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.");
 
 
     }

@@ -196,11 +196,11 @@ public class Acechar : Habilidad
         objetivo.Marcar(0);
 
         
-        //Usarla termina el turno
-        BattleManager.Instance.TerminarTurno();
-
         //Agrega acechar
         objetivo.GanarEscondido(1);
+
+        //Usarla termina el turno
+        BattleManager.Instance.TerminarTurno();
       }
     }
     

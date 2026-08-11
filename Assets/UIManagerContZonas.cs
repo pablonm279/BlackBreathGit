@@ -78,7 +78,7 @@ public class UIManagerContZonas : MonoBehaviour
                 sprite,
                 clima.porcentaje,
                 textoTooltip,
-                traducirTooltip: descubierto);
+                traducirTooltip: false);
             item.gameObject.name = descubierto
                 ? "UiClimaszonaMenu_" + ClimaZonaCatalog.ObtenerNombreInterno(clima.tipoClima)
                 : "UiClimaszonaMenu_ClimaExclusivoDesconocido";
@@ -397,26 +397,63 @@ public static class ClimaZonaCatalog
 
     public static string ObtenerTooltipCampania(int tipoClima)
     {
+        int idioma = ObtenerIdiomaActual();
         switch (tipoClima)
         {
             case ClimaSol:
-                return "Soleado: +5 Esperanza.";
+                return LocalizarTooltip(
+                    idioma,
+                    "Soleado: +5 Esperanza.",
+                    "Sunny: +5 Hope.",
+                    "Ensolarado: +5 Esperança.");
             case ClimaCalor:
-                return "Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3.";
+                return LocalizarTooltip(
+                    idioma,
+                    "Ola de Calor: +1 Fatiga. Día Libre da +5 Esperanza, otras Tareas Civiles dan -3.",
+                    "Heat Wave: +1 Fatigue. Day Off grants +5 Hope; other Civil Tasks grant -3.",
+                    "Onda de Calor: +1 Fadiga. Dia Livre concede +5 Esperança; outras Tarefas Civis concedem -3.");
             case ClimaLluvia:
-                return "Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada.";
+                return LocalizarTooltip(
+                    idioma,
+                    "Lluvia: -5 Esperanza. -15% Recolección de Suministros, -20% probabilidad de Emboscada.",
+                    "Rain: -5 Hope. -15% Supply Gathering, -20% Ambush chance.",
+                    "Chuva: -5 Esperança. -15% Coleta de Suprimentos, -20% chance de Emboscada.");
             case ClimaNieve:
-                return "Nieve: solo permite Descansar o Guardia. -15% Recolecciones, -20% Emboscada. Viajar da -3 Esperanza por día.";
+                return LocalizarTooltip(
+                    idioma,
+                    "Nieve: solo permite Descansar o Guardia. -15% velocidad de viaje y Recolecciones, -20% Emboscada. Cada tramo recorrido da -3 Esperanza.",
+                    "Snow: only Rest or Guard is allowed. -15% travel speed and Gathering, -20% Ambush chance. Each traveled segment causes -3 Hope.",
+                    "Neve: só permite Descansar ou Vigiar. -15% de velocidade de viagem e Coletas, -20% de Emboscada. Cada trecho percorrido causa -3 Esperança.");
             case ClimaNiebla:
-                return "Niebla: -20% Recolecciones, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos.";
+                return LocalizarTooltip(
+                    idioma,
+                    "Niebla: -15% Visión, -20% Recolecciones, -10% Exploración, -20% Emboscada.",
+                    "Fog: -15% Vision, -20% Gathering, -10% Exploration, -20% Ambush chance.",
+                    "Névoa: -15% Visão, -20% Coletas, -10% Exploração, -20% chance de Emboscada.");
             case ClimaAlmasDanzantes:
-                return "Almas Danzantes: +5 Esperanza, -100% chances de Emboscada.";
+                return LocalizarTooltip(
+                    idioma,
+                    "Almas Danzantes: +3 Esperanza por viaje, -100% probabilidad de Emboscada.",
+                    "Dancing Souls: +3 Hope per journey, -100% Ambush chance.",
+                    "Almas Dançantes: +3 Esperança por viagem, -100% chance de Emboscada.");
             case ClimaAuroraBoreal:
-                return "Aurora Boreal: +10 Esperanza.";
+                return LocalizarTooltip(
+                    idioma,
+                    "Aurora Boreal: +10 Esperanza.",
+                    "Aurora Borealis: +10 Hope.",
+                    "Aurora Boreal: +10 Esperança.");
             case ClimaNedukazalNormal:
-                return "Nedukazal está a oscuras.";
+                return LocalizarTooltip(
+                    idioma,
+                    "Nedukazal está a oscuras.",
+                    "Nedukazal is shrouded in darkness.",
+                    "Nedukazal está às escuras.");
             case ClimaNedukazalMasacre:
-                return "Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zúrkil están potenciados.";
+                return LocalizarTooltip(
+                    idioma,
+                    "Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zúrkil están potenciados.",
+                    "Massacre: Nedukazal is under attack. -10 Hope. +10% Ambush chance. The Zúrkil are empowered.",
+                    "Massacre: Nedukazal está sendo atacada. -10 Esperança. +10% de Emboscada. Os Zúrkil estão fortalecidos.");
             default:
                 return string.Empty;
         }
@@ -424,9 +461,7 @@ public static class ClimaZonaCatalog
 
     public static string ObtenerTextoClimaExclusivoDesconocido()
     {
-        int idioma = TRADU.i != null
-            ? TRADU.i.nIdioma
-            : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
+        int idioma = ObtenerIdiomaActual();
 
         switch (idioma)
         {
@@ -436,6 +471,26 @@ public static class ClimaZonaCatalog
                 return "Clima exclusivo desconhecido";
             default:
                 return "Clima exclusivo desconocido";
+        }
+    }
+
+    private static int ObtenerIdiomaActual()
+    {
+        return TRADU.i != null
+            ? TRADU.i.nIdioma
+            : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
+    }
+
+    private static string LocalizarTooltip(int idioma, string es, string en, string pt)
+    {
+        switch (idioma)
+        {
+            case TRADU.IdiomaIngles:
+                return en;
+            case TRADU.IdiomaPortugues:
+                return pt;
+            default:
+                return es;
         }
     }
 

@@ -139,6 +139,7 @@ public class MenuBatallas : MonoBehaviour
 
  void OnEnable()
  {
+    CampaignManager.Instance?.CapturarHoraCombatePendiente();
     bloqueoComenzarBatalla = false;
     SetBotonComenzarInteractable(true);
     RefrescarTextosUIBatallaSegunIdioma();
@@ -301,6 +302,13 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
    int fase = faseOverride > 0 ? faseOverride : Mathf.Max(1, atributosZona.FASE);
    Predicate<EnemyFactionConfig> filtroEfectivo = CombinarFiltroFacciones(factionFilter);
    int budgetModifier = aplicarAjustePrimeraBatallaRun ? ObtenerModificadorPoolEnemigoPrimeraBatallaRun() : 0;
+   CampaignManager campaignManager = CampaignManager.Instance;
+   if (campaignManager != null
+       && campaignManager.EsCombatePendienteNocturno()
+       && !campaignManager.DebeUsarConfiguracionTutorial())
+   {
+      budgetModifier += 5;
+   }
 
    if (EstaActivoDebugFaccionesCombate() && tipo == BattleEncounterType.Subterraneo)
    {
@@ -598,7 +606,9 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
        return false;
     }
 
-    float aliento = CampaignManager.Instance != null ? CampaignManager.Instance.GetValorAlientoNegro() : 0f;
+    float aliento = CampaignManager.Instance != null
+      ? CampaignManager.Instance.GetValorAlientoNegro() / CampaignManager.HorasPorPasoMapa
+      : 0f;
     float chance = Mathf.Clamp(aliento * corruptChancePerAliento, 0f, 100f);
     return UnityEngine.Random.Range(0f, 100f) < chance;
  }
@@ -3236,7 +3246,7 @@ public void EfectosDeBatallaEnCampaña(int resultado)
 
         if (EsFaccionCorrupta(encuentroGeneradoActual.factionId))
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(2);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(10f);
         }
     }
  }

@@ -292,6 +292,7 @@ public class MusicManager : MonoBehaviour
     {
         if (temasAlientoNegro == null || temasAlientoNegro.Count == 0) return false;
         if (CampaignManager.Instance == null) return false;
+        if (CampaignManager.Instance.MoviendoCaravana) return usandoListaAlientoNegro;
         return CampaignManager.Instance.GetTierAlientoNegro() >= 3f;
     }
 

@@ -7,7 +7,7 @@ using UnityEditor;
 #endif
 
 
-/// Controla el avance del Aliento Negro en escena usando un sistema de partículas.
+/// Representa las horas acumuladas del Aliento Negro en escena usando un sistema de partículas.
 public class AlientoNegroVFX : MonoBehaviour
 {
     const float ReduccionParticulasPorNivelCalidad = 0.15f;
@@ -284,7 +284,7 @@ public class AlientoNegroVFX : MonoBehaviour
     float ObtenerValorAlientoNegro()
     {
         return CampaignManager.Instance != null
-            ? CampaignManager.Instance.GetValorAlientoNegro()
+            ? CampaignManager.Instance.GetValorAlientoNegro() / CampaignManager.HorasPorPasoMapa
             : valorMinimo;
     }
 
@@ -632,7 +632,7 @@ public class AlientoNegroVFX : MonoBehaviour
         get
         {
             if (Application.isPlaying && CampaignManager.Instance != null)
-                return CampaignManager.Instance.GetValorAlientoNegro();
+                return CampaignManager.Instance.GetValorAlientoNegro() / CampaignManager.HorasPorPasoMapa;
             return valorActualVisual;
         }
     }
@@ -644,7 +644,7 @@ public class AlientoNegroVFX : MonoBehaviour
     {
         if (Application.isPlaying && CampaignManager.Instance != null)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(delta);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(delta * CampaignManager.HorasPorPasoMapa);
             return;
         }
 
@@ -659,10 +659,10 @@ public class AlientoNegroVFX : MonoBehaviour
 
         if (Application.isPlaying && CampaignManager.Instance != null)
         {
-            float actual = CampaignManager.Instance.GetValorAlientoNegro();
+            float actual = CampaignManager.Instance.GetValorAlientoNegro() / CampaignManager.HorasPorPasoMapa;
             int delta = Mathf.RoundToInt(clamped - actual);
             if (delta != 0)
-                CampaignManager.Instance.CambiarValorAlientoNegro(delta);
+                CampaignManager.Instance.CambiarValorAlientoNegroHoras(delta * CampaignManager.HorasPorPasoMapa);
             else
                 AvanzarAlientoNegro(0);
             return;

@@ -20,10 +20,10 @@ public class AsentamientoManager : MonoBehaviour
     private const int MaxAccionesBase = 3;
     private const int CostoTavernaBase = 100;
     private const int CostoPosadaBase = 100;
-    private const float DuracionAccionSegundos = 4f;
+    private const float DuracionAccionHoras = 5f;
+    private const float DuracionPosadaHoras = 8f;
     private const float RetrasoEntreLogsAccionSegundos = 0.9f;
     private const float MultiplicadorCuracionViajeAsentamiento = 1.1f;
-    private const float CuracionPosada = 0.25f;
     private const float DuracionFadePanelSegundos = 0.2f;
     private const string ColorSinAcciones = "#ff4d4d";
     private static readonly TipoEstadoCaravana[] EstadosCaravanaPosada =
@@ -288,32 +288,13 @@ public class AsentamientoManager : MonoBehaviour
         ActualizarInterfaz();
         campaign.ComenzarBufferTextosFlotantesCampania();
 
-        if (campaign.sunController != null)
-        {
-            if (accion == AccionAsentamiento.Posada)
-            {
-                campaign.sunController.ResetSun(DuracionAccionSegundos);
-            }
-            else
-            {
-                float duracionSolOriginal = campaign.sunController.duracion;
-                campaign.sunController.duracion = DuracionAccionSegundos;
-                campaign.sunController.OnTravelStart();
-                campaign.sunController.duracion = duracionSolOriginal;
-            }
-        }
-
         bool esPosada = accion == AccionAsentamiento.Posada;
-        yield return new WaitForSeconds(DuracionAccionSegundos);
-        campaign.numeroTurno++;
-        campaign.CambiarValorAlientoNegro(1);
-       /*campaign.EscribirLog(Loc(
-            "-El tiempo pasa en el asentamiento. El Aliento Negro avanza 1.",
-            "-Time passes in the settlement. The Black Breath advances by 1.",
-            "-O tempo passa no assentamento. O Halito Negro avanca 1."));*/
-        campaign.ProcesarPasoDeDiaEnAsentamiento(
-            MultiplicadorCuracionViajeAsentamiento,
-            !esPosada,
+        float horasAccion = esPosada ? DuracionPosadaHoras : DuracionAccionHoras;
+        yield return campaign.TranscurrirAccionCampania(
+            horasAccion,
+            esPosada ? TipoAvanceTiempoCampania.Posada : TipoAvanceTiempoCampania.Asentamiento,
+            1f,
+            esPosada ? 1f : MultiplicadorCuracionViajeAsentamiento,
             !esPosada);
 
         switch (accion)
@@ -331,6 +312,7 @@ public class AsentamientoManager : MonoBehaviour
                 EjecutarResultadoPosada();
                 break;
         }
+        campaign.FinalizarAccionTemporal();
 
         System.Collections.Generic.List<(string texto, Color color)> textosBufferizados = campaign.FinalizarBufferTextosFlotantesCampania();
         accionEnCurso = false;
@@ -426,14 +408,14 @@ public class AsentamientoManager : MonoBehaviour
                     continue;
                 }
 
-                pers.Camp_Moral += 2;
+                pers.AplicarMoralAltaHoras(48f);
             }
         }
 
         campaign.EscribirLog(Loc(
-            "-Los personajes comparten charlas y cerveza en la Taberna, obtienen Alta Moral por 2 días. (No la Purificadora)",
-            "-The characters share stories and beer at the Tavern, obtaining High Morale for 2 days. (Not the Purifier)",
-            "-Os personagens compartilham historias e cerveja na Taberna, obtendo Alta Moral por 2 dias. (Nao a Purificadora)"));
+            "-Los personajes comparten charlas y cerveza en la Taberna, obtienen Alta Moral durante 48 h. (No la Purificadora)",
+            "-The characters share stories and beer at the Tavern, obtaining High Morale for 48 h. (Not the Purifier)",
+            "-Os personagens compartilham histórias e cerveja na Taverna, obtendo Moral Alta durante 48 h. (Exceto a Purificadora)"));
     }
 
     private void EjecutarResultadoPlazaPrincipal()
@@ -483,15 +465,6 @@ public class AsentamientoManager : MonoBehaviour
 
             pers.SetCampFatigado(false);
 
-            float curacion = pers.fVidaMaxima * CuracionPosada;
-            if (pers.fVidaActual < pers.fVidaMaxima)
-            {
-                campaign.EscribirLog("-" + pers.sNombre + Loc(
-                    $" se cura {(int)curacion} PV en la posada.",
-                    $" recovers {(int)curacion} HP at the inn.",
-                    $" recupera {(int)curacion} PV na hospedaria."));
-            }
-            pers.RecibirCuracion(curacion);
         }
 
         int fatigaActual = campaign.GetFatigaActual();
@@ -753,9 +726,9 @@ public class AsentamientoManager : MonoBehaviour
         if (accionesRestantes > 0)
         {
             return Loc(
-                "Pasa el cursor por una accion para ver su efecto. Cada acción toma 1 día.",
-                "Hover an action to inspect its effect. Each action passes 1 day.",
-                "Passe o cursor sobre uma ação para ver seu efeito. Cada ação passa 1 dia.");
+                "Pasa el cursor por una acción para ver su efecto. Las acciones duran 5h; la Posada, 8h.",
+                "Hover an action to inspect its effect. Actions take 5h; the Inn takes 8h.",
+                "Passe o cursor sobre uma ação para ver seu efeito. As ações duram 5h; a Hospedaria, 8h.");
         }
 
         return MarcarSinAcciones(Loc(
@@ -771,8 +744,12 @@ public class AsentamientoManager : MonoBehaviour
             : 0;
         int civilesMinimos = Mathf.Max(0, 12 + modificadorCiviles);
         int civilesMaximos = Mathf.Max(civilesMinimos, 23 + modificadorCiviles);
+        int duracionHoras = accion == AccionAsentamiento.Posada ? 8 : 5;
         string estadoAcciones = accionesRestantes > 0
-            ? Loc("Consume 1 accion y 1 dia.", "Consumes 1 action and 1 day.", "Consome 1 acao e 1 dia.")
+            ? Loc(
+                $"Consume 1 acción · Duración: {duracionHoras}h.",
+                $"Consumes 1 action · Duration: {duracionHoras}h.",
+                $"Consome 1 ação · Duração: {duracionHoras}h.")
             : MarcarSinAcciones(Loc("No quedan acciones disponibles.", "No actions remain.", "Nao restam acoes disponiveis."));
 
         switch (accion)
@@ -800,9 +777,9 @@ public class AsentamientoManager : MonoBehaviour
 
             case AccionAsentamiento.Posada:
                 return Loc(
-                    $"Costo: {ObtenerCostoServicio(CostoPosadaBase)} Oro. La caravana se dedicará a descansar. Todos los personajes recuperan 25% de su vida maxima, la Fatiga volverá a 0, la caravana ganará 5 Esperanza y obtendrá 1 estado de caravana al azar.\n\n" + estadoAcciones,
-                    $"Cost: {ObtenerCostoServicio(CostoPosadaBase)} Gold. The caravan focuses on resting. All characters recover 25% of their maximum health, Fatigue is reset to 0, the caravan gains 5 Hope, and it obtains 1 random caravan state.\n\n" + estadoAcciones,
-                    $"Custo: {ObtenerCostoServicio(CostoPosadaBase)} Ouro. A caravana dedica-se a descansar. Todos os personagens recuperam 25% da vida maxima, a Fadiga voltará a 0, a caravana ganhará 5 Esperanca e obterá 1 estado de caravana aleatorio.\n\n" + estadoAcciones);
+                    $"Costo: {ObtenerCostoServicio(CostoPosadaBase)} Oro. Durante 8 h todos descansan, recuperan 4% de su Vida máxima por hora y no progresan actividades. Al finalizar, la Fatiga vuelve a 0, la caravana gana 5 Esperanza y obtiene 1 estado de caravana al azar.\n\n" + estadoAcciones,
+                    $"Cost: {ObtenerCostoServicio(CostoPosadaBase)} Gold. For 8 h everyone rests, recovers 4% maximum Health per hour, and activities do not progress. At the end, Fatigue is reset to 0, the caravan gains 5 Hope, and it obtains 1 random caravan state.\n\n" + estadoAcciones,
+                    $"Custo: {ObtenerCostoServicio(CostoPosadaBase)} Ouro. Durante 8 h todos descansam, recuperam 4% da Vida máxima por hora e as atividades não progridem. Ao final, a Fadiga volta a 0, a caravana ganha 5 Esperança e obtém 1 estado de caravana aleatório.\n\n" + estadoAcciones);
 
             case AccionAsentamiento.Marcharse:
                 return Loc(

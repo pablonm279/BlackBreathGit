@@ -1713,8 +1713,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "La Plegaria retrasar\xE1 1 el Aliento Negro y bendecir\xE1 a los personajes
-    por 3 d\xEDas. 1 vez por regi\xF3n."
+  m_text: "La Plegaria restar\xE1 5 h de Aliento Negro y bendecir\xE1 a los personajes
+    por 72 h. Una vez por regi\xF3n."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}

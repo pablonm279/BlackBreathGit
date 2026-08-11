@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 public class CaminoMesh : MonoBehaviour
 {
     [Header("Ajustes visuales")]
-    private float width = 0.45f;          // Ancho del camino
+    private float width = 0.56925f;       // Ancho del camino
     private float yOffset = 0.02f;        // Altura para evitar z-fighting
     private float uvTilesPerUnit = 0.18f; // Tiling a lo largo: detalle legible desde la cámara de campaña
     private const float RoadVisualWidthScale = 1.215f;
@@ -26,8 +26,8 @@ public class CaminoMesh : MonoBehaviour
     private const float RutYOffset = 0.008f;
     private const float RutCenterOffsetScale = 0.43f;
     private const float RutHalfWidthScale = 0.18f;
-    private const float PathOpacity = 0.70f;
-    private const float PathOpacityRecorrido = 0.82f;
+    private const float PathOpacity = 0.92f;
+    private const float PathOpacityRecorrido = 0.92f;
     private const float UnderlayOpacity = 0.16f;
     private const float UnderlayOpacityRecorrido = 0.24f;
     private const float RutOpacityRecorrido = 0.34f;
@@ -733,7 +733,7 @@ public class CaminoMesh : MonoBehaviour
             color.r * multiplicador,
             color.g * multiplicador,
             color.b * multiplicador,
-            Mathf.Min(color.a, recorrido ? PathOpacityRecorrido : PathOpacity));
+            Mathf.Max(color.a, recorrido ? PathOpacityRecorrido : PathOpacity));
 
         if (hasGoldenSignal)
         {

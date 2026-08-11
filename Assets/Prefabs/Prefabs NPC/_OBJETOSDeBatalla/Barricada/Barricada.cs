@@ -26,7 +26,7 @@ public  class Barricada : Obstaculo
     {
       int dam =UnityEngine.Random.Range(1, 4);
 
-      uCausante.RecibirDanio(dam, 1, false, null);
+      uCausante.RecibirDanio(dam, 1, false, null, 0, true);
     }
    
 

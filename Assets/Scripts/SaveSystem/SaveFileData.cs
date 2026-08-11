@@ -6,8 +6,8 @@ using UnityEngine.Serialization;
 [Serializable]
 public class SaveFileData
 {
-  public const int MinimumCompatibleVersion = 1;
-  public const int CurrentVersion = 24;
+  public const int MinimumCompatibleVersion = 26;
+  public const int CurrentVersion = 26;
 
   public int version = CurrentVersion;
   public string savedAtUtc;
@@ -131,14 +131,45 @@ public class CampaignSaveData
   public int zonaFase;
   public int reliefSeed;
   public int pasoVientoHeladoFuerzaKaleTav;
-  public int numeroTurno;
+  public double horasTotales;
   public int posicionCaravana;
   public int tipoClima;
   public int presagiosRegionId;
   public List<int> presagiosActivos = new List<int>();
   public bool primeraBatallaPresagioEnemigosConsumida;
 
-  public float alientoNegro;
+  public float alientoNegroHoras;
+  public bool antorchasEncendidas = true;
+  public float progresoFatigaHoras;
+  public float creditoPrevencionAlientoHoras;
+  public float horasViajadas;
+  public bool viajeEnCurso;
+  public float viajeProgresoNormalizado;
+  public float viajeHorasTranscurridas;
+  public bool viajeActualIncluyoNoche;
+  public int viajeClimaInicial;
+  public float viajeMultiplicadorVelocidad = 1f;
+  public bool emboscadaViajeCalculada;
+  public string logEmboscadaViajePendiente;
+  public float acumuladorEfectosSequitosHoras;
+  public bool combateHoraCapturada;
+  public bool combateNocturno;
+  public bool descansoInterrumpidoPendiente;
+  public bool descansoResultadosPendientes;
+  public bool descansoTuvoEmboscada;
+  public bool descansoRitualElegible;
+  public string descansoRitualPersonajeId;
+  public int descansoClimaInicial;
+  public float descansoValorTarea;
+  public int descansoChanceExploracion;
+  public int descansoChanceEmboscada;
+  public bool descansoEmboscadaPendiente;
+  public float descansoHorasHastaEmboscada;
+  public int descansoTiradaEmboscada;
+  public float descansoHorasRestantes;
+  public int descansoTareaCivil;
+  public bool descansoEnClaro;
+  public float descansoHoraCombate;
   public int fatiga;
   public int esperanza;
   public int civiles;
@@ -154,8 +185,8 @@ public class CampaignSaveData
   public int mejoraCaravanaAlmacen;
   public int mejoraCaravanaDefensas;
 
-  public int sequitoHerrerosMantArmas;
-  public int sequitoHerrerosMantArmaduras;
+  public float sequitoHerrerosMantArmasHoras;
+  public float sequitoHerrerosMantArmadurasHoras;
   public int sequitoMercaderesTier;
   public float sequitoCuranderosMejoraCuracion;
 
@@ -174,7 +205,6 @@ public class CampaignSaveData
   public bool tutorialNuevoPendienteTrasDescripcionZona;
   public bool tutorialTooltipsSilenciados;
   public List<string> tutorialTooltipsVistos = new List<string>();
-  public int estadisticaDiasViajados;
   public int estadisticaBatallasLibradas;
   public int estadisticaCivilesPerdidos;
   public int estadisticaAsentamientosVisitados;
@@ -336,11 +366,11 @@ public class CharacterSaveData
   public int nivelNuevaHabilidadBase;
 
   public bool campFatigado;
-  public bool campBendecidoSequitoClerigos;
-  public int campBendecidoDias;
+  public float campBendecidoHoras;
   public bool campHerido;
-  public int campEnfermo;
-  public int campMoral;
+  public float campEnfermoHoras;
+  public int campMoralEstado;
+  public float campMoralHoras;
   public bool campAvergonzado;
   public bool campMuerto;
   public bool campCorrupto;
@@ -349,7 +379,8 @@ public class CharacterSaveData
   public bool traitLiderCaravanaPenalidadMuerteAplicada;
   public bool traitEjemploASeguirAplicado;
   public bool traitHerenciaItemOtorgado;
-  public int diasViajado;
+  public float horasViajadas;
+  public List<ActividadProgresoSaveData> progresoActividades = new List<ActividadProgresoSaveData>();
   public int enemigosEliminados;
   public int danioHecho;
   public int danioRecibido;
@@ -357,6 +388,13 @@ public class CharacterSaveData
 
   public int[] rasgos = Array.Empty<int>();
   public EquipmentSaveData equipment = new EquipmentSaveData();
+}
+
+[Serializable]
+public class ActividadProgresoSaveData
+{
+  public int actividadId;
+  public float horas;
 }
 
 [Serializable]

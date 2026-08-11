@@ -28,7 +28,7 @@ public class RafagaEspinas : IAHabilidad
       hCooldownMax = 0;
       esHostil = true;
       prioridad = pPrioridad;
-      costoAP = 2;
+      costoAP = 3;
       afectaObstaculos = true;
 
 
@@ -37,7 +37,7 @@ public class RafagaEspinas : IAHabilidad
 
       bonusAtaque = 0;
       XdDanio = 4;
-      daniodX = 3; //3d5
+      daniodX = 4; //3d5
       tipoDanio = 2; //Perforante
    }
 

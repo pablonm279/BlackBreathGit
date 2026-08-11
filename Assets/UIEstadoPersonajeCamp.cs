@@ -125,9 +125,9 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
       case TipoEstadoCampania.Herido:
         nombre = TextoPorIdioma("Herido", "Injured", "Ferido");
         descripcion = TextoPorIdioma(
-          "-1 Atributos. Si cae en combate muere. Curación diaria reducida.",
-          "-1 Attributes. If falls in combat, dies. Reduced daily healing.",
-          "-1 Atributos. Se cair em combate, morre. Cura diária reduzida.");
+          "-1 Atributos. Si cae en combate muere. Curación por hora reducida.",
+          "-1 Attributes. If falls in combat, dies. Reduced hourly healing.",
+          "-1 Atributos. Se cair em combate, morre. Cura por hora reduzida.");
         break;
 
       case TipoEstadoCampania.Corrupto:
@@ -144,9 +144,9 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
           "En batalla: -3 TS Fortaleza, -15% daño y -1 PA máximo.",
           "In battle: -3 Fortitude Save, -15% damage and -1 max AP.",
           "Em batalha: -3 TS Fortaleza, -15% dano e -1 PA máximo.");
-        if (personaje != null && personaje.Camp_Enfermo > 0)
+        if (personaje != null && personaje.EstaEnfermo())
         {
-          detalle = "\n" + TextoPorIdioma("Duración restante: ", "Remaining duration: ", "Duração restante: ") + personaje.Camp_Enfermo;
+          detalle = ConstruirDetalleDuracion(personaje.ObtenerHorasRestantesEnfermo());
         }
         break;
 
@@ -156,6 +156,10 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
           "En batalla: -3 TS Mental, -1 Defensa, -1 Ataque y -2 Valentía.",
           "In battle: -3 Mental Save, -1 Defense, -1 Attack and -2 Valour.",
           "Em batalha: -3 TS Mental, -1 Defesa, -1 Ataque e -2 Valentia.");
+        if (personaje != null)
+        {
+          detalle = ConstruirDetalleDuracion(personaje.ObtenerHorasRestantesMoral());
+        }
         break;
 
       case TipoEstadoCampania.AltaMoral:
@@ -164,6 +168,10 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
           "En batalla: +2 TS Mental, +1 Ataque y +2 Valentía.",
           "In battle: +2 Mental Save, +1 Attack and +2 Valour.",
           "Em batalha: +2 TS Mental, +1 Ataque e +2 Valentia.");
+        if (personaje != null)
+        {
+          detalle = ConstruirDetalleDuracion(personaje.ObtenerHorasRestantesMoral());
+        }
         break;
 
       case TipoEstadoCampania.Fatigado:
@@ -180,9 +188,9 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
           "En batalla: +3 a todas las TS y +5 Resistencia Necrótica.",
           "In battle: +3 to all Saves and +5 Necrotic Resistance.",
           "Em batalha: +3 em todos os TS e +5 Resistência Necrótica.");
-        if (personaje != null && personaje.Camp_Bendecido > 0)
+        if (personaje != null && personaje.EstaBendecido())
         {
-          detalle = "\n" + TextoPorIdioma("Duración restante: ", "Remaining duration: ", "Duração restante: ") + personaje.Camp_Bendecido;
+          detalle = ConstruirDetalleDuracion(personaje.ObtenerHorasRestantesBendecido());
         }
         break;
 
@@ -217,6 +225,14 @@ public class UIEstadoPersonajeCamp : MonoBehaviour, IPointerEnterHandler, IPoint
       case TipoEstadoCampania.Avergonzado: return "camp_avergonzado";
       default: return "camp_estado";
     }
+  }
+
+  private static string ConstruirDetalleDuracion(float horas)
+  {
+    string duracion = CampaignManager.Instance != null
+      ? CampaignManager.Instance.FormatearDuracionHoras(horas, true)
+      : Mathf.CeilToInt(Mathf.Max(0f, horas)) + " h";
+    return "\n" + TextoPorIdioma("Duración restante: ", "Remaining duration: ", "Duração restante: ") + duracion;
   }
 
   private Sprite ObtenerSprite(TipoEstadoCampania tipo)

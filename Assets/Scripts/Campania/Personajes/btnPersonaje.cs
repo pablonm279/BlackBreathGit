@@ -24,6 +24,7 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
   [SerializeField] private Image retratoRepresenta;
   [SerializeField] private Image retratoSombraRepresenta;
   [SerializeField] private btnActividad actividadRetrato;
+  private Image progresoActividadFill;
   [SerializeField] private GameObject indicadorActividadFijada;
   [SerializeField] private Transform contenedorEstadosCampania;
   [SerializeField] private GameObject prefabEstadoCampania;
@@ -468,14 +469,16 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       hash = hash * 31 + personajeRepresentado.NivelPuntoHabilidad;
       hash = hash * 31 + personajeRepresentado.NivelPuntoTS;
       hash = hash * 31 + personajeRepresentado.ActividadSeleccionada;
+      hash = hash * 31 + Mathf.RoundToInt(personajeRepresentado.ObtenerHorasActividad(personajeRepresentado.ActividadSeleccionada) * 60f);
       hash = hash * 31 + (personajeRepresentado.ActividadFijada ? 1 : 0);
       hash = hash * 31 + (personajeRepresentado.Camp_Muerto ? 1 : 0);
       hash = hash * 31 + (personajeRepresentado.Camp_Herido ? 1 : 0);
       hash = hash * 31 + (personajeRepresentado.Camp_Corrupto ? 1 : 0);
-      hash = hash * 31 + personajeRepresentado.Camp_Enfermo;
-      hash = hash * 31 + personajeRepresentado.Camp_Moral;
+      hash = hash * 31 + personajeRepresentado.ObtenerHorasRestantesEnfermo().GetHashCode();
+      hash = hash * 31 + personajeRepresentado.ObtenerEstadoMoralCampania().GetHashCode();
+      hash = hash * 31 + personajeRepresentado.ObtenerHorasRestantesMoral().GetHashCode();
       hash = hash * 31 + (personajeRepresentado.Camp_Fatigado ? 1 : 0);
-      hash = hash * 31 + personajeRepresentado.Camp_Bendecido;
+      hash = hash * 31 + personajeRepresentado.ObtenerHorasRestantesBendecido().GetHashCode();
       hash = hash * 31 + (personajeRepresentado.Camp_Avergonzado ? 1 : 0);
       hash = hash * 31 + (personajeRepresentado.spRetrato != null ? personajeRepresentado.spRetrato.GetInstanceID() : 0);
       return hash;
@@ -509,17 +512,17 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         CrearEstadoCampania(UIEstadoPersonajeCamp.TipoEstadoCampania.Corrupto);
       }
 
-      if (personajeRepresentado.Camp_Enfermo > 0)
+      if (personajeRepresentado.EstaEnfermo())
       {
         CrearEstadoCampania(UIEstadoPersonajeCamp.TipoEstadoCampania.Enfermo);
       }
 
-      if (personajeRepresentado.Camp_Moral < 0)
+      if (personajeRepresentado.TieneMoralBaja())
       {
         CrearEstadoCampania(UIEstadoPersonajeCamp.TipoEstadoCampania.BajaMoral);
       }
 
-      if (personajeRepresentado.Camp_Moral > 0)
+      if (personajeRepresentado.TieneMoralAlta())
       {
         CrearEstadoCampania(UIEstadoPersonajeCamp.TipoEstadoCampania.AltaMoral);
       }
@@ -529,7 +532,7 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         CrearEstadoCampania(UIEstadoPersonajeCamp.TipoEstadoCampania.Fatigado);
       }
 
-      if (personajeRepresentado.TieneCampBendecido())
+      if (personajeRepresentado.EstaBendecido())
       {
         CrearEstadoCampania(UIEstadoPersonajeCamp.TipoEstadoCampania.Bendecido);
       }
@@ -618,10 +621,80 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     actividadRetrato.gameObject.SetActive(true);
     actividadRetrato.ConfigurarIndicadorRetrato(actividadActual, actividades, personajeRepresentado);
     actividadRetrato.actImage.sprite = actividades.ObtenerSpriteActividad(actividadActual.IDActividad);
+    ActualizarProgresoActividadRetrato(actividadActual.IDActividad);
     if (actividadRetrato.Recuadro != null)
     {
       actividadRetrato.Recuadro.SetActive(false);
     }
+  }
+
+  private void ActualizarProgresoActividadRetrato(int actividadId)
+  {
+    if (actividadRetrato == null || actividadRetrato.actImage == null || personajeRepresentado == null)
+    {
+      return;
+    }
+
+    if (!CampaignManager.ActividadTieneResultadoCada24Horas(actividadId))
+    {
+      actividadRetrato.actImage.color = Color.white;
+      if (progresoActividadFill != null)
+      {
+        progresoActividadFill.gameObject.SetActive(false);
+      }
+      return;
+    }
+
+    AsegurarIndicadorProgresoActividad();
+    float horas = personajeRepresentado.ObtenerHorasActividad(actividadId);
+    bool mostrarProgreso = horas > 0.001f;
+    actividadRetrato.actImage.color = mostrarProgreso
+      ? new Color(0.22f, 0.27f, 0.27f, 1f)
+      : Color.white;
+    progresoActividadFill.sprite = actividadRetrato.actImage.sprite;
+    progresoActividadFill.fillAmount = Mathf.Clamp01(horas / 24f);
+    progresoActividadFill.gameObject.SetActive(mostrarProgreso);
+  }
+
+  private void AsegurarIndicadorProgresoActividad()
+  {
+    if (progresoActividadFill != null)
+    {
+      return;
+    }
+
+    Transform padre = actividadRetrato.actImage.transform;
+    Transform fillExistente = padre.Find("ProgresoActividadFill");
+    if (fillExistente != null)
+    {
+      progresoActividadFill = fillExistente.GetComponent<Image>();
+      TextMeshProUGUI textoExistente = fillExistente.GetComponentInChildren<TextMeshProUGUI>(true);
+      if (textoExistente != null)
+      {
+        textoExistente.gameObject.SetActive(false);
+      }
+      if (progresoActividadFill != null)
+      {
+        progresoActividadFill.color = new Color(0.15f, 1f, 0.82f, 1f);
+        return;
+      }
+    }
+
+    GameObject fillGo = new GameObject("ProgresoActividadFill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+    fillGo.transform.SetParent(padre, false);
+    RectTransform fillRect = fillGo.GetComponent<RectTransform>();
+    fillRect.anchorMin = Vector2.zero;
+    fillRect.anchorMax = Vector2.one;
+    fillRect.offsetMin = Vector2.zero;
+    fillRect.offsetMax = Vector2.zero;
+    progresoActividadFill = fillGo.GetComponent<Image>();
+    progresoActividadFill.type = Image.Type.Filled;
+    progresoActividadFill.fillMethod = Image.FillMethod.Vertical;
+    progresoActividadFill.fillOrigin = (int)Image.OriginVertical.Bottom;
+    progresoActividadFill.fillClockwise = true;
+    progresoActividadFill.preserveAspect = actividadRetrato.actImage.preserveAspect;
+    progresoActividadFill.color = new Color(0.15f, 1f, 0.82f, 1f);
+    progresoActividadFill.raycastTarget = false;
   }
 
   public void NotificarEntradaActividadRetrato(btnActividad actividad)
@@ -689,6 +762,7 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       || personajeRepresentado == null
       || personajeRepresentado.Camp_Muerto
       || !personajeRepresentado.PuedeRealizarActividades()
+      || (CampaignManager.Instance != null && CampaignManager.Instance.HayBatallaPendiente())
       || actividadRetrato == null
       || EstaEnContenedorMenuBatallas())
     {
@@ -746,6 +820,12 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       if (opcion.actImage != null)
       {
         opcion.actImage.sprite = actividades.ObtenerSpriteActividad(actividadesDisponibles[i].IDActividad);
+        opcion.actImage.color = Color.white;
+        Transform progresoClonado = opcion.actImage.transform.Find("ProgresoActividadFill");
+        if (progresoClonado != null)
+        {
+          progresoClonado.gameObject.SetActive(false);
+        }
       }
       if (opcion.Recuadro != null)
       {

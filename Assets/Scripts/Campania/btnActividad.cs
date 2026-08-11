@@ -184,7 +184,7 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
       if (actividadAnterior != actividadRepresentada.IDActividad
         && personaje.TieneRasgo(PersonajeTraitCatalog.TraitDesganado))
       {
-        personaje.Camp_Moral = Mathf.Min(personaje.Camp_Moral, -2);
+        personaje.AplicarMoralBajaHoras(48f);
       }
 
       CampaignManager.Instance?.EvaluarTooltipPersonajeDescansando();
@@ -248,13 +248,14 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
       if (usarComoIndicadorRetrato)
       {
+        string descripcionHoraria = actividadRepresentada.desc;
         if (TooltipStats.Instance != null)
         {
-          TooltipStats.Instance.ShowTooltipRaw(actividadRepresentada.desc, Input.mousePosition);
+          TooltipStats.Instance.ShowTooltipRaw(descripcionHoraria, Input.mousePosition);
         }
         else if (TooltipItems.Instance != null)
         {
-          TooltipItems.Instance.ShowTooltip(actividadRepresentada.desc, Input.mousePosition);
+          TooltipItems.Instance.ShowTooltip(descripcionHoraria, Input.mousePosition);
         }
       }
 

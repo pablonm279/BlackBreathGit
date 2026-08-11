@@ -29,6 +29,8 @@ public class BattleAmbientLife : MonoBehaviour
 
   private Material materialFondoInstancia;
   private Color colorBaseFondo = Color.white;
+  private Color colorDiurnoFondo = Color.white;
+  private bool modoNocturno;
   private Vector2 uvBaseFondo;
   private Vector2 uvInicialFondo;
   private float fasePulso;
@@ -58,6 +60,14 @@ public class BattleAmbientLife : MonoBehaviour
     InicializarParticulas();
     InicializarLuces();
     AplicarPresetVisual();
+    colorDiurnoFondo = colorBaseFondo;
+    AplicarModoNocturnoAlFondo();
+  }
+
+  public void EstablecerModoNocturno(bool activo)
+  {
+    modoNocturno = activo;
+    AplicarModoNocturnoAlFondo();
   }
 
   void Update()
@@ -597,5 +607,24 @@ public class BattleAmbientLife : MonoBehaviour
       colorBaseFondo = Color.Lerp(actual, colorZona, 0.08f);
       colorBaseFondo.a = actual.a;
     }
+  }
+
+  private void AplicarModoNocturnoAlFondo()
+  {
+    if (materialFondoInstancia == null || !materialFondoInstancia.HasProperty("_Color"))
+    {
+      return;
+    }
+
+    if (!modoNocturno)
+    {
+      colorBaseFondo = colorDiurnoFondo;
+      return;
+    }
+
+    // Mantiene los detalles del arte del fondo, pero lo lleva a una paleta lunar legible.
+    Color tonoNocturno = colorDiurnoFondo * new Color(0.42f, 0.54f, 0.78f, 1f);
+    tonoNocturno.a = colorDiurnoFondo.a;
+    colorBaseFondo = Color.Lerp(colorDiurnoFondo, tonoNocturno, 0.72f);
   }
 }

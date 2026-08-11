@@ -92,7 +92,6 @@ public class Nodo : MonoBehaviour
   const float PulsoNodoMovibleEscalaMax = 1.26f;
   const float PulsoNodoMovibleEscalaMaxHover = 1.31f;
   const float PulsoNodoMovibleGlowColorBlend = 0.16f;
-  const float PulsoNodoMovibleGlowEmission = 0.55f;
   const float OscurecimientoNodoInaccesible = 0.30f;
   const float BrilloNodoAccesible = 0.90f;
   const float DuracionFadeVisionNodo = 0.18f;
@@ -127,7 +126,6 @@ public class Nodo : MonoBehaviour
   static readonly int ShaderBaseColorId = Shader.PropertyToID("_BaseColor");
   static readonly int ShaderEmissionColorId = Shader.PropertyToID("_EmissionColor");
   static Shader shaderCaminoVision;
-
   // Materiales
   public Material MaterialCaminoOriginal;
   public Material MaterialCaminoMarcado;
@@ -358,24 +356,25 @@ public class Nodo : MonoBehaviour
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
     {
       if (pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == 9) hayExploracionExplorador = pers.sNombre;
-      if (pers.Camp_Enfermo > 0) pers.Camp_Enfermo -= 1;
-      pers.ReducirCampBendecido();
-      if (pers.Camp_Moral > 0) pers.Camp_Moral -= 1;
-      if (pers.Camp_Moral < 0) pers.Camp_Moral += 1;
     }
 
     int chanceExploracion = CampaignManager.Instance.ObtenerChanceExploracionViaje();
     int alcanceExploracion = Mathf.Max(1, CampaignManager.Instance.ObtenerDistanciaVisionEfectiva());
     TiradaExploracion(chanceExploracion, true, hayExploracionExplorador, string.IsNullOrEmpty(hayExploracionExplorador), alcanceExploracion);
 
-    int fatigaSuma = 1;
     int esperanzaSuma = 0;
 
     if (CampaignManager.Instance.SeLlevaDemasiadaCarga())
     {
-      fatigaSuma += 1;
       esperanzaSuma -= 10;
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La Caravana ha viajado con exceso de Carga. -10 Esperanza +1 Fatiga"));
+      int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+      string mensajeExcesoCarga = idioma switch
+      {
+        TRADU.IdiomaIngles => "-The Caravan traveled overloaded. -10 Hope. Fatigue accumulated twice as fast.",
+        TRADU.IdiomaPortugues => "-A Caravana viajou sobrecarregada. -10 Esperança. A Fadiga acumulou duas vezes mais rápido.",
+        _ => "-La Caravana viajó con exceso de Carga. -10 Esperanza. La Fatiga se acumuló al doble."
+      };
+      CampaignManager.Instance.EscribirLog(mensajeExcesoCarga);
     }
 
     int chancesAtajo = 15;
@@ -391,7 +390,6 @@ public class Nodo : MonoBehaviour
       nodoAtajoSubterraneoEncontrado = EncontrarAtajo(2, 0);
     }
 
-    CampaignManager.Instance.CambiarFatigaActual(fatigaSuma);
     CampaignManager.Instance.CambiarEsperanzaActual(esperanzaSuma);
     CampaignManager.Instance.LlegarANodo(ObtenerTipoNodoAlLlegar(), posXNodo, this);
     TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignNodeArrived, gameObject)
@@ -2219,7 +2217,14 @@ public class Nodo : MonoBehaviour
       origen.MostrarCaminoPorVisionHacia(destino);
       if (origen.posXNodo == 0 && origen.posYNodo == 0 && destino.posXNodo == 1)
       {
-        destino.Revelar(false, false);
+        if (origen.scMapaManager != null && !origen.scMapaManager.NodoDentroDeVision(destino))
+        {
+          destino.RevelarComoMisterioso();
+        }
+        else
+        {
+          destino.Revelar(false, false);
+        }
       }
       else if (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
       {
@@ -2998,12 +3003,10 @@ public class Nodo : MonoBehaviour
       return;
     }
 
-    // Buscar línea
-    const float multiplicadorVelocidadMinimaFatiga = 0.6f;
-    float velocidadBase = 0.75f + 0.6f / conexion.costoMovimiento;
-    int cansancio = CampaignManager.Instance.GetFatigaActual();
-    float velocidadReducidaPorFatiga = velocidadBase - cansancio * 0.07f;
-    velocidadMovimiento = Mathf.Max(velocidadBase * multiplicadorVelocidadMinimaFatiga, velocidadReducidaPorFatiga);
+    velocidadMovimiento = CampaignManager.Instance.ObtenerVelocidadViajeUnidadesPorHora(
+      conexion,
+      CampaignManager.Instance.ObtenerHoraActual(),
+      true);
 
     Transform lineaTransform = conexion.linea;
 
@@ -3037,7 +3040,87 @@ public class Nodo : MonoBehaviour
     StartCoroutine(MoverConvoyEnLinea(lineaTransform.GetComponent<LineRenderer>(), viajeSubterraneo));
   }
 
- /* private IEnumerator MoverAloLargoDeLaCurva(float delay, bool esLaLider, GameObject caravana, LineRenderer lineRenderer, float velRotacion)
+  public bool ReanudarViajeDesdeGuardado(Nodo nodoOrigen, float progresoNormalizado)
+  {
+    AsegurarMapaManagerRuntime();
+    CaminoConexion conexion = nodoOrigen != null ? nodoOrigen.ObtenerConexionHacia(this) : null;
+    LineRenderer linea = conexion != null && conexion.linea != null
+      ? conexion.linea.GetComponent<LineRenderer>()
+      : null;
+    if (nodoOrigen == null || conexion == null || linea == null || scMapaManager == null || scMapaManager.goCaravana == null)
+    {
+      return false;
+    }
+
+    vieneDeNodo = nodoOrigen;
+    conexionLlegada = conexion;
+    velocidadMovimiento = CampaignManager.Instance != null
+      ? CampaignManager.Instance.ObtenerVelocidadViajeUnidadesPorHora(
+          conexion,
+          CampaignManager.Instance.ObtenerHoraActual(),
+          false)
+      : velocidadMovimiento;
+
+    PrepararConvoyParaReanudarViaje(linea, nodoOrigen, Mathf.Clamp01(progresoNormalizado));
+    GirarCaravana girarCaravana = scMapaManager.goCaravana.GetComponent<GirarCaravana>();
+    if (girarCaravana != null)
+    {
+      girarCaravana.CambiarSpriteSegunRuta(nodoOrigen, this);
+    }
+
+    StartCoroutine(MoverConvoyEnLinea(linea, conexion.EsAtajoSubterraneo));
+    return true;
+  }
+
+  private void PrepararConvoyParaReanudarViaje(LineRenderer linea, Nodo nodoOrigen, float progresoNormalizado)
+  {
+    if (linea == null || linea.positionCount < 2 || scMapaManager == null)
+    {
+      return;
+    }
+
+    List<GameObject> convoy = new List<GameObject>
+    {
+      scMapaManager.goCaravana,
+      scMapaManager.goCaravanafollower1,
+      scMapaManager.goCaravanafollower2,
+      scMapaManager.goCaravanafollower3,
+      scMapaManager.goCaravanafollower4,
+      scMapaManager.goCaravanafollower5,
+      scMapaManager.goCaravanafollower6
+    };
+    convoy.RemoveAll(go => go == null);
+    if (convoy.Count == 0)
+    {
+      return;
+    }
+
+    Vector3[] puntos = new Vector3[linea.positionCount];
+    for (int i = 0; i < linea.positionCount; i++)
+    {
+      Vector3 punto = linea.GetPosition(i);
+      puntos[i] = linea.useWorldSpace ? punto : linea.transform.TransformPoint(punto);
+    }
+    AjustarExtremosTrayectoConvoy(puntos, nodoOrigen.transform.position, transform.position, 0.18f);
+
+    float[] segmentos = new float[puntos.Length - 1];
+    float[] acumuladas = new float[puntos.Length];
+    for (int i = 0; i < segmentos.Length; i++)
+    {
+      segmentos[i] = Vector3.Distance(puntos[i], puntos[i + 1]);
+      acumuladas[i + 1] = acumuladas[i] + segmentos[i];
+    }
+
+    float distanciaLider = acumuladas[acumuladas.Length - 1] * progresoNormalizado;
+    float separacion = Mathf.Max(0.0001f, gapDist);
+    for (int i = 0; i < convoy.Count; i++)
+    {
+      float distancia = Mathf.Max(0f, distanciaLider - separacion * i);
+      convoy[i].transform.position = PointAtDistance(puntos, segmentos, acumuladas, distancia);
+    }
+  }
+
+  /* private IEnumerator MoverAloLargoDeLaCurva(float delay, bool esLaLider, GameObject caravana, LineRenderer lineRenderer, float velRotacion)
   {
     if (caravana == null) yield break;
 
@@ -3272,6 +3355,7 @@ if (esLaLider)
     {
       shaderCaminoVision = Resources.Load<Shader>("CaminoVision");
     }
+
     if (shaderCaminoVision == null)
     {
       return materialBase;
@@ -4041,8 +4125,7 @@ if (esLaLider)
       if (materialBase.HasProperty("_EmissionColor"))
       {
         Color emissionBase = materialBase.GetColor("_EmissionColor");
-        Color emissionPulso = emissionBase + (colorPulso * (PulsoNodoMovibleGlowEmission * intensidadGlow));
-        bloquePulsoMovimiento.SetColor(ShaderEmissionColorId, emissionPulso);
+        bloquePulsoMovimiento.SetColor(ShaderEmissionColorId, emissionBase);
       }
 
       renderer.SetPropertyBlock(bloquePulsoMovimiento);
@@ -4456,6 +4539,11 @@ if (esLaLider)
 
   public void RevelarComoMisterioso()
   {
+    if (revelado && !esMisterioso && tipoNodo > 0)
+    {
+      return;
+    }
+
     if (reveladoPorZonaCartografiada)
     {
       revelado = true;
@@ -5413,6 +5501,15 @@ if (esLaLider)
     if (EsDescubiertoRemoto())
       descripcion += "\n" + ObtenerTextoFueraAlcanceVision();
 
+    if (CampaignManager.Instance != null && scMapaManager != null && scMapaManager.nodoActual != null)
+    {
+      CaminoConexion conexionViaje = scMapaManager.nodoActual.ObtenerConexionHacia(this);
+      if (conexionViaje != null)
+      {
+        descripcion += "\n" + CampaignManager.Instance.ObtenerTextoDuracionViaje(conexionViaje);
+      }
+    }
+
     Vector3 pos = Input.mousePosition;
     TooltipNodos.Instance.ShowTooltip(descripcion, pos, this);
   }
@@ -5423,7 +5520,7 @@ if (esLaLider)
     switch (idioma)
     {
       case TRADU.IdiomaIngles:
-        return "Mysterious Node: right mouse button to send 5 Scouts";
+        return "Mysterious Node: RBM to send 5 Scouts";
       case TRADU.IdiomaPortugues:
         return "Nó Misterioso: botão direito do mouse para enviar 5 Exploradores";
       default:
@@ -6166,7 +6263,7 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
     easeOutDist = Mathf.Clamp(totalLen * 0.07f, 0.2f, 0.45f);
     easeOutTailDist = Mathf.Clamp(gap * 0.28f, 0.04f, 0.12f);
     minSpeedFactor = 0.18f;
-    snapEps = 0.05f;
+    snapEps = 0.0001f;
 
     if (viajeSubterraneo)
     {
@@ -6218,6 +6315,8 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
     float maxTrailBack = gap * (m - 1) + 2.0f;
 
     float elapsed = 0f;
+    float horasViajeTranscurridas = 0f;
+    bool tiempoViajeFinalizado = false;
     bool leaderArrived = false;
     bool sonidoMovimientoDesvanecido = false;
     float speedFactorSmoothed = 0f;
@@ -6282,7 +6381,22 @@ private IEnumerator MoverConvoyEnLinea(LineRenderer lr, bool viajeSubterraneo = 
 float kSpeed = 1f - Mathf.Exp(-speedSmooth * dt);
 speedFactorSmoothed = Mathf.Lerp(speedFactorSmoothed, speedFactorTarget, kSpeed);
 
-float step = Mathf.Max(0f, velocidadBaseMovimiento) * dt * speedFactorSmoothed;
+float velocidadDinamica = velocidadBaseMovimiento;
+if (ejecutarLlegadaCaravana && CampaignManager.Instance != null)
+{
+    velocidadDinamica = CampaignManager.Instance.ObtenerVelocidadViajeUnidadesPorHora(
+        conexionLlegada,
+        CampaignManager.Instance.ObtenerHoraActual(),
+        false);
+}
+float step = Mathf.Max(0f, velocidadDinamica) * dt;
+
+if (ejecutarLlegadaCaravana && !leaderArrived && CampaignManager.Instance != null)
+{
+    float horasAvanzadas = Mathf.Min(dt, Mathf.Max(0f, totalLen - leaderS) / Mathf.Max(0.001f, velocidadDinamica));
+    CampaignManager.Instance.AvanzarTiempoDuranteViaje(horasAvanzadas);
+    horasViajeTranscurridas += horasAvanzadas;
+}
 
 
       // Mover líder hasta el final (luego se queda)
@@ -6299,6 +6413,8 @@ float step = Mathf.Max(0f, velocidadBaseMovimiento) * dt * speedFactorSmoothed;
       if (ejecutarLlegadaCaravana && leaderArrived && !leaderArrivedPrevio && !sonidoMovimientoDesvanecido && CampaignManager.Instance != null)
       {
         CampaignManager.Instance.DesvanecerSonidoMovimientoCaravana(duracionDesvanecidoSonido);
+        CampaignManager.Instance.RegistrarFinViaje(horasViajeTranscurridas);
+        tiempoViajeFinalizado = true;
         sonidoMovimientoDesvanecido = true;
       }
 
@@ -6486,6 +6602,10 @@ else
 
     if (ejecutarLlegadaCaravana)
     {
+      if (!tiempoViajeFinalizado && CampaignManager.Instance != null)
+      {
+        CampaignManager.Instance.RegistrarFinViaje(horasViajeTranscurridas);
+      }
       LlegoCaravana();
     }
     else

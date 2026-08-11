@@ -92,7 +92,16 @@ public class btnItemInventario : MonoBehaviour
     {
       Vector3 pos = Input.mousePosition;
       string total = ItemTooltipFormatter.ConstruirTooltip(itemRepresentado, true);
-      TooltipItems.Instance.ShowTooltip(total, pos);
+      Item itemEquipado = scMenuPersonajes.ObtenerItemEquipadoQueReemplazaria(itemRepresentado);
+      if (itemEquipado != null)
+      {
+        string totalEquipado = ItemTooltipFormatter.ConstruirTooltip(itemEquipado, true, "(Equipped)");
+        TooltipItems.Instance.ShowTooltipComparado(total, totalEquipado, pos, itemRepresentado, itemEquipado);
+      }
+      else
+      {
+        TooltipItems.Instance.ShowTooltip(total, pos, itemRepresentado);
+      }
 
         }
         if(n == 0)

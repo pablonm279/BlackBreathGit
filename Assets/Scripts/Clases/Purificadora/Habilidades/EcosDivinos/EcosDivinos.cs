@@ -51,7 +51,7 @@ public class EcosDivinos : Trampa
         if (NIVEL > 2) { rand += 2; }
         if (NIVEL == 5) { rand += 5; }
 
-        objetivo.RecibirDanio(rand, 11, false, unidadCreadora);
+        objetivo.RecibirDanio(rand, 11, false, unidadCreadora, 0, true);
 
       }
 

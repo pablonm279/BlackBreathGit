@@ -647,8 +647,8 @@ public class AdministradorEscenas : MonoBehaviour
       return;
     }
 
-    bool propagaAlta = TieneTrait(pers, PersonajeTraitCatalog.TraitEspirituAlegre) && pers.Camp_Moral > 0;
-    bool propagaBaja = TieneTrait(pers, PersonajeTraitCatalog.TraitEspirituNegativo) && pers.Camp_Moral < 0;
+    bool propagaAlta = TieneTrait(pers, PersonajeTraitCatalog.TraitEspirituAlegre) && pers.TieneMoralAlta();
+    bool propagaBaja = TieneTrait(pers, PersonajeTraitCatalog.TraitEspirituNegativo) && pers.TieneMoralBaja();
     if (!propagaAlta && !propagaBaja)
     {
       return;
@@ -1920,13 +1920,15 @@ public class AdministradorEscenas : MonoBehaviour
     }
     #endregion
     #region Noche
-    int randomNoche = UnityEngine.Random.Range(1, 101); //1-100
-    if (EsEncuentroSubterraneo(IDEncuentro)) { randomNoche = 0; }//Si es encuentro subterraneo siempre es "noche"
+    bool combateOscuro = EsEncuentroSubterraneo(IDEncuentro)
+      || (CampaignManager.Instance != null && CampaignManager.Instance.EsCombatePendienteNocturno());
 
-    if (randomNoche <= 25) //probabilidad noche 
+    if (combateOscuro)
     {
-      BattleManager.Instance.nocheLienzo.SetActive(true);
-      List<Unidad> listaUnidades = new List<Unidad>(BattleManager.Instance.ladoB.unidadesLado);
+      ConfigurarAmbientacionNocturnaBatalla(true);
+      List<Unidad> listaUnidades = new List<Unidad>();
+      listaUnidades.AddRange(BattleManager.Instance.ladoA.unidadesLado);
+      listaUnidades.AddRange(BattleManager.Instance.ladoB.unidadesLado);
       foreach (Unidad u in listaUnidades)
       {
         if (!(u is ClaseAcechador) && !u.inmunidad_Oscuridad) //El acechador y criaturas inmunes no reciben debuff
@@ -1949,7 +1951,7 @@ public class AdministradorEscenas : MonoBehaviour
     }
     else
     {
-      BattleManager.Instance.nocheLienzo.SetActive(false);
+      ConfigurarAmbientacionNocturnaBatalla(false);
     }
     #endregion
     #region Ritual Kale'Tav
@@ -2584,6 +2586,29 @@ public class AdministradorEscenas : MonoBehaviour
 
     battleAmbientLife.Configurar(mrFondoBatalla, zonaVisualBatallaActual, fondoBatallaSubterraneoActual);
   }
+
+  void ConfigurarAmbientacionNocturnaBatalla(bool activa)
+  {
+    battleAmbientLife?.EstablecerModoNocturno(activa);
+
+    if (BattleManager.Instance == null || BattleManager.Instance.nocheLienzo == null)
+    {
+      return;
+    }
+
+    GameObject lienzoNoche = BattleManager.Instance.nocheLienzo;
+    Image veloNocturno = lienzoNoche.GetComponent<Image>();
+    if (veloNocturno != null)
+    {
+      // Velo azul contenido: oscurece el campo sin comprometer siluetas, cuadrícula o UI.
+      veloNocturno.color = activa
+        ? new Color(0.04f, 0.075f, 0.14f, 0.28f)
+        : new Color(0f, 0f, 0f, 0f);
+      veloNocturno.raycastTarget = false;
+    }
+
+    lienzoNoche.SetActive(activa);
+  }
   public void ColocarPersonajecomoUnidad(Personaje pers, int indexRefuezo = 0)
   {
 
@@ -2780,7 +2805,7 @@ public class AdministradorEscenas : MonoBehaviour
     }
 
     pers.Camp_Avergonzado = true;
-    pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -2);
+    pers.AplicarMoralBajaHoras(48f);
     return true;
   }
 
@@ -4660,7 +4685,7 @@ public class AdministradorEscenas : MonoBehaviour
       //--------------------------------------
 
     }
-    if (pers.TieneCampBendecido()) //BENDECIDO 
+    if (pers.EstaBendecido()) //BENDECIDO
     {
       //BUFF ---- Así se aplica un buff/debuff
       Buff Bendecido = new Buff();
@@ -4694,7 +4719,7 @@ public class AdministradorEscenas : MonoBehaviour
       //--------------------------------------
 
     }
-    if (pers.Camp_Enfermo > 0) //Enfermo
+    if (pers.EstaEnfermo()) //Enfermo
     {
       //BUFF ---- Así se aplica un buff/debuff
       Buff Enfermo = new Buff();
@@ -4710,7 +4735,7 @@ public class AdministradorEscenas : MonoBehaviour
       //--------------------------------------
 
     }
-    if (pers.Camp_Moral < 0) //Baja Moral
+    if (pers.TieneMoralBaja()) //Baja Moral
     {
       //BUFF ---- Así se aplica un buff/debuff
       Buff Bajamoral = new Buff();
@@ -4727,7 +4752,7 @@ public class AdministradorEscenas : MonoBehaviour
       //--------------------------------------
 
     }
-    if (pers.Camp_Moral > 0) //Alta Moral
+    if (pers.TieneMoralAlta()) //Alta Moral
     {
       //BUFF ---- Así se aplica un buff/debuff
       Buff AltaMoral = new Buff();
@@ -5330,6 +5355,7 @@ public class AdministradorEscenas : MonoBehaviour
 
     campaignManager.BATALLA_EnCurso = 0;
     campaignManager.EMBOSCADA_EnCurso = 0;
+    campaignManager.FinalizarSnapshotCombate();
 
    
 

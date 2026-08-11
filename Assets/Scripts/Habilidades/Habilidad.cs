@@ -352,11 +352,11 @@ public abstract class Habilidad : MonoBehaviour
         stats.Agilidad -= 1;
         stats.Poder -= 1;
       }
-      if (personaje.Camp_Moral > 0)
+      if (personaje.TieneMoralAlta())
       {
         stats.Ataque += 1;
       }
-      else if (personaje.Camp_Moral < 0)
+      else if (personaje.TieneMoralBaja())
       {
         stats.Ataque -= 1;
       }

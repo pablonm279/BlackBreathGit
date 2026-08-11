@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EstadoMoralCampania
+{
+    Baja = -1,
+    Ninguna = 0,
+    Alta = 1
+}
+
 public class Personaje : MonoBehaviour
 {
     public const int CantidadMaximaRasgos = 300;
@@ -71,6 +78,7 @@ public class Personaje : MonoBehaviour
     public int Actividad_3; 
     public int ActividadSeleccionada;
     public bool ActividadFijada;
+    private readonly Dictionary<int, float> horasActividadPorId = new Dictionary<int, float>();
 
     public int NivelPuntoAtributo;
     public int NivelPuntoTS;
@@ -89,10 +97,11 @@ public class Personaje : MonoBehaviour
 
     //Estados de Campaña AGREGAR EN MenuPersonaje  "//Estados Campaña" para que se vean
     public bool Camp_Fatigado;
-    public int Camp_Bendecido;
     public bool Camp_Herido;
-    public int Camp_Enfermo; //es int porque al descender a 0 se va, -1 por viaje.
-    public int Camp_Moral; //positiva buena, negativa mala tiende a cero cada dia
+    [SerializeField, Min(0f)] private float campBendecidoHorasRestantes;
+    [SerializeField, Min(0f)] private float campEnfermoHorasRestantes;
+    [SerializeField] private EstadoMoralCampania campMoralEstado;
+    [SerializeField, Min(0f)] private float campMoralHorasRestantes;
     public bool Camp_Avergonzado; //Se limpia al cambiar de zona.
 
     public bool Camp_Muerto;
@@ -109,7 +118,8 @@ public class Personaje : MonoBehaviour
     [System.NonSerialized] public bool TraitImpulsivoCansadoAplicadoEnCombate;
     [System.NonSerialized] public bool TraitPacienteAplicadoEnCombate;
     [System.NonSerialized] public bool TraitLiderCaravanaAplicadoEnCombate;
-    public int DiasViajado;
+    public float HorasViajadas;
+    public int DiasViajado => Mathf.FloorToInt(Mathf.Max(0f, HorasViajadas) / 24f);
     public int EnemigosEliminados;
     public int DanioHecho;
     public int DanioRecibido;
@@ -233,11 +243,6 @@ public class Personaje : MonoBehaviour
         estadistica = Mathf.Max(0, estadistica + cantidad);
     }
 
-    public void SumarDiasViajado(int cantidad = 1)
-    {
-        SumarEstadisticaCampania(ref DiasViajado, cantidad);
-    }
-
     public void SumarEnemigosEliminados(int cantidad = 1)
     {
         SumarEstadisticaCampania(ref EnemigosEliminados, cantidad);
@@ -263,34 +268,206 @@ public class Personaje : MonoBehaviour
         return /*!Camp_Fatigado && */!TieneRasgo(PersonajeTraitCatalog.TraitHolgazan);
     }
 
-    public void SetCampBendecido(int dias)
+    public float ObtenerHorasActividad(int actividadId)
     {
-        Camp_Bendecido = Mathf.Max(0, dias);
+        return actividadId > 0 && horasActividadPorId.TryGetValue(actividadId, out float horas)
+            ? Mathf.Max(0f, horas)
+            : 0f;
     }
 
-    public void AgregarCampBendecido(int dias)
+    public int AgregarHorasActividad(int actividadId, float horas)
     {
-        if (dias <= 0)
+        if (actividadId <= 0 || horas <= 0f)
+        {
+            return 0;
+        }
+
+        float total = ObtenerHorasActividad(actividadId) + horas;
+        int ciclosCompletos = Mathf.FloorToInt(total / 24f);
+        horasActividadPorId[actividadId] = total - ciclosCompletos * 24f;
+        return ciclosCompletos;
+    }
+
+    public List<ActividadProgresoSaveData> ExportarProgresoActividades()
+    {
+        List<ActividadProgresoSaveData> resultado = new List<ActividadProgresoSaveData>();
+        foreach (KeyValuePair<int, float> entrada in horasActividadPorId)
+        {
+            if (entrada.Key > 0 && entrada.Value > 0.0001f)
+            {
+                resultado.Add(new ActividadProgresoSaveData
+                {
+                    actividadId = entrada.Key,
+                    horas = Mathf.Repeat(entrada.Value, 24f)
+                });
+            }
+        }
+
+        return resultado;
+    }
+
+    public void RestaurarProgresoActividades(List<ActividadProgresoSaveData> progreso)
+    {
+        horasActividadPorId.Clear();
+        if (progreso == null)
         {
             return;
         }
 
-        Camp_Bendecido = Mathf.Max(Camp_Bendecido, dias);
+        foreach (ActividadProgresoSaveData entrada in progreso)
+        {
+            if (entrada != null && entrada.actividadId > 0)
+            {
+                horasActividadPorId[entrada.actividadId] = Mathf.Repeat(Mathf.Max(0f, entrada.horas), 24f);
+            }
+        }
     }
 
-    public void ReducirCampBendecido(int dias = 1)
+    public void ProcesarHorasEstadosCampania(float horas)
     {
-        if (Camp_Bendecido <= 0 || dias <= 0)
+        if (horas <= 0f)
         {
             return;
         }
 
-        Camp_Bendecido = Mathf.Max(0, Camp_Bendecido - dias);
+        campEnfermoHorasRestantes = Mathf.Max(0f, campEnfermoHorasRestantes - horas);
+        campBendecidoHorasRestantes = Mathf.Max(0f, campBendecidoHorasRestantes - horas);
+        campMoralHorasRestantes = Mathf.Max(0f, campMoralHorasRestantes - horas);
+        if (campMoralHorasRestantes <= 0.0001f)
+        {
+            campMoralHorasRestantes = 0f;
+            campMoralEstado = EstadoMoralCampania.Ninguna;
+        }
     }
 
-    public bool TieneCampBendecido()
+    public void RestaurarEstadosCampaniaHorarios(
+        float enfermoHoras,
+        float bendecidoHoras,
+        EstadoMoralCampania moralEstado,
+        float moralHoras)
     {
-        return Camp_Bendecido > 0;
+        campEnfermoHorasRestantes = Mathf.Max(0f, enfermoHoras);
+        campBendecidoHorasRestantes = Mathf.Max(0f, bendecidoHoras);
+        campMoralHorasRestantes = Mathf.Max(0f, moralHoras);
+        campMoralEstado = campMoralHorasRestantes > 0.0001f
+            ? moralEstado
+            : EstadoMoralCampania.Ninguna;
+    }
+
+    public float ObtenerHorasRestantesEnfermo()
+    {
+        return Mathf.Max(0f, campEnfermoHorasRestantes);
+    }
+
+    public float ObtenerHorasRestantesBendecido()
+    {
+        return Mathf.Max(0f, campBendecidoHorasRestantes);
+    }
+
+    public float ObtenerHorasRestantesMoral()
+    {
+        return Mathf.Max(0f, campMoralHorasRestantes);
+    }
+
+    public EstadoMoralCampania ObtenerEstadoMoralCampania()
+    {
+        return campMoralHorasRestantes > 0.0001f
+            ? campMoralEstado
+            : EstadoMoralCampania.Ninguna;
+    }
+
+    public bool EstaEnfermo()
+    {
+        return campEnfermoHorasRestantes > 0.0001f;
+    }
+
+    public bool EstaBendecido()
+    {
+        return campBendecidoHorasRestantes > 0.0001f;
+    }
+
+    public bool TieneMoralAlta()
+    {
+        return ObtenerEstadoMoralCampania() == EstadoMoralCampania.Alta;
+    }
+
+    public bool TieneMoralBaja()
+    {
+        return ObtenerEstadoMoralCampania() == EstadoMoralCampania.Baja;
+    }
+
+    public void AplicarEnfermoHoras(float horas)
+    {
+        campEnfermoHorasRestantes = Mathf.Max(campEnfermoHorasRestantes, Mathf.Max(0f, horas));
+    }
+
+    public void ReducirEnfermoHoras(float horas)
+    {
+        campEnfermoHorasRestantes = Mathf.Max(0f, campEnfermoHorasRestantes - Mathf.Max(0f, horas));
+    }
+
+    public void LimpiarEnfermo()
+    {
+        campEnfermoHorasRestantes = 0f;
+    }
+
+    public void AplicarBendecidoHoras(float horas)
+    {
+        campBendecidoHorasRestantes = Mathf.Max(campBendecidoHorasRestantes, Mathf.Max(0f, horas));
+    }
+
+    public void ReducirBendecidoHoras(float horas)
+    {
+        campBendecidoHorasRestantes = Mathf.Max(0f, campBendecidoHorasRestantes - Mathf.Max(0f, horas));
+    }
+
+    public void LimpiarBendecido()
+    {
+        campBendecidoHorasRestantes = 0f;
+    }
+
+    public void AplicarMoralAltaHoras(float horas)
+    {
+        AplicarMoralHoras(EstadoMoralCampania.Alta, horas);
+    }
+
+    public void AplicarMoralBajaHoras(float horas)
+    {
+        AplicarMoralHoras(EstadoMoralCampania.Baja, horas);
+    }
+
+    private void AplicarMoralHoras(EstadoMoralCampania estado, float horas)
+    {
+        float duracion = Mathf.Max(0f, horas);
+        if (estado == EstadoMoralCampania.Ninguna || duracion <= 0f)
+        {
+            return;
+        }
+
+        if (ObtenerEstadoMoralCampania() == estado)
+        {
+            campMoralHorasRestantes = Mathf.Max(campMoralHorasRestantes, duracion);
+            return;
+        }
+
+        campMoralEstado = estado;
+        campMoralHorasRestantes = duracion;
+    }
+
+    public void ReducirMoralHoras(float horas)
+    {
+        campMoralHorasRestantes = Mathf.Max(0f, campMoralHorasRestantes - Mathf.Max(0f, horas));
+        if (campMoralHorasRestantes <= 0.0001f)
+        {
+            campMoralHorasRestantes = 0f;
+            campMoralEstado = EstadoMoralCampania.Ninguna;
+        }
+    }
+
+    public void LimpiarMoral()
+    {
+        campMoralEstado = EstadoMoralCampania.Ninguna;
+        campMoralHorasRestantes = 0f;
     }
 
     public void SetCampFatigado(bool fatigado)
@@ -372,7 +549,7 @@ public class Personaje : MonoBehaviour
         if (itemArmadura != null) total += itemArmadura.buffTSFortaleza;
         if (Accesorio1 != null) total += Accesorio1.buffTSFortaleza;
         if (Accesorio2 != null) total += Accesorio2.buffTSFortaleza;
-        if (TieneCampBendecido()) total += 3;
+        if (EstaBendecido()) total += 3;
 
         return total;
     }
@@ -1055,22 +1232,22 @@ public static class PersonajeTraitCatalog
             "sweet_dreams",
             true,
             "Dulces Sueños",
-            "Obtiene Alta Moral por dos días al descansar.",
+            "Obtiene Alta Moral por 2 días al descansar.",
             "Sweet Dreams",
-            "Gains High Morale for two days when resting.",
+            "Gains High Morale for 2 days when resting.",
             "Bons Sonhos",
-            "Recebe Alta Moral por dois dias ao descansar.",
+            "Recebe Alta Moral por 2 dias ao descansar.",
             TraitPesadillasRecurrentes),
         new PersonajeTraitDefinition(
             TraitPesadillasRecurrentes,
             "recurring_nightmares",
             true,
             "Pesadillas Recurrentes",
-            "Obtiene Baja Moral por un día al descansar.",
+            "Obtiene Baja Moral por 1 día al descansar.",
             "Recurring Nightmares",
-            "Gains Low Morale for one day when resting.",
+            "Gains Low Morale for 1 day when resting.",
             "Pesadelos Recorrentes",
-            "Recebe Moral Baixa por um dia ao descansar.",
+            "Recebe Moral Baixa por 1 dia ao descansar.",
             TraitDulcesSuenos),
         new PersonajeTraitDefinition(
             TraitValiente,
@@ -1964,7 +2141,7 @@ public static class PersonajeTraitCatalog
         new PersonajeTraitDefinition(
             TraitContrato,
             "contract",
-            true,
+            false,
             "Contrato",
             "Trabaja con la caravana por contrato, así que cobra. En cada descanso se le pagan 50 de Oro automáticamente. Si no es posible, obtiene Baja Moral por 3 días.",
             "Contract",

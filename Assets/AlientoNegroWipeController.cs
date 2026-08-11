@@ -31,9 +31,9 @@ public class AlientoNegroWipeController : MonoBehaviour
 
     public void AvanzarAlientoNegro(int cant)
     {
-        // Tu lógica de estado (0..20):
-        float estado = CampaignManager.Instance.GetValorAlientoNegro(); // 0..20
-        float destino = Mathf.Clamp01(estado / 20f);
+        // El estado ahora se expresa en horas (0..100), equivalente a los antiguos 0..20 pasos.
+        float estado = CampaignManager.Instance.GetValorAlientoNegro();
+        float destino = Mathf.Clamp01(estado / 100f);
 
         StopAllCoroutines();
         StartCoroutine(AnimarCutoff(destino));

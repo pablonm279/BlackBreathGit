@@ -190,10 +190,10 @@ public class TRADU : MonoBehaviour
             case "Pausa":
                 traduccion = portugues ? "Pausa" : "Pause";
                 return true;
-            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se ha gastado 200 de oro.":
+            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han gastado 200 de oro.":
                 traduccion = portugues
-                    ? "-Você realizou um ritual no santuário. O Respiro Negro recuou 3 e 200 de Ouro foram gastos."
-                    : "-You performed a ritual at the shrine. The Black Breath receded by 3 and 200 Gold was spent.";
+                    ? "-Você realizou um ritual no santuário. O Respiro Negro recuou 15 h e 200 de Ouro foram gastos."
+                    : "-You performed a ritual at the shrine. The Black Breath receded by 15 h and 200 Gold was spent.";
                 return true;
             case "<color=#FF6666>En los Asentamientos debes usar las acciones propias del asentamiento.</color>":
                 traduccion = portugues
@@ -264,20 +264,10 @@ public class TRADU : MonoBehaviour
                     ? " falhou no Teste de Resistência de Fortaleza (1d20: "
                     : " failed their Fortitude Saving Throw (1d20: ";
                 return true;
-            case ") y quedó Enfermo por 3 días tras respirar el aire enrarecido.":
-                traduccion = portugues
-                    ? ") ficou Doente por 3 dias após respirar o ar rarefeito."
-                    : ") became Sick for 3 days after breathing the stale air.";
-                return true;
             case " falló su Tirada de Salvación Mental (1d20: ":
                 traduccion = portugues
                     ? " falhou no Teste de Resistência Mental (1d20: "
                     : " failed their Mental Saving Throw (1d20: ";
-                return true;
-            case "). El rumor de desbande se agravó. Baja Moral por 3 días, -10 Esperanza.":
-                traduccion = portugues
-                    ? "). O rumor de debandada se agravou. Moral Baixa por 3 dias, -10 Esperança."
-                    : "). The rumor of desertion worsened. Low Morale for 3 days, -10 Hope.";
                 return true;
             case ") y logró ordenar el cruce del vado. +40 Experiencia.":
                 traduccion = portugues
@@ -583,14 +573,8 @@ public class TRADU : MonoBehaviour
             case " <i>(TS Fortaleza actual: ":
                 traduccion = " <i>(Current Fortitude Save: ";
                 return true;
-            case ").</i> Si la supera, rescatará 6-10 Civiles y ganará 30 Experiencia. Si falla, obtendrá Enfermo por 3 días.</color>\n\n":
-                traduccion = ").</i> On success, they rescue 6-10 Civilians and gain 30 Experience. On failure, they become Sick for 3 days.</color>\n\n";
-                return true;
             case "Uno de los Héroes puede intentar entrar y sacar a quienes sigan con vida antes de que colapse el lugar.\n\n":
                 traduccion = "One of the Heroes can try to get inside and bring out anyone still alive before the place collapses.\n\n";
-                return true;
-            case "<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Fortaleza DC 10. Si la supera, rescatará 6-10 Civiles y ganará 30 Experiencia. Si falla, obtendrá Enfermo por 3 días.</color>\n\n":
-                traduccion = "<color=#ba3fef>-If you try it, they will make a Fortitude Saving Throw, DC 10. On success, they rescue 6-10 Civilians and gain 30 Experience. On failure, they become Sick for 3 days.</color>\n\n";
                 return true;
             case "<color=#ba3fef>-Si decides sellar la entrada y seguir, -12 Esperanza.</color>\n\n":
                 traduccion = "<color=#ba3fef>-If you choose to seal the entrance and move on, -12 Hope.</color>\n\n";
@@ -607,14 +591,8 @@ public class TRADU : MonoBehaviour
             case " <i>(TS Mental actual: ":
                 traduccion = " <i>(Current Mental Save: ";
                 return true;
-            case ").</i> Si la supera, ganará 35 Experiencia y +4 Esperanza. Si falla, obtendrá Baja Moral por 3 días y la Caravana perderá 10 Esperanza.</color>\n\n":
-                traduccion = ").</i> On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 10 Hope.</color>\n\n";
-                return true;
             case "Uno de los Héroes puede intentar frenar el rumor con calma antes de que empeore.\n\n":
                 traduccion = "One of the Heroes can try to calm the rumor before it gets worse.\n\n";
-                return true;
-            case "<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Mental DC 12. Si la supera, ganará 35 Experiencia y +4 Esperanza. Si falla, obtendrá Baja Moral por 3 días y la Caravana perderá 10 Esperanza.</color>\n\n":
-                traduccion = "<color=#ba3fef>-If you try it, they will make a Mental Saving Throw, DC 12. On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 10 Hope.</color>\n\n";
                 return true;
             case "<color=#ba3fef>-Si decides imponer silencio por la fuerza, -10 Esperanza.</color>\n\n":
                 traduccion = "<color=#ba3fef>-If you choose to impose silence by force, -10 Hope.</color>\n\n";
@@ -631,8 +609,8 @@ public class TRADU : MonoBehaviour
             case ").</i> Si supera la tirada, ganará 40 Experiencia. Si falla, obtendrá Herida y la Caravana perderá 1 Buey.</color>\n\n":
                 traduccion = ").</i> On success, they gain 40 Experience. On failure, they suffer an Injury and the Caravan loses 1 Ox.</color>\n\n";
                 return true;
-            case "<color=#ba3fef>-Si decides no arriesgar el cruce, el rodeo hará avanzar al Aliento Negro.</color>\n\n":
-                traduccion = "<color=#ba3fef>-If you choose not to risk the crossing, the detour will advance the Black Breath.</color>\n\n";
+            case "<color=#ba3fef>-Si decides no arriesgar el cruce, el rodeo sumará 5 h de Aliento Negro.</color>\n\n":
+                traduccion = "<color=#ba3fef>-If you choose not to risk the crossing, the detour will add 5 h of Black Breath.</color>\n\n";
                 return true;
             case "Uno de los carros queda mal encajado entre piedras y barro duro. Si no lo sacan pronto, la marcha se trabará alrededor suyo y el malhumor empezará a crecer.\n\n":
                 traduccion = "One of the wagons gets badly wedged between stones and hard mud. If they do not free it quickly, the whole march will jam around it and tempers will start to rise.\n\n";
@@ -726,9 +704,6 @@ public class TRADU : MonoBehaviour
                 return true;
             case "La ruta se abre en varias direcciones parecidas y las pocas señales útiles parecen haberse cruzado unas con otras. Dos miembros de la caravana parecen tener opiniones encontradas. ¿A quién escucharás?\n\n":
                 traduccion = "The road opens into several similar directions and the few useful signs seem to contradict one another. Two members of the caravan appear to disagree. Who will you listen to?\n\n";
-                return true;
-            case ").</i> Si supera la tirada, ganará 25 Experiencia y el Aliento Negro retrocederá 1. Si falla, la Caravana ganará +1 Fatiga.</color>\n\n":
-                traduccion = ").</i> On success, they gain 25 Experience and the Black Breath is pushed back by 1. On failure, the Caravan gains +1 Fatigue.</color>\n\n";
                 return true;
             case "<color=#a0e812>-Si decides mantener la ruta sin arriesgarte, +4 Esperanza.</color>\n\n":
                 traduccion = "<color=#a0e812>-If you choose to stay on the route without taking risks, +4 Hope.</color>\n\n";
@@ -863,9 +838,9 @@ public class TRADU : MonoBehaviour
             traduccion = "One of the guides lost the regional maps. The Caravan must stop to find them before pressing blindly into the road ahead.\n\n";
             return true;
         }
-        if (txt == "<color=#ba3fef>-Revisarlos demorará la marcha: +1 Aliento Negro.</color>\n\n")
+        if (txt == "<color=#ba3fef>-Revisarlos demorará la marcha: Aliento Negro +5 h.</color>\n\n")
         {
-            traduccion = "<color=#ba3fef>-Checking them will delay the march: +1 Black Breath.</color>\n\n";
+            traduccion = "<color=#ba3fef>-Checking them will delay the march: Black Breath +5 h.</color>\n\n";
             return true;
         }
         if (txt == "<color=#ba3fef>-Ignorar las advertencias: morirán 1-3 Bueyes más.</color>\n\n")
@@ -999,16 +974,6 @@ public class TRADU : MonoBehaviour
             traduccion = " <i>(Current Fortitude Save: ";
             return true;
         }
-        if (txt.StartsWith(").</i> Si la supera, rescatar") && txt.Contains("6-10 Civiles") && txt.Contains("30 Experiencia"))
-        {
-            traduccion = ").</i> On success, they rescue 6-10 Civilians and gain 30 Experience. On failure, they become Sick for 3 days.</color>\n\n";
-            return true;
-        }
-        if (txt.StartsWith("<color=#ba3fef>-Si lo intentas, har") && txt.Contains("TS Fortaleza DC 10"))
-        {
-            traduccion = "<color=#ba3fef>-If you try it, they will make a Fortitude Saving Throw, DC 10. On success, they rescue 6-10 Civilians and gain 30 Experience. On failure, they become Sick for 3 days.</color>\n\n";
-            return true;
-        }
         if (txt.StartsWith("<color=#ba3fef>-Si decides sellar la entrada"))
         {
             traduccion = "<color=#ba3fef>-If you choose to seal the entrance and move on, -4 Hope.</color>\n\n";
@@ -1037,16 +1002,6 @@ public class TRADU : MonoBehaviour
             traduccion = " <i>(Current Mental Save: ";
             return true;
         }
-        if (txt.StartsWith(").</i> Si la supera, ganar") && txt.Contains("+4 Esperanza") && txt.Contains("Baja Moral por 3"))
-        {
-            traduccion = ").</i> On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 10 Hope.</color>\n\n";
-            return true;
-        }
-        if (txt.StartsWith("<color=#ba3fef>-Si lo intentas, har") && txt.Contains("TS Mental DC 12"))
-        {
-            traduccion = "<color=#ba3fef>-If you try it, they will make a Mental Saving Throw, DC 12. On success, they gain 35 Experience and +4 Hope. On failure, they suffer Low Morale for 3 days and the Caravan loses 10 Hope.</color>\n\n";
-            return true;
-        }
         if (txt.StartsWith("<color=#ba3fef>-Si decides imponer silencio"))
         {
             traduccion = "<color=#ba3fef>-If you choose to impose silence by force, -10 Hope.</color>\n\n";
@@ -1073,12 +1028,6 @@ public class TRADU : MonoBehaviour
             traduccion = ").</i> On success, they gain 40 Experience. On failure, they suffer an Injury and the Caravan loses 1 Ox.</color>\n\n";
             return true;
         }
-        if (txt.StartsWith("<color=#ba3fef>-Si decides no arriesgar el cruce"))
-        {
-            traduccion = "<color=#ba3fef>-If you choose not to risk the crossing, the detour will advance the Black Breath.</color>\n\n";
-            return true;
-        }
-
         if (txt.StartsWith("Uno de los carros queda mal encajado entre piedras"))
         {
             traduccion = "One of the wagons gets badly wedged between stones and hard mud. If they do not free it quickly, the whole march will jam around it and tempers will start to rise.\n\n";
@@ -1228,11 +1177,6 @@ public class TRADU : MonoBehaviour
         if (txt.StartsWith("La ruta se abre en varias direcciones parecidas"))
         {
             traduccion = "The road opens into several similar directions and the few useful signs seem to contradict one another. Two members of the caravan appear to disagree. Who will you listen to?\n\n";
-            return true;
-        }
-        if (txt.StartsWith(").</i> Si supera la tirada, ganar") && txt.Contains("25 Experiencia") && txt.Contains("retroced"))
-        {
-            traduccion = ").</i> On success, they gain 25 Experience and the Black Breath is pushed back by 1. On failure, the Caravan gains +1 Fatigue.</color>\n\n";
             return true;
         }
         if (txt.StartsWith("<color=#a0e812>-Si decides mantener la ruta"))
@@ -1656,8 +1600,8 @@ public class TRADU : MonoBehaviour
             case "+2 VAL a toda la Caravana en el próximo combate.":
                 r = "+2 VAL to the whole Caravan in the next combat.";
                 break;
-            case "El Aliento Negro no avanza en el próximo viaje.":
-                r = "The Black Breath does not advance on the next journey.";
+            case "+20% velocidad de caravana en el próximo viaje.":
+                r = "+20% Caravan Speed on the next journey.";
                 break;
             case "+20% Experiencia en el próximo combate.":
                 r = "+20% Experience in the next combat.";
@@ -1668,11 +1612,8 @@ public class TRADU : MonoBehaviour
             case "-2 VAL a toda la Caravana en el próximo combate.":
                 r = "-2 VAL to the whole Caravan in the next combat.";
                 break;
-            case "+1 avance del Aliento Negro en el próximo viaje.":
-                r = "+1 Black Breath advance on the next journey.";
-                break;
-            case "+1 avance del Aliento Negro en el próximo viaje y marcha visual más lenta.":
-                r = "+1 Black Breath advance on the next journey and slower visual march speed.";
+            case "-20% velocidad de caravana en el próximo viaje.":
+                r = "-20% Caravan Speed on the next journey.";
                 break;
             case "-20% Experiencia en el próximo combate.":
                 r = "-20% Experience in the next combat.";
@@ -1821,9 +1762,6 @@ public class TRADU : MonoBehaviour
             case "-La respuesta dejada en Nedukazal inspiró a la Caravana.":
                 r = "-The answer left behind in Nedukazal inspired the Caravan.";
                 break;
-            case "-La Presteza de la Caravana ha evitado el avance del Aliento Negro durante el viaje.":
-                r = "-The Caravan's Swiftness has prevented the Black Breath from advancing during the journey.";
-                break;
             case "-La derrota dejó a la Caravana con Acobardados.":
                 r = "-Defeat left the Caravan Cowed.";
                 break;
@@ -1839,9 +1777,6 @@ public class TRADU : MonoBehaviour
             case "+2 VAL a toda la Caravana en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "+2 VAL to the whole Caravan in the next combat. Consumes 1 stack when a combat starts.";
                 break;
-            case "El Aliento Negro no avanza en el próximo viaje. Consume 1 acumulación al iniciar un viaje.":
-                r = "The Black Breath does not advance on the next journey. Consumes 1 stack when a journey starts.";
-                break;
             case "+20% Experiencia en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "+20% Experience in the next combat. Consumes 1 stack when a combat starts.";
                 break;
@@ -1850,9 +1785,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "-2 VAL a toda la Caravana en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "-2 VAL to the whole Caravan in the next combat. Consumes 1 stack when a combat starts.";
-                break;
-            case "+1 avance del Aliento Negro en el próximo viaje y marcha visual más lenta. Consume 1 acumulación al iniciar un viaje.":
-                r = "+1 Black Breath advance on the next journey and slower visual march speed. Consumes 1 stack when a journey starts.";
                 break;
             case "-20% Experiencia en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "-20% Experience in the next combat. Consumes 1 stack when a combat starts.";
@@ -1887,14 +1819,14 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>-Si ordenas cerrar filas y seguir, la Caravana obtendrá Acobardados para el próximo combate. -2 VAL a todos.</color>\n\n":
                 r = "<color=#ba3fef>-If you order them to close ranks and keep moving, the Caravan will gain Cowed for the next combat. -2 VAL to everyone.</color>\n\n";
                 break;
-            case "<color=#ba3fef>-Si decides frenar para revisar, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-If you decide to stop and check, the Black Breath will advance.</color>\n\n";
+            case "<color=#ba3fef>-Si decides frenar para revisar, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you decide to stop and check, the Black Breath will increase by 5 h.</color>\n\n";
                 break;
             case "Un tramo de barro pegajoso se agarra a ruedas, botas y arreos. Cada metro parece costar el doble, y la columna entera empieza a moverse con una pesadez desesperante.\n\n":
                 r = "A stretch of sticky mud clings to wheels, boots, and harnesses. Every yard feels twice as costly, and the whole column starts moving with desperate heaviness.\n\n";
                 break;
-            case "<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje.</color>\n\n":
-                r = "<color=#ba3fef>-If you force the march anyway, the Caravan will gain Sluggish. The Black Breath will advance +1 on the next trip.</color>\n\n";
+            case "<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendrá Aletargados. El Aliento Negro aumentará 5 h en el próximo viaje.</color>\n\n":
+                r = "<color=#ba3fef>-If you force the march anyway, the Caravan will gain Sluggish. The Black Breath will increase by 5 h on the next journey.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si ordenas reacomodar la marcha, la Caravana ganara +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-If you order the march to be reorganized, the Caravan will gain +1 Fatigue.</color>\n\n";
@@ -1908,8 +1840,8 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>-Si decides seguir sin detenerte, la Caravana obtendra Desmotivación. Ganara 20% menos Experiencia en el proximo combate.</color>\n\n":
                 r = "<color=#ba3fef>-If you choose to keep going without stopping, the Caravan will gain Demotivation. It will earn 20% less Experience in the next combat.</color>\n\n";
                 break;
-            case "<color=#ba3fef>-Si haces una breve parada para ordenar el paso, el Aliento Negro avanzara.</color>\n\n":
-                r = "<color=#ba3fef>-If you call for a short halt to steady the march, the Black Breath will advance.</color>\n\n";
+            case "<color=#ba3fef>-Si haces una breve parada para ordenar el paso, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you call for a short halt to steady the march, the Black Breath will increase by 5 h.</color>\n\n";
                 break;
             case "Tras varias horas sin sobresaltos, parte de la Caravana empieza a moverse por pura costumbre. Se aflojan formaciones, cambian relevos tarde y mas de uno deja de mirar el terreno con atencion.\n\n":
                 r = "After several quiet hours, part of the Caravan starts moving on pure habit. Formations loosen, reliefs come late, and more than one person stops watching the terrain closely.\n\n";
@@ -1928,9 +1860,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "El suelo es incomodo, el viento no afloja y los carros crujen toda la noche. Nadie descansa de verdad, y la Caravana se levanta con la sensacion de haber dormido a medias.\n\n":
                 r = "The ground is uncomfortable, the wind never lets up, and the carts creak all night. No one truly rests, and the Caravan rises feeling only half asleep.\n\n";
-                break;
-            case "<color=#ba3fef><b>La Caravana obtiene Aletargados. El Aliento Negro avanzara +1 en el proximo viaje y la marcha se vera mas lenta.</b></color>":
-                r = "<color=#ba3fef><b>The Caravan gains Sluggish. The Black Breath will advance +1 on the next trip and the march will look slower.</b></color>";
                 break;
             case "Lo que empieza como murmullo termina recorriendo el campamento entero: cansancio, dudas, comparaciones con dias mejores. No hay gritos ni desbande, solo una erosion lenta del animo.\n\n":
                 r = "What begins as a murmur ends up spreading through the whole camp: exhaustion, doubt, comparisons with better days. There are no shouts or panic, only a slow erosion of morale.\n\n";
@@ -1977,8 +1906,8 @@ public class TRADU : MonoBehaviour
             case "La Caravana encuentra un tramo de camino firme, bien orientado y sorprendentemente limpio. No durara mucho, pero alcanza para ordenar la columna y pensar en un proximo avance veloz.\n\n":
                 r = "The Caravan finds a stretch of road that is firm, well aligned, and surprisingly clear. It will not last long, but it is enough to steady the column and plan for a fast advance.\n\n";
                 break;
-            case "<color=#a0e812>-Si aprovechas el ritmo que da el terreno, la Caravana obtendra Presteza. El Aliento Negro no avanzara en el proximo viaje.</color>\n\n":
-                r = "<color=#a0e812>-If you make the most of the terrain's rhythm, the Caravan will gain Swiftness. The Black Breath will not advance on the next trip.</color>\n\n";
+            case "<color=#a0e812>-Si aprovechas el ritmo que da el terreno, la Caravana obtendra Presteza: +20% velocidad de caravana en el proximo viaje.</color>\n\n":
+                r = "<color=#a0e812>-If you make the most of the terrain's rhythm, the Caravan will gain Swiftness: +20% Caravan Speed on the next journey.</color>\n\n";
                 break;
             case "<color=#a0e812>-Si prefieres revisar bien los bordes del camino, +3 Esperanza.</color>\n\n":
                 r = "<color=#a0e812>-If you prefer to carefully inspect the roadside, +3 Hope.</color>\n\n";
@@ -2019,8 +1948,8 @@ public class TRADU : MonoBehaviour
             case "Sin que nadie lo ordene demasiado, el campamento se arma con lo justo y queda listo para levantarse en minutos. Hay una sensación compartida de que hoy convendrá moverse rapido.\n\n":
                 r = "Without any direct order, the camp is set up with the bare essentials and is ready to break in minutes. There is a shared feeling that today it will be best to move fast.\n\n";
                 break;
-            case "<color=#a0e812><b>La Caravana obtiene Presteza. El Aliento Negro no avanzara en el proximo viaje.</b></color>":
-                r = "<color=#a0e812><b>The Caravan gains Swiftness. The Black Breath will not advance on the next trip.</b></color>";
+            case "<color=#a0e812><b>La Caravana obtiene Presteza: +20% velocidad de caravana en el proximo viaje.</b></color>":
+                r = "<color=#a0e812><b>The Caravan gains Swiftness: +20% Caravan Speed on the next journey.</b></color>";
                 break;
             case "Antes de dormir, un Heroe propone repasar senales, posiciones y respuestas rapidas junto al fuego. No cambia el cansancio, pero podria dejar a todos mejor parados para el proximo choque.\n\n":
                 r = "Before sleeping, a Hero suggests reviewing signals, positions, and quick responses by the fire. It does not ease the exhaustion, but it could leave everyone better prepared for the next clash.\n\n";
@@ -2046,8 +1975,8 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>-Si decides avanzar igual, la Caravana obtendra Aletargados.</color>\n\n":
                 r = "<color=#ba3fef>-If you decide to keep moving anyway, the Caravan will gain Sluggish.</color>\n\n";
                 break;
-            case "<color=#ba3fef>-Si haces una parada corta hasta que abra el aire, el Aliento Negro avanzara.</color>\n\n":
-                r = "<color=#ba3fef>-If you call for a short halt until the air clears, the Black Breath will advance.</color>\n\n";
+            case "<color=#ba3fef>-Si haces una parada corta hasta que abra el aire, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you call for a short halt until the air clears, the Black Breath will increase by 5 h.</color>\n\n";
                 break;
             case "Un circulo de cuervos se posa cerca del camino y no se mueve aunque la Caravana se acerque. Su quietud resulta peor que cualquier graznido, y el presagio corre rapido entre los Civiles.\n\n":
                 r = "A ring of crows settles near the road and does not move even as the Caravan approaches. Their stillness is worse than any caw, and the omen spreads quickly among the Civilians.\n\n";
@@ -2376,8 +2305,8 @@ public class TRADU : MonoBehaviour
                 r = "One of the main people in charge of guiding the caravan and choosing the safest routes accidentally lost their maps.\n"; break;
             case "Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la región actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n":
                 r = "The other leaders will help search for them since those maps contain crucial information about the current region, and without them the caravan could get lost.\n\n\n\n\n\n\n"; break;
-            case "Obtendrá el estado Enfermo por 4-7 días. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 1 día.\n\n\n\n\n":
-                r = "Will gain the Sick status for 4-7 days. Each tier of the Healers' Retinue will reduce recovery time by 1 day.\n\n\n\n\n"; break;
+            case "Obtendrá el estado Enfermo por 96-168 h. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 24 h.\n\n\n\n\n":
+                r = "Will gain the Sick status for 96-168 h. Each tier of the Healers' Retinue will reduce recovery time by 24 h.\n\n\n\n\n"; break;
             case "<color=#ba3fef>-Puedes comprar medicina por 45 Oro para reducir la Enfermedad un día extra.</color>\n\n":
                 r = "<color=#ba3fef>-You can buy medicine for 45 Gold to reduce the illness by one extra day.</color>\n\n"; break;
             case "Al grito de un guardia, tu atención se vuelve a uno de los carros que lleva las arcas con el oro de la caravana. Uno de sus cofres está volcado y el oro se ha derramado por el suelo. Aparentemente durante la noche, alguien logró forzarlo y se llevó parte del botón.\n\n":
@@ -2404,8 +2333,8 @@ public class TRADU : MonoBehaviour
                 r = "\nApparently they had an incident during a light training they set out to do in which both were slightly injured.\n\n"; break;
             case "La tensión sube y los demás caravaneros miran con incomodidad. Ambos reclaman tener la razón y esperan tu juicio.\n\n":
                 r = "Tension rises and the other caravaners look on uncomfortably. Both claim to be right and await your judgment.\n\n"; break;
-            case "<color=#ba3fef>-Debes intervenir en apoyo a uno de los dos. El otro obtendrá Baja Moral por 5 días. Apoyas a:</color>\n\n":
-                r = "<color=#ba3fef>-You must intervene in support of one of the two. The other will gain Low Morale for 5 days. You support:</color>\n\n"; break;
+            case "<color=#ba3fef>-Debes intervenir en apoyo a uno de los dos. El otro obtendrá Baja Moral por 120 h. Apoyas a:</color>\n\n":
+                r = "<color=#ba3fef>-You must intervene in support of one of the two. The other will gain Low Morale for 120 h. You support:</color>\n\n"; break;
             case "Un Civil de origen noble se acerca a ti con altanería y comienza a cuestionar tu liderazgo. Argumentando que no estás tomando las decisiones correctas para el bienestar de la Caravana y que él mismo podría hacerlo mejor.\n":
                 r = "A Civilian of noble origin approaches you arrogantly and begins to question your leadership, arguing that you are not making the right decisions for the Caravan's well-being and that he himself could do better.\n"; break;
             case "Si bien sus puntos son poco coherentes, a medida que te habla en voz elevada, varios civiles comienzan a congregarse alrededor, curiosos.\n\n":
@@ -2418,8 +2347,8 @@ public class TRADU : MonoBehaviour
                 r = "The civilians cover their faces as best they can, the oxen grow restless, and for several moments moving forward becomes dangerous.\n\n"; break;
             case "Puedes ordenar hacer una breve parada hasta que el aire se despeje o forzar la marcha para no perder tiempo.\n\n":
                 r = "You can order a brief stop until the air clears or force the march so as not to lose time.\n\n"; break;
-            case "<color=#ba3fef>-Si decides esperar, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-If you decide to wait, the Black Breath will advance.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides esperar, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you decide to wait, the Black Breath will increase by 5 h.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides seguir, las cenizas incomodarán a los Civiles. -5 Esperanza, +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-If you decide to press on, the ash will trouble the Civilians. -5 Hope, +1 Fatigue.</color>\n\n"; break;
             case "Un grupo de bestias enloquecidas por el humo y el fuego irrumpe cerca del camino, cruzando entre los árboles calcinados con una violencia desesperada.\n\n":
@@ -2436,8 +2365,8 @@ public class TRADU : MonoBehaviour
                 r = ").</i> "; break;
             case "Si lo logra, ganará 40 Experiencia. Si falla, la Caravana perderá 2 Bueyes.\n\n":
                 r = "If successful, they will gain 40 Experience. On a failure, the Caravan will lose 2 Oxen.\n\n"; break;
-            case "<color=#ba3fef>-Si decides apartarte y ceder el paso, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-If you choose to step aside and yield the way, the Black Breath will advance.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides apartarte y ceder el paso, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you choose to step aside and yield the way, the Black Breath will increase by 5 h.</color>\n\n"; break;
             case "Entre los troncos calcinados y la tierra ennegrecida, algunos Civiles descubren un pequeño brote verde abriéndose paso entre las brasas frías.\n\n":
                 r = "Among the charred trunks and blackened soil, some Civilians discover a small green sprout pushing through the cold embers.\n\n"; break;
             case "La visión recorre rápidamente la Caravana. Por un instante, el Bosque Ardiente deja de parecer un lugar completamente perdido.\n\n":
@@ -2448,8 +2377,8 @@ public class TRADU : MonoBehaviour
                 r = "At the roadside, the Caravan finds fallen trees and charred structures. Not all of it was reduced to ash: some of the timber could still be useful.\n\n"; break;
             case "Algunos Civiles sugieren detenerse para separar lo útil antes de seguir adelante. Tomará algo de tiempo, pero podría reforzar las reservas de Materiales.\n\n":
                 r = "Some Civilians suggest stopping to sort out what is still useful before moving on. It will take some time, but it could bolster the Material reserves.\n\n"; break;
-            case "<color=#ba3fef>-Si decides recolectar, obtendrás 15-30 Materiales, pero el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-If you choose to gather it, you will gain 15-30 Materials, but the Black Breath will advance.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides recolectar, obtendrás 15-30 Materiales, pero el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you choose to gather it, you will gain 15-30 Materials, but the Black Breath will increase by 5 h.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides dejarlo, evitarás el retraso. +3 Esperanza.</color>\n\n":
                 r = "<color=#ba3fef>-If you choose to leave it, you will avoid the delay. +3 Hope.</color>\n\n"; break;
             case "Un foco de incendio vuelve a encenderse detrás de la Caravana y el viento empuja las llamas hacia la retaguardia.\n\n":
@@ -2472,14 +2401,14 @@ public class TRADU : MonoBehaviour
                 r = "You can wake more people to reinforce the watch or let the rest keep sleeping and make up the time at dawn.\n\n"; break;
             case "<color=#ba3fef>-Si decides doblar guardia, varios caravaneros descansarán peor. +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-If you choose to double the watch, several caravaners will rest worse. +1 Fatigue.</color>\n\n"; break;
-            case "<color=#ba3fef>-Si decides dejarlos dormir, la salida será más lenta. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-If you choose to let them sleep, departure will be slower. +1 Black Breath Advance.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides dejarlos dormir, la salida será más lenta. Aliento Negro +5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you choose to let them sleep, departure will be slower. Black Breath +5 h.</color>\n\n"; break;
             case "Durante la noche se filtró agua en uno de los carros de comida y parte de las raciones quedó inutilizable.\n\n":
                 r = "During the night, water seeped into one of the food carts and part of the rations became unusable.\n\n"; break;
             case "Puedes extender lo salvable junto al fuego antes de partir o desecharlo y seguir adelante.\n\n":
                 r = "You can spread out what can still be saved by the fire before leaving or throw it away and move on.\n\n"; break;
-            case "<color=#ba3fef>-Si decides secarlas, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-If you choose to dry them, you will leave later. +1 Black Breath Advance.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides secarlas, partirán más tarde. Aliento Negro +5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you choose to dry them, you will leave later. Black Breath +5 h.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides desecharlas, perderás 18 Suministros.</color>\n\n":
                 r = "<color=#ba3fef>-If you choose to discard them, you will lose 18 Supplies.</color>\n\n"; break;
             case "Una discusión menor cerca de la fogata fue subiendo de tono y terminó dejando al campamento entero de mal humor.\n\n":
@@ -2492,8 +2421,8 @@ public class TRADU : MonoBehaviour
                 r = "As the camp is packed up, several civilians notice that basic work tools are missing. They may have been left behind in the dark.\n\n"; break;
             case "Puedes ordenar una búsqueda rápida o reemplazarlas con lo que quede en reserva.\n\n":
                 r = "You can order a quick search or replace them with what remains in reserve.\n\n"; break;
-            case "<color=#ba3fef>-Si decides buscarlas, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-If you choose to search for them, you will leave later. +1 Black Breath Advance.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides buscarlas, partirán más tarde. Aliento Negro +5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you choose to search for them, you will leave later. Black Breath +5 h.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides reemplazarlas, perderás 12 Materiales.</color>\n\n":
                 r = "<color=#ba3fef>-If you choose to replace them, you will lose 12 Materials.</color>\n\n"; break;
             case "Por una noche, el campamento se mantiene en calma. No hay sobresaltos, no hay discusiones y hasta el aire parece más liviano.\n\n":
@@ -2534,8 +2463,8 @@ public class TRADU : MonoBehaviour
                 r = "</color></b> woke several times with chills and discomfort. By dawn, they can barely stay on their feet.\n\n"; break;
             case "Uno de los Héroes se despertó varias veces con escalofríos y malestar. Al amanecer apenas puede sostenerse en pie.\n\n":
                 r = "One of the Heroes woke several times with chills and discomfort. By dawn, they can barely stay on their feet.\n\n"; break;
-            case "<color=#ba3fef><b>Obtiene Enfermo por 3 días.</b></color>":
-                r = "<color=#ba3fef><b>Gains Sick for 3 days.</b></color>"; break;
+            case "<color=#ba3fef><b>Obtiene Enfermo por 72 h.</b></color>":
+                r = "<color=#ba3fef><b>Gains Sick for 72 h.</b></color>"; break;
             case "</color></b> no logró descansar bien por una serie de pesadillas y sobresaltos.\n\n":
                 r = "</color></b> could not rest well because of a string of nightmares and sudden jolts awake.\n\n"; break;
             case "Uno de los Héroes no logró descansar bien por una serie de pesadillas y sobresaltos.\n\n":
@@ -2574,8 +2503,8 @@ public class TRADU : MonoBehaviour
                 r = "Before going to sleep, several Civilians approach one of the Heroes to thank them for what they have been doing.\n\n"; break;
             case "No cambia el camino, pero sí la forma en que piensa enfrentarlo al día siguiente.\n\n":
                 r = "It does not change the road ahead, but it does change how they plan to face it the next day.\n\n"; break;
-            case "<color=#a0e812><b>Obtiene Alta Moral por 4 días.</b></color>":
-                r = "<color=#a0e812><b>Gains High Morale for 4 days.</b></color>"; break;
+            case "<color=#a0e812><b>Obtiene Alta Moral por 96 h.</b></color>":
+                r = "<color=#a0e812><b>Gains High Morale for 96 h.</b></color>"; break;
             case "El viento nocturno arrastra brasas encendidas desde los árboles caídos y obliga a mover parte del campamento una y otra vez.\n\n":
                 r = "The night wind drags glowing embers from fallen trees and forces part of the camp to be moved again and again.\n\n"; break;
             case "Nadie duerme del todo tranquilo en el Bosque Ardiente.\n\n":
@@ -2635,8 +2564,6 @@ public class TRADU : MonoBehaviour
                 r = "\n\n</b>"; break;
             case "<color=#ba3fef>-Luchar con los Bandidos.</color>\n\n":
                 r = "<color=#ba3fef>-Fight the Bandits.</color>\n\n"; break;
-            case "<color=#ba3fef>-2 al Avance del Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-2 to Black Breath Advance.</color>\n\n"; break;
             // Logs (segments for concatenation)
             case "-Has encontrado al ladrón y recuperado el oro robado, pero has tenido que desterrar al ladrón. -5 Esperanza -1 Civil.":
                 r = "-You found the thief and recovered the stolen gold, but had to banish them. -5 Hope -1 Civilian."; break;
@@ -2701,8 +2628,8 @@ public class TRADU : MonoBehaviour
             case "<color=#a0e812><b>+15 Esperanza</b></color>":
                 r = "<color=#a0e812><b>+15 Hope</b></color>";
                 break;
-            case "<color=#ba3fef><b>Pasan las Horas: +1 Avance Aliento Negro</b></color>":
-                r = "<color=#ba3fef><b>Time Pass: +1 Black Breath Advance</b></color>";
+            case "<color=#ba3fef><b>Pasan las horas: Aliento Negro +5 h</b></color>":
+                r = "<color=#ba3fef><b>Time passes: Black Breath +5 h</b></color>";
                 break;
             case "\n<b><color=#d1006f>":
                 r = "\n<b><color=#d1006f>";
@@ -2769,8 +2696,8 @@ public class TRADU : MonoBehaviour
             case "El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial.":
                 r = "The Merchant Retinue has updated its inventory at the Trading Post.";
                 break;
-            case "Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>":
-                r = "You have arrived at a Purifier's Sanctuary, several have been built in the region to provide support and prayers to the brave who fought the Lich.\nToday, although it is abandoned, it maintains its aura of tranquility and you can deposit offerings to make a purification prayer.\n\n<i>Resting here will bless your characters for 4 days.</i>";
+            case "Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 96 h.</i>":
+                r = "You have arrived at a Purifier's Sanctuary, several have been built in the region to provide support and prayers to the brave who fought the Lich.\nToday, although it is abandoned, it maintains its aura of tranquility and you can deposit offerings to make a purification prayer.\n\n<i>Resting here will bless your characters for 96 h.</i>";
                 break;
             case "-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.":
                 r = "The caravan has arrived at a Purifier's Sanctuary. Characters have healed by 15%. +10 Hope.";
@@ -2804,6 +2731,9 @@ public class TRADU : MonoBehaviour
                 break;
             case "/20) - La Caravana viaja con tranquilidad.</color>":
                 r = "/20) - The Caravan travels peacefully.</color>";
+                break;
+            case "La Caravana viaja con tranquilidad.</color>":
+                r = "The Caravan travels peacefully.</color>";
                 break;
             case "/20) - La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los Corrompidos acechan en las sombras.</color>":
                 r = "/20) - The Caravan begins to worry and the rot is felt in the air. The Corrupted lurk in the shadows.</color>";
@@ -2946,17 +2876,14 @@ public class TRADU : MonoBehaviour
             case "Soleado: +5 Esperanza.":
                 r = "Sunny: +5 Hope.";
                 break;
-            case "Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3.":
+            case "Ola de Calor: +1 Fatiga. Día Libre da +5 Esperanza, otras Tareas Civiles dan -3.":
                 r = "Heat Wave: +1 Fatigue. \"Free Day\" gives +5 Hope, other Civil Tasks give -3.";
                 break;
             case "Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada.":
                 r = "Rain: -5 Hope. -15% Supply Gathering, -20% Ambush chances.";
                 break;
-            case "Nieve: +3 Esperanza. -15% Recolecciones, -20% Emboscada. Viajar lleva el doble de tiempo.":
-                r = "Snow: +3 Hope. -15% Gatherings, -20% Ambush. Traveling takes double time.";
-                break;
-            case "Nieve: solo permite Descansar o Guardia. -15% Recolecciones, -20% Emboscada. Viajar da -3 Esperanza por día.":
-                r = "Snow: only Rest or Guard is allowed. -15% Gatherings, -20% Ambush. Traveling gives -3 Hope per day.";
+            case "Nieve: solo permite Descansar o Guardia. -15% velocidad de viaje y Recolecciones, -20% Emboscada. Cada tramo recorrido da -3 Esperanza.":
+                r = "Snow: only Rest or Guard is allowed. -15% travel speed and Gatherings, -20% Ambush. Each map section traveled gives -3 Hope.";
                 break;
             case "Niebla: -20% Recolecciones, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos.":
                 r = "Fog: -20% Gatherings, -20% Ambush, -20% Exploration, +10% Mysterious Nodes.";
@@ -2972,9 +2899,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "Uno de los bueyes de la caravana ha caído enfermo y no puede continuar. Recibes recomendaciones de algunos especialistas en ganado que te aconsejan revisar a los otros bueyes para evitar una propagación de la enfermedad.\n\n\n\n":
                 r = "One of the oxen in the caravan has fallen ill and cannot continue. You receive recommendations from some livestock specialists advising you to check the other oxen to prevent the spread of the disease.\n\n\n\n";
-                break;
-            case "<color=#ba3fef>-Si decides revisarlos tomará unas horas: +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-If you decide to check them it will take a few hours: +1 Black Breath Progress.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si decides ignorar las advertencias: 1-3 Bueyes mas morirán.</color>\n\n":
                 r = "<color=#ba3fef>-If you decide to ignore the warnings: 1-3 more Oxen will die.</color>\n\n";
@@ -3003,8 +2927,8 @@ public class TRADU : MonoBehaviour
             case " y ":
                 r = " and ";
                 break;
-            case " ganan Alta Moral por 3 días.</b></color>":
-                r = " gain High Morale for 3 days.</b></color>";
+            case " ganan Alta Moral por 72 h.</b></color>":
+                r = " gain High Morale for 72 h.</b></color>";
                 break;
             case "Al avanzar en el camino, encuentras varios carros destruidos rodeado de cadáveres civiles. Una lucha tuvo lugar aquí y esta caravana no sobrevivió.\n":
                 r = "As you move along the road, you find several destroyed wagons surrounded by civilian corpses. A fight took place here and this caravan did not survive.\n";
@@ -3015,9 +2939,6 @@ public class TRADU : MonoBehaviour
             /*  case "La Caravana se detiene en un aserradero abandonado, algunos árboles han sido talados y la madera está apilada en desorden.\n":
                   r = "The Caravan stops at an abandoned sawmill, some trees have been felled and the wood is piled up in disarray.\n";
                   break;*/
-            case "<color=#ba3fef>-Puedes ordenar a la Caravana que junten toda la madera.</color> +65-90 Materiales, +1 Fatiga, +1 Avance del Aliento Negro.</i> \n\n":
-                r = "<color=#ba3fef>-You can order the Caravan to gather all the wood.</color> +65-90 Materials, +1 Fatigue, +1 Progress of the Black Breath.</i> \n\n";
-                break;
             case "<color=#ba3fef>-Puedes optar por dejarlo cazar, o directamente domesticar a un puñado para que se sumen a la Caravana. +2-3 Bueyes</i> \n\n":
                 r = "<color=#ba3fef>-You can choose to let it hunt, or directly tame a handful to join the Caravan. +2-3 Oxen</i> \n\n";
                 break;
@@ -3035,9 +2956,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "<color=#ba3fef>Respondes: -'Conserva el dinero, tu aporte a la Caravana ya es considerable con tu esfuerzo diario, y estoy más que agradecido de poder contar contigo.'</color> Efectos: ":
                 r = "<color=#ba3fef>You answer: -'Keep the money, your contribution to the Caravan is already considerable with your daily effort, and I am more than grateful to be able to count on you.'</color> Effects: ";
-                break;
-            case " gana Alta Moral por 4 días y 50 Experiencia. \n\n":
-                r = " gains High Morale for 4 days and 50 Experience. \n\n";
                 break;
             case "<color=#ba3fef>Respondes: -'Acepto tu ofrecimiento, no hay moneda que sobre en nuestra situación actual y seguramente nos ayudará durante el viaje, gracias.'</color> Efectos: +120-160 Oro. \n\n":
                 r = "<color=#ba3fef>You respond: -'I accept your offer, there is no money to spare in our current situation and it will surely help us during the journey, thank you.'</color> Effects: +120-160 Gold. \n\n";
@@ -3060,17 +2978,14 @@ public class TRADU : MonoBehaviour
             case "'En el sueño, vi un claro camino hacia nuestro destino. Habrá peligros y dificultades, pero estoy convencido que lo lograremos. Sigamos esa ruta.'- dice con Determinación\n\n\n":
                 r = "'In the dream, I saw a clear path to our destination. There will be dangers and difficulties, but I am convinced that we will make it. Let's follow that route.'- he says with Determination\n\n\n";
                 break;
-            case "</color></b> obtiene 150 Experiencia y Alta Moral por 5 días.</color>\n\n":
-                r = "</color></b> gains 150 Experience and High Morale for 5 days.</color>\n\n";
-                break;
             case "Has llegado a un hermoso claro natural que parece no haber sido manchado por la corrupción y la pestilencia en lo mas mínimo.\n":
                 r = "You have arrived at a beautiful natural clearing that seems to have been untouched by corruption and pestilence in the slightest.\n";
                 break;
             case "Es un excelente lugar para descansar y recuperar fuerzas.\n\n\n\n\n":
                 r = "It is an excellent place to rest and recover strength.\n\n\n\n\n";
                 break;
-            case "<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro avanzará solo 1.\n-+10% curación recibida.\n-El evento será positivo.</b></color>":
-                r = "<color=#a0e812><b>+5 Hope.\n\nResting in this place will also have additional benefits:\n-The Black Breath will only advance 1.\n-+10% healing received.\n-The event will be positive.</b></color>";
+            case "<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro acumulará solo 4 h durante un descanso de 8 h.\n-+10% curación recibida.\n-El evento será positivo.</b></color>":
+                r = "<color=#a0e812><b>+5 Hope.\n\nResting here also grants these benefits:\n-The Black Breath accumulates only 4 h during an 8 h rest.\n-+10% healing received.\n-The event will be positive.</b></color>";
                 break;
             case "Has llegado a un pequeño asentamiento. Notas que los civiles están desorganizados y necesitan liderazgo para sobrevivir al Aliento Negro.":
                 r = "You have arrived at a small settlement. You notice that the civilians are disorganized and need leadership to survive the Black Breath.";
@@ -3138,9 +3053,6 @@ public class TRADU : MonoBehaviour
             case "Haz tu ofrenda":
                 r = "Make your offering";
                 break;
-            case "Al realizar la ofrenda, el Aliento Negro retrocederá en 3, todos los personajes obtendrán Bendecido por 3 días y un personaje con Corrupción al azar será curado.":
-                r = "Upon making the offering, the Black Breath will recede by 3, all characters will gain Blessed for 3 days, and a random character with Corruption will be healed.";
-                break;
             case "Sacrificar ":
                 r = "Sacrifice ";
                 break;
@@ -3164,9 +3076,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "30 Materiales":
                 r = "30 Materials";
-                break;
-            case "Antorchas de Pie: Cada Tier reduce 5% el riesgo de sufrir una emboscada al Descansar.":
-                r = "Standing Torches: Each Tier reduces the risk of ambush while Resting by 5%.";
                 break;
             case "Alforjas: Cada Tier aumenta en 1 la Capacidad de carga de cada Buey.":
                 r = "Saddlebags: Each Tier increases the carrying capacity of each Ox by 1.";
@@ -3270,15 +3179,6 @@ public class TRADU : MonoBehaviour
             case "-La caravana han sufrido un Ataque durante el descanso. Probabilidades ":
                 r = "-The caravan suffered an attack during rest. Chances ";
                 break;
-            case "-Durante el descanso, el Aliento Negro ha avanzado 2.":
-                r = "-During rest, the Black Breath has advanced 2.";
-                break;
-            case "-Durante el descanso en el Claro, el Aliento Negro ha avanzado 1.":
-                r = "-During rest in the Clearing, the Black Breath has advanced 1.";
-                break;
-            case " ha realizado con Éxito un Ritual de Limpieza durante el descanso, previniendo el avance del Aliento Negro.":
-                r = " has successfully performed a Cleansing Ritual during rest, preventing the advance of the Black Breath.";
-                break;
             case "-Debido a la alta Esperanza, los Acechadores han decidido no cobrar su sueldo esta vez.":
                 r = "-Due to the high Hope, the Stalkers have decided not to collect their pay this time.";
                 break;
@@ -3291,8 +3191,8 @@ public class TRADU : MonoBehaviour
             case "-Debido al optimismo que rodea la Caravana, los Civiles han donado Oro: ":
                 r = "-Due to the optimism surrounding the Caravan, the Civilians have donated Gold: ";
                 break;
-            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se han sacrificado 3 bueyes.":
-                r = "-You performed a ritual at the sanctuary. The Black Breath retreats by 3, and 3 oxen were sacrificed.";
+            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han sacrificado 3 bueyes.":
+                r = "-You performed a ritual at the sanctuary. The Black Breath retreats 15 h, and 3 oxen were sacrificed.";
                 break;
             case "-Por la muy baja Esperanza ":
                 r = "-Due to the very low Hope ";
@@ -3357,20 +3257,20 @@ public class TRADU : MonoBehaviour
             case "<b><u>Día Libre</b></u>\n\n\n":
                 r = "<b><u>Day Off</b></u>\n\n\n";
                 break;
-            case "Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n":
-                r = "The civilians will take the day to rest and regain strength.\n\n";
+            case "Durante 10 h, los civiles descansarán para recobrar fuerzas.\n\n":
+                r = "For 10 h, the civilians will rest to regain their strength.\n\n";
                 break;
-            case "<color=#d8a205>Se conseguirá 6 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n":
-                r = "<color=#d8a205>You will gain 6 Hope and the next day will start with -1 Fatigue. +10% Character healing.</color>\n\n\n";
+            case "<color=#d8a205>Al finalizar las 10 h: se conseguirán 6 de Esperanza, la Fatiga bajará a 0 y la curación de personajes tendrá +10%.</color>\n\n\n":
+                r = "<color=#d8a205>When the 10 h end: gain 6 Hope, Fatigue drops to 0, and character healing gains +10%.</color>\n\n\n";
                 break;
             case "<b><u>Feria</b></u>\n\n\n":
                 r = "<b><u>Fair</b></u>\n\n\n";
                 break;
-            case "Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n":
-                r = "The civilians will dedicate the day to organizing a fair with various games and celebrations.\n\n";
+            case "Durante 8 h, los civiles organizarán una feria con varios juegos y celebraciones.\n\n":
+                r = "For 8 h, the civilians will organize a fair with various games and celebrations.\n\n";
                 break;
-            case "<color=#d8a205>Se conseguirá entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n":
-                r = "<color=#d8a205>You will gain between 10 and 15 Hope and consume 20% more Supplies. <color=#bb280d>+10% chances of Ambush.</color></color>\n\n\n";
+            case "<color=#d8a205>Al finalizar las 8 h: se conseguirán entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n":
+                r = "<color=#d8a205>When the 8 h end: gain between 10 and 15 Hope and consume 20% more Supplies. <color=#bb280d>+10% Ambush chance.</color></color>\n\n\n";
                 break;
             case "<b><u>Recolección de Materiales</b></u>\n\n\n":
                 r = "<b><u>Material Collection</b></u>\n\n\n";
@@ -3546,8 +3446,8 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Guardia: </b></color><color=#d3d3d3><i>El personaje se mantendrá alerta y custodiará la caravana.</color></i>\\n\\nSi se produce una emboscada, podrá participar de la defensa sin penalización. +3% Exploración al descansar.":
                 r = "<color=#0cca74><b>Guard: </b></color><color=#d3d3d3><i>The character will remain alert and guard the caravan.</color></i>\\n\\nIf an ambush occurs, they can participate in the defense without penalty. +3% Exploration when resting.";
                 break;
-            case "<color=#0cca74><b>Coerción: </b></color><color=#d3d3d3><i>Con métodos cuestionables, el Acechador obliga a los Mercaderes a donar dinero a la caravana.</color></i>\\n\\n+1-10 Oro y -1 Esperanza por día.":
-                r = "<color=#0cca74><b>Coercion: </b></color><color=#d3d3d3><i>Using questionable methods, the Stalker forces Merchants to donate money to the caravan.</color></i>\\n\\n+1-10 Gold and -1 Hope per day.";
+            case "<color=#0cca74><b>Coerción: </b></color><color=#d3d3d3><i>Con métodos cuestionables, el Acechador obliga a los Mercaderes a donar dinero a la caravana.</color></i>\\n\\nCada 24 h activas: +1-10 Oro y -1 Esperanza.":
+                r = "<color=#0cca74><b>Coercion: </b></color><color=#d3d3d3><i>Using questionable methods, the Stalker forces Merchants to donate money to the caravan.</color></i>\\n\\nEvery 24 active hours: +1-10 Gold and -1 Hope.";
                 break;
             case "<color=#0cca74><b>Exploración: </b></color><color=#d3d3d3><i>El personaje explora los destinos posibles adelante de la caravana.</color></i>\\n\\nTiene 40% chances de revelar Nodos futuros al viajar a un Nodo nuevo. -5% Chances de Nodo Misterioso. +5% Chances de Atajo Subterráneo\\nSi se da un combate, lo arranca Fatigado.":
                 r = "<color=#0cca74><b>Scouting: </b></color><color=#d3d3d3><i>The character scouts possible destinations ahead of the caravan.</color></i>\\n\\nHas a 40% chance to reveal future Nodes when traveling to a new Node. -5% Chance of Mysterious Node. +5% Chance of Underground Shortcut\\nIf a combat occurs, they start Fatigued.";
@@ -3561,11 +3461,11 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Vigilar: </b></color><color=#d3d3d3><i>El personaje permanecerá vigilante ante cualquier peligro.</color></i>\\n\\nSi se produce una emboscada podrá participar activamente de la defensa y obtiene +2 AP, +5 Iniciativa y +20% daño los primeros 2 turnos.":
                 r = "<color=#0cca74><b>Watch: </b></color><color=#d3d3d3><i>The character will remain vigilant against any danger.</color></i>\\n\\nIf an ambush occurs, they can actively participate in the defense and gain +2 AP, +5 Initiative, and +20% damage for the first 2 turns.";
                 break;
-            case "<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada día que pase ganará 20 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.":
-                r = "<color=#0cca74><b>Train: </b></color><color=#d3d3d3><i>The character will use their free time to train and stay in shape.</color></i>\\n\\nEach day that passes, they will gain 20 Experience.\\nIf a combat occurs, they will start Fatigued.";
+            case "<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada 24 h activas gana 20 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.":
+                r = "<color=#0cca74><b>Train: </b></color><color=#d3d3d3><i>The character will use their free time to train and stay in shape.</color></i>\\n\\nGains 20 Experience every 24 active hours.\\nIf a combat occurs, they will start Fatigued.";
                 break;
-            case "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>El personaje se centrará en descansar y recuperar su salud.</color></i>\\n\\nCada día que pase recuperará un 15% de salud.\\nSi se produce un combate, lo arrancará Fresco.":
-                r = "<color=#0cca74><b>Rest: </b></color><color=#d3d3d3><i>The character will focus on resting and recovering their health.</color></i>\\n\\nEach day that passes, they will recover 15% of their health.\\nIf a combat occurs, they will start Fresh.";
+            case "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>El personaje se centrará en descansar y recuperar su salud.</color></i>\\n\\nMientras descansa recupera 4% de Vida máxima por hora; en otras actividades recupera 2% por hora.\\nSi se produce un combate, lo arrancará Fresco.":
+                r = "<color=#0cca74><b>Rest: </b></color><color=#d3d3d3><i>The character will focus on resting and recovering their health.</color></i>\\n\\nWhile resting, recovers 4% of maximum Health per hour; during other activities, recovers 2% per hour.\\nIf a combat occurs, they will start Fresh.";
                 break;
             case "<color=#0cca74><b>Afilar Armas: </b></color><color=#d3d3d3><i>El Acechador se encarga de mantener sus armas afiladas.</color></i>\\n\\nSi se produce un combate tendrá +10% daño.":
                 r = "<color=#0cca74><b>Prepare Weapons: </b></color><color=#d3d3d3><i>The Stalker is responsible for keeping his weapons sharp.</color></i>\\n\\nIf a combat occurs, he will have +10% damage.";
@@ -3573,17 +3473,14 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Telekinesis: </b></color><color=#d3d3d3><i>Con sus poderes arcanos de telequinesis, ayuda con la carga de la caravana.</color></i>\\n\\n+20 Capacidad de carga.":
                 r = "<color=#0cca74><b>Telekinesis: </b></color><color=#d3d3d3><i>With his arcane telekinesis powers, he helps with the caravan's load.</color></i>\\n\\n+20 Carrying Capacity.";
                 break;
-            case "<color=#0cca74><b>Caza Nocturna: </b></color><color=#d3d3d3><i>El personaje cazará en las inmediaciones para conseguir comida para la caravana.</color></i>\\n\\n+1d4 Suministros por día. +3% probabilidad de Emboscada Enemiga al descansar.":
-                r = "<color=#0cca74><b>Night Hunting: </b></color><color=#d3d3d3><i>The character will hunt in the vicinity to obtain food for the caravan.</color></i>\\n\\n+1d4 Supplies per day. +3% chance of Enemy Ambush while resting.";
+            case "<color=#0cca74><b>Caza Nocturna: </b></color><color=#d3d3d3><i>El personaje cazará en las inmediaciones para conseguir comida para la caravana.</color></i>\\n\\n+1d4 Suministros cada 24 h activas. +3% probabilidad de Emboscada Enemiga al descansar.":
+                r = "<color=#0cca74><b>Night Hunting: </b></color><color=#d3d3d3><i>The character will hunt in the vicinity to obtain food for the caravan.</color></i>\\n\\n+1d4 Supplies every 24 active hours. +3% chance of Enemy Ambush while resting.";
                 break;
-            case "<color=#0cca74><b>Relatos de Batalla: </b></color><color=#d3d3d3><i>El personaje compartirá los relatos de sus hazañas con quienes quieran oírlas.</color></i>\\n\\n+10 Experiencia por día a personajes de nivel inferior. +4 Esperanza al descansar.":
-                r = "<color=#0cca74><b>Battle Tales: </b></color><color=#d3d3d3><i>The character will share the tales of their exploits with those who wish to hear them.</color></i>\\n\\n+10 Experience per day to lower-level characters. +4 Hope while resting.";
+            case "<color=#0cca74><b>Relatos de Batalla: </b></color><color=#d3d3d3><i>El personaje compartirá los relatos de sus hazañas con quienes quieran oírlas.</color></i>\\n\\nCada 24 h activas: +10 Experiencia a personajes de nivel inferior y +4 Esperanza.":
+                r = "<color=#0cca74><b>Battle Tales: </b></color><color=#d3d3d3><i>The character will share the tales of their exploits with those who wish to hear them.</color></i>\\n\\nEvery 24 active hours: +10 Experience to lower-level characters and +4 Hope.";
                 break;
-            case "<color=#0cca74><b>Ritual de Limpieza: </b></color><color=#d3d3d3><i>La Purificadora realizará rituales de protección para combatir el Aliento Negro.</color></i>\\n\\nProbabilidad de evitar avance del Aliento Negro: 25% al descansar, 15% por día.":
-                r = "<color=#0cca74><b>Ritual of Cleansing: </b></color><color=#d3d3d3><i>The Purifier will perform protection rituals to combat the Black Breath.</color></i>\\n\\nChance to avoid Black Breath advance: 25% while resting, 15% per day.";
-                break;
-            case "<color=#0cca74><b>Ayudar a los Desamparados: </b></color><color=#d3d3d3><i>La Purificadora usará su tiempo para ayudar a los rezagados y más débiles de la caravana.</color></i>\\n\\n+1d3 Esperanza diaria. +1 Fervor en combate.":
-                r = "<color=#0cca74><b>Help the Hopeless: </b></color><color=#d3d3d3><i>The Purifier will use her time to help the laggards and weaker members of the caravan.</color></i>\\n\\n+1d3 Hope per day. +1 Fervor in combat.";
+            case "<color=#0cca74><b>Ayudar a los Desamparados: </b></color><color=#d3d3d3><i>La Purificadora usará su tiempo para ayudar a los rezagados y más débiles de la caravana.</color></i>\\n\\n+1d3 Esperanza cada 24 h activas. +1 Fervor en combate.":
+                r = "<color=#0cca74><b>Help the Hopeless: </b></color><color=#d3d3d3><i>The Purifier will use her time to help the laggards and weaker members of the caravan.</color></i>\\n\\n+1d3 Hope every 24 active hours. +1 Fervor in combat.";
                 break;
             case "<color=#0cca74><b>Concentración Arcana: </b></color><color=#d3d3d3><i>El Canalizador se concentra y mantiene su poder preparado para cualquier combate que surja.</color></i>\\n\\n+1 Nivel de Energía al iniciar combates.":
                 r = "<color=#0cca74><b>Arcane Concentration: </b></color><color=#d3d3d3><i>The Channeler focuses and keeps their power ready for any combat that comes.</color></i>\\n\\n+1 Energy Level at the start of combats.";
@@ -3591,20 +3488,14 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Vigilar Desde las Sombras: </b></color><color=#d3d3d3><i>El Acechador recorre las inmediaciones de la caravana en sigilo, tratando de anticipar emboscadas enemigas.</color></i>\\n\\n-5% chances de emboscadas.\\nEn Ataque a Caravana cuenta como Guardia y comienza en Sigilo.":
                 r = "<color=#0cca74><b>Watch from Shadows: </b></color><color=#d3d3d3><i>The Stalker moves stealthily around the caravan, trying to anticipate enemy ambushes.</color></i>\\n\\n-5% chance of ambushes.\\nIn Caravan Attack it counts as Guard and starts Hidden.";
                 break;
-            case "<color=#0cca74><b>Colaborar con los Curanderos: </b></color><color=#d3d3d3><i>Ayuda al <b>Séquito de Curanderos</b> en sus tareas, aumentando su eficacia.</color></i>\\n\\nAumenta 5% la curación diaria del Séquito de Curanderos.":
-                r = "<color=#0cca74><b>Help the Healers' Retinue: </b></color><color=#d3d3d3><i>Helps the <b>Healers' Retinue</b> in their tasks, increasing their effectiveness.</color></i>\\n\\nIncreases the Healers' Retinue's daily healing by 5%.";
+            case "<color=#0cca74><b>Colaborar con los Curanderos: </b></color><color=#d3d3d3><i>Ayuda al <b>Séquito de Curanderos</b> en sus tareas, aumentando su eficacia.</color></i>\\n\\nSuma +5% al multiplicador global de curación, tanto al descansar como al realizar otras actividades.":
+                r = "<color=#0cca74><b>Help the Healers' Retinue: </b></color><color=#d3d3d3><i>Helps the <b>Healers' Retinue</b> in their tasks, increasing their effectiveness.</color></i>\\n\\nAdds +5% to the global healing multiplier, both while resting and during other activities.";
                 break;
-            case "<color=#0cca74><b>Crear Símbolo Arcano de Protección: </b></color><color=#d3d3d3><i>El Canalizador concentra energía arcana protectora en un símbolo que puede proteger a quien lo utilice.</color></i>\\n\\nCrea un Símbolo Arcano de Protección por día.":
-                r = "<color=#0cca74><b>Create Arcane Protection Symbol: </b></color><color=#d3d3d3><i>The Channeler concentrates protective arcane energy into a symbol that can protect its user.</color></i>\\n\\nCreates one Arcane Protection Symbol per day.";
+            case "<color=#0cca74><b>Crear Símbolo Arcano de Protección: </b></color><color=#d3d3d3><i>El Canalizador concentra energía arcana protectora en un símbolo que puede proteger a quien lo utilice.</color></i>\\n\\nCrea un Símbolo Arcano de Protección cada 24 h activas.":
+                r = "<color=#0cca74><b>Create Arcane Protection Symbol: </b></color><color=#d3d3d3><i>The Channeler concentrates protective arcane energy into a symbol that can protect its user.</color></i>\\n\\nCreates one Arcane Protection Symbol every 24 active hours.";
                 break;
             case "-El viaje por el camino sinuoso ha retrasado la caravana. +":
                 r = "-The journey along the winding path has delayed the caravan. +";
-                break;
-            case " Avance del Aliento Negro":
-                r = " Black Breath advance";
-                break;
-            case "-La nieve a retrasado el viaje. +1 Avance del Aliento Negro":
-                r = "-The snow has delayed the journey. +1 Black Breath advance";
                 break;
             case "-La ausencia de Aliento Negro al viajar, inspira a la Caravana. +2 Esperanza":
                 r = "-The absence of Black Breath while traveling inspires the Caravan. +2 Hope";
@@ -3624,11 +3515,8 @@ public class TRADU : MonoBehaviour
             case "-El Séquito de Herboristas ha visitado un Claro y recolectado hierbas curativas.":
                 r = "-The Herbalist Retinue has visited a Glade and collected healing herbs.";
                 break;
-            case " ha realizado con Éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro.":
-                r = "has succesfully performed a Cleansing Ritual, avoiding the Black Breath advance.";
-                break;
-            case "-Los rezos constantes del Séquito de Clérigos han logrado frenar el avance del Aliento Negro.":
-                r = "-The Cleric Retinue's constant prayers have halted the advance of the Black Breath.";
+            case "-Los rezos constantes del Séquito de Clérigos previenen 5 h de Aliento Negro.":
+                r = "-The Cleric Retinue's constant prayers prevent 5 h of Black Breath.";
                 break;
             case "-Un nuevo personaje se ha unido a la caravana: ":
                 r = "-A new character has joined the caravan: ";
@@ -3795,9 +3683,6 @@ public class TRADU : MonoBehaviour
             case "-Los Civiles se sienten culpables por la presencia de los Esclavos. -2 Esperanza.":
                 r = "-The Civilians feel guilty about the presence of the Slaves. -2 Hope.";
                 break;
-            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se ha gastado 200 de oro y todos los personajes obtienen Bendecido por 3 días.":
-                r = "-You have performed a ritual in the sanctuary. The Black Breath recedes by 3, 200 gold has been spent, and all characters gain Blessed for 3 days.";
-                break;
             case " ha sido purificado de la corrupción.":
                 r = " has been purified of corruption.";
                 break;
@@ -3806,9 +3691,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "-No tienes suficientes bueyes para realizar el ritual en el santuario.":
                 r = "-You do not have enough oxen to perform the ritual in the sanctuary.";
-                break;
-            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se han sacrificado 3 bueyes y todos los personajes obtienen Bendecido por 3 días.":
-                r = "-You have performed a ritual in the sanctuary. The Black Breath recedes by 3, 3 oxen have been sacrificed, and all characters gain Blessed for 3 days.";
                 break;
             case "-El Séquito de Artistas ha tenido un festán y despilfarrado suministros: ":
                 r = "-The Artist Retinue has feasted and squandered supplies: ";
@@ -3854,9 +3736,6 @@ public class TRADU : MonoBehaviour
                 break;
             case " falla la TS Mental (1d20: ":
                 r = " fails the Mental Save (1d20: ";
-                break;
-            case ") gracias a <b>Socializar</b> y obtiene Alta Moral por 1 día.":
-                r = ") thanks to <b>Socialize</b> and gains High Morale for 1 day.";
                 break;
             case ") pese a <b>Socializar</b> y no obtiene Alta Moral.":
                 r = ") despite <b>Socialize</b> and does not gain High Morale.";
@@ -4020,9 +3899,6 @@ public class TRADU : MonoBehaviour
             case "% por Herboristas":
                 r = " % for Herbalists";
                 break;
-            case "Carros de Tratamiento: Mejorar los carros utilizados por el Séquito de Curanderos para tratar heridos significará una mejora en los tratamientos recibidos por los heridos y su tiempo de recuperación. \nCada Tier aumenta en 5% la curación diaria de los personajes que Descansen y reduce el costo de Tratar Heridas. \nAdemás cada tier da un 10% extra a las posibilidades de reducir Enfermedades al Descansar (20% base). \nCuración proporcionada: ":
-                r = "Treatment Carts: Improving the carts used by the Healers' Retinue to treat the wounded will mean an improvement in the treatments received by the wounded characters and their recovery time. \nEach Tier increases the daily healing of characters who Rest by 5% and reduces the cost of Treating Wounds. \nIn addition, each tier gives an extra 10% to the chances of reducing Diseases when Resting (20% base). \nHealing provided: ";
-                break;
             case " Materiales":
                 r = " Materials";
                 break;
@@ -4053,14 +3929,11 @@ public class TRADU : MonoBehaviour
             case "Un grupo de nobles que se vieron obligados a abandonar la comodidad de sus tierras, ahora viajan junto a la caravana. Si bien son quejosos y no son de gran utilidad, al menos donan periódicamente parte de su riqueza para asegurarse de que no serán abandonados.\n\n":
                 r = "A group of nobles forced to leave the comfort of their lands now travels with the caravan. They complain and offer little help, but they donate part of their wealth to ensure they are not abandoned.\n\n";
                 break;
-            case "EFECTOS PASIVOS:\n\n-Cada día donan Oro equivalente a 1/3 de la Esperanza.\n\n-Se pierde 2 de Esperanza al viajar con fatiga 4 o mayor.":
-                r = "PASSIVE EFFECTS:\n\n-Each day they donate Gold equal to 1/3 of Hope.\n\n-Traveling with fatigue 4+ loses 2 Hope.";
+            case "EFECTOS PASIVOS:\n\n-Cada 24 h donan Oro equivalente a 1/3 de la Esperanza.\n\n-Se pierde 2 de Esperanza al viajar con fatiga 4 o mayor.":
+                r = "PASSIVE EFFECTS:\n\n-Every 24 h they donate Gold equal to 1/3 of Hope.\n\n-Traveling with fatigue 4+ loses 2 Hope.";
                 break;
             case "Los Clérigos del Sol Radiante Purificador participaron como apoyo en el combate contra el Liche. La mayoría murieron en la onda expansiva en ese momento, pero todavía quedan algunos grupos tratando de llegar al puerto y sobrevivir mientras luchan por retrasar al Aliento Negro.\n\n":
                 r = "The Clerics of the Purifying Radiant Sun supported the fight against the Lich. Most died in the blast, but some groups still try to reach the port and survive while slowing the Black Breath.\n\n";
-                break;
-            case "EFECTOS PASIVOS:\n\n-Otorgan 15 Esperanza al unirse a la Caravana, -20 Esperanza al perderse.\n\n-20% probabilidades de Retrasar el Aliento Negro en cada viaje.\n\n-Si el Aliento Negro llega a distancia menor a 0, los Clérigos mueren.":
-                r = "PASSIVE EFFECTS:\n\n-Grant 15 Hope when they join the Caravan, -20 Hope if lost.\n\n-20% chance to delay the Black Breath on each journey.\n\n-If Black Breath distance is below 0, the Clerics die.";
                 break;
             case "<color=red>La plegaria ya fue realizada.</color>":
                 r = "<color=red>The prayer has already been made.</color>";
@@ -4071,11 +3944,11 @@ public class TRADU : MonoBehaviour
             case "Se hará una donación de 250 Oro.":
                 r = "A donation of 250 Gold will be made.";
                 break;
-            case "Mantenimiento Armas: El Herrero se encargará de hacer un mantenimiento general de las armas de los personajes. Aumentando su Ataque en 1 y su daño en 2. Este efecto Dura 3 días.":
-                r = "Weapon Maintenance: The Blacksmith will take care of general maintenance of the characters' weapons. Increasing their Attack by 1 and their damage by 2. This effect lasts 3 days.";
+            case "Mantenimiento Armas: El Herrero realizará un mantenimiento general de las armas de los personajes. Aumenta su Ataque en 1 y su daño en 2 durante 72 h.":
+                r = "Weapon Maintenance: The Blacksmith performs general maintenance on the characters' weapons. It increases Attack by 1 and damage by 2 for 72 h.";
                 break;
-            case "Mantenimiento Armaduras: El Herrero se encargará de hacer un mantenimiento general de las armaduras de los personajes. Aumentando su Defensa en 1 y su Armadura en 2. Este efecto dura 3 días.":
-                r = "Armor Maintenance: The Blacksmith will take care of general maintenance of the characters' armor. Increasing their Defense by 1 and their Armor by 2. This effect lasts 3 days.";
+            case "Mantenimiento Armaduras: El Herrero realizará un mantenimiento general de las armaduras de los personajes. Aumenta su Defensa en 1 y su Armadura en 2 durante 72 h.":
+                r = "Armor Maintenance: The Blacksmith performs general maintenance on the characters' armor. It increases Defense by 1 and Armor by 2 for 72 h.";
                 break;
             case "Realizar: 200 Oro":
                 r = "Perform: 200 Gold";
@@ -4149,8 +4022,8 @@ public class TRADU : MonoBehaviour
             case "Cantidad de Civiles: 25":
                 r = "Number of Civilians: 25";
                 break;
-            case "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 5 de Esperanza Extra.\n\n-Cada día hay un 30% de chances de que hagan un festán y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.":
-                r = "PASSIVE EFFECTS:\n\n-Joining the Caravan grants 15 Hope.\n\n-Each time Fair is chosen as a Civil Rest Task, gain 5 extra Hope.\n\n-Each day there is a 30% chance they hold a feast and waste 1-4 Supplies.\n\n-If they leave the Caravan, lose 15 Hope.";
+            case "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 5 de Esperanza Extra.\n\n-Cada 24 h hay un 30% de chances de que hagan un festán y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.":
+                r = "PASSIVE EFFECTS:\n\n-Joining the Caravan grants 15 Hope.\n\n-Each time Fair is chosen as a Civil Rest Task, gain 5 extra Hope.\n\n-Every 24 h there is a 30% chance they hold a feast and waste 1-4 Supplies.\n\n-If they leave the Caravan, lose 15 Hope.";
                 break;
             case "usa ":
                 r = "uses ";
@@ -5844,8 +5717,8 @@ public class TRADU : MonoBehaviour
             case "Modo Rápido":
                 r = "Fast Mode";
                 break;
-            case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta región.":
-                r = "Due to the invasion, Nedukazal is shrouded in chaos and darkness, so the caravan will not be able to clearly see the path ahead.\n\nRelying on its own light, it will be more prone to ambushes (+20%).\n\nUpgrade the <b>Standing Torches</b> to increase the vision range.\n\nThe Black Breath will not be a concern in this region.";
+            case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Caravana</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta región.":
+                r = "Due to the invasion, Nedukazal is shrouded in chaos and darkness, so the caravan will not be able to clearly see the path ahead.\n\nRelying on its own light, it will be more prone to ambushes (+20%).\n\nUpgrade the <b>Caravan Torches</b> to increase the vision range.\n\nThe Black Breath will not be a concern in this region.";
                 break;
             case "\nSe conseguirán de 25-40 Materiales y 60-85 Suministros.":
                 r = "\n25-40 Materials and 60-85 Supplies will be gathered.";
@@ -6252,8 +6125,8 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 12. Si la supera, ganará 40 Experiencia. Si falla, obtendrá Herida.</color>\n\n":
                 r = "<color=#ba3fef>-If you try it, they will make a Reflex Save DC 12. On success, they gain 40 Experience. On failure, they suffer an Injury.</color>\n\n";
                 break;
-            case "<color=#ba3fef>-Si decides rodear el tramo, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-If you go around the stretch, the Black Breath will advance.</color>\n\n";
+            case "<color=#ba3fef>-Si decides rodear el tramo, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you go around the stretch, the Black Breath will increase by 5 h.</color>\n\n";
                 break;
             case "A los costados del camino aparecen varias efigies Kale'Tav clavadas en la nieve, adornadas con huesos, plumas y telas endurecidas por el hielo.\n\n":
                 r = "Along the road stand several Kale'Tav effigies planted in the snow, decorated with bones, feathers, and cloth stiffened by ice.\n\n";
@@ -6339,8 +6212,8 @@ public class TRADU : MonoBehaviour
             case "La determinación con la que retoma la marcha contagia al resto.\n\n":
                 r = "The determination with which they resume the march spreads to the rest.\n\n";
                 break;
-            case "<color=#a0e812><b>Gana 50 Experiencia y Alta Moral por 3 días.</b></color>":
-                r = "<color=#a0e812><b>Gains 50 Experience and High Morale for 3 days.</b></color>";
+            case "<color=#a0e812><b>Gana 50 Experiencia y Alta Moral por 72 h.</b></color>":
+                r = "<color=#a0e812><b>Gains 50 Experience and High Morale for 72 h.</b></color>";
                 break;
             case "El viento cambia de golpe y barre la niebla helada del frente por un buen trecho.\n\n":
                 r = "The wind suddenly shifts and sweeps the freezing mist away for a good stretch ahead.\n\n";
@@ -6348,8 +6221,8 @@ public class TRADU : MonoBehaviour
             case "La Caravana consigue avanzar con mejor ritmo y algo más de seguridad.\n\n":
                 r = "The Caravan manages to move forward with a better pace and a bit more safety.\n\n";
                 break;
-            case "<color=#a0e812><b>-1 Avance Aliento Negro</b></color>":
-                r = "<color=#a0e812><b>-1 Black Breath Advance</b></color>";
+            case "<color=#a0e812><b>Aliento Negro -5 h</b></color>":
+                r = "<color=#a0e812><b>Black Breath -5 h</b></color>";
                 break;
             case "Antes del amanecer, unos cánticos graves atraviesan el Paso y llegan al campamento mezclados con el viento.\n\n":
                 r = "Before dawn, deep chants cross the Pass and reach the camp carried by the wind.\n\n";
@@ -6363,8 +6236,8 @@ public class TRADU : MonoBehaviour
             case "No parece un ataque fallido. Más bien un mensaje. Puedes revisar bien el perímetro o mantener la calma y evitar que el rumor corra entre los Civiles.\n\n":
                 r = "It does not look like a failed attack. More like a message. You can inspect the perimeter carefully or keep calm and stop the rumor from spreading among the Civilians.\n\n";
                 break;
-            case "<color=#ba3fef>-Si decides revisar, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-If you decide to inspect, they will leave later. +1 Black Breath Advance.</color>\n\n";
+            case "<color=#ba3fef>-Si decides revisar, partirán más tarde. Aliento Negro +5 h.</color>\n\n":
+                r = "<color=#ba3fef>-If you decide to inspect, they will leave later. Black Breath +5 h.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si decides mantener la calma, los rumores igual harán mella. -9 Esperanza.</color>\n\n":
                 r = "<color=#ba3fef>-If you decide to keep calm, the rumors will still take their toll. -9 Hope.</color>\n\n";
@@ -6378,8 +6251,8 @@ public class TRADU : MonoBehaviour
             case "Al amanecer sigue en pie, pero el descanso no alcanzó para despejarle la cabeza.\n\n":
                 r = "By dawn they are still standing, but the rest was not enough to clear their head.\n\n";
                 break;
-            case "<color=#ba3fef><b>Obtiene Baja Moral por 3 días.</b></color>":
-                r = "<color=#ba3fef><b>Gains Low Morale for 3 days.</b></color>";
+            case "<color=#ba3fef><b>Obtiene Baja Moral por 72 h.</b></color>":
+                r = "<color=#ba3fef><b>Gains Low Morale for 72 h.</b></color>";
                 break;
             case "Muy cerca de las tiendas aparece un símbolo Kale'Tav trazado durante la noche sobre la nieve endurecida.\n\n":
                 r = "Very close to the tents, a Kale'Tav symbol appears traced during the night over the hardened snow.\n\n";
@@ -6426,8 +6299,8 @@ public class TRADU : MonoBehaviour
             case "La imagen queda grabada con fuerza y le devuelve algo de ánimo para lo que viene.\n\n":
                 r = "The sight stays etched strongly in their mind and gives them back some spirit for what lies ahead.\n\n";
                 break;
-            case "<color=#a0e812><b>Gana 35 Experiencia y Alta Moral por 3 días.</b></color>":
-                r = "<color=#a0e812><b>Gains 35 Experience and High Morale for 3 days.</b></color>";
+            case "<color=#a0e812><b>Gana 35 Experiencia y Alta Moral por 72 h.</b></color>":
+                r = "<color=#a0e812><b>Gains 35 Experience and High Morale for 72 h.</b></color>";
                 break;
             case "Bajo el suelo helado y la piedra llegan golpes sordos y repetidos, como si algo enorme estuviera tanteando el camino desde abajo.\n\n":
                 r = "From beneath the frozen ground and stone come dull, repeated thuds, as if something enormous were probing the road from below.\n\n";
@@ -6537,8 +6410,8 @@ public class TRADU : MonoBehaviour
             case "El ejemplo no cambia la guerra, pero sí la forma en que retoma la marcha.\n\n":
                 r = "The example does not change the war, but it does change how they resume the march.\n\n";
                 break;
-            case "<color=#a0e812><b>Gana 45 Experiencia y Alta Moral por 3 días.</b></color>":
-                r = "<color=#a0e812><b>Gains 45 Experience and High Morale for 3 days.</b></color>";
+            case "<color=#a0e812><b>Gana 45 Experiencia y Alta Moral por 72 h.</b></color>":
+                r = "<color=#a0e812><b>Gains 45 Experience and High Morale for 72 h.</b></color>";
                 break;
             case "Al atravesar un viejo puesto de paso derruido, la Caravana encuentra un tramo cubierto entre columnas caídas y muros aún firmes, bastante más seguro que el terreno abierto.\n\n":
                 r = "While crossing a ruined old waystation, the Caravan finds a covered stretch between fallen columns and still-standing walls, much safer than the open ground.\n\n";
@@ -6618,8 +6491,8 @@ public class TRADU : MonoBehaviour
             case "Leerla durante el descanso le devuelve perspectiva sobre por qué todavía vale la pena seguir.\n\n":
                 r = "Reading it during the rest restores their sense of why it is still worth pressing on.\n\n";
                 break;
-            case "<color=#a0e812><b>Gana 40 Experiencia y Alta Moral por 3 días.</b></color>":
-                r = "<color=#a0e812><b>Gains 40 Experience and High Morale for 3 days.</b></color>";
+            case "<color=#a0e812><b>Gana 40 Experiencia y Alta Moral por 72 h.</b></color>":
+                r = "<color=#a0e812><b>Gains 40 Experience and High Morale for 72 h.</b></color>";
                 break;
             case "El ave mensajera regresa con un mensaje atado a sus patas. En él se indica el punto exacto al que la caravana deberá dirigirse para encontrarse con el equipo de salvamento, junto con los recursos cedidos por la ciudad de Serria.\n":
                 r = "The messenger bird returns with a message tied to its legs. It indicates the exact point where the caravan must go to meet the rescue team, along with the resources provided by the city of Serria.\n";
@@ -6641,9 +6514,6 @@ public class TRADU : MonoBehaviour
                 break;
             case " suministros. +25 Esperanza. +20 Materiales y 200 Oro y un nuevo personaje se suma a la caravana</b></color>":
                 r = " supplies. +25 Hope. +20 Materials and 200 Gold and a new character joins the caravan</b></color>";
-                break;
-            case "-Las oraciones de los Purificadores del Templo de Serria merman el avance del Aliento Negro en: ":
-                r = "-The prayers of the Purifiers in the Temple of Serria reduce the advance of the Black Breath by: ";
                 break;
             case " Esperanza":
                 r = " Hope";
@@ -7622,8 +7492,8 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Siempre Alerta: </b></color><color=#d3d3d3><i>La Duelista se mantiene lista para actuar con rapidez si se presenta una batalla.</color></i>\\n\\n+5 Iniciativa en combate. Si no es emboscada, gana 2 Impulso al comenzar la batalla.":
                 r = "<color=#0cca74><b>Always Alert: </b></color><color=#d3d3d3><i>The Duelist stays ready to act quickly if a battle arises.</color></i>\\n\\n+5 Initiative in combat. If not ambushed, gains 2 Impulse at the start of battle.";
                 break;
-            case "<color=#0cca74><b>Socializar: </b></color><color=#d3d3d3><i>La Duelista dedica tiempo a conversar, bromear y sostener el ánimo de la caravana.</color></i>\\n\\nCada día, sus compañeros realizan una TS Mental DC 16. Quienes la superan obtienen Alta Moral por 1 día.":
-                r = "<color=#0cca74><b>Socialize: </b></color><color=#d3d3d3><i>The Duelist spends time talking, joking, and keeping the caravan's spirits up.</color></i>\\n\\nEach day, her companions make a Mental Save DC 16. Those who succeed gain High Morale for 1 day.";
+            case "<color=#0cca74><b>Socializar: </b></color><color=#d3d3d3><i>La Duelista dedica tiempo a conversar, bromear y sostener el ánimo de la caravana.</color></i>\\n\\nCada 24 h activas, sus compañeros realizan una TS Mental DC 16. Quienes la superan obtienen Moral Alta durante 24 h.":
+                r = "<color=#0cca74><b>Socialize: </b></color><color=#d3d3d3><i>The Duelist spends time talking, joking, and keeping the caravan's spirits up.</color></i>\\n\\nEvery 24 active hours, her companions make a Mental Save DC 16. Those who succeed gain High Morale for 24 h.";
                 break;
             case "<color=#0cca74><b>Consuelo: </b></color><color=#d3d3d3><i>La Duelista contiene el desánimo de la caravana cuando llegan malas noticias o tiempos difíciles.</color></i>\\n\\nSiempre que se pierda Esperanza por cualquier motivo, se pierde 2 menos.":
                 r = "<color=#0cca74><b>Solace: </b></color><color=#d3d3d3><i>The Duelist helps contain the caravan's discouragement when bad news or hard times arrive.</color></i>\\n\\nWhenever Hope would be lost for any reason, 2 less is lost.";
@@ -7643,9 +7513,6 @@ public class TRADU : MonoBehaviour
             case "Duelista":
                 r = "Duelist";
                 break;
-            case "-La Caravana se mueve con Aletargamiento. +1 Avance del Aliento Negro.":
-                r = "-The caravan moves with lethargy. +1 Advance of the Black Breath.";
-                break;
             case "Siempre Alerta":
                 r = "Always Alert";
                 break;
@@ -7660,9 +7527,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "Guardar Partida":
                 r = "Save Game";
-                break;
-            case "Al realizar la ofrenda, el Aliento Negro retrocederá en 3 y un personaje con Corrupción al azar será curado.":
-                r = "When performing the offering, the Black Breath will retreat by 3 and a random character with Corruption will be healed.";
                 break;
             case "<i>El Árbol de los Lamentos extiende sus raices de forma amenazante por sobre la superficie para atacar a sus enemigos y protegerse. </i>\n\n<color=#EE0000>-Débil al fuego.</color>":
                 r = "<i>The Tree of Lamentations extends its roots threateningly over the surface to attack its enemies and protect itself. </i>\n\n<color=#EE0000>-Weak against fire.</color>";
@@ -7687,9 +7551,6 @@ public class TRADU : MonoBehaviour
             case "Bruja Quemada": r = "Bruxa Queimada"; break;
             case "<i>Esta bruja ha sido deformada por las llamas y corrompida la presencia del Aliento Negro. </i>\n\n<color=#199F10>Crea Enredaderas.\n-Ataque de rango que no falla.\n-Estertor Mortal.</color><color=#EE0000>-Poco resistente.</color>":
                 r = "<i>This witch has been deformed by the flames and corrupted by the presence of the Black Breath. </i>\n\n<color=#199F10>Creates Vines.\n-Range attack that never fails.\n-Cursed Death Rattle.</color><color=#EE0000>-Not very resistant.</color>";
-                break;
-            case "), eligió bien la ruta y el Aliento Negro retrocedió 1. +25 Experiencia.":
-                r = "), chose the right path and the Black Breath retreated 1. +25 Experience.";
                 break;
             case "Escape: los personajes podrán escapar desde esta casilla.":
                 r = "Escape: characters can flee the battle from this tile.";
@@ -7833,17 +7694,8 @@ public class TRADU : MonoBehaviour
             case "Ballestero":
                 r = "Crossbowman";
                 break;
-            case ").</i> Si la supera, la Caravana obtendrá Vigilante por 1 viaje y ganará 30 Experiencia. Si falla, la Caravana obtendrá Descuidados por 3 días.</color>\n\n":
-                r = ").</i> If they succeed, the Caravan will gain Watchful for 1 trip and earn 30 Experience. If they fail, the Caravan will gain Careless for 3 days.</color>\n\n";
-                break;
-            case "). Descuidados por 3 días.":
-                r = "). Careless for 3 days.";
-                break;
             case "Descarga Maldita":
                 r = "Cursed Bolt";
-                break;
-            case "La Plegaria retrasará 1 el Aliento Negro y bendecirá a los personajes por 3 días. 1 vez por región.":
-                r = "The Prayer will delay the Black Breath in 1 and bless the characters for 3 days and increases Hope by 10. Once per Region.";
                 break;
             case ") y logró apagar el rumor antes de que creciera. +35 Experiencia, +4 Esperanza.":
             r= ") and managed to put out the rumor before it could spread. +35 Experience, +4 Hope.";
@@ -8305,9 +8157,9 @@ public class TRADU : MonoBehaviour
             traduccion = "Um dos guias perdeu os mapas da região. A Caravana terá de parar para procurá-los antes de avançar às cegas pelo caminho.\n\n";
             return true;
         }
-        if (txt == "<color=#ba3fef>-Revisarlos demorará la marcha: +1 Aliento Negro.</color>\n\n")
+        if (txt == "<color=#ba3fef>-Revisarlos demorará la marcha: Aliento Negro +5 h.</color>\n\n")
         {
-            traduccion = "<color=#ba3fef>-Examiná-los atrasará a marcha: +1 Respiro Negro.</color>\n\n";
+            traduccion = "<color=#ba3fef>-Examiná-los atrasará a marcha: Respiro Negro +5 h.</color>\n\n";
             return true;
         }
         if (txt == "<color=#ba3fef>-Ignorar las advertencias: morirán 1-3 Bueyes más.</color>\n\n")
@@ -8441,16 +8293,6 @@ public class TRADU : MonoBehaviour
             traduccion = " <i>(TR de Fortaleza atual: ";
             return true;
         }
-        if (txt.StartsWith(").</i> Si la supera, rescatar") && txt.Contains("6-10 Civiles") && txt.Contains("30 Experiencia"))
-        {
-            traduccion = ").</i> Se passar, resgatará 6-10 Civis e ganhará 30 de Experiência. Se falhar, ficará Doente por 3 dias.</color>\n\n";
-            return true;
-        }
-        if (txt.StartsWith("<color=#ba3fef>-Si lo intentas, har") && txt.Contains("TS Fortaleza DC 10"))
-        {
-            traduccion = "<color=#ba3fef>-Se tentar, fará um Teste de Resistência de Fortaleza CD 10. Se passar, resgatará 6-10 Civis e ganhará 30 de Experiência. Se falhar, ficará Doente por 3 dias.</color>\n\n";
-            return true;
-        }
         if (txt.StartsWith("<color=#ba3fef>-Si decides sellar la entrada"))
         {
             traduccion = "<color=#ba3fef>-Se decidir selar a entrada e seguir, -4 Esperança.</color>\n\n";
@@ -8479,16 +8321,6 @@ public class TRADU : MonoBehaviour
             traduccion = " <i>(TR Mental atual: ";
             return true;
         }
-        if (txt.StartsWith(").</i> Si la supera, ganar") && txt.Contains("+4 Esperanza") && txt.Contains("Baja Moral por 3"))
-        {
-            traduccion = ").</i> Se passar, ganhará 35 de Experiência e +4 Esperança. Se falhar, sofrerá Moral Baixa por 3 dias e a Caravana perderá 10 Esperança.</color>\n\n";
-            return true;
-        }
-        if (txt.StartsWith("<color=#ba3fef>-Si lo intentas, har") && txt.Contains("TS Mental DC 12"))
-        {
-            traduccion = "<color=#ba3fef>-Se tentar, fará um Teste de Resistência Mental CD 12. Se passar, ganhará 35 de Experiência e +4 Esperança. Se falhar, sofrerá Moral Baixa por 3 dias e a Caravana perderá 10 Esperança.</color>\n\n";
-            return true;
-        }
         if (txt.StartsWith("<color=#ba3fef>-Si decides imponer silencio"))
         {
             traduccion = "<color=#ba3fef>-Se decidir impor silêncio à força, -10 Esperança.</color>\n\n";
@@ -8515,12 +8347,6 @@ public class TRADU : MonoBehaviour
             traduccion = ").</i> Se passar no teste, ganhará 40 de Experiência. Se falhar, sofrerá Ferimento e a Caravana perderá 1 Boi.</color>\n\n";
             return true;
         }
-        if (txt.StartsWith("<color=#ba3fef>-Si decides no arriesgar el cruce"))
-        {
-            traduccion = "<color=#ba3fef>-Se decidir não arriscar a travessia, o desvio fará o Respiro Negro avançar.</color>\n\n";
-            return true;
-        }
-
         if (txt.StartsWith("Uno de los carros queda mal encajado entre piedras"))
         {
             traduccion = "Uma das carroças fica presa entre pedras e barro duro. Se não a soltarem logo, a marcha vai travar ao redor dela e o mau humor começará a crescer.\n\n";
@@ -8697,11 +8523,6 @@ public class TRADU : MonoBehaviour
         if (txt.StartsWith("La ruta se abre en varias direcciones parecidas"))
         {
             traduccion = "A rota se abre em várias direções parecidas e os poucos sinais úteis parecem ter se cruzado uns com os outros. Dois membros da caravana parecem ter opiniões divergentes. Quem você vai ouvir?\n\n";
-            return true;
-        }
-        if (txt.StartsWith(").</i> Si supera la tirada, ganar") && txt.Contains("25 Experiencia") && txt.Contains("retroced"))
-        {
-            traduccion = ").</i> Se passar no teste, ganhará 25 de Experiência e o Respiro Negro recuará 1. Se falhar, a Caravana ganhará +1 Fadiga.</color>\n\n";
             return true;
         }
         if (txt.StartsWith("<color=#a0e812>-Si decides mantener la ruta"))
@@ -9123,8 +8944,8 @@ public class TRADU : MonoBehaviour
             case "+2 VAL a toda la Caravana en el próximo combate.":
                 r = "+2 VAL para toda a Caravana no próximo combate.";
                 break;
-            case "El Aliento Negro no avanza en el próximo viaje.":
-                r = "O Respiro Negro não avança na próxima viagem.";
+            case "+20% velocidad de caravana en el próximo viaje.":
+                r = "+20% de Velocidade da Caravana na próxima viagem.";
                 break;
             case "+20% Experiencia en el próximo combate.":
                 r = "+20% Experiência no próximo combate.";
@@ -9135,11 +8956,8 @@ public class TRADU : MonoBehaviour
             case "-2 VAL a toda la Caravana en el próximo combate.":
                 r = "-2 VAL para toda a Caravana no próximo combate.";
                 break;
-            case "+1 avance del Aliento Negro en el próximo viaje.":
-                r = "+1 avanço do Respiro Negro na próxima viagem.";
-                break;
-            case "+1 avance del Aliento Negro en el próximo viaje y marcha visual más lenta.":
-                r = "+1 avanço do Respiro Negro na próxima viagem e marcha visual mais lenta.";
+            case "-20% velocidad de caravana en el próximo viaje.":
+                r = "-20% de Velocidade da Caravana na próxima viagem.";
                 break;
             case "-20% Experiencia en el próximo combate.":
                 r = "-20% Experiência no próximo combate.";
@@ -9288,9 +9106,6 @@ public class TRADU : MonoBehaviour
             case "-La respuesta dejada en Nedukazal inspiró a la Caravana.":
                 r = "-A resposta deixada em Nedukazal inspirou a Caravana.";
                 break;
-            case "-La Presteza de la Caravana ha evitado el avance del Aliento Negro durante el viaje.":
-                r = "-A Presteza da Caravana evitou o avanço do Respiro Negro durante a viagem.";
-                break;
             case "-La derrota dejó a la Caravana con Acobardados.":
                 r = "-A derrota deixou a Caravana com Acovardados.";
                 break;
@@ -9306,9 +9121,6 @@ public class TRADU : MonoBehaviour
             case "+2 VAL a toda la Caravana en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "+2 VAL para toda a Caravana no próximo combate. Consome 1 acúmulo ao iniciar um combate.";
                 break;
-            case "El Aliento Negro no avanza en el próximo viaje. Consume 1 acumulación al iniciar un viaje.":
-                r = "O Respiro Negro não avança na próxima viagem. Consome 1 acúmulo ao iniciar uma viagem.";
-                break;
             case "+20% Experiencia en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "+20% Experiência no próximo combate. Consome 1 acúmulo ao iniciar um combate.";
                 break;
@@ -9317,9 +9129,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "-2 VAL a toda la Caravana en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "-2 VAL para toda a Caravana no próximo combate. Consome 1 acúmulo ao iniciar um combate.";
-                break;
-            case "+1 avance del Aliento Negro en el próximo viaje y marcha visual más lenta. Consume 1 acumulación al iniciar un viaje.":
-                r = "+1 avanço do Respiro Negro na próxima viagem e marcha visual mais lenta. Consome 1 acúmulo ao iniciar uma viagem.";
                 break;
             case "-20% Experiencia en el próximo combate. Consume 1 acumulación al iniciar un combate.":
                 r = "-20% Experiência no próximo combate. Consome 1 acúmulo ao iniciar um combate.";
@@ -9354,14 +9163,14 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>-Si ordenas cerrar filas y seguir, la Caravana obtendrá Acobardados para el próximo combate. -2 VAL a todos.</color>\n\n":
                 r = "<color=#ba3fef>-Se você ordenar fechar fileiras e seguir, a Caravana obterá Acovardados para o próximo combate. -2 VAL para todos.</color>\n\n";
                 break;
-            case "<color=#ba3fef>-Si decides frenar para revisar, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se você decidir parar para verificar, o Respiro Negro avançará.</color>\n\n";
+            case "<color=#ba3fef>-Si decides frenar para revisar, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se você decidir parar para verificar, o Respiro Negro aumentará 5 h.</color>\n\n";
                 break;
             case "Un tramo de barro pegajoso se agarra a ruedas, botas y arreos. Cada metro parece costar el doble, y la columna entera empieza a moverse con una pesadez desesperante.\n\n":
                 r = "Um trecho de barro pegajoso se agarra a rodas, botas e arreios. Cada metro parece custar o dobro, e a coluna inteira começa a se mover com um peso desesperador.\n\n";
                 break;
-            case "<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendra Aletargados. El Aliento Negro avanzara +1 en el proximo viaje.</color>\n\n":
-                r = "<color=#ba3fef>-Se você forçar a marcha mesmo assim, a Caravana obterá Letargia. O Respiro Negro avançará +1 na próxima viagem.</color>\n\n";
+            case "<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendrá Aletargados. El Aliento Negro aumentará 5 h en el próximo viaje.</color>\n\n":
+                r = "<color=#ba3fef>-Se você forçar a marcha mesmo assim, a Caravana obterá Letargia. O Respiro Negro aumentará 5 h na próxima viagem.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si ordenas reacomodar la marcha, la Caravana ganara +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-Se você ordenar reorganizar a marcha, a Caravana ganhará +1 Fadiga.</color>\n\n";
@@ -9375,8 +9184,8 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>-Si decides seguir sin detenerte, la Caravana obtendra Desmotivación. Ganara 20% menos Experiencia en el proximo combate.</color>\n\n":
                 r = "<color=#ba3fef>-Se você decidir seguir sem parar, a Caravana obterá Desmotivação. Ganhará 20% menos Experiência no próximo combate.</color>\n\n";
                 break;
-            case "<color=#ba3fef>-Si haces una breve parada para ordenar el paso, el Aliento Negro avanzara.</color>\n\n":
-                r = "<color=#ba3fef>-Se você fizer uma breve parada para organizar a marcha, o Respiro Negro avançará.</color>\n\n";
+            case "<color=#ba3fef>-Si haces una breve parada para ordenar el paso, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se você fizer uma breve parada para organizar a marcha, o Respiro Negro aumentará 5 h.</color>\n\n";
                 break;
             case "Tras varias horas sin sobresaltos, parte de la Caravana empieza a moverse por pura costumbre. Se aflojan formaciones, cambian relevos tarde y mas de uno deja de mirar el terreno con atencion.\n\n":
                 r = "Depois de várias horas sem sobressaltos, parte da Caravana começa a se mover por puro hábito. As formações se afrouxam, as trocas de turno se atrasam e mais de um deixa de observar o terreno com atenção.\n\n";
@@ -9395,9 +9204,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "El suelo es incomodo, el viento no afloja y los carros crujen toda la noche. Nadie descansa de verdad, y la Caravana se levanta con la sensacion de haber dormido a medias.\n\n":
                 r = "O chão é desconfortável, o vento não cede e as carroças rangem a noite toda. Ninguém descansa de verdade, e a Caravana se levanta com a sensação de ter dormido pela metade.\n\n";
-                break;
-            case "<color=#ba3fef><b>La Caravana obtiene Aletargados. El Aliento Negro avanzara +1 en el proximo viaje y la marcha se vera mas lenta.</b></color>":
-                r = "<color=#ba3fef><b>A Caravana obtém Letargia. O Respiro Negro avançará +1 na próxima viagem e a marcha parecerá mais lenta.</b></color>";
                 break;
             case "Lo que empieza como murmullo termina recorriendo el campamento entero: cansancio, dudas, comparaciones con dias mejores. No hay gritos ni desbande, solo una erosion lenta del animo.\n\n":
                 r = "O que começa como um murmúrio acaba percorrendo o acampamento inteiro: cansaço, dúvidas, comparações com dias melhores. Não há gritos nem debandada, só uma erosão lenta do ânimo.\n\n";
@@ -9444,8 +9250,8 @@ public class TRADU : MonoBehaviour
             case "La Caravana encuentra un tramo de camino firme, bien orientado y sorprendentemente limpio. No durara mucho, pero alcanza para ordenar la columna y pensar en un proximo avance veloz.\n\n":
                 r = "A Caravana encontra um trecho de caminho firme, bem orientado e surpreendentemente limpo. Não vai durar muito, mas é suficiente para organizar a coluna e pensar em um avanço rápido em seguida.\n\n";
                 break;
-            case "<color=#a0e812>-Si aprovechas el ritmo que da el terreno, la Caravana obtendra Presteza. El Aliento Negro no avanzara en el proximo viaje.</color>\n\n":
-                r = "<color=#a0e812>-Se você aproveitar o ritmo que o terreno oferece, a Caravana obterá Presteza. O Respiro Negro não avançará na próxima viagem.</color>\n\n";
+            case "<color=#a0e812>-Si aprovechas el ritmo que da el terreno, la Caravana obtendra Presteza: +20% velocidad de caravana en el proximo viaje.</color>\n\n":
+                r = "<color=#a0e812>-Se você aproveitar o ritmo que o terreno oferece, a Caravana obterá Presteza: +20% de Velocidade da Caravana na próxima viagem.</color>\n\n";
                 break;
             case "<color=#a0e812>-Si prefieres revisar bien los bordes del camino, +3 Esperanza.</color>\n\n":
                 r = "<color=#a0e812>-Se você preferir revisar bem as margens do caminho, +3 Esperança.</color>\n\n";
@@ -9486,8 +9292,8 @@ public class TRADU : MonoBehaviour
             case "Sin que nadie lo ordene demasiado, el campamento se arma con lo justo y queda listo para levantarse en minutos. Hay una sensacion compartida de que manana convendra moverse rapido.\n\n":
                 r = "Sem que ninguém precise mandar muito, o acampamento é montado com o essencial e fica pronto para ser desmontado em minutos. Há uma sensação compartilhada de que hoje vai valer a pena se mover rápido.\n\n";
                 break;
-            case "<color=#a0e812><b>La Caravana obtiene Presteza. El Aliento Negro no avanzara en el proximo viaje.</b></color>":
-                r = "<color=#a0e812><b>A Caravana obtém Presteza. O Respiro Negro não avançará na próxima viagem.</b></color>";
+            case "<color=#a0e812><b>La Caravana obtiene Presteza: +20% velocidad de caravana en el proximo viaje.</b></color>":
+                r = "<color=#a0e812><b>A Caravana obtém Presteza: +20% de Velocidade da Caravana na próxima viagem.</b></color>";
                 break;
             case "Antes de dormir, un Heroe propone repasar senales, posiciones y respuestas rapidas junto al fuego. No cambia el cansancio, pero podria dejar a todos mejor parados para el proximo choque.\n\n":
                 r = "Antes de dormir, um Herói propõe revisar sinais, posições e respostas rápidas junto ao fogo. Isso não muda o cansaço, mas pode deixar todos melhor preparados para o próximo choque.\n\n";
@@ -9513,8 +9319,8 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>-Si decides avanzar igual, la Caravana obtendra Aletargados.</color>\n\n":
                 r = "<color=#ba3fef>-Se você decidir avançar mesmo assim, a Caravana obterá Letargia.</color>\n\n";
                 break;
-            case "<color=#ba3fef>-Si haces una parada corta hasta que abra el aire, el Aliento Negro avanzara.</color>\n\n":
-                r = "<color=#ba3fef>-Se você fizer uma parada curta até o ar abrir, o Respiro Negro avançará.</color>\n\n";
+            case "<color=#ba3fef>-Si haces una parada corta hasta que abra el aire, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se você fizer uma parada curta até o ar abrir, o Respiro Negro aumentará 5 h.</color>\n\n";
                 break;
             case "Un circulo de cuervos se posa cerca del camino y no se mueve aunque la Caravana se acerque. Su quietud resulta peor que cualquier graznido, y el presagio corre rapido entre los Civiles.\n\n":
                 r = "Um círculo de corvos pousa perto do caminho e não se move mesmo quando a Caravana se aproxima. A quietude deles é pior do que qualquer grasnado, e o presságio corre rápido entre os Civis.\n\n";
@@ -9843,8 +9649,8 @@ public class TRADU : MonoBehaviour
                 r = "Um dos principais responsáveis por guiar a caravana e escolher as rotas mais seguras perdeu seus mapas por acidente.\n"; break;
             case "Los demás encargados lo ayudarán a buscarlos ya que esos mapas contiene información crucial de la región actual, y sin su ayuda la caravana podría perderse.\n\n\n\n\n\n\n":
                 r = "Os outros responsáveis vão ajudá-lo a procurá-los, já que esses mapas contêm informações cruciais sobre a região atual, e sem eles a caravana pode se perder.\n\n\n\n\n\n\n"; break;
-            case "Obtendrá el estado Enfermo por 4-7 días. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 1 día.\n\n\n\n\n":
-                r = "Receberá o estado Doente por 4-7 dias. Cada nível do Séquito de Curandeiros reduzirá o tempo de recuperação em 1 dia.\n\n\n\n\n"; break;
+            case "Obtendrá el estado Enfermo por 96-168 h. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 24 h.\n\n\n\n\n":
+                r = "Receberá o estado Doente por 96-168 h. Cada nível do Séquito de Curandeiros reduzirá o tempo de recuperação em 24 h.\n\n\n\n\n"; break;
             case "<color=#ba3fef>-Puedes comprar medicina por 45 Oro para reducir la Enfermedad un día extra.</color>\n\n":
                 r = "<color=#ba3fef>-Você pode comprar remédio por 45 de Ouro para reduzir a Doença em 1 dia extra.</color>\n\n"; break;
             case "Al grito de un guardia, tu atención se vuelve a uno de los carros que lleva las arcas con el oro de la caravana. Uno de sus cofres está volcado y el oro se ha derramado por el suelo. Aparentemente durante la noche, alguien logró forzarlo y se llevó parte del botón.\n\n":
@@ -9871,8 +9677,8 @@ public class TRADU : MonoBehaviour
                 r = "\nAparentemente, eles tiveram um incidente durante um treino leve que decidiram fazer, no qual ambos se machucaram levemente.\n\n"; break;
             case "La tensión sube y los demás caravaneros miran con incomodidad. Ambos reclaman tener la razón y esperan tu juicio.\n\n":
                 r = "A tensão aumenta, e os demais integrantes da caravana observam com desconforto. Ambos afirmam estar certos e aguardam seu julgamento.\n\n"; break;
-            case "<color=#ba3fef>-Debes intervenir en apoyo a uno de los dos. El otro obtendrá Baja Moral por 5 días. Apoyas a:</color>\n\n":
-                r = "<color=#ba3fef>-Você deve intervir em apoio a um dos dois. O outro receberá Moral Baixa por 5 dias. Você apoia:</color>\n\n"; break;
+            case "<color=#ba3fef>-Debes intervenir en apoyo a uno de los dos. El otro obtendrá Baja Moral por 120 h. Apoyas a:</color>\n\n":
+                r = "<color=#ba3fef>-Você deve intervir em apoio a um dos dois. O outro receberá Moral Baixa por 120 h. Você apoia:</color>\n\n"; break;
             case "Un Civil de origen noble se acerca a ti con altanería y comienza a cuestionar tu liderazgo. Argumentando que no estás tomando las decisiones correctas para el bienestar de la Caravana y que él mismo podría hacerlo mejor.\n":
                 r = "Um Civil de origem nobre se aproxima de você com arrogância e começa a questionar sua liderança, argumentando que você não está tomando as decisões corretas para o bem-estar da Caravana e que ele mesmo poderia fazer melhor.\n"; break;
             case "Si bien sus puntos son poco coherentes, a medida que te habla en voz elevada, varios civiles comienzan a congregarse alrededor, curiosos.\n\n":
@@ -9885,8 +9691,8 @@ public class TRADU : MonoBehaviour
                 r = "Os civis cobrem o rosto como podem, os bois ficam inquietos e por vários instantes avançar se torna perigoso.\n\n"; break;
             case "Puedes ordenar hacer una breve parada hasta que el aire se despeje o forzar la marcha para no perder tiempo.\n\n":
                 r = "Você pode ordenar uma breve parada até que o ar se limpe ou forçar a marcha para não perder tempo.\n\n"; break;
-            case "<color=#ba3fef>-Si decides esperar, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir esperar, o Respiro Negro avançará.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides esperar, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se decidir esperar, o Respiro Negro aumentará 5 h.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides seguir, las cenizas incomodarán a los Civiles. -5 Esperanza, +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir seguir, as cinzas vão incomodar os Civis. -5 Esperança, +1 Fadiga.</color>\n\n"; break;
             case "Un grupo de bestias enloquecidas por el humo y el fuego irrumpe cerca del camino, cruzando entre los árboles calcinados con una violencia desesperada.\n\n":
@@ -9903,8 +9709,8 @@ public class TRADU : MonoBehaviour
                 r = ").</i> "; break;
             case "Si lo logra, ganará 40 Experiencia. Si falla, la Caravana perderá 2 Bueyes.\n\n":
                 r = "Se conseguir, ganhará 40 de Experiência. Se falhar, a Caravana perderá 2 Bois.\n\n"; break;
-            case "<color=#ba3fef>-Si decides apartarte y ceder el paso, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir se afastar e ceder passagem, o Respiro Negro avançará.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides apartarte y ceder el paso, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se decidir se afastar e ceder passagem, o Respiro Negro aumentará 5 h.</color>\n\n"; break;
             case "Entre los troncos calcinados y la tierra ennegrecida, algunos Civiles descubren un pequeño brote verde abriéndose paso entre las brasas frías.\n\n":
                 r = "Entre os troncos carbonizados e a terra escurecida, alguns Civis descobrem um pequeno broto verde abrindo caminho entre as brasas frias.\n\n"; break;
             case "La visión recorre rápidamente la Caravana. Por un instante, el Bosque Ardiente deja de parecer un lugar completamente perdido.\n\n":
@@ -9915,8 +9721,8 @@ public class TRADU : MonoBehaviour
                 r = "À beira do caminho, a Caravana encontra restos de árvores derrubadas e estruturas carbonizadas. Nem tudo virou cinza: parte da madeira ainda pode ser aproveitada.\n\n"; break;
             case "Algunos Civiles sugieren detenerse para separar lo útil antes de seguir adelante. Tomará algo de tiempo, pero podría reforzar las reservas de Materiales.\n\n":
                 r = "Alguns Civis sugerem parar para separar o que ainda serve antes de seguir em frente. Vai levar algum tempo, mas pode reforçar as reservas de Materiais.\n\n"; break;
-            case "<color=#ba3fef>-Si decides recolectar, obtendrás 15-30 Materiales, pero el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir recolher, você obterá 15-30 Materiais, mas o Respiro Negro avançará.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides recolectar, obtendrás 15-30 Materiales, pero el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se decidir recolher, você obterá 15-30 Materiais, mas o Respiro Negro aumentará 5 h.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides dejarlo, evitarás el retraso. +3 Esperanza.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir deixá-lo, evitará o atraso. +3 Esperança.</color>\n\n"; break;
             case "Un foco de incendio vuelve a encenderse detrás de la Caravana y el viento empuja las llamas hacia la retaguardia.\n\n":
@@ -9939,14 +9745,14 @@ public class TRADU : MonoBehaviour
                 r = "Você pode acordar mais gente para reforçar a vigilância ou deixar o resto continuar dormindo e recuperar o tempo ao amanhecer.\n\n"; break;
             case "<color=#ba3fef>-Si decides doblar guardia, varios caravaneros descansarán peor. +1 Fatiga.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir reforçar a guarda, vários caravanistas vão descansar pior. +1 Fadiga.</color>\n\n"; break;
-            case "<color=#ba3fef>-Si decides dejarlos dormir, la salida será más lenta. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir deixá-los dormir, a saída será mais lenta. +1 Avanço do Respiro Negro.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides dejarlos dormir, la salida será más lenta. Aliento Negro +5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se decidir deixá-los dormir, a saída será mais lenta. Respiro Negro +5 h.</color>\n\n"; break;
             case "Durante la noche se filtró agua en uno de los carros de comida y parte de las raciones quedó inutilizable.\n\n":
                 r = "Durante a noite entrou água em uma das carroças de comida e parte das rações ficou inutilizável.\n\n"; break;
             case "Puedes extender lo salvable junto al fuego antes de partir o desecharlo y seguir adelante.\n\n":
                 r = "Você pode espalhar o que ainda dá para salvar perto do fogo antes de partir ou descartar tudo e seguir em frente.\n\n"; break;
-            case "<color=#ba3fef>-Si decides secarlas, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir secá-las, vocês vão partir mais tarde. +1 Avanço do Respiro Negro.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides secarlas, partirán más tarde. Aliento Negro +5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se decidir secá-las, vocês vão partir mais tarde. Respiro Negro +5 h.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides desecharlas, perderás 18 Suministros.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir descartá-las, perderá 18 Suprimentos.</color>\n\n"; break;
             case "Una discusión menor cerca de la fogata fue subiendo de tono y terminó dejando al campamento entero de mal humor.\n\n":
@@ -9959,8 +9765,8 @@ public class TRADU : MonoBehaviour
                 r = "Ao levantar o acampamento, vários civis percebem que faltam ferramentas básicas de trabalho. Pode ser que tenham ficado perdidas no escuro.\n\n"; break;
             case "Puedes ordenar una búsqueda rápida o reemplazarlas con lo que quede en reserva.\n\n":
                 r = "Você pode ordenar uma busca rápida ou substituí-las com o que restar na reserva.\n\n"; break;
-            case "<color=#ba3fef>-Si decides buscarlas, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir procurá-las, vocês vão partir mais tarde. +1 Avanço do Respiro Negro.</color>\n\n"; break;
+            case "<color=#ba3fef>-Si decides buscarlas, partirán más tarde. Aliento Negro +5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se decidir procurá-las, vocês vão partir mais tarde. Respiro Negro +5 h.</color>\n\n"; break;
             case "<color=#ba3fef>-Si decides reemplazarlas, perderás 12 Materiales.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir substituí-las, perderá 12 Materiais.</color>\n\n"; break;
             case "Por una noche, el campamento se mantiene en calma. No hay sobresaltos, no hay discusiones y hasta el aire parece más liviano.\n\n":
@@ -10001,8 +9807,8 @@ public class TRADU : MonoBehaviour
                 r = "</color></b> acordou várias vezes com calafrios e mal-estar. Ao amanhecer, mal consegue se manter de pé.\n\n"; break;
             case "Uno de los Héroes se despertó varias veces con escalofríos y malestar. Al amanecer apenas puede sostenerse en pie.\n\n":
                 r = "Um dos Heróis acordou várias vezes com calafrios e mal-estar. Ao amanhecer, mal consegue se manter de pé.\n\n"; break;
-            case "<color=#ba3fef><b>Obtiene Enfermo por 3 días.</b></color>":
-                r = "<color=#ba3fef><b>Recebe Doente por 3 dias.</b></color>"; break;
+            case "<color=#ba3fef><b>Obtiene Enfermo por 72 h.</b></color>":
+                r = "<color=#ba3fef><b>Recebe Doente por 72 h.</b></color>"; break;
             case "</color></b> no logró descansar bien por una serie de pesadillas y sobresaltos.\n\n":
                 r = "</color></b> não conseguiu descansar bem por causa de uma sequência de pesadelos e sobressaltos.\n\n"; break;
             case "Uno de los Héroes no logró descansar bien por una serie de pesadillas y sobresaltos.\n\n":
@@ -10041,8 +9847,8 @@ public class TRADU : MonoBehaviour
                 r = "Antes de dormir, vários Civis se aproximam de um dos Heróis para agradecer pelo que vem fazendo.\n\n"; break;
             case "No cambia el camino, pero sí la forma en que piensa enfrentarlo al día siguiente.\n\n":
                 r = "Isso não muda o caminho, mas muda a forma como pensa em enfrentá-lo no dia seguinte.\n\n"; break;
-            case "<color=#a0e812><b>Obtiene Alta Moral por 4 días.</b></color>":
-                r = "<color=#a0e812><b>Recebe Moral Alta por 4 dias.</b></color>"; break;
+            case "<color=#a0e812><b>Obtiene Alta Moral por 96 h.</b></color>":
+                r = "<color=#a0e812><b>Recebe Moral Alta por 96 h.</b></color>"; break;
             case "El viento nocturno arrastra brasas encendidas desde los árboles caídos y obliga a mover parte del campamento una y otra vez.\n\n":
                 r = "O vento noturno arrasta brasas acesas das árvores caídas e obriga a mover parte do acampamento repetidas vezes.\n\n"; break;
             case "Nadie duerme del todo tranquilo en el Bosque Ardiente.\n\n":
@@ -10102,8 +9908,6 @@ public class TRADU : MonoBehaviour
                 r = "\n\n</b>"; break;
             case "<color=#ba3fef>-Luchar con los Bandidos.</color>\n\n":
                 r = "<color=#ba3fef>-Lutar contra os Bandidos.</color>\n\n"; break;
-            case "<color=#ba3fef>-2 al Avance del Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-2 no Avanço do Respiro Negro.</color>\n\n"; break;
             // Logs (segments for concatenation)
             case "-Has encontrado al ladrón y recuperado el oro robado, pero has tenido que desterrar al ladrón. -5 Esperanza -1 Civil.":
                 r = "-Você encontrou o ladrão e recuperou o ouro roubado, mas teve de bani-lo. -5 Esperança -1 Civil."; break;
@@ -10168,8 +9972,8 @@ public class TRADU : MonoBehaviour
             case "<color=#a0e812><b>+15 Esperanza</b></color>":
                 r = "<color=#a0e812><b>+15 Esperança</b></color>";
                 break;
-            case "<color=#ba3fef><b>Pasan las Horas: +1 Avance Aliento Negro</b></color>":
-                r = "<color=#ba3fef><b>As Horas Passam: +1 Avanço do Respiro Negro</b></color>";
+            case "<color=#ba3fef><b>Pasan las horas: Aliento Negro +5 h</b></color>":
+                r = "<color=#ba3fef><b>As horas passam: Respiro Negro +5 h</b></color>";
                 break;
             case "\n<b><color=#d1006f>":
                 r = "\n<b><color=#d1006f>";
@@ -10236,8 +10040,8 @@ public class TRADU : MonoBehaviour
             case "El Séquito de Mercaderes ha actualizado su inventario en el Puesto Comercial.":
                 r = "O Séquito de Mercadores atualizou seu inventário no Posto Comercial.";
                 break;
-            case "Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 4 días.</i>":
-                r = "Você chegou a um Santuário dos Purificadores; vários foram construídos na região para oferecer apoio e preces aos valentes que combateram o Lich.\nHoje, embora esteja abandonado, ele mantém sua aura de tranquilidade, e você pode depositar oferendas para realizar uma prece de purificação.\n\n<i>Descansar aqui abençoará seus personagens por 4 dias.</i>";
+            case "Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 96 h.</i>":
+                r = "Você chegou a um Santuário dos Purificadores; vários foram construídos na região para oferecer apoio e preces aos valentes que combateram o Lich.\nHoje, embora esteja abandonado, ele mantém sua aura de tranquilidade, e você pode depositar oferendas para realizar uma prece de purificação.\n\n<i>Descansar aqui abençoará seus personagens por 96 h.</i>";
                 break;
             case "-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.":
                 r = "A caravana chegou a um Santuário dos Purificadores. Os personagens se curaram em 15%. +10 Esperança.";
@@ -10271,6 +10075,9 @@ public class TRADU : MonoBehaviour
                 break;
             case "/20) - La Caravana viaja con tranquilidad.</color>":
                 r = "/20) - A Caravana viaja em tranquilidade.</color>";
+                break;
+            case "La Caravana viaja con tranquilidad.</color>":
+                r = "A Caravana viaja tranquilamente.</color>";
                 break;
             case "/20) - La Caravana comienza a preocuparse y la podredumbre se siente en el aire. Los Corrompidos acechan en las sombras.</color>":
                 r = "/20) - A Caravana começa a se preocupar, e a podridão já é sentida no ar. Os Corrompidos espreitam nas sombras.</color>";
@@ -10413,17 +10220,14 @@ public class TRADU : MonoBehaviour
             case "Soleado: +5 Esperanza.":
                 r = "Ensolarado: +5 Esperança.";
                 break;
-            case "Ola de Calor: +1 Fatiga. Jornada Libre da +5 Esperanza, otras Tareas Civiles dan -3.":
+            case "Ola de Calor: +1 Fatiga. Día Libre da +5 Esperanza, otras Tareas Civiles dan -3.":
                 r = "Onda de Calor: +1 Fadiga. \"Dia Livre\" concede +5 Esperança, outras Tarefas Civis concedem -3.";
                 break;
             case "Lluvia: -5 Esperanza. -15% Recolección Suministros, -20% chances de Emboscada.":
                 r = "Chuva: -5 Esperança. -15% Coleta de Suprimentos, -20% chance de Emboscada.";
                 break;
-            case "Nieve: +3 Esperanza. -15% Recolecciones, -20% Emboscada. Viajar lleva el doble de tiempo.":
-                r = "Neve: +3 Esperança. -15% Coletas, -20% Emboscada. Viajar leva o dobro do tempo.";
-                break;
-            case "Nieve: solo permite Descansar o Guardia. -15% Recolecciones, -20% Emboscada. Viajar da -3 Esperanza por día.":
-                r = "Neve: permite apenas Descansar ou Guarda. -15% Coletas, -20% Emboscada. Viajar causa -3 Esperança por dia.";
+            case "Nieve: solo permite Descansar o Guardia. -15% velocidad de viaje y Recolecciones, -20% Emboscada. Cada tramo recorrido da -3 Esperanza.":
+                r = "Neve: permite apenas Descansar ou Guarda. -15% de velocidade de viagem e Coletas, -20% de Emboscada. Cada trecho percorrido causa -3 de Esperança.";
                 break;
             case "Niebla: -20% Recolecciones, -20% Emboscada, -20% Exploración, +10% Nodos Misteriosos.":
                 r = "Névoa: -20% Coletas, -20% Emboscada, -20% Exploração, +10% Nós Misteriosos.";
@@ -10439,9 +10243,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "Uno de los bueyes de la caravana ha caído enfermo y no puede continuar. Recibes recomendaciones de algunos especialistas en ganado que te aconsejan revisar a los otros bueyes para evitar una propagación de la enfermedad.\n\n\n\n":
                 r = "Um dos bois da caravana adoeceu e não pode continuar. Você recebe recomendações de alguns especialistas em gado que aconselham examinar os outros bois para evitar a propagação da doença.\n\n\n\n";
-                break;
-            case "<color=#ba3fef>-Si decides revisarlos tomará unas horas: +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir examiná-los, isso levará algumas horas: +1 Avanço do Respiro Negro.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si decides ignorar las advertencias: 1-3 Bueyes mas morirán.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir ignorar os avisos: mais 1-3 Bois morrerão.</color>\n\n";
@@ -10470,8 +10271,8 @@ public class TRADU : MonoBehaviour
             case " y ":
                 r = " e ";
                 break;
-            case " ganan Alta Moral por 3 días.</b></color>":
-                r = " ganham Moral Alta por 3 dias.</b></color>";
+            case " ganan Alta Moral por 72 h.</b></color>":
+                r = " ganham Moral Alta por 72 h.</b></color>";
                 break;
             case "Al avanzar en el camino, encuentras varios carros destruidos rodeado de cadáveres civiles. Una lucha tuvo lugar aquí y esta caravana no sobrevivió.\n":
                 r = "Ao avançar pelo caminho, você encontra várias carroças destruídas rodeadas de cadáveres de civis. Uma luta aconteceu aqui, e esta caravana não sobreviveu.\n";
@@ -10482,9 +10283,6 @@ public class TRADU : MonoBehaviour
             /* case "La Caravana se detiene en un aserradero abandonado, algunos árboles han sido talados y la madera está apilada en desorden.\n":
                  r = "A Caravana para em uma serraria abandonada, algumas árvores foram derrubadas e a madeira está empilhada em desordem.\n";
                  break;*/
-            case "<color=#ba3fef>-Puedes ordenar a la Caravana que junten toda la madera.</color> +65-90 Materiales, +1 Fatiga, +1 Avance del Aliento Negro.</i> \n\n":
-                r = "<color=#ba3fef>-Você pode ordenar que a Caravana recolha toda a madeira.</color> +65-90 Materiais, +1 Fadiga, +1 Avanço do Respiro Negro.</i> \n\n";
-                break;
             case "<color=#ba3fef>-Puedes optar por dejarlo cazar, o directamente domesticar a un puñado para que se sumen a la Caravana. +2-3 Bueyes</i> \n\n":
                 r = "<color=#ba3fef>-Você pode optar por deixá-lo caçar, ou domesticar alguns diretamente para que se juntem à Caravana. +2-3 Bois</i> \n\n";
                 break;
@@ -10502,9 +10300,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "<color=#ba3fef>Respondes: -'Conserva el dinero, tu aporte a la Caravana ya es considerable con tu esfuerzo diario, y estoy más que agradecido de poder contar contigo.'</color> Efectos: ":
                 r = "<color=#ba3fef>Você responde: -'Fique com o dinheiro, sua contribuição para a Caravana já é considerável com seu esforço diário, e sou mais do que grato por poder contar com você.'</color> Efeitos: ";
-                break;
-            case " gana Alta Moral por 4 días y 50 Experiencia. \n\n":
-                r = " ganha Moral Alta por 4 dias e 50 de Experiência. \n\n";
                 break;
             case "<color=#ba3fef>Respondes: -'Acepto tu ofrecimiento, no hay moneda que sobre en nuestra situación actual y seguramente nos ayudará durante el viaje, gracias.'</color> Efectos: +120-160 Oro. \n\n":
                 r = "<color=#ba3fef>Você responde: -'Aceito sua oferta, não há moeda sobrando em nossa situação atual, e isso certamente nos ajudará durante a viagem, obrigado.'</color> Efeitos: +120-160 Ouro. \n\n";
@@ -10527,17 +10322,14 @@ public class TRADU : MonoBehaviour
             case "'En el sueño, vi un claro camino hacia nuestro destino. Habrá peligros y dificultades, pero estoy convencido que lo lograremos. Sigamos esa ruta.'- dice con Determinación\n\n\n":
                 r = "'No sonho, vi um caminho claro até o nosso destino. Haverá perigos e dificuldades, mas estou convencido de que conseguiremos. Vamos seguir essa rota.'- diz com Determinação\n\n\n";
                 break;
-            case "</color></b> obtiene 150 Experiencia y Alta Moral por 5 días.</color>\n\n":
-                r = "</color></b> recebe 150 de Experiência e Moral Alta por 5 dias.</color>\n\n";
-                break;
             case "Has llegado a un hermoso claro natural que parece no haber sido manchado por la corrupción y la pestilencia en lo mas mínimo.\n":
                 r = "Você chegou a uma bela clareira natural que parece não ter sido manchada nem minimamente pela corrupção e pela pestilência.\n";
                 break;
             case "Es un excelente lugar para descansar y recuperar fuerzas.\n\n\n\n\n":
                 r = "É um excelente lugar para descansar e recuperar as forças.\n\n\n\n\n";
                 break;
-            case "<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro avanzará solo 1.\n-+10% curación recibida.\n-El evento será positivo.</b></color>":
-                r = "<color=#a0e812><b>+5 Esperança.\n\nDescansar neste lugar também terá benefícios adicionais:\n-O Respiro Negro avançará apenas 1.\n-+10% de cura recebida.\n-O evento será positivo.</b></color>";
+            case "<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro acumulará solo 4 h durante un descanso de 8 h.\n-+10% curación recibida.\n-El evento será positivo.</b></color>":
+                r = "<color=#a0e812><b>+5 Esperança.\n\nDescansar neste lugar também terá benefícios adicionais:\n-O Respiro Negro acumula apenas 4 h durante um descanso de 8 h.\n-+10% de cura recebida.\n-O evento será positivo.</b></color>";
                 break;
             case "Has llegado a un pequeño asentamiento. Notas que los civiles están desorganizados y necesitan liderazgo para sobrevivir al Aliento Negro.":
                 r = "Você chegou a um pequeno assentamento. Você nota que os civis estão desorganizados e precisam de liderança para sobreviver ao Respiro Negro.";
@@ -10605,9 +10397,6 @@ public class TRADU : MonoBehaviour
             case "Haz tu ofrenda":
                 r = "Faça sua oferenda";
                 break;
-            case "Al realizar la ofrenda, el Aliento Negro retrocederá en 3, todos los personajes obtendrán Bendecido por 3 días y un personaje con Corrupción al azar será curado.":
-                r = "Ao fazer a oferenda, o Respiro Negro recuará em 3, todos os personagens receberão Abençoado por 3 dias e um personagem aleatório com Corrupção será curado.";
-                break;
             case "Sacrificar ":
                 r = "Sacrificar ";
                 break;
@@ -10631,9 +10420,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "30 Materiales":
                 r = "30 Materiais";
-                break;
-            case "Antorchas de Pie: Cada Tier reduce 5% el riesgo de sufrir una emboscada al Descansar.":
-                r = "Tochas em Pé: Cada Tier reduz em 5% o risco de sofrer uma emboscada ao Descansar.";
                 break;
             case "Alforjas: Cada Tier aumenta en 1 la Capacidad de carga de cada Buey.":
                 r = "Alforjes: Cada Tier aumenta em 1 a Capacidade de carga de cada Boi.";
@@ -10737,15 +10523,6 @@ public class TRADU : MonoBehaviour
             case "-La caravana han sufrido un Ataque durante el descanso. Probabilidades ":
                 r = "-A caravana sofreu um Ataque durante o descanso. Probabilidades ";
                 break;
-            case "-Durante el descanso, el Aliento Negro ha avanzado 2.":
-                r = "-Durante o descanso, o Respiro Negro avançou 2.";
-                break;
-            case "-Durante el descanso en el Claro, el Aliento Negro ha avanzado 1.":
-                r = "-Durante o descanso na Clareira, o Respiro Negro avançou 1.";
-                break;
-            case " ha realizado con Éxito un Ritual de Limpieza durante el descanso, previniendo el avance del Aliento Negro.":
-                r = " realizou com Sucesso um Ritual de Limpeza durante o descanso, impedindo o avanço do Respiro Negro.";
-                break;
             case "-Debido a la alta Esperanza, los Acechadores han decidido no cobrar su sueldo esta vez.":
                 r = "-Devido à alta Esperança, os Espreitadores decidiram não cobrar seu salário desta vez.";
                 break;
@@ -10758,8 +10535,8 @@ public class TRADU : MonoBehaviour
             case "-Debido al optimismo que rodea la Caravana, los Civiles han donado Oro: ":
                 r = "-Devido ao otimismo que cerca a Caravana, os Civis doaram Ouro: ";
                 break;
-            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3 y se han sacrificado 3 bueyes.":
-                r = "-Você realizou um ritual no santuário. O Sopro Negro recua 3, e 3 bois foram sacrificados.";
+            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han sacrificado 3 bueyes.":
+                r = "-Você realizou um ritual no santuário. O Sopro Negro recua 15 h, e 3 bois foram sacrificados.";
                 break;
             case "-Por la muy baja Esperanza ":
                 r = "-Devido à Esperança muito baixa ";
@@ -10824,20 +10601,20 @@ public class TRADU : MonoBehaviour
             case "<b><u>Día Libre</b></u>\n\n\n":
                 r = "<b><u>Dia Livre</b></u>\n\n\n";
                 break;
-            case "Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n":
-                r = "Os civis tirarão o dia para descansar e recuperar as forças.\n\n";
+            case "Durante 10 h, los civiles descansarán para recobrar fuerzas.\n\n":
+                r = "Durante 10 h, os civis descansarão para recuperar as forças.\n\n";
                 break;
-            case "<color=#d8a205>Se conseguirá 6 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n":
-                r = "<color=#d8a205>Serão obtidos 6 de Esperança, e o dia seguinte começará com -1 Fadiga. +10% de cura para os personagens.</color>\n\n\n";
+            case "<color=#d8a205>Al finalizar las 10 h: se conseguirán 6 de Esperanza, la Fatiga bajará a 0 y la curación de personajes tendrá +10%.</color>\n\n\n":
+                r = "<color=#d8a205>Ao final das 10 h: ganhe 6 de Esperança, a Fadiga cai para 0 e a cura dos personagens recebe +10%.</color>\n\n\n";
                 break;
             case "<b><u>Feria</b></u>\n\n\n":
                 r = "<b><u>Feira</b></u>\n\n\n";
                 break;
-            case "Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n":
-                r = "Os civis dedicarão o dia a organizar uma feira com vários jogos e celebrações.\n\n";
+            case "Durante 8 h, los civiles organizarán una feria con varios juegos y celebraciones.\n\n":
+                r = "Durante 8 h, os civis organizarão uma feira com vários jogos e celebrações.\n\n";
                 break;
-            case "<color=#d8a205>Se conseguirá entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n":
-                r = "<color=#d8a205>Serão obtidos entre 10 e 15 de Esperança, e serão consumidos 20% a mais de Suprimentos. <color=#bb280d>+10% de chance de Emboscada.</color></color>\n\n\n";
+            case "<color=#d8a205>Al finalizar las 8 h: se conseguirán entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n":
+                r = "<color=#d8a205>Ao final das 8 h: ganhe entre 10 e 15 de Esperança e consuma 20% a mais de Suprimentos. <color=#bb280d>+10% de chance de Emboscada.</color></color>\n\n\n";
                 break;
             case "<b><u>Recolección de Materiales</b></u>\n\n\n":
                 r = "<b><u>Coleta de Materiais</b></u>\n\n\n";
@@ -11013,8 +10790,8 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Guardia: </b></color><color=#d3d3d3><i>El personaje se mantendrá alerta y custodiará la caravana.</color></i>\\n\\nSi se produce una emboscada, podrá participar de la defensa sin penalización. +3% Exploración al descansar.":
                 r = "<color=#0cca74><b>Guarda: </b></color><color=#d3d3d3><i>O personagem permanecerá alerta e protegerá a caravana.</color></i>\\n\\nSe ocorrer uma emboscada, poderá participar da defesa sem penalidade. +3% Exploração ao descansar.";
                 break;
-            case "<color=#0cca74><b>Coerción: </b></color><color=#d3d3d3><i>Con métodos cuestionables, el Acechador obliga a los Mercaderes a donar dinero a la caravana.</color></i>\\n\\n+1-10 Oro y -1 Esperanza por día.":
-                r = "<color=#0cca74><b>Coerção: </b></color><color=#d3d3d3><i>Com métodos questionáveis, o Espreitador obriga os Mercadores a doar dinheiro para a caravana.</color></i>\\n\\n+1-10 Ouro e -1 Esperança por dia.";
+            case "<color=#0cca74><b>Coerción: </b></color><color=#d3d3d3><i>Con métodos cuestionables, el Acechador obliga a los Mercaderes a donar dinero a la caravana.</color></i>\\n\\nCada 24 h activas: +1-10 Oro y -1 Esperanza.":
+                r = "<color=#0cca74><b>Coerção: </b></color><color=#d3d3d3><i>Com métodos questionáveis, o Espreitador obriga os Mercadores a doar dinheiro para a caravana.</color></i>\\n\\nA cada 24 h ativas: +1-10 Ouro e -1 Esperança.";
                 break;
             case "<color=#0cca74><b>Exploración: </b></color><color=#d3d3d3><i>El personaje explora los destinos posibles adelante de la caravana.</color></i>\\n\\nTiene 40% chances de revelar Nodos futuros al viajar a un Nodo nuevo. -5% Chances de Nodo Misterioso. +5% Chances de Atajo Subterráneo\\nSi se da un combate, lo arranca Fatigado.":
                 r = "<color=#0cca74><b>Exploração: </b></color><color=#d3d3d3><i>O personagem explora os possíveis destinos à frente da caravana.</color></i>\\n\\nTem 40% de chance de revelar Nós futuros ao viajar para um novo Nó. -5% de chance de Nó Misterioso. +5% de chance de Atalho Subterrâneo\\nSe ocorrer um combate, ele o inicia Fatigado.";
@@ -11028,11 +10805,11 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Vigilar: </b></color><color=#d3d3d3><i>El personaje permanecerá vigilante ante cualquier peligro.</color></i>\\n\\nSi se produce una emboscada podrá participar activamente de la defensa y obtiene +2 AP, +5 Iniciativa y +20% daño los primeros 2 turnos.":
                 r = "<color=#0cca74><b>Vigiar: </b></color><color=#d3d3d3><i>O personagem permanecerá vigilante diante de qualquer perigo.</color></i>\\n\\nSe ocorrer uma emboscada, poderá participar ativamente da defesa e recebe +2 PA, +5 Iniciativa e +20% de dano nos 2 primeiros turnos.";
                 break;
-            case "<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada día que pase ganará 20 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.":
-                r = "<color=#0cca74><b>Treinar: </b></color><color=#d3d3d3><i>O personagem usará seu tempo livre para treinar e se manter em forma.</color></i>\\n\\nA cada dia, ganhará 20 de Experiência.\\nSe ocorrer um combate, ele o iniciará Fatigado.";
+            case "<color=#0cca74><b>Entrenar: </b></color><color=#d3d3d3><i>El personaje utilizará su tiempo libre para entrenar y mantenerse en forma.</color></i>\\n\\nCada 24 h activas gana 20 Experiencia.\\nSi se produce un combate, lo arrancará Fatigado.":
+                r = "<color=#0cca74><b>Treinar: </b></color><color=#d3d3d3><i>O personagem usará seu tempo livre para treinar e se manter em forma.</color></i>\\n\\nGanha 20 de Experiência a cada 24 h ativas.\\nSe ocorrer um combate, ele o iniciará Fatigado.";
                 break;
-            case "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>El personaje se centrará en descansar y recuperar su salud.</color></i>\\n\\nCada día que pase recuperará un 15% de salud.\\nSi se produce un combate, lo arrancará Fresco.":
-                r = "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>O personagem vai se concentrar em descansar e recuperar sua saúde.</color></i>\\n\\nA cada dia, recuperará 15% de saúde.\\nSe ocorrer um combate, ele o iniciará Disposto.";
+            case "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>El personaje se centrará en descansar y recuperar su salud.</color></i>\\n\\nMientras descansa recupera 4% de Vida máxima por hora; en otras actividades recupera 2% por hora.\\nSi se produce un combate, lo arrancará Fresco.":
+                r = "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>O personagem vai se concentrar em descansar e recuperar sua saúde.</color></i>\\n\\nEnquanto descansa, recupera 4% da Vida máxima por hora; em outras atividades, recupera 2% por hora.\\nSe ocorrer um combate, ele o iniciará Disposto.";
                 break;
             case "<color=#0cca74><b>Afilar Armas: </b></color><color=#d3d3d3><i>El Acechador se encarga de mantener sus armas afiladas.</color></i>\\n\\nSi se produce un combate tendrá +10% daño.":
                 r = "<color=#0cca74><b>Afiar Armas: </b></color><color=#d3d3d3><i>O Espreitador se encarrega de manter suas armas afiadas.</color></i>\\n\\nSe ocorrer um combate, terá +10% de dano.";
@@ -11040,17 +10817,14 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Telekinesis: </b></color><color=#d3d3d3><i>Con sus poderes arcanos de telequinesis, ayuda con la carga de la caravana.</color></i>\\n\\n+20 Capacidad de carga.":
                 r = "<color=#0cca74><b>Telecinese: </b></color><color=#d3d3d3><i>Com seus poderes arcanos de telecinese, ajuda com a carga da caravana.</color></i>\\n\\n+20 de Capacidade de carga.";
                 break;
-            case "<color=#0cca74><b>Caza Nocturna: </b></color><color=#d3d3d3><i>El personaje cazará en las inmediaciones para conseguir comida para la caravana.</color></i>\\n\\n+1d4 Suministros por día. +3% probabilidad de Emboscada Enemiga al descansar.":
-                r = "<color=#0cca74><b>Caça Noturna: </b></color><color=#d3d3d3><i>O personagem caçará nos arredores para conseguir comida para a caravana.</color></i>\\n\\n+1d4 Suprimentos por dia. +3% de probabilidade de Emboscada Inimiga ao descansar.";
+            case "<color=#0cca74><b>Caza Nocturna: </b></color><color=#d3d3d3><i>El personaje cazará en las inmediaciones para conseguir comida para la caravana.</color></i>\\n\\n+1d4 Suministros cada 24 h activas. +3% probabilidad de Emboscada Enemiga al descansar.":
+                r = "<color=#0cca74><b>Caça Noturna: </b></color><color=#d3d3d3><i>O personagem caçará nos arredores para conseguir comida para a caravana.</color></i>\\n\\n+1d4 Suprimentos a cada 24 h ativas. +3% de probabilidade de Emboscada Inimiga ao descansar.";
                 break;
-            case "<color=#0cca74><b>Relatos de Batalla: </b></color><color=#d3d3d3><i>El personaje compartirá los relatos de sus hazañas con quienes quieran oírlas.</color></i>\\n\\n+10 Experiencia por día a personajes de nivel inferior. +4 Esperanza al descansar.":
-                r = "<color=#0cca74><b>Relatos de Batalha: </b></color><color=#d3d3d3><i>O personagem compartilhará os relatos de seus feitos com quem quiser ouvi-los.</color></i>\\n\\n+10 de Experiência por dia para personagens de nível inferior. +4 Esperança ao descansar.";
+            case "<color=#0cca74><b>Relatos de Batalla: </b></color><color=#d3d3d3><i>El personaje compartirá los relatos de sus hazañas con quienes quieran oírlas.</color></i>\\n\\nCada 24 h activas: +10 Experiencia a personajes de nivel inferior y +4 Esperanza.":
+                r = "<color=#0cca74><b>Relatos de Batalha: </b></color><color=#d3d3d3><i>O personagem compartilhará os relatos de seus feitos com quem quiser ouvi-los.</color></i>\\n\\nA cada 24 h ativas: +10 de Experiência para personagens de nível inferior e +4 Esperança.";
                 break;
-            case "<color=#0cca74><b>Ritual de Limpieza: </b></color><color=#d3d3d3><i>La Purificadora realizará rituales de protección para combatir el Aliento Negro.</color></i>\\n\\nProbabilidad de evitar avance del Aliento Negro: 25% al descansar, 15% por día.":
-                r = "<color=#0cca74><b>Ritual de Limpeza: </b></color><color=#d3d3d3><i>A Purificadora realizará rituais de proteção para combater o Respiro Negro.</color></i>\\n\\nProbabilidade de evitar o avanço do Respiro Negro: 25% ao descansar, 15% por dia.";
-                break;
-            case "<color=#0cca74><b>Ayudar a los Desamparados: </b></color><color=#d3d3d3><i>La Purificadora usará su tiempo para ayudar a los rezagados y más débiles de la caravana.</color></i>\\n\\n+1d3 Esperanza diaria. +1 Fervor en combate.":
-                r = "<color=#0cca74><b>Ajudar os Desamparados: </b></color><color=#d3d3d3><i>A Purificadora usará seu tempo para ajudar os mais atrasados e frágeis da caravana.</color></i>\\n\\n+1d3 de Esperança por dia. +1 Fervor em combate.";
+            case "<color=#0cca74><b>Ayudar a los Desamparados: </b></color><color=#d3d3d3><i>La Purificadora usará su tiempo para ayudar a los rezagados y más débiles de la caravana.</color></i>\\n\\n+1d3 Esperanza cada 24 h activas. +1 Fervor en combate.":
+                r = "<color=#0cca74><b>Ajudar os Desamparados: </b></color><color=#d3d3d3><i>A Purificadora usará seu tempo para ajudar os mais atrasados e frágeis da caravana.</color></i>\\n\\n+1d3 de Esperança a cada 24 h ativas. +1 Fervor em combate.";
                 break;
             case "<color=#0cca74><b>Concentración Arcana: </b></color><color=#d3d3d3><i>El Canalizador se concentra y mantiene su poder preparado para cualquier combate que surja.</color></i>\\n\\n+1 Nivel de Energía al iniciar combates.":
                 r = "<color=#0cca74><b>Concentração Arcana: </b></color><color=#d3d3d3><i>O Canalizador se concentra e mantém seu poder preparado para qualquer combate que surgir.</color></i>\\n\\n+1 Nível de Energia ao iniciar combates.";
@@ -11058,20 +10832,14 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Vigilar Desde las Sombras: </b></color><color=#d3d3d3><i>El Acechador recorre las inmediaciones de la caravana en sigilo, tratando de anticipar emboscadas enemigas.</color></i>\\n\\n-5% chances de emboscadas.\\nEn Ataque a Caravana cuenta como Guardia y comienza en Sigilo.":
                 r = "<color=#0cca74><b>Vigiar das Sombras: </b></color><color=#d3d3d3><i>O Espreitador percorre os arredores da caravana em sigilo, tentando antecipar emboscadas inimigas.</color></i>\\n\\n-5% de chance de emboscadas.\\nEm Ataque a Caravana conta como Guarda e comeca em Sigilo.";
                 break;
-            case "<color=#0cca74><b>Colaborar con los Curanderos: </b></color><color=#d3d3d3><i>Ayuda al <b>Séquito de Curanderos</b> en sus tareas, aumentando su eficacia.</color></i>\\n\\nAumenta 5% la curación diaria del Séquito de Curanderos.":
-                r = "<color=#0cca74><b>Colaborar com os Curandeiros: </b></color><color=#d3d3d3><i>Ajuda o <b>Séquito de Curandeiros</b> em suas tarefas, aumentando sua eficácia.</color></i>\\n\\nAumenta em 5% a cura diária do Séquito de Curandeiros.";
+            case "<color=#0cca74><b>Colaborar con los Curanderos: </b></color><color=#d3d3d3><i>Ayuda al <b>Séquito de Curanderos</b> en sus tareas, aumentando su eficacia.</color></i>\\n\\nSuma +5% al multiplicador global de curación, tanto al descansar como al realizar otras actividades.":
+                r = "<color=#0cca74><b>Colaborar com os Curandeiros: </b></color><color=#d3d3d3><i>Ajuda o <b>Séquito de Curandeiros</b> em suas tarefas, aumentando sua eficácia.</color></i>\\n\\nSoma +5% ao multiplicador global de cura, tanto ao descansar quanto ao realizar outras atividades.";
                 break;
-            case "<color=#0cca74><b>Crear Símbolo Arcano de Protección: </b></color><color=#d3d3d3><i>El Canalizador concentra energía arcana protectora en un símbolo que puede proteger a quien lo utilice.</color></i>\\n\\nCrea un Símbolo Arcano de Protección por día.":
-                r = "<color=#0cca74><b>Criar Símbolo Arcano de Proteção: </b></color><color=#d3d3d3><i>O Canalizador concentra energia arcana protetora em um símbolo que pode proteger quem o utilizar.</color></i>\\n\\nCria um Símbolo Arcano de Proteção por dia.";
+            case "<color=#0cca74><b>Crear Símbolo Arcano de Protección: </b></color><color=#d3d3d3><i>El Canalizador concentra energía arcana protectora en un símbolo que puede proteger a quien lo utilice.</color></i>\\n\\nCrea un Símbolo Arcano de Protección cada 24 h activas.":
+                r = "<color=#0cca74><b>Criar Símbolo Arcano de Proteção: </b></color><color=#d3d3d3><i>O Canalizador concentra energia arcana protetora em um símbolo que pode proteger quem o utilizar.</color></i>\\n\\nCria um Símbolo Arcano de Proteção a cada 24 h ativas.";
                 break;
             case "-El viaje por el camino sinuoso ha retrasado la caravana. +":
                 r = "-A viagem pelo caminho sinuoso atrasou a caravana. +";
-                break;
-            case " Avance del Aliento Negro":
-                r = " de Avanço do Respiro Negro";
-                break;
-            case "-La nieve a retrasado el viaje. +1 Avance del Aliento Negro":
-                r = "-A neve atrasou a viagem. +1 de Avanço do Respiro Negro";
                 break;
             case "-La ausencia de Aliento Negro al viajar, inspira a la Caravana. +2 Esperanza":
                 r = "-A ausência do Respiro Negro durante a viagem inspira a Caravana. +2 Esperança";
@@ -11091,11 +10859,8 @@ public class TRADU : MonoBehaviour
             case "-El Séquito de Herboristas ha visitado un Claro y recolectado hierbas curativas.":
                 r = "-O Séquito de Herboristas visitou uma Clareira e coletou ervas curativas.";
                 break;
-            case " ha realizado con Éxito un Ritual de Limpieza, previniendo el avance del Aliento Negro.":
-                r = " realizou com Úxito um Ritual de Limpeza, impedindo o avanço do Respiro Negro.";
-                break;
-            case "-Los rezos constantes del Séquito de Clérigos han logrado frenar el avance del Aliento Negro.":
-                r = "-As orações constantes do Séquito de Clérigos conseguiram frear o avanço do Respiro Negro.";
+            case "-Los rezos constantes del Séquito de Clérigos previenen 5 h de Aliento Negro.":
+                r = "-As orações constantes do Séquito de Clérigos evitam 5 h de Respiro Negro.";
                 break;
             case "-Un nuevo personaje se ha unido a la caravana: ":
                 r = "-Um novo personagem se juntou à caravana: ";
@@ -11262,9 +11027,6 @@ public class TRADU : MonoBehaviour
             case "-Los Civiles se sienten culpables por la presencia de los Esclavos. -2 Esperanza.":
                 r = "-Os Civis se sentem culpados pela presença dos Escravos. -2 Esperança.";
                 break;
-            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se ha gastado 200 de oro y todos los personajes obtienen Bendecido por 3 días.":
-                r = "-Você realizou um ritual no santuário. O Respiro Negro recua em 3, 200 de ouro foram gastos e todos os personagens recebem Abençoado por 3 dias.";
-                break;
             case " ha sido purificado de la corrupción.":
                 r = " foi purificado da corrupção.";
                 break;
@@ -11273,9 +11035,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "-No tienes suficientes bueyes para realizar el ritual en el santuario.":
                 r = "-Você não tem bois suficientes para realizar o ritual no santuário.";
-                break;
-            case "-Has realizado un ritual en el santuario. El Aliento Negro retrocede en 3, se han sacrificado 3 bueyes y todos los personajes obtienen Bendecido por 3 días.":
-                r = "-Você realizou um ritual no santuário. O Respiro Negro recua em 3, 3 bois foram sacrificados e todos os personagens recebem Abençoado por 3 dias.";
                 break;
             case "-El Séquito de Artistas ha tenido un festán y despilfarrado suministros: ":
                 r = "-O Séquito de Artistas fez um banquete e desperdiçou suprimentos: ";
@@ -11321,9 +11080,6 @@ public class TRADU : MonoBehaviour
                 break;
             case " falla la TS Mental (1d20: ":
                 r = " falha no Teste Mental (1d20: ";
-                break;
-            case ") gracias a <b>Socializar</b> y obtiene Alta Moral por 1 día.":
-                r = ") graças a <b>Socializar</b> e ganha Alta Moral por 1 dia.";
                 break;
             case ") pese a <b>Socializar</b> y no obtiene Alta Moral.":
                 r = ") apesar de <b>Socializar</b> e não ganha Alta Moral.";
@@ -11487,9 +11243,6 @@ public class TRADU : MonoBehaviour
             case "% por Herboristas":
                 r = "% por Herboristas";
                 break;
-            case "Carros de Tratamiento: Mejorar los carros utilizados por el Séquito de Curanderos para tratar heridos significará una mejora en los tratamientos recibidos por los heridos y su tiempo de recuperación. \nCada Tier aumenta en 5% la curación diaria de los personajes que Descansen y reduce el costo de Tratar Heridas. \nAdemás cada tier da un 10% extra a las posibilidades de reducir Enfermedades al Descansar (20% base). \nCuración proporcionada: ":
-                r = "Carroças de Tratamento: Melhorar as carroças usadas pelo Séquito de Curandeiros para tratar feridos significará uma melhora nos tratamentos recebidos pelos personagens feridos e no seu tempo de recuperação. \nCada Tier aumenta em 5% a cura diária dos personagens que Descansarem e reduz o custo de Tratar Feridas. \nAlém disso, cada tier concede 10% extras nas chances de reduzir Doenças ao Descansar (20% base). \nCura fornecida: ";
-                break;
             case " Materiales":
                 r = " Materiais";
                 break;
@@ -11520,14 +11273,11 @@ public class TRADU : MonoBehaviour
             case "Un grupo de nobles que se vieron obligados a abandonar la comodidad de sus tierras, ahora viajan junto a la caravana. Si bien son quejosos y no son de gran utilidad, al menos donan periódicamente parte de su riqueza para asegurarse de que no serán abandonados.\n\n":
                 r = "Um grupo de nobres que foi obrigado a abandonar o conforto de suas terras agora viaja junto à caravana. Embora sejam queixosos e não tenham grande utilidade, ao menos doam periodicamente parte de sua riqueza para garantir que não serão abandonados.\n\n";
                 break;
-            case "EFECTOS PASIVOS:\n\n-Cada día donan Oro equivalente a 1/3 de la Esperanza.\n\n-Se pierde 2 de Esperanza al viajar con fatiga 4 o mayor.":
-                r = "EFEITOS PASSIVOS:\n\n-A cada dia, doam Ouro equivalente a 1/3 da Esperança.\n\n-Perdem-se 2 de Esperança ao viajar com fadiga 4 ou maior.";
+            case "EFECTOS PASIVOS:\n\n-Cada 24 h donan Oro equivalente a 1/3 de la Esperanza.\n\n-Se pierde 2 de Esperanza al viajar con fatiga 4 o mayor.":
+                r = "EFEITOS PASSIVOS:\n\n-A cada 24 h, doam Ouro equivalente a 1/3 da Esperança.\n\n-Perdem-se 2 de Esperança ao viajar com fadiga 4 ou maior.";
                 break;
             case "Los Clérigos del Sol Radiante Purificador participaron como apoyo en el combate contra el Liche. La mayoría murieron en la onda expansiva en ese momento, pero todavía quedan algunos grupos tratando de llegar al puerto y sobrevivir mientras luchan por retrasar al Aliento Negro.\n\n":
                 r = "Os Clérigos do Sol Radiante Purificador participaram como apoio no combate contra o Lich. A maioria morreu na onda de choque naquele momento, mas ainda restam alguns grupos tentando chegar ao porto e sobreviver enquanto lutam para atrasar o Respiro Negro.\n\n";
-                break;
-            case "EFECTOS PASIVOS:\n\n-Otorgan 15 Esperanza al unirse a la Caravana, -20 Esperanza al perderse.\n\n-20% probabilidades de Retrasar el Aliento Negro en cada viaje.\n\n-Si el Aliento Negro llega a distancia menor a 0, los Clérigos mueren.":
-                r = "EFEITOS PASSIVOS:\n\n-Concedem 15 de Esperança ao se juntar à Caravana, -20 de Esperança ao serem perdidos.\n\n-20% de probabilidade de atrasar o Respiro Negro em cada viagem.\n\n-Se o Respiro Negro chegar a uma distância menor a 0, os Clérigos morrem.";
                 break;
             case "<color=red>La plegaria ya fue realizada.</color>":
                 r = "<color=red>A prece já foi realizada.</color>";
@@ -11538,11 +11288,11 @@ public class TRADU : MonoBehaviour
             case "Se hará una donación de 250 Oro.":
                 r = "Será feita uma doação de 250 Ouro.";
                 break;
-            case "Mantenimiento Armas: El Herrero se encargará de hacer un mantenimiento general de las armas de los personajes. Aumentando su Ataque en 1 y su daño en 2. Este efecto Dura 3 días.":
-                r = "Manutenção de Armas: O Ferreiro se encarregará de fazer uma manutenção geral nas armas dos personagens. Aumentando seu Ataque em 1 e seu dano em 2. Este efeito dura 3 dias.";
+            case "Mantenimiento Armas: El Herrero realizará un mantenimiento general de las armas de los personajes. Aumenta su Ataque en 1 y su daño en 2 durante 72 h.":
+                r = "Manutenção de Armas: O Ferreiro realiza uma manutenção geral nas armas dos personagens. Aumenta o Ataque em 1 e o dano em 2 por 72 h.";
                 break;
-            case "Mantenimiento Armaduras: El Herrero se encargará de hacer un mantenimiento general de las armaduras de los personajes. Aumentando su Defensa en 1 y su Armadura en 2. Este efecto dura 3 días.":
-                r = "Manutenção de Armaduras: O Ferreiro se encarregará de fazer uma manutenção geral nas armaduras dos personagens. Aumentando sua Defesa em 1 e sua Armadura em 2. Este efeito dura 3 dias.";
+            case "Mantenimiento Armaduras: El Herrero realizará un mantenimiento general de las armaduras de los personajes. Aumenta su Defensa en 1 y su Armadura en 2 durante 72 h.":
+                r = "Manutenção de Armaduras: O Ferreiro realiza uma manutenção geral nas armaduras dos personagens. Aumenta a Defesa em 1 e a Armadura em 2 por 72 h.";
                 break;
             case "Realizar: 200 Oro":
                 r = "Realizar: 200 Ouro";
@@ -11616,8 +11366,8 @@ public class TRADU : MonoBehaviour
             case "Cantidad de Civiles: 25":
                 r = "Quantidade de Civis: 25";
                 break;
-            case "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 5 de Esperanza Extra.\n\n-Cada día hay un 30% de chances de que hagan un festán y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.":
-                r = "EFEITOS PASSIVOS:\n\n-Ao se juntar à Caravana, ganham-se 15 de Esperança.\n\n-Cada vez que Feira é selecionada como Tarefa Civil de Descanso, ganham-se 5 de Esperança extra.\n\n-A cada dia, há 30% de chance de fazerem um banquete e desperdiçarem 1-4 Suprimentos.\n\n-Se abandonarem a Caravana, perdem-se 15 de Esperança.";
+            case "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 5 de Esperanza Extra.\n\n-Cada 24 h hay un 30% de chances de que hagan un festán y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.":
+                r = "EFEITOS PASSIVOS:\n\n-Ao se juntar à Caravana, ganham-se 15 de Esperança.\n\n-Cada vez que Feira é selecionada como Tarefa Civil de Descanso, ganham-se 5 de Esperança extra.\n\n-A cada 24 h, há 30% de chance de fazerem um banquete e desperdiçarem 1-4 Suprimentos.\n\n-Se abandonarem a Caravana, perdem-se 15 de Esperança.";
                 break;
             case "usa ":
                 r = "usa ";
@@ -13305,8 +13055,8 @@ public class TRADU : MonoBehaviour
             case "Modo Rápido":
                 r = "Modo Rápido";
                 break;
-            case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Pie</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta región.":
-                r = "Devido à invasão, Nedukazal está envolta em caos e escuridão, portanto a caravana não conseguirá ver claramente o caminho à frente.\n\nPor depender da própria luz, será mais propensa a sofrer emboscadas (+20%).\n\nMelhore as <b>Tochas de Pé</b> para aumentar o alcance da visão.\n\nO Respiro Negro não será uma preocupação nesta região.";
+            case "Debido a la invasión, Nedukazal está envuelta en caos y oscuridad, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la luz propia, será mas propensa a sufrir emboscadas (+20%).\n\nMejora las <b>Antorchas de Caravana</b> para aumentar el rango de visión.\n\nEl Aliento Negro no será una preocupación en esta región.":
+                r = "Devido à invasão, Nedukazal está envolta em caos e escuridão, portanto a caravana não conseguirá ver claramente o caminho à frente.\n\nPor depender da própria luz, será mais propensa a sofrer emboscadas (+20%).\n\nMelhore as <b>Tochas da Caravana</b> para aumentar o alcance da visão.\n\nO Respiro Negro não será uma preocupação nesta região.";
                 break;
             case "\nSe conseguirán de 25-40 Materiales y 60-85 Suministros.":
                 r = "\nSerão obtidos 25-40 Materiais e 60-85 Suprimentos.";
@@ -13713,8 +13463,8 @@ public class TRADU : MonoBehaviour
             case "<color=#ba3fef>-Si lo intentas, hará una Tirada de Salvación: TS Reflejos DC 12. Si la supera, ganará 40 Experiencia. Si falla, obtendrá Herida.</color>\n\n":
                 r = "<color=#ba3fef>-Se tentar, fará um Teste de Resistência: TS Reflexos CD 12. Se passar, ganhará 40 Experiência. Se falhar, obterá Ferida.</color>\n\n";
                 break;
-            case "<color=#ba3fef>-Si decides rodear el tramo, el Aliento Negro avanzará.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir contornar o trecho, o Respiro Negro avançará.</color>\n\n";
+            case "<color=#ba3fef>-Si decides rodear el tramo, el Aliento Negro aumentará 5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se decidir contornar o trecho, o Respiro Negro aumentará 5 h.</color>\n\n";
                 break;
             case "A los costados del camino aparecen varias efigies Kale'Tav clavadas en la nieve, adornadas con huesos, plumas y telas endurecidas por el hielo.\n\n":
                 r = "Às margens do caminho surgem várias efígies Kale'Tav fincadas na neve, adornadas com ossos, penas e tecidos endurecidos pelo gelo.\n\n";
@@ -13800,8 +13550,8 @@ public class TRADU : MonoBehaviour
             case "La determinación con la que retoma la marcha contagia al resto.\n\n":
                 r = "A determinação com que retoma a marcha contagia o resto.\n\n";
                 break;
-            case "<color=#a0e812><b>Gana 50 Experiencia y Alta Moral por 3 días.</b></color>":
-                r = "<color=#a0e812><b>Ganha 50 Experiência e Alta Moral por 3 dias.</b></color>";
+            case "<color=#a0e812><b>Gana 50 Experiencia y Alta Moral por 72 h.</b></color>":
+                r = "<color=#a0e812><b>Ganha 50 Experiência e Moral Alta por 72 h.</b></color>";
                 break;
             case "El viento cambia de golpe y barre la niebla helada del frente por un buen trecho.\n\n":
                 r = "O vento muda de repente e varre a névoa gelada do caminho por um bom trecho.\n\n";
@@ -13809,8 +13559,8 @@ public class TRADU : MonoBehaviour
             case "La Caravana consigue avanzar con mejor ritmo y algo más de seguridad.\n\n":
                 r = "A Caravana consegue avançar com melhor ritmo e um pouco mais de segurança.\n\n";
                 break;
-            case "<color=#a0e812><b>-1 Avance Aliento Negro</b></color>":
-                r = "<color=#a0e812><b>-1 Avanço do Respiro Negro</b></color>";
+            case "<color=#a0e812><b>Aliento Negro -5 h</b></color>":
+                r = "<color=#a0e812><b>Respiro Negro -5 h</b></color>";
                 break;
             case "Antes del amanecer, unos cánticos graves atraviesan el Paso y llegan al campamento mezclados con el viento.\n\n":
                 r = "Antes do amanhecer, cânticos graves atravessam a Passagem e chegam ao acampamento misturados ao vento.\n\n";
@@ -13824,8 +13574,8 @@ public class TRADU : MonoBehaviour
             case "No parece un ataque fallido. Más bien un mensaje. Puedes revisar bien el perímetro o mantener la calma y evitar que el rumor corra entre los Civiles.\n\n":
                 r = "Não parece um ataque fracassado. Parece mais uma mensagem. Você pode inspecionar bem o perímetro ou manter a calma e evitar que o rumor se espalhe entre os Civis.\n\n";
                 break;
-            case "<color=#ba3fef>-Si decides revisar, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n":
-                r = "<color=#ba3fef>-Se decidir inspecionar, partirão mais tarde. +1 Avanço do Respiro Negro.</color>\n\n";
+            case "<color=#ba3fef>-Si decides revisar, partirán más tarde. Aliento Negro +5 h.</color>\n\n":
+                r = "<color=#ba3fef>-Se decidir inspecionar, partirão mais tarde. Respiro Negro +5 h.</color>\n\n";
                 break;
             case "<color=#ba3fef>-Si decides mantener la calma, los rumores igual harán mella. -9 Esperanza.</color>\n\n":
                 r = "<color=#ba3fef>-Se decidir manter a calma, os rumores ainda assim vão pesar. -9 Esperança.</color>\n\n";
@@ -13839,8 +13589,8 @@ public class TRADU : MonoBehaviour
             case "Al amanecer sigue en pie, pero el descanso no alcanzó para despejarle la cabeza.\n\n":
                 r = "Ao amanhecer, ainda está de pé, mas o descanso não bastou para clarear a cabeça.\n\n";
                 break;
-            case "<color=#ba3fef><b>Obtiene Baja Moral por 3 días.</b></color>":
-                r = "<color=#ba3fef><b>Obtém Baixa Moral por 3 dias.</b></color>";
+            case "<color=#ba3fef><b>Obtiene Baja Moral por 72 h.</b></color>":
+                r = "<color=#ba3fef><b>Obtém Moral Baixa por 72 h.</b></color>";
                 break;
             case "Muy cerca de las tiendas aparece un símbolo Kale'Tav trazado durante la noche sobre la nieve endurecida.\n\n":
                 r = "Bem perto das tendas aparece um símbolo Kale'Tav traçado durante a noite sobre a neve endurecida.\n\n";
@@ -13887,8 +13637,8 @@ public class TRADU : MonoBehaviour
             case "La imagen queda grabada con fuerza y le devuelve algo de ánimo para lo que viene.\n\n":
                 r = "A imagem fica gravada com força e lhe devolve algum ânimo para o que vem pela frente.\n\n";
                 break;
-            case "<color=#a0e812><b>Gana 35 Experiencia y Alta Moral por 3 días.</b></color>":
-                r = "<color=#a0e812><b>Ganha 35 Experiência e Alta Moral por 3 dias.</b></color>";
+            case "<color=#a0e812><b>Gana 35 Experiencia y Alta Moral por 72 h.</b></color>":
+                r = "<color=#a0e812><b>Ganha 35 Experiência e Moral Alta por 72 h.</b></color>";
                 break;
             case "Bajo el suelo helado y la piedra llegan golpes sordos y repetidos, como si algo enorme estuviera tanteando el camino desde abajo.\n\n":
                 r = "Sob o solo gelado e a pedra chegam golpes surdos e repetidos, como se algo enorme estivesse sondando o caminho por baixo.\n\n";
@@ -13998,8 +13748,8 @@ public class TRADU : MonoBehaviour
             case "El ejemplo no cambia la guerra, pero sí la forma en que retoma la marcha.\n\n":
                 r = "O exemplo não muda a guerra, mas muda a forma como retoma a marcha.\n\n";
                 break;
-            case "<color=#a0e812><b>Gana 45 Experiencia y Alta Moral por 3 días.</b></color>":
-                r = "<color=#a0e812><b>Ganha 45 Experiência e Alta Moral por 3 dias.</b></color>";
+            case "<color=#a0e812><b>Gana 45 Experiencia y Alta Moral por 72 h.</b></color>":
+                r = "<color=#a0e812><b>Ganha 45 Experiência e Moral Alta por 72 h.</b></color>";
                 break;
             case "Al atravesar un viejo puesto de paso derruido, la Caravana encuentra un tramo cubierto entre columnas caídas y muros aún firmes, bastante más seguro que el terreno abierto.\n\n":
                 r = "Ao atravessar um velho posto de passagem destruído, a Caravana encontra um trecho coberto entre colunas caídas e muros ainda firmes, bem mais seguro que o terreno aberto.\n\n";
@@ -14079,8 +13829,8 @@ public class TRADU : MonoBehaviour
             case "Leerla durante el descanso le devuelve perspectiva sobre por qué todavía vale la pena seguir.\n\n":
                 r = "Lê-la durante o descanso lhe devolve perspectiva sobre por que ainda vale a pena seguir em frente.\n\n";
                 break;
-            case "<color=#a0e812><b>Gana 40 Experiencia y Alta Moral por 3 días.</b></color>":
-                r = "<color=#a0e812><b>Ganha 40 Experiência e Alta Moral por 3 dias.</b></color>";
+            case "<color=#a0e812><b>Gana 40 Experiencia y Alta Moral por 72 h.</b></color>":
+                r = "<color=#a0e812><b>Ganha 40 Experiência e Moral Alta por 72 h.</b></color>";
                 break;
             case "El ave mensajera regresa con un mensaje atado a sus patas. En él se indica el punto exacto al que la caravana deberá dirigirse para encontrarse con el equipo de salvamento, junto con los recursos cedidos por la ciudad de Serria.\n":
                 r = "A ave mensageira retorna com uma mensagem presa às patas. Nela, está indicado o ponto exato para onde a caravana deverá seguir para encontrar a equipe de salvamento, junto com os recursos cedidos pela cidade de Serria.\n";
@@ -14102,9 +13852,6 @@ public class TRADU : MonoBehaviour
                 break;
             case " suministros. +25 Esperanza. +20 Materiales y 200 Oro y un nuevo personaje se suma a la caravana</b></color>":
                 r = " suprimentos. +25 Esperança. +20 Materiais e 200 Ouro, e um novo personagem se junta à caravana</b></color>";
-                break;
-            case "-Las oraciones de los Purificadores del Templo de Serria merman el avance del Aliento Negro en: ":
-                r = "-As orações dos Purificadores do Templo de Serria reduzem o avanço do Respiro Negro em: ";
                 break;
             case " Esperanza":
                 r = " Esperança";
@@ -15083,8 +14830,8 @@ public class TRADU : MonoBehaviour
             case "<color=#0cca74><b>Siempre Alerta: </b></color><color=#d3d3d3><i>La Duelista se mantiene lista para actuar con rapidez si se presenta una batalla.</color></i>\\n\\n+5 Iniciativa en combate. Si no es emboscada, gana 2 Impulso al comenzar la batalla.":
                 r = "<color=#0cca74><b>Sempre Alerta: </b></color><color=#d3d3d3><i>A Duelista se mantém pronta para agir rapidamente se uma batalha ocorrer.</color></i>\\n\\n+5 Iniciativa em combate. Se não for emboscada, ganha 2 Impulso ao começar a batalha.";
                 break;
-            case "<color=#0cca74><b>Socializar: </b></color><color=#d3d3d3><i>La Duelista dedica tiempo a conversar, bromear y sostener el ánimo de la caravana.</color></i>\\n\\nCada día, sus compañeros realizan una TS Mental DC 16. Quienes la superan obtienen Alta Moral por 1 día.":
-                r = "<color=#0cca74><b>Socializar: </b></color><color=#d3d3d3><i>A Duelista dedica tempo a conversar, brincar e sustentar o ânimo da caravana.</color></i>\\n\\nA cada dia, seus companheiros fazem um Teste Mental CD 16. Quem passar ganha Alta Moral por 1 dia.";
+            case "<color=#0cca74><b>Socializar: </b></color><color=#d3d3d3><i>La Duelista dedica tiempo a conversar, bromear y sostener el ánimo de la caravana.</color></i>\\n\\nCada 24 h activas, sus compañeros realizan una TS Mental DC 16. Quienes la superan obtienen Moral Alta durante 24 h.":
+                r = "<color=#0cca74><b>Socializar: </b></color><color=#d3d3d3><i>A Duelista dedica tempo a conversar, brincar e sustentar o ânimo da caravana.</color></i>\\n\\nA cada 24 h ativas, seus companheiros fazem um Teste Mental CD 16. Quem passar ganha Moral Alta durante 24 h.";
                 break;
             case "<color=#0cca74><b>Consuelo: </b></color><color=#d3d3d3><i>La Duelista contiene el desánimo de la caravana cuando llegan malas noticias o tiempos difíciles.</color></i>\\n\\nSiempre que se pierda Esperanza por cualquier motivo, se pierde 2 menos.":
                 r = "<color=#0cca74><b>Consolo: </b></color><color=#d3d3d3><i>A Duelista contém o desânimo da caravana quando chegam más notícias ou tempos difíceis.</color></i>\\n\\nSempre que se perder Esperança por qualquer motivo, perdem-se 2 a menos.";
@@ -15104,9 +14851,6 @@ public class TRADU : MonoBehaviour
             case "Duelista":
                 r = "Duelista";
                 break;
-            case "-La Caravana se mueve con Aletargamiento. +1 Avance del Aliento Negro.":
-                r = "-A Caravana avança com Lentidão. +1 Avanço do Respiro Negro.";
-                break;
             case "Siempre Alerta":
                 r = "Sempre Alerta";
                 break;
@@ -15121,9 +14865,6 @@ public class TRADU : MonoBehaviour
                 break;
             case "Guardar Partida":
                 r = "Salvar jogo";
-                break;
-            case "Al realizar la ofrenda, el Aliento Negro retrocederá en 3 y un personaje con Corrupción al azar será curado.":
-                r = "Ao fazer a oferenda, o Respiro Negro recuará em 3 e um personagem aleatório com Corrupção será curado.";
                 break;
             case "<i>El Árbol de los Lamentos extiende sus raices de forma amenazante por sobre la superficie para atacar a sus enemigos y protegerse. </i>\n\n<color=#EE0000>-Débil al fuego.</color>":
                 r = "<i>A Árvore dos Lamentos estende suas raízes de forma ameaçadora sobre a superfície para atacar seus inimigos e se proteger. </i>\n\n<color=#EE0000>-Fraco contra fogo.</color>";
@@ -15149,9 +14890,6 @@ public class TRADU : MonoBehaviour
              case "<i>Esta bruja ha sido deformada por las llamas y corrompida la presencia del Aliento Negro. </i>\n\n<color=#199F10>Crea Enredaderas.\n-Ataque de rango que no falla.\n-Estertor Mortal.</color><color=#EE0000>-Poco resistente.</color>":
             r = "<i>Esta bruxa foi deformada pelas chamas e corrompida pela presença do Respiro Negro.</i>\n\n<color=#199F10>Cria Vinhas.\n-Ataque à distância que nunca erra.\n-Último suspiro.</color><color=#EE0000>-Resistência fraca.</color>";
             break;
-             case "), eligió bien la ruta y el Aliento Negro retrocedió 1. +25 Experiencia.":
-             r ="), escolheu o caminho certo e o Respiro Negro recuou 1. +25 de experiência.";
-              break;
             case "Escape: los personajes podrán escapar desde esta casilla.":
             r="Escape: os personagens podem escapar deste quadrado.";
             break;
@@ -15296,18 +15034,9 @@ public class TRADU : MonoBehaviour
             case "Ballestero":
             r = "Arqueiro";
             break;
-            case ").</i> Si la supera, la Caravana obtendrá Vigilante por 1 viaje y ganará 30 Experiencia. Si falla, la Caravana obtendrá Descuidados por 3 días.</color>\n\n":
-            r = ").</i> Se passar, a Caravana obterá Vigilante por 1 viagem e ganhará 30 Experiência. Se falhar, a Caravana obterá Descuidados por 3 dias.</color>\n\n";
-            break;
-            case "). Descuidados por 3 días.":
-             r = "). Descuidados por 3 dias.";
-             break;
             case "Descarga Maldita":
             r = "Descarga Maldita";
             break;
-            case "La Plegaria retrasará 1 el Aliento Negro y bendecirá a los personajes por 3 días. 1 vez por región.":
-            r = "A Plegaria atrasará 1 o Aliento Negro e bendecirá os personagens por 3 dias. 1 vez por região.";
-                break;
             case ") y logró apagar el rumor antes de que creciera. +35 Experiencia, +4 Esperanza.":
             r= ") conseguiu conter o rumor antes que ele se espalhasse. +35 de Experiência, +4 Esperança.";
                 break;

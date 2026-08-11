@@ -24,7 +24,7 @@ public class TrampaFogata : Trampa
   {
 
     int danio =UnityEngine.Random.Range(1, 4);
-    objetivo.RecibirDanio(danio, 4, false, null);
+    objetivo.RecibirDanio(danio, 4, false, null, 0, true);
          
          ReducirUsos();
   }

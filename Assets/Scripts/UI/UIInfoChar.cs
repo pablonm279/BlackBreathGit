@@ -376,7 +376,7 @@ public class UIInfoChar : MonoBehaviour
      if(scUnidadMostrada.estado_Condenado > 0)
      { 
         GameObject GTarjeta = Instantiate(casillaEstadoPrefab, contenedorEstadosTransform);
-        GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(29,scUnidadMostrada.estado_Condenado);
+        GTarjeta.GetComponent<UIEstadoCuadro>().RepresentarEstado(29, scUnidadMostrada.estado_Condenado, false, scUnidadMostrada.estado_CondenadoTurnosSeguidos + 1);
      }
      if(scUnidadMostrada.estado_Escudado > 0)
      { 

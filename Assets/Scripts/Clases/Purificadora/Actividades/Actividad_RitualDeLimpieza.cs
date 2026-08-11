@@ -8,7 +8,12 @@ public class Actividad_RitualDeLimpieza: Actividad
     {
       IDActividad = 10; //
 
-      desc = TRADU.i.Traducir("<color=#0cca74><b>Ritual de Limpieza: </b></color><color=#d3d3d3><i>La Purificadora realizará rituales de protección para combatir el Aliento Negro.</color></i>\\n\\nProbabilidad de evitar avance del Aliento Negro: 25% al descansar, 15% por día.");
+      desc = TRADU.i.nIdioma switch
+      {
+        TRADU.IdiomaIngles => "<color=#0cca74><b>Cleansing Ritual: </b></color><color=#d3d3d3><i>The Purifier performs protection rites to combat the Black Breath.</i></color>\\n\\nThe Black Breath recedes by 4 h every 24 active hours, and by 5 h when resting.",
+        TRADU.IdiomaPortugues => "<color=#0cca74><b>Ritual de Limpeza: </b></color><color=#d3d3d3><i>A Purificadora realiza ritos de proteção para combater o Sopro Negro.</i></color>\\n\\nO Sopro Negro recua 4 h a cada 24 horas ativas e 5 h ao descansar.",
+        _ => "<color=#0cca74><b>Ritual de Limpieza: </b></color><color=#d3d3d3><i>La Purificadora realiza rituales de protección para combatir el Aliento Negro.</i></color>\\n\\nEl Aliento Negro retrocede 4 h cada 24 horas activas y 5 h al descansar."
+      };
 
     }
 }

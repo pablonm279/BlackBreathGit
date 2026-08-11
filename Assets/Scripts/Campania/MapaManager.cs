@@ -73,6 +73,12 @@ public class MapaManager : MonoBehaviour
     float ultimoRadioCullingCaminos = -1f;
     bool cullingCaminosInicializado;
     bool ultimoDebugCullingCaminos;
+    [Header("Transición visual de visión")]
+    [Tooltip("Segundos que tarda en cambiar entre el alcance de Catalejos y Antorchas.")]
+    [SerializeField, Min(0.05f)] float duracionTransicionVision = 1.4f;
+    float alcanceVisionVisualPasos;
+    float velocidadTransicionVision;
+    bool alcanceVisionVisualInicializado;
 
     void Start()
     {
@@ -95,6 +101,8 @@ public class MapaManager : MonoBehaviour
        {
            return;
        }
+
+       ActualizarTransicionAlcanceVision();
 
        int alcance = CampaignManager.Instance != null
            ? CampaignManager.Instance.ObtenerDistanciaVisionEfectiva()
@@ -811,6 +819,7 @@ public class MapaManager : MonoBehaviour
 
        foreach (Nodo nodo in nodosActivosVisibilidad)
        {
+           AsegurarMisteriosoAdyacenteFueraDeVision(nodo, centroVision, radioVision);
            nodo.PrepararCaminosParaMascaraVision();
            nodo.AplicarEstadoVisibilidadCampania(ObtenerEstadoVisibilidadNodo(nodo, centroVision, radioVision));
        }
@@ -914,6 +923,7 @@ public class MapaManager : MonoBehaviour
                continue;
            }
 
+           AsegurarMisteriosoAdyacenteFueraDeVision(nodo, centroVision, radioVision);
            EstadoVisibilidadNodoCampania estado =
                ObtenerEstadoVisibilidadNodo(nodo, centroVision, radioVision);
            if (!nodo.TieneEstadoVisibilidadCampania(estado))
@@ -923,6 +933,24 @@ public class MapaManager : MonoBehaviour
        }
 
        hashNodosDentroVisionRefresco = nuevoHashNodosDentroVision;
+  }
+
+  void AsegurarMisteriosoAdyacenteFueraDeVision(Nodo nodo, Vector3 centroVision, float radioVision)
+  {
+       if (nodo == null
+           || nodo.revelado
+           || !EsNodoContiguoAlActual(nodo)
+           || PosicionDentroDeVision(nodo.transform.position, centroVision, radioVision))
+       {
+           return;
+       }
+
+       if (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+       {
+           return;
+       }
+
+       nodo.RevelarComoMisterioso();
   }
 
   void ActualizarHintsCaminos(Vector3 centroVision, float radioVision)
@@ -972,10 +1000,46 @@ public class MapaManager : MonoBehaviour
 
   public float ObtenerRadioVisionActual()
   {
-       float alcanceEnPasos = CampaignManager.Instance != null
+       return ObtenerPasoMapa() * ObtenerAlcanceVisionVisualEnPasos();
+  }
+
+  float ObtenerAlcanceVisionVisualEnPasos()
+  {
+       float objetivo = CampaignManager.Instance != null
            ? CampaignManager.Instance.ObtenerAlcanceVisionEnPasos()
            : 1.5f;
-       return ObtenerPasoMapa() * alcanceEnPasos;
+       if (!alcanceVisionVisualInicializado)
+       {
+           alcanceVisionVisualPasos = objetivo;
+           alcanceVisionVisualInicializado = true;
+       }
+       return alcanceVisionVisualPasos;
+  }
+
+  void ActualizarTransicionAlcanceVision()
+  {
+       float objetivo = CampaignManager.Instance != null
+           ? CampaignManager.Instance.ObtenerAlcanceVisionEnPasos()
+           : 1.5f;
+       if (!alcanceVisionVisualInicializado)
+       {
+           alcanceVisionVisualPasos = objetivo;
+           alcanceVisionVisualInicializado = true;
+           return;
+       }
+
+       alcanceVisionVisualPasos = Mathf.SmoothDamp(
+           alcanceVisionVisualPasos,
+           objetivo,
+           ref velocidadTransicionVision,
+           Mathf.Max(0.05f, duracionTransicionVision),
+           Mathf.Infinity,
+           Time.unscaledDeltaTime);
+       if (Mathf.Abs(alcanceVisionVisualPasos - objetivo) < 0.001f)
+       {
+           alcanceVisionVisualPasos = objetivo;
+           velocidadTransicionVision = 0f;
+       }
   }
 
   public bool PosicionDentroDeVision(Vector3 posicion)
@@ -1119,7 +1183,14 @@ public class MapaManager : MonoBehaviour
                continue;
            }
 
-           destino.RevelarCompletamente();
+           if (NodoDentroDeVision(destino))
+           {
+               destino.RevelarCompletamente();
+           }
+           else
+           {
+               destino.RevelarComoMisterioso();
+           }
            destino.MarcarDescubiertoPorMecanicaEspecial();
        }
 

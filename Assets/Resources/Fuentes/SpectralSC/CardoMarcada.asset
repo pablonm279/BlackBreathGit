@@ -8116,6 +8116,14 @@ MonoBehaviour:
       m_MarkPositionAdjustment:
         m_XPositionAdjustment: -49.21875
         m_YPositionAdjustment: 0
+    - m_BaseGlyphID: 57
+      m_BaseGlyphAnchorPoint:
+        m_XCoordinate: 8.7890625
+        m_YCoordinate: 0
+      m_MarkGlyphID: 624
+      m_MarkPositionAdjustment:
+        m_XPositionAdjustment: -49.21875
+        m_YPositionAdjustment: 0
     - m_BaseGlyphID: 58
       m_BaseGlyphAnchorPoint:
         m_XCoordinate: 25.488281
@@ -8343,14 +8351,6 @@ MonoBehaviour:
     - m_BaseGlyphID: 93
       m_BaseGlyphAnchorPoint:
         m_XCoordinate: -5.7128906
-        m_YCoordinate: 0
-      m_MarkGlyphID: 624
-      m_MarkPositionAdjustment:
-        m_XPositionAdjustment: -49.21875
-        m_YPositionAdjustment: 0
-    - m_BaseGlyphID: 57
-      m_BaseGlyphAnchorPoint:
-        m_XCoordinate: 8.7890625
         m_YCoordinate: 0
       m_MarkGlyphID: 624
       m_MarkPositionAdjustment:

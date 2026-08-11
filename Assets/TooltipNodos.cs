@@ -63,14 +63,6 @@ public class TooltipNodos : MonoBehaviour
         {
             tooltipText.text += TRADU.i.Traducir("\n<color=#FF3D00>--Incendiado--</color>");
         }
-        Nodo nodoActual = CampaignManager.Instance != null && CampaignManager.Instance.scMapaManager != null
-            ? CampaignManager.Instance.scMapaManager.nodoActual
-            : null;
-        CaminoConexion caminoDesdeCaravana = nodoActual != null ? nodoActual.ObtenerConexionHacia(nodo) : null;
-        if (caminoDesdeCaravana != null && caminoDesdeCaravana.tipo == TipoCaminoCampania.Dificil)
-        {
-            tooltipText.text += ObtenerTextoCaminoSinuoso();
-        }
          if (nodo.nodoRitual)
         {
             tooltipText.text += TRADU.i.Traducir("\n<color=#6A0DAD>--Ritual--</color>");
@@ -96,20 +88,6 @@ public class TooltipNodos : MonoBehaviour
 
         audioSource.Stop();
         audioSource.Play();
-    }
-
-    string ObtenerTextoCaminoSinuoso()
-    {
-        int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
-        switch (idioma)
-        {
-            case TRADU.IdiomaIngles:
-                return "\n<color=#8A2BE2>Winding Road</color>";
-            case TRADU.IdiomaPortugues:
-                return "\n<color=#8A2BE2>Caminho Sinuoso</color>";
-            default:
-                return "\n<color=#8A2BE2>Camino Sinuoso</color>";
-        }
     }
 
     public void HideTooltip()

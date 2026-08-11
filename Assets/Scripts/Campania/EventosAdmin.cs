@@ -131,7 +131,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text = TRADU.i.Traducir("Uno de los guías perdió los mapas de la región. La Caravana deberá detenerse a buscarlos antes de internarse a ciegas en el camino.\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Pasan las Horas: +1 Avance Aliento Negro</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Pasan las horas: Aliento Negro +5 h</b></color>");
 
             botonA.SetActive(false);
 
@@ -157,7 +157,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Bueyes Enfermos");
 
             txtDescripcion.text = TRADU.i.Traducir("Uno de los Bueyes cayó enfermo y no puede continuar. Los cuidadores aconsejan revisar al resto antes de que la enfermedad se propague.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Revisarlos demorará la marcha: +1 Aliento Negro.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Revisarlos demorará la marcha: Aliento Negro +5 h.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Ignorar las advertencias: morirán 1-3 Bueyes más.</color>\n\n");
 
 
@@ -191,7 +191,7 @@ public class EventosAdmin : MonoBehaviour
                 "can barely remain standing. The fever is worsening, and recovery will take several days.\n\n",
                 "mal consegue ficar de pé. A febre está piorando, e a recuperação levará vários dias.\n\n",
                 idiomaEnfermo);
-            txtDescripcion.text += TRADU.i.Traducir("Obtendrá el estado Enfermo por 4-7 días. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 1 día.\n\n\n\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("Obtendrá el estado Enfermo por 96-168 h. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 24 h.\n\n\n\n\n");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes comprar medicina por 45 Oro para reducir la Enfermedad un día extra.</color>\n\n");
 
@@ -249,7 +249,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text = TRADU.i.Traducir("La Caravana encuentra un Río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("El agua podría estar contaminada por el Aliento Negro. Puedes negarle a los Civiles el acceso al agua o dejarlos a su propia suerte.\n\n");
 
-            int chancesContaminado = LimitarProbabilidad(30 + (int)CampaignManager.Instance.GetValorAlientoNegro() * 3);
+            int chancesContaminado = LimitarProbabilidad(30 + (int)(CampaignManager.Instance.GetValorAlientoNegro() / CampaignManager.HorasPorPasoMapa) * 3);
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si les niegas el acceso perderás 15 de Esperanza.</color>\n\n");
             AgregarDescripcionTiradaPorcentual(chancesContaminado,
                 "de contaminación (según el Aliento Negro)", "contamination risk (from the Black Breath)", "de contaminação (segundo o Respiro Negro)",
@@ -280,7 +280,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Un alboroto junto a los carros de los Héroes revela a <b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> y <b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b> discutiendo tras un entrenamiento que terminó mal.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("La tensión sube y los demás caravaneros miran con incomodidad. Ambos reclaman tener la razón y esperan tu juicio.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Debes intervenir en apoyo a uno de los dos. El otro obtendrá Baja Moral por 5 días. Apoyas a:</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Debes intervenir en apoyo a uno de los dos. El otro obtendrá Baja Moral por 120 h. Apoyas a:</color>\n\n");
 
             textBotonA.text = "" + participanteEvento1.sNombre;
 
@@ -349,7 +349,7 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento1), DificultadAireEnrarecido,
                 "+6-10 Civiles y +30 Experiencia.", "+6-10 Civilians and +30 Experience.", "+6-10 Civis e +30 de Experiência.",
-                "Enfermo por 3 días.", "Sick for 3 days.", "Doente por 3 dias.");
+                "Enfermo por 72 h.", "Sick for 72 h.", "Doente por 72 h.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides sellar la entrada y seguir, -12 Esperanza.</color>\n\n");
 
@@ -375,7 +375,7 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadRumorDeDesbande,
                 "+35 Experiencia y +4 Esperanza.", "+35 Experience and +4 Hope.", "+35 de Experiência e +4 de Esperança.",
-                "Baja Moral por 3 días y -10 Esperanza.", "Low Morale for 3 days and -10 Hope.", "Moral Baixa por 3 dias e -10 de Esperança.");
+                "Baja Moral por 72 h y -10 Esperanza.", "Low Morale for 72 h and -10 Hope.", "Moral Baixa por 72 h e -10 de Esperança.");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides imponer silencio por la fuerza, -10 Esperanza.</color>\n\n");
 
@@ -412,7 +412,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else
             {
-                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides no arriesgar el cruce, el rodeo hará avanzar al Aliento Negro.</color>\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides no arriesgar el cruce, el rodeo sumará 5 h de Aliento Negro.</color>\n\n");
                 textBotonA.text = TRADU.i.Traducir("Cruzar");
                 textBotonB.text = TRADU.i.Traducir("Rodear");
             }
@@ -467,7 +467,7 @@ public class EventosAdmin : MonoBehaviour
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tsReflejos, DificultadBestiasAterradas,
                 "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
                 "-2 Bueyes.", "-2 Oxen.", "-2 Bois.");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides apartarte y ceder el paso, el Aliento Negro avanzará.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides apartarte y ceder el paso, el Aliento Negro aumentará 5 h.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Contenerlos");
             textBotonB.text = TRADU.i.Traducir("Apartarse");
@@ -493,7 +493,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text = TRADU.i.Traducir("Entre la niebla y el viento se cuela un ritmo de tambores que nadie logra ubicar con claridad.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Los Civiles miran alrededor con inquietud. Puedes forzar a la Caravana a apurar el paso o frenar un momento hasta recuperar la calma.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides apurar el paso, el esfuerzo dejará a la Caravana más cansada. +1 Fatiga.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides esperar, el Aliento Negro avanzará.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides esperar, el Aliento Negro aumentará 5 h.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Apurar el paso");
             textBotonB.text = TRADU.i.Traducir("Esperar");
@@ -518,7 +518,7 @@ public class EventosAdmin : MonoBehaviour
                 "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
                 "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides rodear el tramo, el Aliento Negro avanzará.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides rodear el tramo, el Aliento Negro aumentará 5 h.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Cruzar");
             textBotonB.text = TRADU.i.Traducir("Rodear");
@@ -565,7 +565,7 @@ public class EventosAdmin : MonoBehaviour
                 txtDescripcion.text = TRADU.i.Traducir("Uno de los Héroes soporta el avance como puede, pero el frío del Paso termina calándole más de la cuenta.\n\n");
             }
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Enfermo por 3 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Enfermo por 72 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -677,7 +677,7 @@ public class EventosAdmin : MonoBehaviour
             }
 
             txtDescripcion.text += TRADU.i.Traducir("Cuando vuelven al camino, la imagen sigue pesándole.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Baja Moral por 3 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Baja Moral por 72 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -690,7 +690,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text = TRADU.i.Traducir("Una ráfaga caliente levanta una espesa nube de cenizas y brasas apagadas alrededor de la Caravana.\n");
             txtDescripcion.text += TRADU.i.Traducir("Los civiles se cubren el rostro como pueden, los bueyes se inquietan y por varios instantes avanzar se vuelve peligroso.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Puedes ordenar hacer una breve parada hasta que el aire se despeje o forzar la marcha para no perder tiempo.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides esperar, el Aliento Negro avanzará.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides esperar, el Aliento Negro aumentará 5 h.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides seguir, las cenizas incomodarán a los Civiles. -5 Esperanza, +1 Fatiga.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Esperar");
@@ -730,7 +730,7 @@ public class EventosAdmin : MonoBehaviour
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+5 Esperanza</b>\n\n</color>");
-            txtDescripcion.text += "<color=#a0e812><b>" + participanteEvento1.sNombre + TRADU.i.Traducir(" y ") + participanteEvento2.sNombre + TRADU.i.Traducir(" ganan Alta Moral por 3 días.</b></color>");
+            txtDescripcion.text += "<color=#a0e812><b>" + participanteEvento1.sNombre + TRADU.i.Traducir(" y ") + participanteEvento2.sNombre + TRADU.i.Traducir(" ganan Alta Moral por 72 h.</b></color>");
 
             botonA.SetActive(false);
 
@@ -774,9 +774,9 @@ public class EventosAdmin : MonoBehaviour
                 "A Caravana encontra uma serraria abandonada com madeira aproveitável. Levar tudo renderá muitos materiais, mas cansará os Civis e consumirá horas preciosas.\n\n",
                 idiomaAserradero);
             txtDescripcion.text += SeleccionarTextoLocal(
-                "<color=#d8a205>Cargar todo: +65-90 Materiales, +1 Fatiga y +1 Aliento Negro.</color>\n\n",
-                "<color=#d8a205>Take everything: +65-90 Materials, +1 Fatigue, and +1 Black Breath.</color>\n\n",
-                "<color=#d8a205>Levar tudo: +65-90 Materiais, +1 de Fadiga e +1 Respiro Negro.</color>\n\n",
+                "<color=#d8a205>Cargar todo: +65-90 Materiales, +1 Fatiga y +5 h de Aliento Negro.</color>\n\n",
+                "<color=#d8a205>Take everything: +65-90 Materials, +1 Fatigue, and +5 h of Black Breath.</color>\n\n",
+                "<color=#d8a205>Levar tudo: +65-90 Materiais, +1 de Fadiga e +5 h de Respiro Negro.</color>\n\n",
                 idiomaAserradero);
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#a0e812>Recoger lo cercano: +15-26 Materiales.</color>\n\n",
@@ -846,9 +846,9 @@ public class EventosAdmin : MonoBehaviour
 
             int idiomaTranquilidad = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
             txtDescripcion.text = SeleccionarTextoLocal(
-                "Por un instante solo se oyen pasos, murmullos y alguna risa. La paz es tan extraña que hasta el aire parece más limpio.\n\n<color=#a0e812>-2 Aliento Negro.</color>\n\n",
-                "For a moment there are only footsteps, murmurs, and scattered laughter. The peace is so strange that even the air seems cleaner.\n\n<color=#a0e812>-2 Black Breath.</color>\n\n",
-                "Por um instante, ouvem-se apenas passos, murmúrios e algumas risadas. A paz é tão estranha que até o ar parece mais limpo.\n\n<color=#a0e812>-2 Respiro Negro.</color>\n\n",
+                "Por un instante solo se oyen pasos, murmullos y alguna risa. La paz es tan extraña que hasta el aire parece más limpio.\n\n<color=#a0e812>Aliento Negro -10 h.</color>\n\n",
+                "For a moment there are only footsteps, murmurs, and scattered laughter. The peace is so strange that even the air seems cleaner.\n\n<color=#a0e812>Black Breath -10 h.</color>\n\n",
+                "Por um instante, ouvem-se apenas passos, murmúrios e algumas risadas. A paz é tão estranha que até o ar parece mais limpo.\n\n<color=#a0e812>Respiro Negro -10 h.</color>\n\n",
                 idiomaTranquilidad);
 
 
@@ -872,9 +872,9 @@ public class EventosAdmin : MonoBehaviour
                 "oferece uma bolsa de moedas como voto de confiança.\n\n",
                 idiomaVoto);
             txtDescripcion.text += SeleccionarTextoLocal(
-                "<color=#a0e812>Rechazar el Oro: Alta Moral por 4 días y +55 Experiencia.</color>\n\n",
-                "<color=#a0e812>Refuse the Gold: High Morale for 4 days and +55 Experience.</color>\n\n",
-                "<color=#a0e812>Recusar o Ouro: Moral Alta por 4 dias e +55 de Experiência.</color>\n\n",
+                "<color=#a0e812>Rechazar el Oro: Alta Moral por 96 h y +55 Experiencia.</color>\n\n",
+                "<color=#a0e812>Refuse the Gold: High Morale for 96 h and +55 Experience.</color>\n\n",
+                "<color=#a0e812>Recusar o Ouro: Moral Alta por 96 h e +55 de Experiência.</color>\n\n",
                 idiomaVoto);
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#a0e812>Aceptar el Oro: +120-160 Oro.</color>\n\n",
@@ -928,9 +928,9 @@ public class EventosAdmin : MonoBehaviour
                 "desperta com uma certeza estranha: sonhou com a Caravana chegando em segurança ao porto. Sua convicção contagia quem escuta.\n\n",
                 idiomaSueno);
             txtDescripcion.text += "<color=#a0e812><b><color=#d1006f>" + participanteEvento1.sNombre + "</color></b> " + SeleccionarTextoLocal(
-                "gana 150 Experiencia y Alta Moral por 5 días.</color>\n\n",
-                "gains 150 Experience and High Morale for 5 days.</color>\n\n",
-                "ganha 150 de Experiência e Moral Alta por 5 dias.</color>\n\n",
+                "gana 150 Experiencia y Alta Moral por 120 h.</color>\n\n",
+                "gains 150 Experience and High Morale for 120 h.</color>\n\n",
+                "ganha 150 de Experiência e Moral Alta por 120 h.</color>\n\n",
                 idiomaSueno);
 
             botonA.SetActive(false);
@@ -1062,7 +1062,7 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadDosMiradas,
-                    "+25 Experiencia y -1 Aliento Negro.", "+25 Experience and -1 Black Breath.", "+25 de Experiência e -1 Respiro Negro.",
+                    "+25 Experiencia y -5 h de Aliento Negro.", "+25 Experience and -5 h of Black Breath.", "+25 de Experiência e -5 h de Respiro Negro.",
                     "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
             }
 
@@ -1070,7 +1070,7 @@ public class EventosAdmin : MonoBehaviour
             {
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento2, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento2), DificultadDosMiradas,
-                    "+25 Experiencia y -1 Aliento Negro.", "+25 Experience and -1 Black Breath.", "+25 de Experiência e -1 Respiro Negro.",
+                    "+25 Experiencia y -5 h de Aliento Negro.", "+25 Experience and -5 h of Black Breath.", "+25 de Experiência e -5 h de Respiro Negro.",
                     "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
@@ -1101,7 +1101,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Al borde del camino, la Caravana encuentra restos de árboles derribados y estructuras carbonizadas. No todo quedó reducido a ceniza: parte de la madera todavía podría aprovecharse.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Algunos Civiles sugieren detenerse para separar lo útil antes de seguir adelante. Tomará algo de tiempo, pero podría reforzar las reservas de Materiales.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides recolectar, obtendrás 15-30 Materiales, pero el Aliento Negro avanzará.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides recolectar, obtendrás 15-30 Materiales, pero el Aliento Negro aumentará 5 h.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides dejarlo, evitarás el retraso. +3 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Recolectar");
@@ -1174,7 +1174,7 @@ public class EventosAdmin : MonoBehaviour
             }
 
             txtDescripcion.text += TRADU.i.Traducir("La determinación con la que retoma la marcha contagia al resto.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Gana 50 Experiencia y Alta Moral por 3 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Gana 50 Experiencia y Alta Moral por 72 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1186,7 +1186,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("El viento cambia de golpe y barre la niebla helada del frente por un buen trecho.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("La Caravana consigue avanzar con mejor ritmo y algo más de seguridad.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>-1 Avance Aliento Negro</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Aliento Negro -5 h</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1258,7 +1258,7 @@ public class EventosAdmin : MonoBehaviour
             }
 
             txtDescripcion.text += TRADU.i.Traducir("El ejemplo no cambia la guerra, pero sí la forma en que retoma la marcha.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Gana 45 Experiencia y Alta Moral por 3 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Gana 45 Experiencia y Alta Moral por 72 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1297,7 +1297,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text = TRADU.i.Traducir("Una parte de la guardia nocturna se quedó dormida por momentos. No pasó nada grave, pero el campamento amaneció inquieto.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Puedes despertar a más gente para reforzar la vigilancia o dejar que el resto siga durmiendo y recuperar el tiempo al amanecer.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides doblar guardia, varios caravaneros descansarán peor. +1 Fatiga.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides dejarlos dormir, la salida será más lenta. +1 Avance Aliento Negro.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides dejarlos dormir, la salida será más lenta. Aliento Negro +5 h.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Doblar guardia");
             textBotonB.text = TRADU.i.Traducir("Dejarlos dormir");
@@ -1309,7 +1309,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Durante la noche se filtró agua en uno de los carros de comida y parte de las raciones quedó inutilizable.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Puedes extender lo salvable junto al fuego antes de partir o desecharlo y seguir adelante.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides secarlas, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides secarlas, partirán más tarde. Aliento Negro +5 h.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides desecharlas, perderás 18 Suministros.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Secarlas");
@@ -1334,7 +1334,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Al levantar el campamento, varios civiles notan que faltan herramientas básicas de trabajo. Puede que hayan quedado tiradas en la oscuridad.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Puedes ordenar una búsqueda rápida o reemplazarlas con lo que quede en reserva.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides buscarlas, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides buscarlas, partirán más tarde. Aliento Negro +5 h.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides reemplazarlas, perderás 12 Materiales.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Buscarlas");
@@ -1357,7 +1357,7 @@ public class EventosAdmin : MonoBehaviour
                 txtDescripcion.text = TRADU.i.Traducir("Uno de los Héroes se despertó varias veces con escalofríos y malestar. Al amanecer apenas puede sostenerse en pie.\n\n");
             }
 
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Enfermo por 3 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Enfermo por 72 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1450,7 +1450,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Al amanecer encuentran huellas frescas marcando un círculo incompleto alrededor del campamento.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("No parece un ataque fallido. Más bien un mensaje. Puedes revisar bien el perímetro o mantener la calma y evitar que el rumor corra entre los Civiles.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides revisar, partirán más tarde. +1 Avance Aliento Negro.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides revisar, partirán más tarde. Aliento Negro +5 h.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides mantener la calma, los rumores igual harán mella. -9 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Revisar");
@@ -1474,7 +1474,7 @@ public class EventosAdmin : MonoBehaviour
             }
 
             txtDescripcion.text += TRADU.i.Traducir("Al amanecer sigue en pie, pero el descanso no alcanzó para despejarle la cabeza.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Baja Moral por 3 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Baja Moral por 72 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1560,7 +1560,7 @@ public class EventosAdmin : MonoBehaviour
             }
 
             txtDescripcion.text += TRADU.i.Traducir("Después de leerla, el descanso ya no consigue apartarle esa imagen de la cabeza.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Baja Moral por 3 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef><b>Obtiene Baja Moral por 72 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1693,7 +1693,7 @@ public class EventosAdmin : MonoBehaviour
             }
 
             txtDescripcion.text += TRADU.i.Traducir("No cambia el camino, pero sí la forma en que piensa enfrentarlo al día siguiente.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Obtiene Alta Moral por 4 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Obtiene Alta Moral por 96 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1777,7 +1777,7 @@ public class EventosAdmin : MonoBehaviour
             }
 
             txtDescripcion.text += TRADU.i.Traducir("La imagen queda grabada con fuerza y le devuelve algo de ánimo para lo que viene.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Gana 35 Experiencia y Alta Moral por 3 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Gana 35 Experiencia y Alta Moral por 72 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1836,7 +1836,7 @@ public class EventosAdmin : MonoBehaviour
             }
 
             txtDescripcion.text += TRADU.i.Traducir("Leerla durante el descanso le devuelve perspectiva sobre por qué todavía vale la pena seguir.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Gana 40 Experiencia y Alta Moral por 3 días.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>Gana 40 Experiencia y Alta Moral por 72 h.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1889,7 +1889,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text += TRADU.i.Traducir("Es un excelente lugar para descansar y recuperar fuerzas.\n\n\n\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro avanzará solo 1.\n-+10% curación recibida.\n-El evento será positivo.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro acumulará solo 4 h durante un descanso de 8 h.\n-+10% curación recibida.\n-El evento será positivo.</b></color>");
 
             botonA.SetActive(false);
 
@@ -1984,7 +1984,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text = TRADU.i.Traducir("Al costado del camino, varias siluetas se mueven entre la maleza justo fuera del alcance de la vista. Nadie logra confirmar si hay una amenaza real o solo trucos de la mente.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Los rumores corren rápido entre los carros y varios Civiles ya esperan un ataque inminente.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si ordenas cerrar filas y seguir, la Caravana obtendrá Acobardados para el próximo combate. -2 VAL a todos.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides frenar para revisar, el Aliento Negro avanzará.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides frenar para revisar, el Aliento Negro aumentará 5 h.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Cerrar filas");
             textBotonB.text = TRADU.i.Traducir("Revisar");
@@ -1995,7 +1995,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Barro que Retiene");
 
             txtDescripcion.text = TRADU.i.Traducir("Un tramo de barro pegajoso se agarra a ruedas, botas y arreos. Cada metro parece costar el doble, y la columna entera empieza a moverse con una pesadez desesperante.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendrá Aletargados. El Aliento Negro avanzará +1 en el próximo viaje.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si fuerzas la marcha igual, la Caravana obtendrá Aletargados. El Aliento Negro aumentará 5 h en el próximo viaje.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si ordenas reacomodar la marcha, la Caravana ganará +1 Fatiga.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Forzar");
@@ -2008,7 +2008,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Encuentran un punto de espera abandonado: una manta, un fogón apagado y una señal vieja que promete ayuda que nunca llegó. La escena pesa sobre la Caravana.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides seguir sin detenerte, la Caravana obtendrá Desmotivación. Ganará 20% menos Experiencia en el próximo combate.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si haces una breve parada para ordenar el paso, el Aliento Negro avanzará.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si haces una breve parada para ordenar el paso, el Aliento Negro aumentará 5 h.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Seguir");
             textBotonB.text = TRADU.i.Traducir("Detenerse");
@@ -2098,7 +2098,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Camino a Favor");
 
             txtDescripcion.text = TRADU.i.Traducir("La Caravana encuentra un tramo de camino firme, bien orientado y sorprendentemente limpio. No durará mucho, pero alcanza para ordenar la columna y pensar en un próximo avance veloz.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si aprovechas el ritmo que da el terreno, la Caravana obtendrá Presteza. El Aliento Negro no avanzará en el próximo viaje.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si aprovechas el ritmo que da el terreno, la Caravana obtendrá Presteza: +20% velocidad de caravana en el próximo viaje.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si prefieres revisar bien los bordes del camino, +3 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Aprovecharlo");
@@ -2166,7 +2166,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Campamento Ligero");
 
             txtDescripcion.text = TRADU.i.Traducir("Sin que nadie lo ordene demasiado, el campamento se arma con lo justo y queda listo para levantarse en minutos. Hay una sensación compartida de que hoy convendrá moverse rápido.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>La Caravana obtiene Presteza. El Aliento Negro no avanzará en el próximo viaje.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>La Caravana obtiene Presteza: +20% velocidad de caravana en el próximo viaje.</b></color>");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -2210,7 +2210,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("En el Bosque Ardiente, el humo cambia de dirección de golpe y se mete bajo telas, capuchas y lonas. La Caravana avanza entre toses y ojos llorosos, cada vez más lenta.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides avanzar igual, la Caravana obtendrá Aletargados.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si haces una parada corta hasta que abra el aire, el Aliento Negro avanzará.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si haces una parada corta hasta que abra el aire, el Aliento Negro aumentará 5 h.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Avanzar");
             textBotonB.text = TRADU.i.Traducir("Esperar");
@@ -2549,7 +2549,7 @@ public class EventosAdmin : MonoBehaviour
         if (personaje.itemArmadura != null) total += personaje.itemArmadura.buffTSReflejo;
         if (personaje.Accesorio1 != null) total += personaje.Accesorio1.buffTSReflejo;
         if (personaje.Accesorio2 != null) total += personaje.Accesorio2.buffTSReflejo;
-        if (personaje.TieneCampBendecido()) total += 3;
+        if (personaje.EstaBendecido()) total += 3;
 
         return total;
     }
@@ -2567,7 +2567,7 @@ public class EventosAdmin : MonoBehaviour
         if (personaje.itemArmadura != null) total += personaje.itemArmadura.buffTSFortaleza;
         if (personaje.Accesorio1 != null) total += personaje.Accesorio1.buffTSFortaleza;
         if (personaje.Accesorio2 != null) total += personaje.Accesorio2.buffTSFortaleza;
-        if (personaje.TieneCampBendecido()) total += 3;
+        if (personaje.EstaBendecido()) total += 3;
 
         return total;
     }
@@ -2585,7 +2585,7 @@ public class EventosAdmin : MonoBehaviour
         if (personaje.itemArmadura != null) total += personaje.itemArmadura.buffTSMental;
         if (personaje.Accesorio1 != null) total += personaje.Accesorio1.buffTSMental;
         if (personaje.Accesorio2 != null) total += personaje.Accesorio2.buffTSMental;
-        if (personaje.TieneCampBendecido()) total += 3;
+        if (personaje.EstaBendecido()) total += 3;
 
         return total;
     }
@@ -2900,7 +2900,7 @@ public class EventosAdmin : MonoBehaviour
         // Eventos de nodo malos
         if (eventoActual == 3)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             CampaignManager.Instance.CambiarBueyesActuales(-1);
             gameObject.SetActive(false);
         }
@@ -2914,8 +2914,17 @@ public class EventosAdmin : MonoBehaviour
             CampaignManager.Instance.CambiarOroActual(-45);
 
             float tierCuranderos = ((CampaignManager.Instance.sequitoCuranderosMejoraCuracion * 100) - 10) / 5;
-            int rand =UnityEngine.Random.Range(3, 7);
-            participanteEvento1.Camp_Enfermo += rand - (int)tierCuranderos;
+            int[] duracionesEnfermoHoras = { 72, 96, 120, 144 };
+            int horasEnfermo = duracionesEnfermoHoras[UnityEngine.Random.Range(0, duracionesEnfermoHoras.Length)];
+            float reduccionCuranderosHoras = ((int)tierCuranderos) switch
+            {
+                1 => 24f,
+                2 => 48f,
+                3 => 72f,
+                4 => 96f,
+                _ => 0f
+            };
+            participanteEvento1.AplicarEnfermoHoras(Mathf.Max(0f, horasEnfermo - reduccionCuranderosHoras));
             gameObject.SetActive(false);
         }
         if (eventoActual == 6)
@@ -2961,7 +2970,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 9)
         {
-            participanteEvento2.Camp_Moral -= 5; //Baja Moral
+            participanteEvento2.AplicarMoralBajaHoras(120f); //Baja Moral
             gameObject.SetActive(false);
         }
         if (eventoActual == 10)
@@ -3042,14 +3051,14 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Enfermo += 3;
+                participanteEvento1.AplicarEnfermoHoras(72f);
                 RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, tirada, tsFortaleza, DificultadAireEnrarecido, false,
                     "entró en la bodega de aire enrarecido",
                     "entered the cellar filled with stale air",
                     "entrou no porão de ar rarefeito",
-                    "el aire lo venció y quedó Enfermo por 3 días.",
-                    "the foul air overwhelmed them; they became Sick for 3 days.",
-                    "o ar nocivo o venceu; ficou Doente por 3 dias.");
+                    "el aire lo venció y quedó Enfermo por 72 h.",
+                    "the foul air overwhelmed them; they became Sick for 72 h.",
+                    "o ar nocivo o venceu; ficou Doente por 72 h.");
             }
 
             gameObject.SetActive(false);
@@ -3074,15 +3083,15 @@ public class EventosAdmin : MonoBehaviour
             }
             else if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Moral -= 3;
+                participanteEvento1.AplicarMoralBajaHoras(72f);
                 CampaignManager.Instance.CambiarEsperanzaActual(-10);
                 RegistrarTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, tirada, tsMental, DificultadRumorDeDesbande, false,
                     "intentó contener el rumor de desbande",
                     "tried to contain the rumor of desertion",
                     "tentou conter o rumor de deserção",
-                    "el rumor se agravó; obtuvo Baja Moral por 3 días y la Caravana perdió 10 Esperanza.",
-                    "the rumor worsened; they suffered Low Morale for 3 days and the Caravan lost 10 Hope.",
-                    "o rumor se agravou; ficou com Moral Baixa por 3 dias e a Caravana perdeu 10 de Esperança.");
+                    "el rumor se agravó; obtuvo Baja Moral por 72 h y la Caravana perdió 10 Esperanza.",
+                    "the rumor worsened; they suffered Low Morale for 72 h and the Caravan lost 10 Hope.",
+                    "o rumor se agravou; ficou com Moral Baixa por 72 h e a Caravana perdeu 10 de Esperança.");
             }
 
             gameObject.SetActive(false);
@@ -3275,7 +3284,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 81)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 94)
@@ -3286,7 +3295,7 @@ public class EventosAdmin : MonoBehaviour
         if (eventoActual == 282)
         {
             CampaignManager.Instance.CambiarMaterialesActuales(UnityEngine.Random.Range(15, 31));
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 284)
@@ -3308,7 +3317,7 @@ public class EventosAdmin : MonoBehaviour
         if (eventoActual == 204)
         {
             CampaignManager.Instance.CambiarMaterialesActuales(UnityEngine.Random.Range(65, 91));
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             CampaignManager.Instance.CambiarFatigaActual(1);
 
             gameObject.SetActive(false);
@@ -3356,7 +3365,7 @@ public class EventosAdmin : MonoBehaviour
         if (eventoActual == 208)
         {
             participanteEvento1.RecibirExperiencia(55);
-            participanteEvento1.Camp_Moral += 4;
+            participanteEvento1.AplicarMoralAltaHoras(96f);
 
             gameObject.SetActive(false);
 
@@ -3372,7 +3381,7 @@ public class EventosAdmin : MonoBehaviour
         {
             
             participanteEvento1.RecibirExperiencia(150);
-            participanteEvento1.Camp_Moral += 5;
+            participanteEvento1.AplicarMoralAltaHoras(120f);
             gameObject.SetActive(false);
 
         }
@@ -3512,14 +3521,14 @@ public class EventosAdmin : MonoBehaviour
             if (resultado >= DificultadDosMiradas && participante != null)
             {
                 participante.RecibirExperiencia(25);
-                CampaignManager.Instance.CambiarValorAlientoNegro(-1);
+                CampaignManager.Instance.CambiarValorAlientoNegroHoras(-5f);
                 RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadDosMiradas, true,
                     "defendió su lectura de la ruta",
                     "defended their reading of the route",
                     "defendeu sua leitura da rota",
-                    "eligió bien; +25 Experiencia y el Aliento Negro retrocedió 1.",
-                    "chose correctly; +25 Experience and the Black Breath receded by 1.",
-                    "escolheu corretamente; +25 de Experiência e o Respiro Negro recuou 1.");
+                    "eligió bien; +25 Experiencia y -5 h de Aliento Negro.",
+                    "chose correctly; +25 Experience and -5 h of Black Breath.",
+                    "escolheu corretamente; +25 de Experiência e -5 h de Respiro Negro.");
             }
             else
             {
@@ -3543,17 +3552,17 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 103)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 105)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 112)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 116)
@@ -3876,7 +3885,7 @@ public class EventosAdmin : MonoBehaviour
         // Eventos de nodo malos
         if (eventoActual == 1)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 2)
@@ -3904,8 +3913,17 @@ public class EventosAdmin : MonoBehaviour
         if (eventoActual == 5)
         {
             float tierCuranderos = ((CampaignManager.Instance.sequitoCuranderosMejoraCuracion * 100) - 10) / 5;
-            int rand = UnityEngine.Random.Range(4, 8);
-            participanteEvento1.Camp_Enfermo += rand - (int)tierCuranderos;
+            int[] duracionesEnfermoHoras = { 96, 120, 144, 168 };
+            int horasEnfermo = duracionesEnfermoHoras[UnityEngine.Random.Range(0, duracionesEnfermoHoras.Length)];
+            float reduccionCuranderosHoras = ((int)tierCuranderos) switch
+            {
+                1 => 24f,
+                2 => 48f,
+                3 => 72f,
+                4 => 96f,
+                _ => 0f
+            };
+            participanteEvento1.AplicarEnfermoHoras(Mathf.Max(0f, horasEnfermo - reduccionCuranderosHoras));
             gameObject.SetActive(false);
         }
         if (eventoActual == 6)
@@ -3929,7 +3947,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 8)
         {
-            int chancesCont = LimitarProbabilidad(30 + (int)CampaignManager.Instance.GetValorAlientoNegro() * 3);
+            int chancesCont = LimitarProbabilidad(30 + (int)(CampaignManager.Instance.GetValorAlientoNegro() / CampaignManager.HorasPorPasoMapa) * 3);
             int tiradaPorcentual = UnityEngine.Random.Range(1, 101);
             if (tiradaPorcentual <= chancesCont)
             {
@@ -3957,7 +3975,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 9)
         {
-            participanteEvento1.Camp_Moral -= 5; //Baja Moral
+            participanteEvento1.AplicarMoralBajaHoras(120f); //Baja Moral
             gameObject.SetActive(false);
         }
         if (eventoActual == 10)
@@ -4019,7 +4037,7 @@ public class EventosAdmin : MonoBehaviour
             }
             else
             {
-                CampaignManager.Instance.CambiarValorAlientoNegro(1);
+                CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             }
             gameObject.SetActive(false);
         }
@@ -4065,7 +4083,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 82)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 83)
@@ -4075,12 +4093,12 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 84)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 85)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 90)
@@ -4114,7 +4132,7 @@ public class EventosAdmin : MonoBehaviour
         {
             if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Moral -= 3;
+                participanteEvento1.AplicarMoralBajaHoras(72f);
             }
             gameObject.SetActive(false);
         }
@@ -4141,8 +4159,8 @@ public class EventosAdmin : MonoBehaviour
         if (eventoActual == 202)
         {
             CampaignManager.Instance.CambiarEsperanzaActual(5);
-            participanteEvento1.Camp_Moral += 3; //Buena Moral
-            participanteEvento2.Camp_Moral += 3; //Buena Moral
+            participanteEvento1.AplicarMoralAltaHoras(72f); //Buena Moral
+            participanteEvento2.AplicarMoralAltaHoras(72f); //Buena Moral
             gameObject.SetActive(false);
         }
         if (eventoActual == 203)
@@ -4173,7 +4191,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 207)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(-2);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(-10f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 208)
@@ -4192,7 +4210,7 @@ public class EventosAdmin : MonoBehaviour
         if (eventoActual == 210)
         {
             participanteEvento1.RecibirExperiencia(150);
-            participanteEvento1.Camp_Moral += 5;
+            participanteEvento1.AplicarMoralAltaHoras(120f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 211)
@@ -4262,14 +4280,14 @@ public class EventosAdmin : MonoBehaviour
                 if (resultado >= DificultadDosMiradas)
                 {
                     participante.RecibirExperiencia(25);
-                    CampaignManager.Instance.CambiarValorAlientoNegro(-1);
+                    CampaignManager.Instance.CambiarValorAlientoNegroHoras(-5f);
                     RegistrarTiradaD20(participante, TipoTiradaEvento.Mental, tirada, tsMental, DificultadDosMiradas, true,
                         "defendió su lectura de la ruta",
                         "defended their reading of the route",
                         "defendeu sua leitura da rota",
-                        "eligió bien; +25 Experiencia y el Aliento Negro retrocedió 1.",
-                        "chose correctly; +25 Experience and the Black Breath receded by 1.",
-                        "escolheu corretamente; +25 de Experiência e o Respiro Negro recuou 1.");
+                        "eligió bien; +25 Experiencia y -5 h de Aliento Negro.",
+                        "chose correctly; +25 Experience and -5 h of Black Breath.",
+                        "escolheu corretamente; +25 de Experiência e -5 h de Respiro Negro.");
                 }
                 else
                 {
@@ -4328,7 +4346,7 @@ public class EventosAdmin : MonoBehaviour
         {
             if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Enfermo += 3;
+                participanteEvento1.AplicarEnfermoHoras(72f);
             }
             gameObject.SetActive(false);
         }
@@ -4359,13 +4377,13 @@ public class EventosAdmin : MonoBehaviour
             if (participanteEvento1 != null)
             {
                 participanteEvento1.RecibirExperiencia(50);
-                participanteEvento1.Camp_Moral += 3;
+                participanteEvento1.AplicarMoralAltaHoras(72f);
             }
             gameObject.SetActive(false);
         }
         if (eventoActual == 288)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(-1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(-5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 290)
@@ -4383,7 +4401,7 @@ public class EventosAdmin : MonoBehaviour
             if (participanteEvento1 != null)
             {
                 participanteEvento1.RecibirExperiencia(45);
-                participanteEvento1.Camp_Moral += 3;
+                participanteEvento1.AplicarMoralAltaHoras(72f);
             }
             gameObject.SetActive(false);
         }
@@ -4403,7 +4421,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 102)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 103)
@@ -4425,7 +4443,7 @@ public class EventosAdmin : MonoBehaviour
         {
             if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Enfermo += 3;
+                participanteEvento1.AplicarEnfermoHoras(72f);
             }
             gameObject.SetActive(false);
         }
@@ -4487,7 +4505,7 @@ public class EventosAdmin : MonoBehaviour
         {
             if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Moral += 4;
+                participanteEvento1.AplicarMoralAltaHoras(96f);
             }
             gameObject.SetActive(false);
         }
@@ -4517,7 +4535,7 @@ public class EventosAdmin : MonoBehaviour
         {
             if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Moral -= 3;
+                participanteEvento1.AplicarMoralBajaHoras(72f);
             }
             gameObject.SetActive(false);
         }
@@ -4547,7 +4565,7 @@ public class EventosAdmin : MonoBehaviour
         {
             if (participanteEvento1 != null)
             {
-                participanteEvento1.Camp_Moral -= 3;
+                participanteEvento1.AplicarMoralBajaHoras(72f);
             }
             gameObject.SetActive(false);
         }
@@ -4581,7 +4599,7 @@ public class EventosAdmin : MonoBehaviour
             if (participanteEvento1 != null)
             {
                 participanteEvento1.RecibirExperiencia(35);
-                participanteEvento1.Camp_Moral += 3;
+                participanteEvento1.AplicarMoralAltaHoras(72f);
             }
             gameObject.SetActive(false);
         }
@@ -4601,7 +4619,7 @@ public class EventosAdmin : MonoBehaviour
             if (participanteEvento1 != null)
             {
                 participanteEvento1.RecibirExperiencia(40);
-                participanteEvento1.Camp_Moral += 3;
+                participanteEvento1.AplicarMoralAltaHoras(72f);
             }
             gameObject.SetActive(false);
         }
@@ -4619,7 +4637,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 16)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 17)
@@ -4629,7 +4647,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 18)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 19)
@@ -4702,7 +4720,7 @@ public class EventosAdmin : MonoBehaviour
         }
         if (eventoActual == 96)
         {
-            CampaignManager.Instance.CambiarValorAlientoNegro(1);
+            CampaignManager.Instance.CambiarValorAlientoNegroHoras(5f);
             gameObject.SetActive(false);
         }
         if (eventoActual == 97)

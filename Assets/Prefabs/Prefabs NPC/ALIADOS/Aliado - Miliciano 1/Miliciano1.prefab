@@ -1213,7 +1213,7 @@ MonoBehaviour:
   poseAtacar: {fileID: 21300000, guid: 9318cb34185f1cf4aa011b8c796693d6, type: 3}
   poseHabilidad: {fileID: 21300000, guid: 9318cb34185f1cf4aa011b8c796693d6, type: 3}
   poseRecibirDanio: {fileID: 0}
-  poseTurnoActivo: {fileID: 0}
+  poseTurnoActivo: {fileID: 21300000, guid: fc6d6db47b3e013418073e7456684800, type: 3}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1

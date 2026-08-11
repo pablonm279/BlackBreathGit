@@ -258,7 +258,7 @@ public static class SaveGameService
       }
       if (saveFileData.version < SaveFileData.MinimumCompatibleVersion)
       {
-        error = "El archivo de guardado pertenece a una version anterior incompatible.";
+        error = "Esta partida usa un formato anterior a v26 y no puede cargarse. Inicia una campaña nueva.";
         saveFileData = null;
         return false;
       }

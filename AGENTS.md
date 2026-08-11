@@ -2,7 +2,7 @@
 
 ## Proyecto
 
-- Motor: Unity `2023.2.22f1`
+- Motor: Unity `6000.3.20f1`
 - Solucion principal: `GDD - Untitled.sln`
 - Scripts de juego: `Assets/Scripts`
 - Ensamblados: no hay `asmdef` propios en `Assets`; el codigo compila en `Assembly-CSharp`

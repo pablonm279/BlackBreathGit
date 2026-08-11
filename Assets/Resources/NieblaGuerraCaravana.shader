@@ -3,7 +3,7 @@ Shader "Hidden/GDD/Campania/NieblaGuerraCaravana"
     Properties
     {
         _MainTex ("Escena", 2D) = "white" {}
-        _FogColor ("Color", Color) = (0.018, 0.045, 0.052, 0.72)
+        _FogColor ("Color", Color) = (0.0162, 0.0405, 0.0468, 0.6804)
         _HistoryTex ("Historial mundial", 2D) = "black" {}
         _VisionScreen ("Centro UV y radios", Vector) = (0.5, 0.5, 0.2, 0.14)
         _VisionFeather ("Suavizado del borde", Float) = 0.12
@@ -169,10 +169,9 @@ Shader "Hidden/GDD/Campania/NieblaGuerraCaravana"
                     * _HistoryStrength;
                 float cantidadNiebla = 1.0 - max(visibleAhora, explorado);
 
-                // La niebla se desvanece antes de tocar el HUD superior e inferior.
-                float franjaInferior = smoothstep(_Band.x, _Band.x + _Band.z, uv.y);
+                // La niebla se desvanece antes de tocar el HUD superior.
                 float franjaSuperior = 1.0 - smoothstep(_Band.y - _Band.z, _Band.y, uv.y);
-                float mascaraFranja = franjaInferior * franjaSuperior;
+                float mascaraFranja = franjaSuperior;
 
                 // El ruido vive en el mundo, por lo que pan y zoom no hacen que
                 // la bruma patine sobre caminos y adornos.

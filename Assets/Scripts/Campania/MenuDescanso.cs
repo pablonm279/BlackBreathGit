@@ -295,8 +295,8 @@ public class MenuDescanso : MonoBehaviour
       tareaCivilSeleccionada = n;
 
       tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Feria</b></u>\n\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles dedicarán el día a organizar una feria con varios juegos y celebraciones.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Durante 8 h, los civiles organizarán una feria con varios juegos y celebraciones.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Al finalizar las 8 h: se conseguirán entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n");
 
       chancesAtaqueACaravana = 30 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -314,8 +314,8 @@ public class MenuDescanso : MonoBehaviour
       tareaCivilSeleccionada = n;
 
       tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Día Libre</b></u>\n\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se tomarán el día para descansar y recobrar fuerzas.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se conseguirá 6 de Esperanza y el día siguiente arrancará con -1 Fatiga. +10% Curación a personajes.</color>\n\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Durante 10 h, los civiles descansarán para recobrar fuerzas.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Al finalizar las 10 h: se conseguirán 6 de Esperanza, la Fatiga bajará a 0 y la curación de personajes tendrá +10%.</color>\n\n\n");
 
       chancesAtaqueACaravana = 20 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 50 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -343,6 +343,13 @@ public class MenuDescanso : MonoBehaviour
 
     }
 
+    float horasTarea = n == 5 ? 6f : n == 4 ? 10f : 8f;
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    string etiquetaDuracion = idioma == TRADU.IdiomaIngles
+      ? "Duration: "
+      : idioma == TRADU.IdiomaPortugues ? "Duração: " : "Duración: ";
+    tareaCivilDescripcion.text += "\n<color=#B8C7D9>" + etiquetaDuracion + Mathf.RoundToInt(horasTarea) + "h</color>";
+
     Actualizar();
     ActualizarEscalaTareaCivilSeleccionada();
 
@@ -359,7 +366,7 @@ public class MenuDescanso : MonoBehaviour
     }
     if (CampaignManager.Instance.intTipoClima == 5) //Niebla
     {
-      chancesExploracion -= 20;
+      chancesExploracion -= 10;
     }
 
 
@@ -367,7 +374,7 @@ public class MenuDescanso : MonoBehaviour
 
     
     //Aliento negro aumenta chances de ataque a caravana
-    chancesAtaqueACaravana += (int)(CampaignManager.Instance.GetValorAlientoNegro() / 2);
+    chancesAtaqueACaravana += (int)(CampaignManager.Instance.GetValorAlientoNegro() / 10f);
 
     //Actividades que toquen emboscada y exploracion van aca 
     foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
@@ -395,7 +402,6 @@ public class MenuDescanso : MonoBehaviour
     if (CampaignManager.Instance.scMenuSequito.TieneSequito(5)) { chancesAtaqueACaravana += 2; } //Herboristas, aumentan chances 2%
     chancesAtaqueACaravana += CampaignManager.Instance.ObtenerModificadorChanceEmboscadaTraits();
 
-    chancesAtaqueACaravana -= CampaignManager.Instance.mejoraCaravanaAntorchas * 2;
     chancesExploracion += 3 + ((CampaignManager.Instance.mejoraCaravanaCatalejos - 1) * 2);
 
     chancesExploracion += CampaignManager.Instance.ExploracionSumadaPorActividades();
@@ -405,6 +411,12 @@ public class MenuDescanso : MonoBehaviour
     {
       chancesExploracion += CampaignManager.Instance.estadosCaravana.ObtenerModificadorExploracionPendiente();
       chancesAtaqueACaravana += CampaignManager.Instance.estadosCaravana.ObtenerModificadorEmboscadaDescansoPendiente();
+    }
+
+    float duracionDescansoHoras = tareaCivilSeleccionada == 5 ? 6f : tareaCivilSeleccionada == 4 ? 10f : 8f;
+    if (campaignManager.AccionIncluyeNoche(duracionDescansoHoras))
+    {
+      chancesAtaqueACaravana += 5;
     }
 
     int modificadorDescansoExploracion = tareaCivilSeleccionada == 5 ? 20 : 0;
@@ -476,6 +488,17 @@ public class MenuDescanso : MonoBehaviour
     }
   }
 
+  public async Task CompletarResultadosDescansoTrasCarga(int tareaCivil)
+  {
+    tareaCivilSeleccionada = tareaCivil;
+    CampaignManager.Instance.ObtenerSnapshotResultadosDescanso(
+      out _,
+      out valor,
+      out chancesExploracion,
+      out chancesAtaqueACaravana);
+    await DescansarAsync(true);
+  }
+
   private void IntentarEncontrarAtajoSuperficieTrasDescanso()
   {
     Nodo nodoActual = CampaignManager.Instance != null &&
@@ -545,26 +568,76 @@ public class MenuDescanso : MonoBehaviour
       && (tutorialLegacy.pasoActual == 24 || tutorialLegacy.pasoActual == 25);
   }
 
-  private async Task DescansarAsync()
+  private async Task DescansarAsync(bool omitirTranscurso = false)
   {
     CampaignManager campaignManager = CampaignManager.Instance;
     bool enTutorial = campaignManager != null && campaignManager.DebeUsarConfiguracionTutorial();
     bool autosavePendienteTrasDescanso = true;
     bool forzarEventoBroteTutorial = forzarEventoBroteTutorialEnDescanso;
     forzarEventoBroteTutorialEnDescanso = false;
+    int climaInicioDescanso;
+    if (omitirTranscurso)
+    {
+      campaignManager.ObtenerSnapshotResultadosDescanso(
+        out climaInicioDescanso,
+        out _,
+        out _,
+        out _);
+    }
+    else
+    {
+      climaInicioDescanso = campaignManager.intTipoClima;
+    }
+    float duracionDescansoHoras = tareaCivilSeleccionada == 5 ? 6f : tareaCivilSeleccionada == 4 ? 10f : 8f;
+    Nodo nodoDescanso = campaignManager != null && campaignManager.scMapaManager != null
+      ? campaignManager.scMapaManager.nodoActual
+      : null;
+    bool esClaro = nodoDescanso != null && nodoDescanso.tipoNodo == TipoNodoClaro;
+    float multiplicadorCuracion = 1f;
+    if (esClaro) multiplicadorCuracion *= 1.1f;
+    if (nodoDescanso != null && nodoDescanso.tipoNodo == TipoNodoRecursos) multiplicadorCuracion *= 1.2f;
+    if (tareaCivilSeleccionada == 4) multiplicadorCuracion *= 1.1f;
+    Personaje purificadoraRitualDescanso = omitirTranscurso
+      ? campaignManager.ObtenerPurificadoraRitualDescansoPendiente()
+      : campaignManager.scMenuPersonajes.listaPersonajes.Find(personaje =>
+        personaje != null
+        && personaje.PuedeRealizarActividades()
+        && personaje.ActividadSeleccionada == 10
+        && campaignManager.EsActividadPermitidaPorClimaCampania(10));
+
+    bool emboscadaProgramada = omitirTranscurso
+      && campaignManager.DescansoTuvoEmboscadaPendienteResultados();
+    if (!omitirTranscurso)
+    {
+    float multiplicadorAliento = esClaro ? 0.5f : 1f;
+    int tiradaEmboscadaDescanso = UnityEngine.Random.Range(1, 101);
+    emboscadaProgramada = !enTutorial
+      && !toggleMenuMisiones.isOn
+      && nodoDescanso != null
+      && nodoDescanso.tipoNodo != TipoNodoAsentamiento
+      && tiradaEmboscadaDescanso <= chancesAtaqueACaravana;
+    float horasHastaEmboscada = emboscadaProgramada
+      ? UnityEngine.Random.Range(0f, duracionDescansoHoras)
+      : duracionDescansoHoras;
+
+    campaignManager.GuardarContinuacionDescanso(
+      duracionDescansoHoras,
+      tareaCivilSeleccionada,
+      esClaro,
+      campaignManager.ObtenerHoraActual(),
+      purificadoraRitualDescanso,
+      climaInicioDescanso,
+      valor,
+      chancesExploracion,
+      chancesAtaqueACaravana,
+      emboscadaProgramada,
+      horasHastaEmboscada,
+      tiradaEmboscadaDescanso);
 
     // Audio: al presionar Descansar, cortar másica con fade, reproducir SFX y reanudar.
     IniciarAudioDescansoSimple();
-    CampaignManager.Instance.numeroTurno++;
     if (CampaignManager.Instance.logDeCampania != null)
     {
-      CampaignManager.Instance.logDeCampania.RegistrarInicioDia(
-        CampaignManager.Instance.numeroTurno,
-        CampaignManager.Instance.GetEsperanzaActual(),
-        CampaignManager.Instance.GetOroActuales(),
-        CampaignManager.Instance.GetMaterialesActuales(),
-        CampaignManager.Instance.GetSuministrosActuales(),
-        CampaignManager.Instance.intTipoClima);
       CampaignManager.Instance.logDeCampania.RegistrarDescanso();
     }
 
@@ -573,8 +646,33 @@ public class MenuDescanso : MonoBehaviour
     gameObject.SetActive(false);
 
     BanterCampaignDirector.NotificarDescansoIniciado();
-    CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(1.2f, 4.0f);
-    await BattleManager.DelayCombateAsync(TimeSpan.FromSeconds(6.0f));
+    CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(1.2f, Mathf.Max(4f, duracionDescansoHoras - 1.2f));
+    await TranscurrirHorasDescanso(horasHastaEmboscada, multiplicadorAliento, multiplicadorCuracion, true);
+    if (emboscadaProgramada)
+    {
+      float horasRestantesTrasEmboscada = Mathf.Max(0f, duracionDescansoHoras - horasHastaEmboscada);
+      campaignManager.MarcarEmboscadaDescansoConsumida(campaignManager.ObtenerHoraActual());
+      campaignManager.CapturarHoraCombatePendiente(campaignManager.ObtenerHoraActual());
+      campaignManager.BATALLA_EnCurso = 11;
+      campaignManager.EMBOSCADA_EnCurso = 3;
+      campaignManager.EscribirLog(TRADU.i.Traducir("-La caravana ha sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + tiradaEmboscadaDescanso);
+      campaignManager.TryAutosaveCampania("descanso_interrumpido", out _);
+      TutorialTooltipManager.TryShow(TooltipEmboscadaNormalId);
+      campaignManager.scMenuBatallas.EventoBatallaCaravana(0, 3);
+
+      while (campaignManager.BATALLA_EnCurso > 0)
+      {
+        await Task.Yield();
+      }
+
+      await TranscurrirHorasDescanso(
+        horasRestantesTrasEmboscada,
+        multiplicadorAliento,
+        multiplicadorCuracion,
+        true);
+    }
+    campaignManager.FinalizarContinuacionDescanso();
+    }
     IntentarEncontrarAtajoSuperficieTrasDescanso();
 
     if (tareaCivilSeleccionada == 1)
@@ -606,7 +704,7 @@ public class MenuDescanso : MonoBehaviour
     consumo = consumo / 100 * (100 - CampaignManager.Instance.mejoraCaravanaAlmacen * 3);
 
     //Modificadores de Climas
-    if (CampaignManager.Instance.intTipoClima == 2) //Calor
+    if (climaInicioDescanso == 2) //Calor capturado al comenzar el descanso
     {
       if (tareaCivilSeleccionada == 4) // y se descansa, da +5 esperanza
       {
@@ -627,52 +725,23 @@ public class MenuDescanso : MonoBehaviour
     {
       //Saca Fatiga de campaña
       pers.SetCampFatigado(false);
-      pers.ReducirCampBendecido();
-
-      if (pers.PuedeRealizarActividades() && pers.ActividadSeleccionada == 4) //Caballero: Relatos de Batalla
-      {
-        CampaignManager.Instance.CambiarEsperanzaActual(4);
-        CampaignManager.Instance.EscribirLog($"-" + pers.sNombre + TRADU.i.Traducir(" comparte sus historias de batalla con los civiles. +4 Esperanza"));
-      }
-      if (pers.Camp_Enfermo > 0) //Disminuye Enfermedad
-      {
-        pers.Camp_Enfermo -= 1; //Se cura un día
-
-        //Sequito Curanderos ayuda a disminuir enfermedad 1 extra
-        int rand = UnityEngine.Random.Range(1, 100);
-        float tierCuranderos = ((CampaignManager.Instance.sequitoCuranderosMejoraCuracion * 100) - 10) / 5;
-        if (pers.Camp_Enfermo > 0 && rand <= 20 + (int)tierCuranderos * 10)
-        {
-          pers.Camp_Enfermo -= 1;
-          CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El Séquito de Curanderos ha reducido la enfermedad de") + pers.sNombre + TRADU.i.Traducir(" en 1 extra."));
-
-        }
-      }
-      if (pers.Camp_Moral > 0) //Moral tiende a cero
-      {
-        pers.Camp_Moral -= 1;
-      }
-      if (pers.Camp_Moral < 0) //Moral tiende a cero
-      {
-        pers.Camp_Moral += 1;
-      }
 
       if (pers.TieneRasgo(PersonajeTraitCatalog.TraitDulcesSuenos))
       {
-        pers.Camp_Moral = Mathf.Max(pers.Camp_Moral, 2);
+        pers.AplicarMoralAltaHoras(48f);
         int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
         string mensajeDulcesSuenos = idiomaTrait switch
         {
-          TRADU.IdiomaIngles => pers.sNombre + " sleeps peacefully. Gains High Morale for 2 days.",
-          TRADU.IdiomaPortugues => pers.sNombre + " dorme em paz. Recebe Alta Moral por 2 dias.",
-          _ => pers.sNombre + " duerme plácidamente. Obtiene Alta Moral por 2 días."
+          TRADU.IdiomaIngles => pers.sNombre + " sleeps peacefully. Gains High Morale for 48h.",
+          TRADU.IdiomaPortugues => pers.sNombre + " dorme em paz. Recebe Moral Alta por 48h.",
+          _ => pers.sNombre + " duerme plácidamente. Obtiene Moral Alta por 48h."
         };
         CampaignManager.Instance.EscribirLog("-" + mensajeDulcesSuenos);
       }
 
       if (pers.TieneRasgo(PersonajeTraitCatalog.TraitPesadillasRecurrentes))
       {
-        pers.Camp_Moral = Mathf.Min(pers.Camp_Moral, -1);
+        pers.AplicarMoralBajaHoras(24f);
         int idiomaTrait = PersonajeTraitCatalog.ObtenerIdiomaActual();
         string mensajePesadillas = idiomaTrait switch
         {
@@ -682,30 +751,6 @@ public class MenuDescanso : MonoBehaviour
         };
         CampaignManager.Instance.EscribirLog("-" + mensajePesadillas);
       }
-
-      CampaignManager.Instance.ProcesarTraitContratoSiCorresponde(pers);
-
-
-
-      //Curacion General por descansar
-
-
-      int cantPurificadorasColaborando = CampaignManager.Instance.CuantosPersonajesHacenTalActividad(12); //Colaborar con los Curanderos
-
-      float porcentajeVidaMax = pers.fVidaMaxima * (0.15f+CampaignManager.Instance.sequitoCuranderosMejoraCuracion + (cantPurificadorasColaborando * 0.05f)); //5% por cada Purificadora colaborando
-      porcentajeVidaMax = pers.AplicarMultiplicadorCuracionCampaniaTraits(porcentajeVidaMax);
-
-
-
-      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoClaro) //Bonus descansar en claro
-      { porcentajeVidaMax = porcentajeVidaMax * 1.1f; }
-      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoRecursos) //Bonus descansar en nodo de recursos
-      { porcentajeVidaMax = porcentajeVidaMax * 1.2f; }
-      if (tareaCivilSeleccionada == 4) //Bonus por actividad civil Día Libre
-      { porcentajeVidaMax = porcentajeVidaMax * 1.1f; }
-
-      pers.RecibirCuracion(porcentajeVidaMax);
-
 
     }
 
@@ -750,13 +795,13 @@ public class MenuDescanso : MonoBehaviour
 
     if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoSantuario)
     {
-      CampaignManager.Instance.BendecirPersonajesSantuario(4);
+      CampaignManager.Instance.BendecirPersonajesSantuario(96f);
 
       string mensajeSantuario = TRADU.i.nIdioma switch
       {
-        TRADU.IdiomaIngles => "-Resting in the Sanctuary blesses all characters for 4 days.",
-        TRADU.IdiomaPortugues => "-Descansar no Santuário abençoa todos os personagens por 4 dias.",
-        _ => "-Descansar en el Santuario bendice a todos los personajes por 4 días."
+        TRADU.IdiomaIngles => "-Resting in the Sanctuary blesses all characters for 96 h.",
+        TRADU.IdiomaPortugues => "-Descansar no Santuário abençoa todos os personagens por 96 h.",
+        _ => "-Descansar en el Santuario bendice a todos los personajes por 96 h."
       };
 
       CampaignManager.Instance.EscribirLog(mensajeSantuario);
@@ -839,9 +884,20 @@ public class MenuDescanso : MonoBehaviour
 
     }
 
-    TiradaClima();
+    if (purificadoraRitualDescanso != null)
+    {
+      CampaignManager.Instance.CambiarValorAlientoNegroHoras(-5f);
+      string mensajeRitualDescanso = TRADU.i.nIdioma switch
+      {
+        TRADU.IdiomaIngles => " keeps the protective circles burning while the Caravan sleeps. As the rest ends, the Black Breath recedes by 5 h.",
+        TRADU.IdiomaPortugues => " mantém os círculos de proteção acesos enquanto a Caravana dorme. Ao fim do descanso, o Sopro Negro recua 5 h.",
+        _ => " mantiene encendidos los círculos de protección mientras la Caravana duerme. Al concluir el descanso, el Aliento Negro retrocede 5 h."
+      };
+      CampaignManager.Instance.EscribirLog("-" + purificadoraRitualDescanso.sNombre + mensajeRitualDescanso);
+    }
+
+    CampaignManager.Instance.FinalizarAccionTemporal();
     CampaignManager.Instance.AplicarTraitsMoraleAmbientales();
-    CampaignManager.Instance.sunController.ResetSun();
 
     #region Acechadores Sueldo
     //Sueldo Acechadores
@@ -856,40 +912,6 @@ public class MenuDescanso : MonoBehaviour
     {
       CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Debido a la alta Esperanza, los Acechadores han decidido no cobrar su sueldo esta vez."));
 
-    }
-    #endregion
-
-    #region   Avance Aliento Negro al Descansar
-    bool sePrevieneAvanceAliento = false;
-    foreach (Personaje pers in CampaignManager.Instance.scMenuPersonajes.listaPersonajes)
-    {
-      if (pers == null || !pers.PuedeRealizarActividades())
-      {
-        continue;
-      }
-
-      int random = UnityEngine.Random.Range(0, 100);
-      if (pers.ActividadSeleccionada == 10 && random < 25) //Purificadora: Ritual de Limpieza 
-      {
-        sePrevieneAvanceAliento = true;
-        CampaignManager.Instance.EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" ha realizado con Éxito un Ritual de Limpieza durante el descanso, previniendo el avance del Aliento Negro."));
-        break;
-      }
-    }
-
-    if (!sePrevieneAvanceAliento)
-    {
-      if (CampaignManager.Instance.scMapaManager.nodoActual.tipoNodo == TipoNodoClaro) //Bonus descansar en claro
-      {
-        CampaignManager.Instance.CambiarValorAlientoNegro(1);
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Durante el descanso en el Claro, el Aliento Negro ha avanzado 1."));
-      }
-      else
-      {
-        CampaignManager.Instance.CambiarValorAlientoNegro(2);
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Durante el descanso, el Aliento Negro ha avanzado 2."));
-
-      }
     }
     #endregion
 
@@ -914,16 +936,9 @@ public class MenuDescanso : MonoBehaviour
       //Probabilidad emboscada
       // (Audio) Se maneja al principio de Descansar()
 
-      int randomEmboscada = UnityEngine.Random.Range(1, 101);
-      if (enTutorial) { randomEmboscada += 100; } //no hay emboscada en el tutorial
-
-      if (!enTutorial && !descansoEnAsentamiento && randomEmboscada <= chancesAtaqueACaravana)
+      if (emboscadaProgramada)
       {
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-La caravana han sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + randomEmboscada);
-
-        TutorialTooltipManager.TryShow(TooltipEmboscadaNormalId);
-        CampaignManager.Instance.scMenuBatallas.EventoBatallaCaravana(0, 3);
-        autosavePendienteTrasDescanso = false;
+        // La emboscada ya se resolvió en la hora sorteada y el descanso continuó al regresar.
         // (Audio) Ignorado: la másica de batalla se maneja en AdministradorEscenas
       }
       else //no puede haber evento y emboscada
@@ -972,7 +987,40 @@ public class MenuDescanso : MonoBehaviour
 
     if (autosavePendienteTrasDescanso)
     {
+      CampaignManager.Instance.MarcarResultadosDescansoCompletados();
       CampaignManager.Instance.TryAutosaveCampania("descanso", out _);
+    }
+    else
+    {
+      CampaignManager.Instance.MarcarResultadosDescansoCompletados();
+    }
+  }
+
+  private async Task TranscurrirHorasDescanso(
+    float horas,
+    float multiplicadorAliento,
+    float multiplicadorCuracion,
+    bool actualizarContinuacionPendiente)
+  {
+    float restantes = Mathf.Max(0f, horas);
+    while (restantes > 0.0001f)
+    {
+      float delta = Mathf.Min(restantes, Mathf.Max(0f, Time.deltaTime));
+      if (delta > 0f)
+      {
+        CampaignManager.Instance.AvanzarTiempoCampania(
+          delta,
+          TipoAvanceTiempoCampania.Descanso,
+          multiplicadorAliento,
+          multiplicadorCuracion,
+          true);
+        restantes -= delta;
+        if (actualizarContinuacionPendiente)
+        {
+          CampaignManager.Instance.AvanzarProgresoDescansoPendiente(delta);
+        }
+      }
+      await Task.Yield();
     }
   }
 
@@ -1056,6 +1104,42 @@ public class MenuDescanso : MonoBehaviour
     return CampaignManager.Instance.IntentarAplicarClimaAuroraPasoVientoHeladoDebug(false, true);
   }
 
+  bool DebeForzarAlmasDanzantesTutorial()
+  {
+    if (CampaignManager.Instance == null || !CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+    {
+      return false;
+    }
+
+    bool tutorialLegacyActivo = CampaignManager.Instance.scTutorialManager != null
+      && CampaignManager.Instance.scTutorialManager.tutorialActivo;
+    int pasoTutorial = tutorialLegacyActivo ? CampaignManager.Instance.scTutorialManager.pasoActual : 5;
+    return pasoTutorial > 4;
+  }
+
+  void AplicarClimaAlmasDanzantesTutorial()
+  {
+    ResetearVisualesClima();
+    if (climaAlmasDanzantes != null)
+    {
+      climaAlmasDanzantes.SetActive(true);
+    }
+
+    CampaignManager.Instance.intTipoClima = 6;
+    CampaignManager.Instance.RegistrarClimaExclusivoDescubierto(CampaignManager.Instance.intTipoClima);
+    if (CampaignManager.Instance.widgetClima != null)
+    {
+      CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_almasDanzantes;
+    }
+
+    CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Las Almas Danzantes de animales inocentes guían a la caravana. Mientras permanezcan, no habrá emboscadas."));
+    CampaignManager.Instance.RefrescarVfxClimaCalor();
+    if (CampaignManager.Instance.scMapaManager != null)
+    {
+      CampaignManager.Instance.scMapaManager.RefrescarVisibilidadExploracion();
+    }
+  }
+
   public void TiradaClima()
   {
     if (IntentarAplicarAuroraPasoVientoHeladoDebug())
@@ -1071,17 +1155,10 @@ public class MenuDescanso : MonoBehaviour
     int random = UnityEngine.Random.Range(0, 100);
     if (CampaignManager.Instance.DebeUsarConfiguracionTutorial())
     {
-      bool tutorialLegacyActivo = CampaignManager.Instance.scTutorialManager != null
-        && CampaignManager.Instance.scTutorialManager.tutorialActivo;
-      int pasoTutorial = tutorialLegacyActivo ? CampaignManager.Instance.scTutorialManager.pasoActual : 5;
-      if (pasoTutorial > 4)
+      if (DebeForzarAlmasDanzantesTutorial())
       {
-        int almasDanzantesForzada = CampaignManager.Instance.scAtributosZona.Clima_chances_Niebla + 1;
-        if (almasDanzantesForzada >= CampaignManager.Instance.scAtributosZona.Clima_chances_EspecialZona1)
-        {
-          almasDanzantesForzada = Mathf.Max(1, CampaignManager.Instance.scAtributosZona.Clima_chances_EspecialZona1 - 1);
-        }
-        random = Mathf.Clamp(almasDanzantesForzada, 1, 100);
+        AplicarClimaAlmasDanzantesTutorial();
+        return;
       }
       else
       { random = 1; } //Siempre sol en los primeros pasos del tutorial

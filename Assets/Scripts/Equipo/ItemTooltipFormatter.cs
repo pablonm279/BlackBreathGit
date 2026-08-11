@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 public static class ItemTooltipFormatter
 {
@@ -18,7 +19,7 @@ public static class ItemTooltipFormatter
     private const string ColorDebuff = "#D28E6A";
     private const string ColorConsumible = "#9BC88A";
 
-    public static string ConstruirTooltip(Item item, bool incluirNombre = true)
+    public static string ConstruirTooltip(Item item, bool incluirNombre = true, string sufijoNombre = null)
     {
         if (item == null)
         {
@@ -28,7 +29,13 @@ public static class ItemTooltipFormatter
         StringBuilder texto = new StringBuilder();
         if (incluirNombre && !string.IsNullOrWhiteSpace(item.sNombreItem))
         {
-            texto.Append(FormatearTituloItem(TraducirNombreVisibleItem(item)));
+            string nombreVisible = TraducirNombreVisibleItem(item);
+            if (!string.IsNullOrWhiteSpace(sufijoNombre))
+            {
+                nombreVisible += " " + sufijoNombre;
+            }
+
+            texto.Append(FormatearTituloItem(nombreVisible));
         }
 
         string lineaRareza = ConstruirLineaRareza(item);
@@ -72,6 +79,80 @@ public static class ItemTooltipFormatter
     public static string ConstruirTooltipSoloEfectos(Item item)
     {
         return ConstruirBloqueEfectos(item);
+    }
+
+    public static List<string> ConstruirTooltipsHabilidades(Item item)
+    {
+        List<Habilidad> habilidades = new List<Habilidad>();
+        if (item is Arma arma)
+        {
+            habilidades.Add(arma.habilidadAtaque);
+            habilidades.Add(arma.habilidadExtra1);
+            habilidades.Add(arma.habilidadExtra2);
+        }
+        else if (item is Armadura armadura)
+        {
+            habilidades.Add(armadura.habilidadExtra1);
+            habilidades.Add(armadura.habilidadExtra2);
+        }
+        else if (item is Accesorio accesorio)
+        {
+            habilidades.Add(accesorio.habilidadExtra1);
+            habilidades.Add(accesorio.habilidadExtra2);
+        }
+
+        List<string> tooltips = new List<string>();
+        HashSet<string> nombresUnicos = new HashSet<string>();
+        for (int i = 0; i < habilidades.Count; i++)
+        {
+            Habilidad habilidad = habilidades[i];
+            if (habilidad == null)
+            {
+                continue;
+            }
+
+            string descripcionAnterior = habilidad.txtDescripcion;
+            try
+            {
+                habilidad.ActualizarDescripcion();
+            }
+            catch
+            {
+                habilidad.txtDescripcion = descripcionAnterior;
+            }
+
+            string descripcion = QuitarDescripcionCursiva(habilidad.txtDescripcion);
+            string nombre = ObtenerNombreHabilidad(habilidad);
+            if (string.IsNullOrWhiteSpace(descripcion) || !nombresUnicos.Add(nombre))
+            {
+                continue;
+            }
+
+            tooltips.Add(descripcion);
+        }
+
+        return tooltips;
+    }
+
+    private static string QuitarDescripcionCursiva(string descripcion)
+    {
+        if (string.IsNullOrWhiteSpace(descripcion))
+        {
+            return string.Empty;
+        }
+
+        string resultado = Regex.Replace(
+            descripcion,
+            @"<color(?:=[^>]*)?>\s*<i>.*?</i>\s*</color>\s*",
+            string.Empty,
+            RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        resultado = Regex.Replace(
+            resultado,
+            @"<i>.*?</i>\s*",
+            string.Empty,
+            RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        resultado = Regex.Replace(resultado, @"[ \t]*(?:\r?\n[ \t]*){2,}", "\n");
+        return resultado.Trim();
     }
 
     private static string FormatearTituloItem(string nombre)
@@ -862,6 +943,8 @@ public static class ItemTooltipFormatter
         }
 
         string traducido = TRADU.i.Traducir(txt);
+        if (TRADU.i.nIdioma == 1 && traducido == txt && txt == "Defensa") { return "Defesa"; }
+        if (TRADU.i.nIdioma == 1 && traducido == txt && txt == "TS Mental") { return "TR Mental"; }
         if (TRADU.i.nIdioma == 2 && traducido == txt)
         {
             if (txt == "Tipo de item: ") { return "Item type: "; }
@@ -928,6 +1011,8 @@ public static class ItemTooltipFormatter
             if (txt == "Debuff de impacto") { return "On-hit Debuff"; }
             if (txt == "Duracion: ") { return "Duration: "; }
             if (txt == "Afecta: ") { return "Affects: "; }
+            if (txt == "Defensa") { return "Defense"; }
+            if (txt == "TS Mental") { return "Mental Save"; }
             if (txt == "Danio %") { return "Damage %"; }
             if (txt == "Danio crit %") { return "Critical Damage %"; }
             if (txt == "Crit dado") { return "Critical Die"; }

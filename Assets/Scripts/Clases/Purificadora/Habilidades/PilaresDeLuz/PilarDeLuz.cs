@@ -54,7 +54,7 @@ public  class PilarDeLuz : Obstaculo
         dam = dam * 2;
       }
 
-      uCausante.RecibirDanio(dam, 11, false, null);
+      uCausante.RecibirDanio(dam, 11, false, null, 0, true);
     }
   }
 
