@@ -49,6 +49,23 @@ public class REPRESENTACIONPasoLigero : Habilidad
                 ? "Reduz o custo de um movimento diagonal ou troca por turno."
                 : "Reduce el costo de un movimiento diagonal o intercambio por turno.";
 
+        if (esIngles)
+        {
+            string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                titulo,
+                "Passive: Reduces the cost of one agile movement each turn.",
+                new[]
+                {
+                    LineaDescripcion("Trigger", "Moves diagonally or swaps positions with an ally."),
+                    LineaDescripcion("Effect", $"Movement costs 1 less {ap}."),
+                    LineaDescripcion("Limit", "Once per turn.")
+                });
+            return;
+        }
+        if (esPortugues){string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Passiva: reduz o custo de um movimento ágil por turno.",new[]{LineaDescripcion("Ativação","Move-se diagonalmente ou troca de posição com um aliado."),LineaDescripcion("Efeito",$"O movimento custa 1 {ap} a menos."),LineaDescripcion("Limite","Uma vez por turno.")},costoSuperior:string.Empty);return;}
+        {string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Pasiva: reduce el costo de un movimiento ágil por turno.",new[]{LineaDescripcion("Activación","Se mueve en diagonal o intercambia posiciones con un aliado."),LineaDescripcion("Efecto",$"El movimiento cuesta 1 {ap} menos."),LineaDescripcion("Límite","Una vez por turno.")},costoSuperior:string.Empty);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

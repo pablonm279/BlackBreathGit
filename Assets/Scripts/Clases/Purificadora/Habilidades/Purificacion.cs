@@ -78,6 +78,80 @@ public class Purificacion : Habilidad
       if (NIVEL == 4) { tituloPt = "Purificacao IV a"; }
       if (NIVEL == 5) { tituloPt = "Purificacao IV b"; }
 
+      if (esIngles)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"your Fervor ({fervorActual})");
+        string fervorSinValor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string reflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflex save", "ic_Reflejos");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino");
+        string ardiendo = TerminoDescripcion(TerminoDescripcionId.Ardiendo, "Burning 2", "Estado_ardiendo");
+        string formulaNormalizada = $"(3-7 + {poder} / 2) x (1 + {fervor})";
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          $"Consumes current {fervorSinValor} to unleash a large Divine purge.",
+          new[]
+          {
+            LineaDescripcion("Target", "All enemies in the selected large area"),
+            LineaDescripcion("Effect", $"Deals {formulaNormalizada} as {danioDivino}; each target makes a {reflejos}."),
+            LineaDescripcion("Save", $"Reflex vs DC 9 + {poder}.", 1),
+            LineaDescripcion("Successful save", $"Suffers {danioMinConFervor}-{danioMaxConFervor} damage.", 1),
+            LineaDescripcion("Failed save", $"Suffers {danioMinConFervor * 2}-{danioMaxConFervor * 2} damage and gains {ardiendo}.", 1),
+            LineaDescripcion("On cast", $"{fervorSinValor} becomes 0.")
+          });
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"Fervor atual ({fervorActual})");
+        string fervorSinValor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string reflexos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Resistência de Reflexos", "ic_Reflejos");
+        string danoDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino");
+        string queimando = TerminoDescripcion(TerminoDescripcionId.Ardiendo, "Em Chamas 2", "Estado_ardiendo");
+        string formulaNormalizada = $"(3-7 + {poder} / 2) x (1 + {fervor})";
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloPt,
+          $"Consome {fervorSinValor} atual para liberar uma grande purga Divina.",
+          new[]
+          {
+            LineaDescripcion("Alvo", "Todos os inimigos na grande área selecionada"),
+            LineaDescripcion("Efeito", $"Causa {formulaNormalizada} como {danoDivino}; cada alvo faz uma {reflexos}."),
+            LineaDescripcion("Resistência", $"Reflexos vs DC 9 + {poder}.", 1),
+            LineaDescripcion("Resistência bem-sucedida", $"Sofre {danioMinConFervor}-{danioMaxConFervor} de dano.", 1),
+            LineaDescripcion("Resistência falha", $"Sofre {danioMinConFervor * 2}-{danioMaxConFervor * 2} de dano e recebe {queimando}.", 1),
+            LineaDescripcion("Ao usar", $"{fervorSinValor} vai para 0.")
+          });
+        return;
+      }
+
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"Fervor actual ({fervorActual})");
+        string fervorSinValor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string reflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "TS Reflejos", "ic_Reflejos");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino");
+        string ardiendo = TerminoDescripcion(TerminoDescripcionId.Ardiendo, "Ardiendo 2", "Estado_ardiendo");
+        string formulaNormalizada = $"(3-7 + {poder} / 2) x (1 + {fervor})";
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloEs,
+          $"Consume el {fervorSinValor} actual para desatar una gran purga Divina.",
+          new[]
+          {
+            LineaDescripcion("Objetivo", "Todos los enemigos en el área grande seleccionada"),
+            LineaDescripcion("Efecto", $"Causa {formulaNormalizada} como {danioDivino}; cada objetivo realiza un {reflejos}."),
+            LineaDescripcion("TS", $"Reflejos vs DC 9 + {poder}.", 1),
+            LineaDescripcion("TS superada", $"Sufre {danioMinConFervor}-{danioMaxConFervor} de daño.", 1),
+            LineaDescripcion("TS fallida", $"Sufre {danioMinConFervor * 2}-{danioMaxConFervor * 2} de daño y obtiene {ardiendo}.", 1),
+            LineaDescripcion("Al lanzar", $"{fervorSinValor} queda en 0.")
+          });
+        return;
+      }
+
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Reflejos, 9, "Pod", "Power", poderActual, "Poder");
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Reflejos, 9, "Poder", "Power", poderActual);
 

@@ -25,6 +25,7 @@ public sealed class UnidadLowHealthFx : MonoBehaviour
   private Image flashGlow;
   private float visibilidad;
   private float faseFlash;
+  private bool esControladaPorIA;
 
   private static Texture2D texturaGlow;
   private static Sprite spriteGlow;
@@ -32,6 +33,9 @@ public sealed class UnidadLowHealthFx : MonoBehaviour
   private void Awake()
   {
     unidad = GetComponent<Unidad>();
+    // La presencia de IAUnidad es fija para toda la vida del objeto (no se agrega/quita en runtime),
+    // asi que se cachea una vez en vez de hacer GetComponent en cada LateUpdate.
+    esControladaPorIA = unidad != null && unidad.GetComponent<IAUnidad>() != null;
     faseFlash = Random.Range(0f, Mathf.PI * 2f);
   }
 
@@ -73,7 +77,7 @@ public sealed class UnidadLowHealthFx : MonoBehaviour
       && unidad.HP_actual > 0f
       && unidad.mod_maxHP > 0f
       && unidad.HP_actual <= unidad.mod_maxHP * UmbralVidaBaja
-      && unidad.GetComponent<IAUnidad>() == null;
+      && !esControladaPorIA;
   }
 
   private bool VincularImagenUnidad()
@@ -85,6 +89,8 @@ public sealed class UnidadLowHealthFx : MonoBehaviour
       {
         return false;
       }
+
+      esControladaPorIA = unidad.GetComponent<IAUnidad>() != null;
     }
 
     if (unidad.uImage == null)

@@ -65,6 +65,98 @@ public class Acechar : Habilidad
     string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
     string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
 
+    if (esIngles)
+    {
+      string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Hidden (1)", "Estado_oculto");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "+1 Attack bonus."; }
+        else if (NIVEL == 2) { proximaMejora = "+5% Crit."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: +10% Crit.\nOption B: the effect persists after dealing damage."; }
+      }
+
+      string buff = $"+15% Damage, +{buffAtaque} Attack";
+      if (buffCritPorcentaje > 0)
+      {
+        buff += $", +{buffCritPorcentaje}% {critico}";
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Hides and prepares the next attacks.",
+        new[]
+        {
+          LineaDescripcion("Target", "Self"),
+          LineaDescripcion("Effect", $"Gains {oculto}."),
+          LineaDescripcion("Buff", $"{buff} ({duracionTurnos} turns)"),
+          LineaDescripcion("Ends", seRemueveAlDanar ? $"After {duracionTurnos} turns, or after dealing damage." : $"After {duracionTurnos} turns."),
+          LineaDescripcion("On cast", "Ends the turn")
+        },
+        proximaMejora);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Escondido (1)", "Estado_oculto");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Critico", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 de bônus de Ataque."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nível: +5% de Crítico."; }
+        else if (NIVEL == 3) { proximaMejora = "Opção A: +10% de Crítico.\nOpção B: o efeito persiste depois de causar dano."; }
+      }
+
+      string buff = $"+15% Dano, +{buffAtaque} Ataque";
+      if (buffCritPorcentaje > 0) { buff += $", +{buffCritPorcentaje}% {critico}"; }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloPt,
+        "Esconde e prepara os proximos ataques.",
+        new[]
+        {
+          LineaDescripcion("Alvo", "Si mesmo"),
+          LineaDescripcion("Efeito", $"Ganha {oculto}."),
+          LineaDescripcion("Buff", $"{buff} ({duracionTurnos} turnos)"),
+          LineaDescripcion("Termina", seRemueveAlDanar ? $"Depois de {duracionTurnos} turnos, ou depois de causar dano." : $"Depois de {duracionTurnos} turnos."),
+          LineaDescripcion("Ao usar", "Termina o turno")
+        },
+        proximaMejora);
+      return;
+    }
+
+    {
+      string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Escondido (1)", "Estado_oculto");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Critico", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 de bonificación de Ataque."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +5% de Crítico."; }
+        else if (NIVEL == 3) { proximaMejora = "Opción A: +10% de Crítico.\nOpción B: el efecto persiste después de infligir daño."; }
+      }
+
+      string buff = $"+15% Dano, +{buffAtaque} Ataque";
+      if (buffCritPorcentaje > 0) { buff += $", +{buffCritPorcentaje}% {critico}"; }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloEs,
+        "Se esconde y prepara los proximos ataques.",
+        new[]
+        {
+          LineaDescripcion("Objetivo", "Uno mismo"),
+          LineaDescripcion("Efecto", $"Gana {oculto}."),
+          LineaDescripcion("Buff", $"{buff} ({duracionTurnos} turnos)"),
+          LineaDescripcion("Termina", seRemueveAlDanar ? $"Despues de {duracionTurnos} turnos, o despues de causar dano." : $"Despues de {duracionTurnos} turnos."),
+          LineaDescripcion("Al lanzar", "Termina el turno")
+        },
+        proximaMejora);
+      return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {

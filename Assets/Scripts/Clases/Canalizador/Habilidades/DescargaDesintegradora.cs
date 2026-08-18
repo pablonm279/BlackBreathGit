@@ -63,6 +63,9 @@ public class DescargaDesintegradora : Habilidad
     int energiaRequerida = NIVEL == 5 ? 1 : 2;
     bool consumeEnergia = NIVEL != 5;
     bool aturdeCaster = NIVEL != 4;
+    int energiaRequeridaReal = requiereRecurso;
+    int criticoPorcentajeNormalizado = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+    string bonusTirada = FormatoModificadorDescripcion(ataqueActual) + FormatoModificadorDescripcion(bonusAtaque);
     string rangoDanioEs = FormatearRangoDados(3, 12, danioFijo);
     string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcDesintegracion);
     string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcDesintegracion);
@@ -78,6 +81,81 @@ public class DescargaDesintegradora : Habilidad
     if (NIVEL == 3) { tituloPt = "Descarga Desintegradora III"; }
     if (NIVEL == 4) { tituloPt = "Descarga Desintegradora IV a"; }
     if (NIVEL == 5) { tituloPt = "Descarga Desintegradora IV b"; }
+
+    if (esIngles)
+    {
+      string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage", "dano_arcano");
+      string energia = TerminoDescripcion(TerminoDescripcionId.Energia, "Energy tier", "Estado_acumularenergia");
+      string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+      string aturdido = TerminoDescripcion(TerminoDescripcionId.Aturdido, "Stunned", "Estado_aturdido");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "+8 damage."; }
+        else if (NIVEL == 2) { proximaMejora = "+1 Save DC."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: no self Stun.\nOption B: does not consume Energy."; }
+      }
+
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Target", "Pyramid-shaped area"),
+        LineaDescripcion("Requirement", $"{energiaRequeridaReal}+ {energia}."),
+        LineaDescripcion("Effect", $"On hit, deals {rangoDanioEs} + {poder} as {danioArcano}."),
+        LineaDescripcion("Attack Roll", $"1d20 + {poder}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentajeNormalizado}%."),
+        LineaDescripcion("Save", $"{fortaleza} vs DC {dcDesintegracion}.", 1),
+        LineaDescripcion("Failed save", "The target is disintegrated, suffering damage equal to its Max HP as True damage.", 1),
+        LineaDescripcion("Cast", consumeEnergia ? "Consumes 1 Energy tier." : "Does not consume Energy."),
+        LineaDescripcion("Backlash", aturdeCaster ? $"The Channeler becomes {aturdido} for 1 turn." : "No self Stun."),
+        LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+      };
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Unleashes a devastating Arcane blast that can disintegrate its targets.",
+        lineas,
+        proximaMejora,
+        colorTitulo: "#e67e22");
+      return;
+    }
+
+    {
+      bool pt = esPortugues;
+      string energia = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia" : "nivel de Energía", "Estado_acumularenergia");
+      string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, pt ? "Defesa" : "Defensa", "IconoDefensa");
+      string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano", "dano_arcano");
+      string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, pt ? "Fortitude" : "Fortaleza", "ic_fortaleza");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string aturdido = TerminoDescripcion(TerminoDescripcionId.Aturdido, pt ? "Atordoado" : "Aturdido", "Estado_aturdido");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = pt ? "+8 de dano." : "+8 de daño."; }
+        else if (NIVEL == 2) { proximaMejora = "+1 CD de salvación."; }
+        else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: sem Atordoamento próprio.\nOpção B: não consome Energia." : "Opción A: sin Aturdimiento propio.\nOpción B: no consume Energía."; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        pt ? tituloPt : tituloEs,
+        pt ? "Libera uma explosão Arcana devastadora que pode desintegrar seus alvos." : "Libera una explosión Arcana devastadora que puede desintegrar a sus objetivos.",
+        new[]
+        {
+          LineaDescripcion(pt ? "Alvo" : "Objetivo", pt ? "Área em forma de pirâmide" : "Área con forma de pirámide"),
+          LineaDescripcion(pt ? "Requisito" : "Requisito", $"{energiaRequeridaReal}+ {energia}."),
+          LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Ao acertar, causa" : "Al impactar, inflige")} {rangoDanioEs} + {poder} como {danioArcano}."),
+          LineaDescripcion(pt ? "Rolagem de ataque" : "Tirada de ataque", $"1d20 + {poder}{bonusTirada} vs {defensa}. {(pt ? "Falha crítica" : "Pifia")}: 5%. {critico}: {criticoPorcentajeNormalizado}%."),
+          LineaDescripcion(pt ? "Salvamento" : "Salvación", $"{fortaleza} vs CD {dcDesintegracion}.", 1),
+          LineaDescripcion(pt ? "Falha no salvamento" : "Salvación fallida", pt ? "O alvo é desintegrado e sofre dano igual à sua Vida Máx. como dano Verdadeiro." : "El objetivo es desintegrado y sufre daño igual a su Vida Máx. como daño Verdadero.", 1),
+          LineaDescripcion(pt ? "Conjuração" : "Uso", consumeEnergia ? (pt ? "Consome 1 nível de Energia." : "Consume 1 nivel de Energía.") : (pt ? "Não consome Energia." : "No consume Energía.")),
+          LineaDescripcion(pt ? "Retorno" : "Retroceso", aturdeCaster ? $"{(pt ? "O Canalizador fica" : "El Canalizador queda")} {aturdido} {(pt ? "por 1 turno" : "durante 1 turno")}." : pt ? "Sem Atordoamento próprio." : "Sin Aturdimiento propio."),
+          LineaDescripcion(pt ? "Esforço" : "Esfuerzo", $"{(pt ? "Até" : "Hasta")} {esforzable} AP.")
+        },
+        proximaMejora,
+        colorTitulo: "#e67e22");
+      return;
+    }
 
     string danioEs = $"{rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color>";
     string danioEn = danioFijo > 0

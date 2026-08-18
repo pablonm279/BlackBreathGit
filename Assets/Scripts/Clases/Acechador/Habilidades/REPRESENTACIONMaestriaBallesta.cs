@@ -30,6 +30,49 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
     string extra = "";
     string proximo = ProximoNivel();
 
+    if (TRADU.i != null && TRADU.i.nIdioma == 2)
+    {
+      string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Attack");
+      string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+      string criticoTermino = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string bonus = $"+1 {ataque}, +2 {danioPerforante}" + (critico > 0 ? $", +{critico}% {criticoTermino}" : "") + (alcance ? ", +1 range" : ".");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) proximaMejora = "+5% Crit.";
+        else if (NIVEL == 2) proximaMejora = "-1 AP cost.";
+        else if (NIVEL == 3) proximaMejora = "Option A: +1 range. Option B: removes cooldown.";
+      }
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Applies to", "Hand crossbow attacks."),
+        LineaDescripcion("Bonus", bonus)
+      };
+      if (reduceAp) lineas.Add(LineaDescripcion("Cost", $"-1 {ap}."));
+      if (sinCooldown) lineas.Add(LineaDescripcion("Cooldown", "None."));
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        $"Hand Crossbow Mastery {sufijo}",
+        "Passive: Improves attacks made with the hand crossbow.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == 3)
+    {
+      string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque"); string dano = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "dano Perfurante", "dano_perforante"); string crit = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico"); string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string bonus = $"+1 {ataque}, +2 {dano}" + (critico > 0 ? $", +{critico}% {crit}" : "") + (alcance ? ", +1 alcance" : "."); string prox = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "Próximo nível: +5% de Crítico." : NIVEL == 2 ? "Próximo nível: -1 de custo de AP." : NIVEL == 3 ? "Opção A: +1 alcance. Opção B: remove a recarga." : null;
+      var l = new List<LineaDescripcionNormalizada> { LineaDescripcion("Aplica-se a", "Ataques com besta de mão."), LineaDescripcion("Bônus", bonus) }; if (reduceAp) l.Add(LineaDescripcion("Custo", $"-1 {ap}.")); if (sinCooldown) l.Add(LineaDescripcion("Recarga", "Nenhuma."));
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"Maestria com Besta de Mão {sufijo}", "Passiva: melhora os ataques feitos com a besta de mão.", l, prox, costoSuperior: string.Empty); return;
+    }
+    {
+      string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque"); string dano = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "daño Perforante", "dano_perforante"); string crit = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico"); string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string bonus = $"+1 {ataque}, +2 {dano}" + (critico > 0 ? $", +{critico}% {crit}" : "") + (alcance ? ", +1 alcance" : "."); string prox = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "Próximo nivel: +5% de Crítico." : NIVEL == 2 ? "Próximo nivel: -1 de costo de AP." : NIVEL == 3 ? "Opción A: +1 alcance. Opción B: elimina el enfriamiento." : null;
+      var l = new List<LineaDescripcionNormalizada> { LineaDescripcion("Se aplica a", "Ataques con ballesta de mano."), LineaDescripcion("Bonificación", bonus) }; if (reduceAp) l.Add(LineaDescripcion("Costo", $"-1 {ap}.")); if (sinCooldown) l.Add(LineaDescripcion("Enfriamiento", "Ninguno."));
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"Maestría con Ballesta de Mano {sufijo}", "Pasiva: mejora los ataques realizados con la ballesta de mano.", l, prox, costoSuperior: string.Empty); return;
+    }
+
     if (critico > 0)
     {
       bonificador += $", +{critico}% Crítico";
@@ -50,7 +93,7 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
     if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
       titulo = $"Hand Crossbow Mastery {sufijo}";
-      bajada = "Improves attacks made with a hand crossbow.";
+      bajada = "Improves attacks made with the hand crossbow.";
       etiquetaTipo = "Type";
       etiquetaAplica = "Applies to";
       etiquetaBonus = "Bonus";

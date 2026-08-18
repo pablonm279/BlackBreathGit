@@ -78,6 +78,7 @@ public abstract class Habilidad : MonoBehaviour
 
   protected const string ColorDescripcionMecanica = "#c8c8c8";
   protected const string ColorDescripcionCostos = "#44d3ec";
+  protected const string ObjetivoMeleeUnitarioIngles = "1 target or obstacle in melee range";
   private const string TooltipPifiaId = "combate_pifia";
 
   public virtual void ActualizarPreviewCasilla(Casilla casilla)
@@ -102,6 +103,83 @@ public abstract class Habilidad : MonoBehaviour
     Fortaleza,
     Reflejos,
     Mental
+  }
+
+  protected static class TerminoDescripcionId
+  {
+    public const string MarcaReactiva = "reactive-mark";
+    public const string Poder = "power";
+    public const string Fuerza = "strength";
+    public const string SalvacionMental = "mental-save";
+    public const string SalvacionFortaleza = "fortitude-save";
+    public const string SalvacionReflejos = "reflex-save";
+    public const string Fervor = "fervor";
+    public const string DanioDivino = "divine-damage";
+    public const string DanioFuego = "fire-damage";
+    public const string DanioContundente = "bludgeoning-damage";
+    public const string Ardiendo = "burning";
+    public const string Barrera = "barrier";
+    public const string PuntosAccion = "ap";
+    public const string Defensa = "defense";
+    public const string Valentia = "valour";
+    public const string Pasiva = "passive";
+    public const string Debilidad = "weakness";
+    public const string TrampaProtectora = "ward-trap";
+    public const string Debuff = "debuff";
+    public const string Afliccion = "affliction";
+    public const string AlientoNegro = "black-breath";
+    public const string EcoDivino = "divine-echo";
+    public const string Agilidad = "agility";
+    public const string Flecha = "arrow";
+    public const string DanioCortante = "slashing-damage";
+    public const string DanioPerforante = "piercing-damage";
+    public const string DanioAcido = "acid-damage";
+    public const string Critico = "critical-hit";
+    public const string PenetracionArmadura = "armor-penetration";
+    public const string Evasion = "evasion";
+    public const string Oculto = "hidden";
+    public const string MarcaPresa = "prey-mark";
+    public const string Ralentizado = "slowed";
+    public const string Armadura = "armor";
+    public const string Ataque = "attack";
+    public const string Sangrado = "bleed";
+    public const string Aterrorizado = "terrified";
+    public const string DanioFrio = "cold-damage";
+    public const string DanioArcano = "arcane-damage";
+    public const string Invulnerable = "invulnerable";
+    public const string Curacion = "healing";
+    public const string Veneno = "poison";
+    public const string Reaccion = "reaction";
+    public const string MarcaSiguesTu = "you-are-next-mark";
+    public const string Impulso = "impulse";
+    public const string Provocado = "provoked";
+    public const string Adolorido = "sore";
+    public const string Tambaleando = "staggering";
+    public const string VulnerabilidadExpuesta = "exposed-vulnerability";
+    public const string Danzando = "dancing";
+    public const string ResistenciaArcana = "arcane-resistance";
+    public const string Energia = "energy-tier";
+    public const string ResiduoEnergetico = "energy-residue";
+    public const string Acumulando = "gathering";
+    public const string DanioVerdadero = "true-damage";
+    public const string Aturdido = "stunned";
+    public const string Resistencias = "resistances";
+    public const string ManifestacionArcana = "arcane-manifestation";
+    public const string SifonArcano = "arcane-siphon";
+  }
+
+  protected readonly struct LineaDescripcionNormalizada
+  {
+    public readonly string Etiqueta;
+    public readonly string Valor;
+    public readonly int Nivel;
+
+    public LineaDescripcionNormalizada(string etiqueta, string valor, int nivel)
+    {
+      Etiqueta = etiqueta;
+      Valor = valor;
+      Nivel = Mathf.Max(0, nivel);
+    }
   }
 
   // Unidades resaltadas al previsualizar la habilidad (se limpia al cancelar/resolver)
@@ -229,10 +307,159 @@ public abstract class Habilidad : MonoBehaviour
            cuerpo;
   }
 
+  protected LineaDescripcionNormalizada LineaDescripcion(string etiqueta, string valor, int nivel = 0)
+  {
+    return new LineaDescripcionNormalizada(etiqueta, valor, nivel);
+  }
+
+  // Convención de descripciones normalizadas: "Target" solo indica qué puede seleccionarse.
+  // El alcance se comunica mediante la previsualización de casillas al seleccionar la habilidad.
+  // El daño base expresable como rango usa mínimo-máximo (por ejemplo, 7-22), no notación de dados.
+  // Los atributos del usuario no llevan posesivo ("Power"); usar "Target's" solo para atributos del objetivo.
+  // Las tiradas de ataque contra Defense se etiquetan "Attack Roll"; "Save" se reserva para salvaciones.
+  // Los costos de 0 AP no se muestran; las pasivas ocultan por completo el bloque superior de costos.
+  // Las habilidades revisadas no cuestan Valour; Valour solo se menciona cuando es efecto o recompensa.
+  // Las habilidades melee normalizadas muestran el icono de espadas junto al titulo cuando se identifican como tales.
+  // Las melee unitarias usan "Target: 1 target or obstacle in melee range".
+  protected string ConstruirDescripcionNormalizadaIngles(
+    string titulo,
+    string resumen,
+    IReadOnlyList<LineaDescripcionNormalizada> lineas,
+    string proximaMejora = null,
+    string costoSuperior = null,
+    string colorTitulo = "#5dade2",
+    bool mostrarIconoMelee = false)
+  {
+    bool esPasiva = !string.IsNullOrEmpty(resumen)
+      && resumen.StartsWith("Passive:", System.StringComparison.OrdinalIgnoreCase);
+    string costo = esPasiva
+      ? string.Empty
+      : costoSuperior == null ? CostoSuperiorDescripcion() : costoSuperior;
+    string bloqueCosto = string.IsNullOrEmpty(costo) ? string.Empty : $"<pos=74%><color=#c8c8c8>{costo}</color>";
+    string tituloVisible = mostrarIconoMelee ? $"{titulo} <sprite name=\"melee\">" : titulo;
+    string descripcion = $"<size=115%><color={colorTitulo}><b>{tituloVisible}</b></color></size>{bloqueCosto}\n\n";
+
+    if (!string.IsNullOrEmpty(resumen))
+    {
+      descripcion += $"<color=#8f8f8f><i>{resumen}</i></color>\n\n";
+    }
+
+    descripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>";
+    if (lineas != null && lineas.Count > 0)
+    {
+      descripcion += "\n\n";
+      for (int i = 0; i < lineas.Count; i++)
+      {
+        LineaDescripcionNormalizada linea = lineas[i];
+        if (i > 0)
+        {
+          descripcion += "\n";
+        }
+
+        if (linea.Nivel > 0)
+        {
+          for (int nivel = 0; nivel < linea.Nivel; nivel++)
+          {
+            descripcion += "<space=1.15em>";
+          }
+        }
+
+        string separadorEtiqueta = linea.Etiqueta.EndsWith(":") || linea.Etiqueta.EndsWith(":</color>") ? string.Empty : ":";
+        descripcion += $"<color=#44d3ec><b>{linea.Etiqueta}{separadorEtiqueta}</b></color> <color=#ffffff>{linea.Valor}</color>";
+      }
+    }
+
+    if (!string.IsNullOrEmpty(proximaMejora))
+    {
+      string bloqueProximaMejora = proximaMejora.StartsWith("Next Level:", System.StringComparison.OrdinalIgnoreCase)
+        ? proximaMejora
+        : $"Next Level: {proximaMejora}";
+      descripcion += $"\n\n<color=#dfea02>{bloqueProximaMejora}</color>";
+    }
+
+    return descripcion;
+  }
+
+  protected string ConstruirDescripcionNormalizadaLocalizada(
+    string titulo,
+    string resumen,
+    IReadOnlyList<LineaDescripcionNormalizada> lineas,
+    string proximaMejora = null,
+    string costoSuperior = null,
+    string colorTitulo = "#5dade2",
+    bool mostrarIconoMelee = false)
+  {
+    string costo = costoSuperior == null ? CostoSuperiorDescripcion() : costoSuperior;
+    string bloqueCosto = string.IsNullOrEmpty(costo) ? string.Empty : $"<pos=74%><color=#c8c8c8>{costo}</color>";
+    string tituloVisible = mostrarIconoMelee ? $"{titulo} <sprite name=\"melee\">" : titulo;
+    string descripcion = $"<size=115%><color={colorTitulo}><b>{tituloVisible}</b></color></size>{bloqueCosto}\n\n";
+
+    if (!string.IsNullOrEmpty(resumen))
+    {
+      descripcion += $"<color=#8f8f8f><i>{resumen}</i></color>\n\n";
+    }
+
+    descripcion += "<color=#3f4744><size=85%>--------------------------------</size></color>";
+    if (lineas != null && lineas.Count > 0)
+    {
+      descripcion += "\n\n";
+      for (int i = 0; i < lineas.Count; i++)
+      {
+        LineaDescripcionNormalizada linea = lineas[i];
+        if (i > 0)
+        {
+          descripcion += "\n";
+        }
+
+        for (int nivel = 0; nivel < linea.Nivel; nivel++)
+        {
+          descripcion += "<space=1.15em>";
+        }
+
+        string separadorEtiqueta = linea.Etiqueta.EndsWith(":") || linea.Etiqueta.EndsWith(":</color>") ? string.Empty : ":";
+        descripcion += $"<color=#44d3ec><b>{linea.Etiqueta}{separadorEtiqueta}</b></color> <color=#ffffff>{linea.Valor}</color>";
+      }
+    }
+
+    if (!string.IsNullOrEmpty(proximaMejora))
+    {
+      descripcion += $"\n\n<color=#dfea02>{proximaMejora}</color>";
+    }
+
+    return descripcion;
+  }
+
+  protected string TerminoDescripcion(string id, string texto, string spriteName = null, string tamanoIcono = "86%")
+  {
+    if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(texto))
+    {
+      return texto;
+    }
+
+    string icono = string.IsNullOrEmpty(spriteName)
+      ? string.Empty
+      : $" <size={tamanoIcono}><sprite name=\"{spriteName}\"></size>";
+    return $"<link=\"skill-term:{id}\">{texto}{icono}</link>";
+  }
+
+  protected bool DebeMostrarProximaMejoraDescripcion()
+  {
+    return EsEscenaCampaña()
+      && CampaignManager.Instance != null
+      && CampaignManager.Instance.scMenuPersonajes != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel != null
+      && CampaignManager.Instance.scMenuPersonajes.pSel.NivelPuntoHabilidad > 0;
+  }
+
   protected string CostoSuperiorDescripcion()
   {
     string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
     string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
+    if (costoAP <= 0)
+    {
+      return cooldownMax > 0 ? $"{cooldownMax} {iconoCooldown}" : string.Empty;
+    }
+
     return cooldownMax > 0
       ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
       : $"{costoAP} {iconoAP}";
@@ -486,6 +713,28 @@ public abstract class Habilidad : MonoBehaviour
       Objetivos = objetivosFiltrados;
     }
 
+    // Objetivo/s ya confirmados para este ataque: si corresponde (misma regla que el hover:
+    // habilidad hostil + objetivo IA + bando opuesto), sostener su pose de "objetivo hostil" hasta
+    // el fin del ataque. Usa el mismo Enter/ExitPoseObjetivoHostil con contador que ya usa el hover,
+    // asi que conviven sin conflicto sin modificar el mecanismo de hover existente.
+    List<Unidad> unidadesConPoseObjetivoHostilSostenida = null;
+    if (BattleManager.Instance != null && Objetivos != null)
+    {
+      foreach (var objetivo in Objetivos)
+      {
+        if (objetivo is Unidad unidadObjetivo && BattleManager.Instance.DebeMantenerPoseObjetivoHostilDuranteAtaque(unidadObjetivo))
+        {
+          UnidadPoseController poseObjetivo = unidadObjetivo.GetComponent<UnidadPoseController>();
+          if (poseObjetivo != null && poseObjetivo.poseTurnoActivo != null)
+          {
+            poseObjetivo.EnterPoseObjetivoHostil();
+            unidadesConPoseObjetivoHostilSostenida ??= new List<Unidad>();
+            unidadesConPoseObjetivoHostilSostenida.Add(unidadObjetivo);
+          }
+        }
+      }
+    }
+
     RuntimeAnalytics.TrackAbilityUsed(this, scEstaUnidad);
     BattleManager.Instance.bOcupado = true;
     // Al confirmar la habilidad, limpiar marcas de previsualizacion en unidades.
@@ -613,6 +862,14 @@ public abstract class Habilidad : MonoBehaviour
       if (focoCamaraAplicado && BattleManager.Instance != null)
       {
         BattleManager.Instance.RestaurarCamaraHabilidad();
+      }
+
+      if (unidadesConPoseObjetivoHostilSostenida != null)
+      {
+        foreach (Unidad unidadObjetivo in unidadesConPoseObjetivoHostilSostenida)
+        {
+          unidadObjetivo?.GetComponent<UnidadPoseController>()?.ExitPoseObjetivoHostil();
+        }
       }
     }
     if (hizoAproximacion && acercamientoMelee != null)

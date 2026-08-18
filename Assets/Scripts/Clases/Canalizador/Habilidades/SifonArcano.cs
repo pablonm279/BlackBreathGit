@@ -8,7 +8,7 @@ using System;
 
 public class SifonArcano : Habilidad
 {
-      public const int DificultadSalvacionMental = 15;
+      public const int DificultadSalvacionMentalBase = 12;
 
       public static int ObtenerBonusDanioBase(int nivel)
     {
@@ -38,6 +38,8 @@ public class SifonArcano : Habilidad
   }
   public override void ActualizarDescripcion()
   {
+    var statsUI = ObtenerStatsDescripcionUI();
+    int poderActual = statsUI.Poder;
     int duracionTurnos = NIVEL == 5 ? 4 : 3;
     int bonusDanioBase = ObtenerBonusDanioBase(NIVEL);
     string rangoDanioEs = FormatearRangoDados(1, 10, bonusDanioBase);
@@ -63,6 +65,71 @@ public class SifonArcano : Habilidad
     if (NIVEL == 3) { tituloPtFormato = "Sifao Arcano III"; }
     if (NIVEL == 4) { tituloPtFormato = "Sifao Arcano IV a"; }
     if (NIVEL == 5) { tituloPtFormato = "Sifao Arcano IV b"; }
+    if (esInglesFormato)
+    {
+      string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+      string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+      string sifon = TerminoDescripcion(TerminoDescripcionId.SifonArcano, "Arcane Siphon");
+      string residuos = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "Energy Residues", "Estado_acumularenergia");
+      string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage", "dano_arcano");
+      string apMax = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "Max AP", "ap");
+      string energia = TerminoDescripcion(TerminoDescripcionId.Energia, "Energy tier");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "+1 base turn damage."; }
+        else if (NIVEL == 2) { proximaMejora = "Unlocks the IV upgrade path; no direct mechanical change."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: no implemented change.\nOption B: +1 turn duration."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Links one enemy to an Arcane siphon whose damage scales with Energy Residues.",
+        new[]
+        {
+          LineaDescripcion("Target", "1 enemy"),
+          LineaDescripcion("Effect", "The target makes a save."),
+          LineaDescripcion("Save", $"{salvacionMental} vs DC {DificultadSalvacionMentalBase} + {poder}.", 1),
+          LineaDescripcion("Failed save", $"Applies {sifon} for {duracionTurnos} turns.", 1),
+          LineaDescripcion("Turn damage", $"Suffers {rangoDanioEs} x (1 + number of {residuos} on the battlefield) as {danioArcano}.", 1),
+          LineaDescripcion("On kill", $"The Channeler gains +1 {apMax} and +10% Damage for the rest of the battle; gains +1 {energia}."),
+          LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+        },
+        proximaMejora);
+      return;
+    }
+    {
+      bool pt = esPortuguesFormato;
+      string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, pt ? "Mental" : "Mental", "ic_mental");
+      string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+      string sifon = TerminoDescripcion(TerminoDescripcionId.SifonArcano, pt ? "Sifão Arcano" : "Sifón Arcano");
+      string residuos = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, pt ? "Resíduos Energéticos" : "Residuos Energéticos", "Estado_acumularenergia");
+      string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano", "dano_arcano");
+      string apMax = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP Máx.", "ap");
+      string energia = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia" : "nivel de Energía");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = pt ? "+1 de dano base por turno." : "+1 de daño base por turno."; }
+        else if (NIVEL == 2) { proximaMejora = pt ? "Desbloqueia o caminho de melhorias IV; sem mudança mecânica direta." : "Desbloquea la rama de mejoras IV; sin cambio mecánico directo."; }
+        else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: sem mudança implementada.\nOpção B: +1 turno de duração." : "Opción A: sin cambio implementado.\nOpción B: +1 turno de duración."; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        pt ? tituloPtFormato : tituloEs,
+        pt ? "Vincula um inimigo a um sifão Arcano cujo dano escala com os Resíduos Energéticos." : "Vincula a un enemigo con un sifón Arcano cuyo daño escala con los Residuos Energéticos.",
+        new[]
+        {
+          LineaDescripcion(pt ? "Alvo" : "Objetivo", pt ? "1 inimigo" : "1 enemigo"),
+          LineaDescripcion(pt ? "Efeito" : "Efecto", pt ? "O alvo faz um salvamento." : "El objetivo hace una salvación."),
+          LineaDescripcion(pt ? "Salvamento" : "Salvación", $"{salvacionMental} vs CD {DificultadSalvacionMentalBase} + {poder}.", 1),
+          LineaDescripcion(pt ? "Falha no salvamento" : "Salvación fallida", $"{(pt ? "Aplica" : "Aplica")} {sifon} {(pt ? "por" : "durante")} {duracionTurnos} turnos.", 1),
+          LineaDescripcion(pt ? "Dano por turno" : "Daño por turno", $"{(pt ? "Sofre" : "Sufre")} {rangoDanioEs} x (1 + {(pt ? "quantidade de" : "cantidad de")} {residuos} {(pt ? "no campo de batalha" : "en el campo de batalla")}) como {danioArcano}.", 1),
+          LineaDescripcion(pt ? "Ao matar" : "Al matar", $"{(pt ? "O Canalizador recebe" : "El Canalizador obtiene")} +1 {apMax} {(pt ? "e" : "y")} +10% {(pt ? "de Dano" : "de Daño")} {(pt ? "pelo resto da batalha" : "durante el resto de la batalla")}; {(pt ? "recebe" : "obtiene")} +1 {energia}."),
+          LineaDescripcion(pt ? "Esforço" : "Esfuerzo", $"{(pt ? "Até" : "Hasta")} {esforzable} AP.")
+        },
+        proximaMejora);
+      return;
+    }
     string colorEncabezado = "#44d3ec";
     string colorValor = "#ffffff";
     string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
@@ -84,7 +151,7 @@ public class SifonArcano : Habilidad
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged debuff (5 range)</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy on the opposite side</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Mental vs DC {DificultadSalvacionMental}</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Mental vs DC {DificultadSalvacionMentalBase} + Power ({poderActual})</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Effect:</b></color> <color={colorValor}>{iconoDebuff} Applies Arcane Siphon for {duracionTurnos} turns on failed save</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Turn damage:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Energy Residues). Type: Arcane</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>On kill:</b></color> <color={colorValor}>{iconoBuff} +1 permanent Max AP, +10% Damage, {iconoEnergia} +1 Energy</color>";
@@ -93,7 +160,7 @@ public class SifonArcano : Habilidad
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Debuff a distancia (5 alcance)</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo no lado oposto</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Mental vs CD {DificultadSalvacionMental}</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Mental vs CD {DificultadSalvacionMentalBase} + Poder ({poderActual})</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Efeito:</b></color> <color={colorValor}>{iconoDebuff} Aplica Sifao Arcano por {duracionTurnos} turnos se falhar</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Dano por turno:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Residuos Energeticos). Tipo: Arcano</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Ao matar:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max permanente, +10% Dano, {iconoEnergia} +1 Energia</color>";
@@ -102,7 +169,7 @@ public class SifonArcano : Habilidad
     {
       cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Debuff a distancia (5 alcance)</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo del lado opuesto</color>\n";
-      cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Mental vs DC {DificultadSalvacionMental}</color>\n";
+      cuerpoFormato += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Mental vs DC {DificultadSalvacionMentalBase} + Poder ({poderActual})</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>{iconoDebuff} Aplica Sifon Arcano por {duracionTurnos} turnos si falla</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Daño por turno:</b></color> <color={colorValor}>{rangoDanioEs} x (1 + {iconoEnergia} Residuos Energeticos). Tipo: Arcano</color>\n";
       cuerpoFormato += $"<color={colorEncabezado}><b>Al matar:</b></color> <color={colorValor}>{iconoBuff} +1 AP Max permanente, +10% Daño, {iconoEnergia} +1 Energía</color>";
@@ -145,7 +212,7 @@ public class SifonArcano : Habilidad
       string cuerpo = "";
       cuerpo += "<b>Type:</b> Ranged (5 range)\n";
       cuerpo += "<b>Target:</b> 1 enemy unit on the opposite side\n";
-      cuerpo += $"<b>Save:</b> Mental. Target rolls 1d20 + Mental vs DC {DificultadSalvacionMental}\n";
+      cuerpo += $"<b>Save:</b> Mental. Target rolls 1d20 + Mental vs DC {DificultadSalvacionMentalBase} + Power ({poderActual})\n";
       cuerpo += $"<b>Effect:</b> Applies Arcane Siphon for {duracionTurnos} turns on failed save\n";
       cuerpo += lineaDanioEn + "\n";
       cuerpo += "<b>On kill by this effect:</b> +1 permanent AP max, +10% Damage and +1 Energy";
@@ -172,7 +239,7 @@ public class SifonArcano : Habilidad
       string corpo = "";
       corpo += "<b>Tipo:</b> Distancia (5 alcance)\n";
       corpo += "<b>Alvo:</b> 1 unidade inimiga do lado oposto\n";
-      corpo += $"<b>Resistencia:</b> Mental. O alvo rola 1d20 + Mental vs CD {DificultadSalvacionMental}\n";
+      corpo += $"<b>Resistencia:</b> Mental. O alvo rola 1d20 + Mental vs CD {DificultadSalvacionMentalBase} + Poder ({poderActual})\n";
       corpo += $"<b>Efeito:</b> aplica Sifao Arcano por {duracionTurnos} turnos se falhar\n";
       corpo += (bonusDanioBase > 0
         ? $"<b>Dano por turno:</b> (1d10 + {bonusDanioBase}) x (1 + Residuos Energeticos) | <b>Tipo:</b> Arcano"
@@ -202,7 +269,7 @@ public class SifonArcano : Habilidad
       string cuerpo = "";
       cuerpo += "<b>Tipo:</b> Rango (5 alcance)\n";
       cuerpo += "<b>Objetivo:</b> 1 unidad enemiga del lado opuesto\n";
-      cuerpo += $"<b>TS:</b> Mental. El objetivo tira 1d20 + Mental vs DC {DificultadSalvacionMental}\n";
+      cuerpo += $"<b>TS:</b> Mental. El objetivo tira 1d20 + Mental vs DC {DificultadSalvacionMentalBase} + Poder ({poderActual})\n";
       cuerpo += $"<b>Efecto:</b> aplica Sifon Arcano por {duracionTurnos} turnos si falla\n";
       cuerpo += lineaDanioEs + "\n";
       cuerpo += "<b>Si mata con este efecto:</b> +1 AP max permanente, +10% Daño y +1 Energía";
@@ -244,7 +311,7 @@ public class SifonArcano : Habilidad
 
     if (obj is Unidad uni) //Acá van los efectos a Unidades.
     {
-      if (uni.TiradaSalvacion(3, DificultadSalvacionMental))
+      if (uni.TiradaSalvacion(3, ObtenerDificultadSalvacionMental()))
       {
         //Agrega la reacción 
         ReaccionSifonArcano reaccion = new ReaccionSifonArcano();
@@ -267,12 +334,17 @@ public class SifonArcano : Habilidad
       return null;
     }
 
-    return CalcularProbabilidadFallarTS(objetivo.mod_TSMental, DificultadSalvacionMental);
+    return CalcularProbabilidadFallarTS(objetivo.mod_TSMental, ObtenerDificultadSalvacionMental());
   }
 
   protected override string ObtenerTextoProbabilidadSobreObjetivo(Unidad objetivo, float probabilidad)
   {
     return FormatearTextoProbabilidadExito(probabilidad);
+  }
+
+  private int ObtenerDificultadSalvacionMental()
+  {
+    return DificultadSalvacionMentalBase + Mathf.RoundToInt(scEstaUnidad != null ? scEstaUnidad.mod_CarPoder : 0);
   }
     
        SifonArcanoObjetivoFx VFXAplicar(GameObject objetivo)

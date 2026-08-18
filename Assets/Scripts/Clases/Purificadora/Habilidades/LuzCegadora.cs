@@ -77,6 +77,125 @@ public class LuzCegadora : Habilidad
       if (NIVEL == 4) { tituloPt = "Luz Cegante IV a"; }
       if (NIVEL == 5) { tituloPt = "Luz Cegante IV b"; }
 
+      if (esIngles)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+        string reflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflex save", "ic_Reflejos");
+        string reflejosSinIcono = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflex");
+        string cegado = TerminoDescripcion(TerminoDescripcionId.Debuff, "Blinded", "Estado_debuff");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour");
+        string formulaDanio = agregaD6Divino
+          ? $"1d10 + 1 + 1d6 + {poder}"
+          : $"1d10 + 1 + {poder}";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+1 save DC."; }
+          else if (NIVEL == 2) { proximaMejora = "+1d6 Divine damage vs Undead/Ethereal."; }
+          else if (NIVEL == 3) { proximaMejora = $"Option A (-1 {valentia} cost) or Option B (33% damage to other enemies)."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", "All enemies in a 3-wide area, front and back"),
+          LineaDescripcion("Effect", $"Each target makes a {reflejos}."),
+          LineaDescripcion("Save", $"{reflejosSinIcono} vs DC {dcBase} + {poder}.", 1),
+          LineaDescripcion("Failed save", $"Applies {cegado} for 2 rounds: -3 Attack, -2 Defense, -1 {reflejosSinIcono}.", 1),
+          LineaDescripcion("Undead/Ethereal", $"Suffer {formulaDanio} as {danioDivino}.", 1)
+        };
+        if (afectaOtrosEnemigos)
+        {
+          lineas.Add(LineaDescripcion("Other enemies", "Suffer 33% of the rolled Divine damage.", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Unleashes a magical flash that blinds enemies and harms impure targets.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string reflexos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Resistência de Reflexos", "ic_Reflejos");
+        string reflexosSinIcono = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflexos");
+        string cego = TerminoDescripcion(TerminoDescripcionId.Debuff, "Cego", "Estado_debuff");
+        string danoDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia");
+        string formulaDanio = agregaD6Divino
+          ? $"1d10 + 1 + 1d6 + {poder}"
+          : $"1d10 + 1 + {poder}";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 na DC da resistência."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +1d6 de dano Divino contra Mortos-vivos/Etéreos."; }
+          else if (NIVEL == 3) { proximaMejora = $"Próximo nível: Opção A (-1 de custo de {valentia}) ou Opção B (33% de dano a outros inimigos)."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Alvo", "Todos os inimigos em uma área de 3 casas de largura, na frente e atrás"),
+          LineaDescripcion("Efeito", $"Cada alvo faz uma {reflexos}."),
+          LineaDescripcion("Resistência", $"{reflexosSinIcono} vs DC {dcBase} + {poder}.", 1),
+          LineaDescripcion("Falha", $"Aplica {cego} por 2 rodadas: -3 Ataque, -2 Defesa, -1 {reflexosSinIcono}.", 1),
+          LineaDescripcion("Mortos-vivos/Etéreos", $"Sofrem {formulaDanio} como {danoDivino}.", 1)
+        };
+        if (afectaOtrosEnemigos)
+        {
+          lineas.Add(LineaDescripcion("Outros inimigos", "Sofrem 33% do dano Divino rolado.", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloPt,
+          "Libera um clarão mágico que cega inimigos e fere alvos impuros.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string reflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "TS Reflejos", "ic_Reflejos");
+        string reflejosSinIcono = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflejos");
+        string ciego = TerminoDescripcion(TerminoDescripcionId.Debuff, "Ciego", "Estado_debuff");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía");
+        string formulaDanio = agregaD6Divino
+          ? $"1d10 + 1 + 1d6 + {poder}"
+          : $"1d10 + 1 + {poder}";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 a la DC de la salvación."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +1d6 de daño Divino contra No muertos/Etéreos."; }
+          else if (NIVEL == 3) { proximaMejora = $"Próximo nivel: Opción A (-1 de costo de {valentia}) u Opción B (33% de daño a otros enemigos)."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Objetivo", "Todos los enemigos en un área de 3 casillas de ancho, adelante y atrás"),
+          LineaDescripcion("Efecto", $"Cada objetivo realiza un {reflejos}."),
+          LineaDescripcion("TS", $"{reflejosSinIcono} vs DC {dcBase} + {poder}.", 1),
+          LineaDescripcion("Si falla", $"Aplica {ciego} por 2 rondas: -3 Ataque, -2 Defensa, -1 {reflejosSinIcono}.", 1),
+          LineaDescripcion("No muertos/Etéreos", $"Sufren {formulaDanio} como {danioDivino}.", 1)
+        };
+        if (afectaOtrosEnemigos)
+        {
+          lineas.Add(LineaDescripcion("Otros enemigos", "Sufren el 33% del daño Divino obtenido.", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloEs,
+          "Desata un destello mágico que ciega a los enemigos y daña a objetivos impuros.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Reflejos, dcBase, "Pod", "Power", poderActual, "Poder");
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Reflejos, dcBase, "Poder", "Power", poderActual);
 
@@ -683,7 +802,3 @@ public class LuzCegadoraDestelloVFX : MonoBehaviour
     return spriteRayo;
   }
 }
-
-
-
-

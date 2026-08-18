@@ -83,6 +83,123 @@ public class LlamaDivina : Habilidad
       if (NIVEL == 3) { tituloEs = "Llama Divina III"; tituloEn = "Divine Flame III"; tituloPt = "Chama Divina III"; }
       if (NIVEL == 4) { tituloEs = "Llama Divina IV a"; tituloEn = "Divine Flame IV a"; tituloPt = "Chama Divina IV a"; }
       if (NIVEL == 5) { tituloEs = "Llama Divina IV b"; tituloEn = "Divine Flame IV b"; tituloPt = "Chama Divina IV b"; }
+
+      if (esIngles)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude save", "ic_fortaleza");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino");
+        string ardiendo = TerminoDescripcion(TerminoDescripcionId.Ardiendo, $"Burning {quemadura}", "Estado_ardiendo");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string rangoDanioBase = $"{3 + danioFijoActual}-{18 + danioFijoActual}";
+        string ataque = ataqueActual == 0 ? string.Empty : ataqueActual > 0 ? $" + Attack ({ataqueActual})" : $" - Attack ({Mathf.Abs(ataqueActual)})";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+1 save DC."; }
+          else if (NIVEL == 2) { proximaMejora = "+3 base damage."; }
+          else if (NIVEL == 3) { proximaMejora = $"Option A (+1 {fervor} on kill) or Option B (+2 Burning)."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", "1 unit or obstacle"),
+          LineaDescripcion("Effect", $"On hit, deals {rangoDanioBase} + {poder} as {danioDivino}."),
+          LineaDescripcion("Roll", $"1d20 + {poder}{ataque} vs {defensa}. Fumble: 5%. Crit: {Mathf.Clamp(21 - criticoMin, 0, 20) * 5}%.", 1),
+          LineaDescripcion("Save", $"Target's {fortaleza} vs DC {dcBase} + {poder}.", 1),
+          LineaDescripcion("Failed save", $"Applies {ardiendo}; Undead and Ethereal targets die instantly.", 1)
+        };
+        if (ganaFervorAlMatar)
+        {
+          lineas.Add(LineaDescripcion("On kill", $"Gain +1 {fervor}.", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Launches a Divine projectile that burns or destroys impure targets.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string fortitude = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+        string danoDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino");
+        string queimando = TerminoDescripcion(TerminoDescripcionId.Ardiendo, $"Em Chamas {quemadura}", "Estado_ardiendo");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string rangoDanioBase = $"{3 + danioFijoActual}-{18 + danioFijoActual}";
+        string ataque = ataqueActual == 0 ? string.Empty : ataqueActual > 0 ? $" + Ataque ({ataqueActual})" : $" - Ataque ({Mathf.Abs(ataqueActual)})";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 na DC da resistência."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +3 de dano base."; }
+          else if (NIVEL == 3) { proximaMejora = $"Próximo nível: Opção A (+1 {fervor} ao matar) ou Opção B (+2 Em Chamas)."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Alvo", "1 unidade ou obstáculo"),
+          LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanioBase} + {poder} como {danoDivino}."),
+          LineaDescripcion("Rolagem", $"1d20 + {poder}{ataque} vs {defesa}. Falha crítica: 5%. Crítico: {Mathf.Clamp(21 - criticoMin, 0, 20) * 5}%.", 1),
+          LineaDescripcion("Resistência", $"{fortitude} do alvo vs DC {dcBase} + {poder}.", 1),
+          LineaDescripcion("Falha", $"Aplica {queimando}; alvos Mortos-vivos e Etéreos morrem instantaneamente.", 1)
+        };
+        if (ganaFervorAlMatar)
+        {
+          lineas.Add(LineaDescripcion("Ao matar", $"Ganha +1 {fervor}.", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloPt,
+          "Lança um projétil Divino que queima ou destrói alvos impuros.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "TS Fortaleza", "ic_fortaleza");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino");
+        string ardiendo = TerminoDescripcion(TerminoDescripcionId.Ardiendo, $"Ardiendo {quemadura}", "Estado_ardiendo");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string rangoDanioBase = $"{3 + danioFijoActual}-{18 + danioFijoActual}";
+        string ataque = ataqueActual == 0 ? string.Empty : ataqueActual > 0 ? $" + Ataque ({ataqueActual})" : $" - Ataque ({Mathf.Abs(ataqueActual)})";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 a la DC de la salvación."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +3 de daño base."; }
+          else if (NIVEL == 3) { proximaMejora = $"Próximo nivel: Opción A (+1 {fervor} al matar) u Opción B (+2 Ardiendo)."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Objetivo", "1 unidad u obstáculo"),
+          LineaDescripcion("Efecto", $"Al impactar, causa {rangoDanioBase} + {poder} como {danioDivino}."),
+          LineaDescripcion("Tirada", $"1d20 + {poder}{ataque} vs {defensa}. Pifia: 5%. Crítico: {Mathf.Clamp(21 - criticoMin, 0, 20) * 5}%.", 1),
+          LineaDescripcion("TS", $"{fortaleza} del objetivo vs DC {dcBase} + {poder}.", 1),
+          LineaDescripcion("TS fallida", $"Aplica {ardiendo}; los objetivos No muertos y Etéreos mueren instantáneamente.", 1)
+        };
+        if (ganaFervorAlMatar)
+        {
+          lineas.Add(LineaDescripcion("Al matar", $"Gana +1 {fervor}.", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloEs,
+          "Lanza un proyectil Divino que quema o destruye objetivos impuros.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Fortaleza, dcBase, "Pod", "Power", poderActual, "Poder");
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Fortaleza, dcBase, "Poder", "Power", poderActual);
       string cuerpo = "";
@@ -90,7 +207,7 @@ public class LlamaDivina : Habilidad
       {
         cuerpo += "<b>Type:</b> Ranged (5 range)\n";
         cuerpo += "<b>Target:</b> 1 unit in range\n";
-        cuerpo += $"<b>Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}) vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
+        cuerpo += $"<b>Attack Roll:</b> 1d20 + <color=#ea0606>Power ({poderActual})</color> + Attack ({ataqueActual}) vs Defense. Fumble: 1. Crit: {criticoMin}-20\n";
         cuerpo += $"<b>Damage:</b> 3d6 + {danioFijoActual} + <color=#ea0606>Power ({poderActual})</color> | <b>Type:</b> Divine\n";
         cuerpo += lineaSalvacionEn + "\n";
         cuerpo += $"<b>On failed save:</b> Burning {quemadura}. Undead and Ethereal are instantly killed";
@@ -166,7 +283,7 @@ public class LlamaDivina : Habilidad
       {
         cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Ranged attack (5 range)</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 unit or obstacle in range</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Power ({poderActual})</color>{ataqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Attack Roll:</b></color> <color={colorValor}>1d20 + <color={colorPoder}>Power ({poderActual})</color>{ataqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{dano}. Type: Divine</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Fortitude vs DC {dcBase} + <color={colorPoder}>Power ({poderActual})</color></color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Failed save:</b></color> <color={colorValor}>{iconoArdiendo} Burning {quemadura}; Undead/Ethereal die instantly.</color>";

@@ -16,7 +16,7 @@ public class GritoMotivador : Habilidad
       nombre = "Grito Motivador";
       IDenClase = 2;
       costoAP = 2;
-      costoPM = 1;
+      costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       esZonal = true;
@@ -62,6 +62,85 @@ public class GritoMotivador : Habilidad
       if (NIVEL == 3) { tituloPt = "Grito Motivador III"; }
       if (NIVEL == 4) { tituloPt = "Grito Motivador IV a"; }
       if (NIVEL == 5) { tituloPt = "Grito Motivador IV b"; }
+
+      if (esIngles)
+      {
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour", "Valentía");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+5% allied damage."; }
+          else if (NIVEL == 2) { proximaMejora = "Cooldown decreases from 4 to 3."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +2 Valour per affected ally to the Knight.\nOption B: enemies deal -10% damage for 1 turn."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", afectaEnemigos ? "All units" : "All allies"),
+          LineaDescripcion("Effect", $"Allies gain +{buffDanio}% Damage (3 turns)."),
+          LineaDescripcion("Other allies", $"Gain +{valorAliados} {valentia}.", 1)
+        };
+        if (NIVEL == 4)
+        {
+          lineas.Add(LineaDescripcion("Knight", $"Gains +2 {valentia} per affected ally.", 1));
+        }
+        if (afectaEnemigos)
+        {
+          lineas.Add(LineaDescripcion("Enemies", $"Deal -10% Damage ({duracionDebuffEnemigos} turn); no save.", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "A commanding shout that empowers allies.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia", "Valentía");
+        string valentiaSinIcono = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +5% de dano dos aliados."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: a recarga diminui de 4 para 3."; }
+          else if (NIVEL == 3) { proximaMejora = "Opção A: o Cavaleiro recebe +2 de Valentia por aliado afetado.\nOpção B: os inimigos causam -10% de dano por 1 turno."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Alvo", afectaEnemigos ? "Todas as unidades" : "Todos os aliados"),
+          LineaDescripcion("Efeito", $"Aliados recebem +{buffDanio}% de Dano (3 turnos)."),
+          LineaDescripcion("Outros aliados", $"Recebem +{valorAliados} de {valentia}.", 1)
+        };
+        if (NIVEL == 4) { lineas.Add(LineaDescripcion("Cavaleiro", $"Recebe +2 de {valentiaSinIcono} por aliado afetado.", 1)); }
+        if (afectaEnemigos) { lineas.Add(LineaDescripcion("Inimigos", $"Causam -10% de Dano ({duracionDebuffEnemigos} turno); sem salvaguarda.", 1)); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloPt, "Um grito de comando que fortalece os aliados.", lineas, proximaMejora);
+        return;
+      }
+
+      {
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía", "Valentía");
+        string valentiaSinIcono = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +5% de daño de los aliados."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: el enfriamiento disminuye de 4 a 3."; }
+          else if (NIVEL == 3) { proximaMejora = "Opción A: el Caballero obtiene +2 de Valentía por aliado afectado.\nOpción B: los enemigos infligen -10% de daño durante 1 turno."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Objetivo", afectaEnemigos ? "Todas las unidades" : "Todos los aliados"),
+          LineaDescripcion("Efecto", $"Los aliados obtienen +{buffDanio}% de Daño (3 turnos)."),
+          LineaDescripcion("Otros aliados", $"Obtienen +{valorAliados} de {valentia}.", 1)
+        };
+        if (NIVEL == 4) { lineas.Add(LineaDescripcion("Caballero", $"Obtiene +2 de {valentiaSinIcono} por aliado afectado.", 1)); }
+        if (afectaEnemigos) { lineas.Add(LineaDescripcion("Enemigos", $"Infligen -10% de Daño ({duracionDebuffEnemigos} turno); sin salvación.", 1)); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloEs, "Un grito de mando que fortalece a los aliados.", lineas, proximaMejora);
+        return;
+      }
 
       string colorEncabezado = "#44d3ec";
       string colorValor = "#ffffff";

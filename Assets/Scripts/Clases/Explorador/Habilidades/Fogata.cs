@@ -66,6 +66,89 @@ public class Fogata : Habilidad
     string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
     string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
 
+    if (esIngles)
+    {
+      string danioFuegoConIcono = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "Fire damage", "dano_fuego");
+      string danioFuegoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "Fire damage");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "+1 turn duration."; }
+        else if (NIVEL == 2) { proximaMejora = "-1 AP cost."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: +1-3 Fire damage to adjacent Explorers' attacks.\nOption B: -1 AP cost."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Lights a campfire that empowers nearby Explorers' attacks.",
+        new[]
+        {
+          LineaDescripcion("Target", "1 Tile"),
+          LineaDescripcion("Effect", "Places a Campfire."),
+          LineaDescripcion("On contact", $"Suffers {danoTrampa} {danioFuegoConIcono}.", 1),
+          LineaDescripcion("Adjacent Explorers", $"Attacks gain +{danoFuego} {danioFuegoSinIcono}.", 1),
+          LineaDescripcion("Duration", $"{duracionTrampaTurnos} turns"),
+          LineaDescripcion("Effort", $"Up to {esforzable} AP")
+        },
+        proximaMejora);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string danoFogoComIcono = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "dano de Fogo", "dano_fuego");
+      string danoFogoSemIcono = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "dano de Fogo");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 turno de duração."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nível: -1 de custo de AP."; }
+        else if (NIVEL == 3) { proximaMejora = "Opção A: +1-3 de dano de Fogo aos ataques de Exploradores adjacentes.\nOpção B: -1 de custo de AP."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloPt,
+        "Acende uma fogueira que fortalece ataques de Exploradores proximos.",
+        new[]
+        {
+          LineaDescripcion("Alvo", "1 celula"),
+          LineaDescripcion("Efeito", "Coloca uma Fogueira."),
+          LineaDescripcion("Ao contato", $"Sofre {danoTrampa} {danoFogoComIcono}.", 1),
+          LineaDescripcion("Exploradores adjacentes", $"Ataques ganham +{danoFuego} {danoFogoSemIcono}.", 1),
+          LineaDescripcion("Duracao", $"{duracionTrampaTurnos} turnos"),
+          LineaDescripcion("Esforco", $"Ate {esforzable} AP")
+        },
+        proximaMejora);
+      return;
+    }
+
+    {
+      string danioFuegoConIcono = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "dano de Fuego", "dano_fuego");
+      string danioFuegoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "dano de Fuego");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 turno de duración."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nivel: -1 de costo de AP."; }
+        else if (NIVEL == 3) { proximaMejora = "Opción A: +1-3 de daño de Fuego a los ataques de Exploradores adyacentes.\nOpción B: -1 de costo de AP."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloEs,
+        "Enciende una fogata que potencia ataques de Exploradores cercanos.",
+        new[]
+        {
+          LineaDescripcion("Objetivo", "1 casilla"),
+          LineaDescripcion("Efecto", "Coloca una Fogata."),
+          LineaDescripcion("Al contacto", $"Sufre {danoTrampa} {danioFuegoConIcono}.", 1),
+          LineaDescripcion("Exploradores adyacentes", $"Los ataques ganan +{danoFuego} {danioFuegoSinIcono}.", 1),
+          LineaDescripcion("Duracion", $"{duracionTrampaTurnos} turnos"),
+          LineaDescripcion("Esfuerzo", $"Hasta {esforzable} AP")
+        },
+        proximaMejora);
+      return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {

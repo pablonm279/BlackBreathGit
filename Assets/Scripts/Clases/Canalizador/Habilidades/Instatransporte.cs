@@ -56,6 +56,74 @@ public class Instatransporte : Habilidad
 
     int alcance = NIVEL > 2 ? 4 : 3;
     int bonusEvasion = NIVEL == 5 ? 2 : 1;
+    int duracionResiduo = NIVEL == 4 ? 3 : 2;
+    int bonusDanioArcano = NIVEL > 1 ? 4 : 3;
+    int apRestaurado = NIVEL > 2 ? 2 : 1;
+    if (esIngles)
+    {
+      string residuo = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "Energy Residues", "Estado_acumularenergia");
+      string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage", "dano_arcano");
+      string danioArcanoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage");
+      string evasion = TerminoDescripcion(TerminoDescripcionId.Evasion, "Evasion", "Estado_evasion");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string patronResiduos = NIVEL == 4
+        ? "on all adjacent tiles"
+        : "on adjacent tiles in a + shape";
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "-1 cooldown."; }
+        else if (NIVEL == 2) { proximaMejora = "+1 targeting range."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: creates residues on all adjacent tiles.\nOption B: +1 Evasion."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Teleports to an empty tile and leaves volatile Energy Residues at the destination.",
+        new[]
+        {
+          LineaDescripcion("Target", "1 empty tile"),
+          LineaDescripcion("Effect", "Teleports to the target tile and destroys traps on it."),
+          LineaDescripcion("Residues", $"Creates {residuo} {patronResiduos}; they last {duracionResiduo} turns."),
+          LineaDescripcion("On contact", $"Gains +1 Attack and +{bonusDanioArcano} {danioArcano} ({duracionResiduo} turns); restores {apRestaurado} {ap}.", 1),
+          LineaDescripcion("Channeler", "Also restores 1-8 HP.", 2),
+          LineaDescripcion("Other units", $"Also suffer 1-8 {danioArcanoSinIcono}.", 2),
+          LineaDescripcion("Self", $"Gains +{bonusEvasion} {evasion}.")
+        },
+        proximaMejora);
+      return;
+    }
+    {
+      bool pt = esPortugues;
+      string residuo = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, pt ? "Resíduos Energéticos" : "Residuos Energéticos", "Estado_acumularenergia");
+      string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano", "dano_arcano");
+      string danioArcanoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano");
+      string evasion = TerminoDescripcion(TerminoDescripcionId.Evasion, pt ? "Evasão" : "Evasión", "Estado_evasion");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string patronResiduosLocalizado = NIVEL == 4 ? (pt ? "em todas as casas adjacentes" : "en todas las casillas adyacentes") : (pt ? "nas casas adjacentes em forma de +" : "en las casillas adyacentes en forma de +");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "-1 de recarga."; }
+        else if (NIVEL == 2) { proximaMejora = pt ? "+1 de alcance de seleção." : "+1 de alcance de selección."; }
+        else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: cria resíduos em todas as casas adjacentes.\nOpção B: +1 Evasão." : "Opción A: crea residuos en todas las casillas adyacentes.\nOpción B: +1 Evasión."; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        pt ? tituloPt : tituloEs,
+        pt ? "Teletransporta-se para uma casa vazia e deixa Resíduos Energéticos voláteis no destino." : "Se teletransporta a una casilla vacía y deja Residuos Energéticos volátiles en el destino.",
+        new[]
+        {
+          LineaDescripcion(pt ? "Alvo" : "Objetivo", pt ? "1 casa vazia" : "1 casilla vacía"),
+          LineaDescripcion(pt ? "Efeito" : "Efecto", pt ? "Teletransporta-se para a casa escolhida e destrói as armadilhas nela." : "Se teletransporta a la casilla elegida y destruye las trampas que contiene."),
+          LineaDescripcion(pt ? "Resíduos" : "Residuos", $"{(pt ? "Cria" : "Crea")} {residuo} {patronResiduosLocalizado}; {(pt ? "duram" : "duran")} {duracionResiduo} turnos."),
+          LineaDescripcion(pt ? "Ao entrar em contato" : "Al entrar en contacto", $"{(pt ? "Recebe" : "Obtiene")} +1 Ataque {(pt ? "e" : "y")} +{bonusDanioArcano} {danioArcano} ({duracionResiduo} turnos); recupera {apRestaurado} {ap}.", 1),
+          LineaDescripcion(pt ? "Canalizador" : "Canalizador", pt ? "Também recupera 1-8 PV." : "También recupera 1-8 PV.", 2),
+          LineaDescripcion(pt ? "Outras unidades" : "Otras unidades", $"{(pt ? "Também sofrem" : "También sufren")} 1-8 {danioArcanoSinIcono}.", 2),
+          LineaDescripcion(pt ? "Próprio" : "Propio", $"{(pt ? "Recebe" : "Obtiene")} +{bonusEvasion} {evasion}.")
+        },
+        proximaMejora);
+      return;
+    }
     string residuosEs = NIVEL == 4
       ? "Genera Residuos Energeticos en todo alrededor del destino."
       : "Genera Residuos Energeticos en cruz adyacente al destino.";

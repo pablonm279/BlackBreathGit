@@ -73,20 +73,73 @@ public class GolpeBaston : Habilidad
         string costoSuperior = cooldownMax > 0
           ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
           : $"{costoAP} {iconoAP}";
-        string titulo = esIngles ? "Staff Strike" : esPortugues ? "Golpe de Cajado" : "Golpe de Baston";
+        string titulo = esIngles ? "Staff Strike" : esPortugues ? "Golpe de Cajado" : "Golpe de Bastón";
         nombre = titulo;
         string subtitulo = esIngles
           ? "Basic melee staff attack."
           : esPortugues
-            ? "Ataque corpo a corpo basico com cajado."
-            : "Ataque melee basico con baston.";
+            ? "Ataque corpo a corpo básico com cajado."
+            : "Ataque cuerpo a cuerpo básico con bastón.";
+
+        if (esIngles)
+        {
+          string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({fuerzaActual})");
+          string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+          string danioContundente = TerminoDescripcion(TerminoDescripcionId.DanioContundente, "Bludgeoning damage", "dano_contundente");
+          txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+            titulo,
+            subtitulo,
+            new[]
+            {
+              LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+              LineaDescripcion("Effect", $"Deals {rangoDanio} + {fuerza} as {danioContundente} on hit."),
+              LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{ataqueTxt}{bonusAtaqueTxt} vs {defensa}. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%.", 1)
+            },
+            mostrarIconoMelee: true);
+          return;
+        }
+
+        if (esPortugues)
+        {
+          string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Força ({fuerzaActual})");
+          string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+          string danoContundente = TerminoDescripcion(TerminoDescripcionId.DanioContundente, "dano Contundente", "dano_contundente");
+          txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+            titulo,
+            subtitulo,
+            new[]
+            {
+              LineaDescripcion("Alvo", "1 alvo ou obstáculo em alcance corpo a corpo"),
+              LineaDescripcion("Efeito", $"Causa {rangoDanio} + {forca} como {danoContundente} ao acertar."),
+              LineaDescripcion("Rolagem de ataque", $"1d20 + {forca}{ataqueTxt}{bonusAtaqueTxt} vs {defesa}. Falha crítica: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%.", 1)
+            },
+            mostrarIconoMelee: true);
+          return;
+        }
+
+        {
+          string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Fuerza ({fuerzaActual})");
+          string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+          string danioContundente = TerminoDescripcion(TerminoDescripcionId.DanioContundente, "daño Contundente", "dano_contundente");
+          txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+            titulo,
+            subtitulo,
+            new[]
+            {
+              LineaDescripcion("Objetivo", "1 objetivo u obstáculo en alcance cuerpo a cuerpo"),
+              LineaDescripcion("Efecto", $"Causa {rangoDanio} + {fuerza} como {danioContundente} al impactar."),
+              LineaDescripcion("Tirada de ataque", $"1d20 + {fuerza}{ataqueTxt}{bonusAtaqueTxt} vs {defensa}. Pifia: {pifiaPorcentaje}%. Crítico: {criticoPorcentaje}%.", 1)
+            },
+            mostrarIconoMelee: true);
+          return;
+        }
 
         string cuerpo = "";
         if (esIngles)
         {
           cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
           cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in melee range</color>\n";
-          cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Strength ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
+          cuerpo += $"<color={colorEncabezado}><b>Attack Roll:</b></color> <color={colorValor}>1d20 + <color={colorFuerza}>Strength ({fuerzaActual})</color>{ataqueTxt}{bonusAtaqueTxt} vs Defense. Fumble: {pifiaPorcentaje}%. Crit: {criticoPorcentaje}%</color>\n";
           cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>{rangoDanio} + <color={colorFuerza}>Strength ({fuerzaActual})</color>. Type: Bludgeoning</color>";
         }
         else if (esPortugues)

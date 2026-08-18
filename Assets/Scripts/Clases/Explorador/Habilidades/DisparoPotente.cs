@@ -22,8 +22,7 @@ public class DisparoPotente : Habilidad
       nombre = "Tiro Potente";
       IDenClase = 5;
       costoAP = 4;
-      costoPM = 1;
-      if(NIVEL == 4){costoPM -= 1;}
+      costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       esZonal = true;
@@ -50,7 +49,7 @@ public class DisparoPotente : Habilidad
       imHab = Resources.Load<Sprite>("imHab/Explorador_TiroPotente");
       
 
-      requiereRecurso = 2; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
+      requiereRecurso = NIVEL == 4 ? 0 : 1; // IVa conserva la mejora de costo: no consume Flecha.
       ActualizarDescripcion();
 
     }
@@ -93,6 +92,108 @@ public class DisparoPotente : Habilidad
           ? $"<color={colorAgilidad}>Agilidade ({agilidadActual})</color>"
           : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
       string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonoAtaqueNivel);
+
+      if (esIngles)
+      {
+        string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string penetracion = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Armor Penetration", "IconoArmadura");
+        string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Arrow");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+2 damage."; }
+          else if (NIVEL == 2) { proximaMejora = "+1 Attack Roll bonus."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: No Arrow cost.\nOption B: +2 Attack Roll bonus."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Fires a heavy shot through every target in one row.",
+          new[]
+          {
+            LineaDescripcion("Target", "All enemies and obstacles in 1 row"),
+            LineaDescripcion("Effect", $"On hit, each target suffers {rangoDanio} + {agilidad} as {danioCortante}."),
+            LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+            LineaDescripcion("Penetration", $"{penetracion}: {penetracionArmadura}"),
+            LineaDescripcion("Cost", requiereRecurso > 0 ? $"1 {flecha}" : "None"),
+            LineaDescripcion("Effort", $"Up to {esforzable} AP")
+          },
+          proximaMejora);
+
+        if (EsEscenaCampaña())
+        {
+          ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+          if (clase != null && clase.ObtenerCantidadFlechas() < requiereRecurso)
+          {
+            txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+          }
+        }
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string agilidade = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidade ({agilidadActual})");
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante");
+        string penetracao = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Penetração de Armadura", "IconoArmadura");
+        string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +2 de dano."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +1 na Rolagem de ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: sem custo de Flecha.\nOpção B: +2 na Rolagem de ataque."; }
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloPt,
+          "Dispara um tiro pesado que atravessa todos os alvos de uma fileira.",
+          new[]
+          {
+            LineaDescripcion("Alvo", "Todos os inimigos e obstáculos em 1 fileira"),
+            LineaDescripcion("Efeito", $"Ao acertar, cada alvo sofre {rangoDanio} + {agilidade} como {danoCortante}."),
+            LineaDescripcion("Rolagem de ataque", $"1d20 + {agilidade}{bonusTirada} vs {defesa}. Falha crítica: 5%. {critico}: {criticoPorcentaje}%."),
+            LineaDescripcion("Penetração", $"{penetracao}: {penetracionArmadura}"),
+            LineaDescripcion("Custo", requiereRecurso > 0 ? $"1 {flecha}" : "Nenhum"),
+            LineaDescripcion("Esforço", $"Até {esforzable} AP")
+          },
+          proximaMejora);
+        return;
+      }
+
+      {
+        string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidad ({agilidadActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante");
+        string penetracion = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Penetración de Armadura", "IconoArmadura");
+        string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +2 de daño."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +1 a la Tirada de ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: sin costo de Flecha.\nOpción B: +2 a la Tirada de ataque."; }
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloEs,
+          "Dispara un tiro pesado que atraviesa todos los objetivos de una fila.",
+          new[]
+          {
+            LineaDescripcion("Objetivo", "Todos los enemigos y obstáculos en 1 fila"),
+            LineaDescripcion("Efecto", $"Al impactar, cada objetivo sufre {rangoDanio} + {agilidad} como {danioCortante}."),
+            LineaDescripcion("Tirada de ataque", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Pifia: 5%. {critico}: {criticoPorcentaje}%."),
+            LineaDescripcion("Penetración", $"{penetracion}: {penetracionArmadura}"),
+            LineaDescripcion("Costo", requiereRecurso > 0 ? $"1 {flecha}" : "Ninguno"),
+            LineaDescripcion("Esfuerzo", $"Hasta {esforzable} AP")
+          },
+          proximaMejora);
+        return;
+      }
 
       string cuerpo = "";
       if (esIngles)
@@ -189,7 +290,10 @@ public class DisparoPotente : Habilidad
         Origen = Usuario.GetComponent<Unidad>().CasillaPosicion;
         ObtenerObjetivos();
         
-        Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
+        if (requiereRecurso > 0)
+        {
+          Usuario.GetComponent<ClaseExplorador>().CambiarCantidadFlechas(-1);
+        }
       
         BattleManager.Instance.SeleccionandoObjetivo = true;
         BattleManager.Instance.HabilidadActiva = this;

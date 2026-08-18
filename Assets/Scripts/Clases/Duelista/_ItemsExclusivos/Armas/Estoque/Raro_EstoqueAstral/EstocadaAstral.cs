@@ -27,6 +27,38 @@ public class EstocadaAstral : Estocada
         string tituloPt = "Estocada Astral";
         nombre = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
 
+        if (esIngles)
+        {
+            string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, "Strength");
+            string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, "Agility");
+            string atributoMixto = $"{fuerza}/{agilidad} ({atributoMixtoActual})";
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string defensaSinIcono = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense");
+            string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+            string mentalSinIcono = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental save");
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+            string resistenciaArcana = TerminoDescripcion(TerminoDescripcionId.ResistenciaArcana, "Arcane Resistance");
+            string bonusTiradaNormalizado = FormatoModificadorDescripcion(ataqueActual) + FormatoModificadorDescripcion(bonusAtaque);
+            int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloEn,
+                "A precise thrust that can leave an astral seal.",
+                new[]
+                {
+                    LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+                    LineaDescripcion("Effect", $"On hit, deals {FormatearRangoDados(1, 8)} + {atributoMixto} as {danioPerforante}."),
+                    LineaDescripcion("Attack Roll", $"1d20 + {atributoMixto}{bonusTiradaNormalizado} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+                    LineaDescripcion("Penetration", $"Armor Penetration: {penetracionArmadura}."),
+                    LineaDescripcion("Save", $"Target's {mental} vs DC {DificultadMarcaAstral}.", 1),
+                    LineaDescripcion("Failed save", $"Astral Mark: -1 {defensaSinIcono}, -2 {mentalSinIcono} and -10 {resistenciaArcana} ({DuracionMarcaAstral} turns).", 1)
+                },
+                mostrarIconoMelee: true);
+            return;
+        }
+        if(esPortugues){string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Força");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade");string mix=$"{forca}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string def2=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa");string mental=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Mental","ic_mental");string mental2=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Salvaguarda Mental");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante");string res=TerminoDescripcion(TerminoDescripcionId.ResistenciaArcana,"Resistência Arcana");string bonus=FormatoModificadorDescripcion(ataqueActual)+FormatoModificadorDescripcion(bonusAtaque);int pct=Mathf.Clamp(21-criticoBaseMin,0,20)*5;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Uma estocada precisa que pode deixar um selo astral.",new[]{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {FormatearRangoDados(1,8)} + {mix} como {dano}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {mix}{bonus} vs {def}. Falha crítica: 5%. {crit}: {pct}%."),LineaDescripcion("Penetração",$"Penetração de Armadura: {penetracionArmadura}."),LineaDescripcion("Salvaguarda",$"{mental} do alvo vs CD {DificultadMarcaAstral}.",1),LineaDescripcion("Falha",$"Marca Astral: -1 {def2}, -2 {mental2} e -10 {res} ({DuracionMarcaAstral} turnos).",1)},mostrarIconoMelee:true);return;}
+        {string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Fuerza");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidad");string mix=$"{fuerza}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string def2=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa");string mental=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Mental","ic_mental");string mental2=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Salvación Mental");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante");string res=TerminoDescripcion(TerminoDescripcionId.ResistenciaArcana,"Resistencia Arcana");string bonus=FormatoModificadorDescripcion(ataqueActual)+FormatoModificadorDescripcion(bonusAtaque);int pct=Mathf.Clamp(21-criticoBaseMin,0,20)*5;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Una estocada precisa que puede dejar un sello astral.",new[]{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {FormatearRangoDados(1,8)} + {mix} como {dano}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {mix}{bonus} vs {def}. Pifia: 5%. {crit}: {pct}%."),LineaDescripcion("Penetración",$"Penetración de Armadura: {penetracionArmadura}."),LineaDescripcion("Salvación",$"{mental} del objetivo vs CD {DificultadMarcaAstral}.",1),LineaDescripcion("Salvación fallida",$"Marca Astral: -1 {def2}, -2 {mental2} y -10 {res} ({DuracionMarcaAstral} turnos).",1)},mostrarIconoMelee:true);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

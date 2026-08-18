@@ -48,6 +48,24 @@ public class REPRESENTACIONUltimoPaso : Habilidad
             : esPortugues
                 ? "Passiva: ativa uma vez por batalha abaixo de metade do HP."
                 : "Pasiva: se activa una vez por combate bajo mitad de HP.";
+        if (esIngles)
+        {
+            string evasion = TerminoDescripcion(TerminoDescripcionId.Evasion, "Evasion", "Estado_evasion");
+            string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrier", "Estado_barrera");
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                titulo,
+                "Passive: Protects the wearer when reduced to half HP.",
+                new[]
+                {
+                    LineaDescripcion("Trigger", "First time at 50% HP or less each battle."),
+                    LineaDescripcion("Effect", $"+{BonusEvasion} {evasion} and +{BarreraOtorgada} {barrera} (1 turn)."),
+                    LineaDescripcion("Limit", "Once per battle.")
+                });
+            return;
+        }
+        if(esPortugues){string eva=TerminoDescripcion(TerminoDescripcionId.Evasion,"Evasão","Estado_evasion");string bar=TerminoDescripcion(TerminoDescripcionId.Barrera,"Barreira","Estado_barrera");txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Passiva: protege a portadora quando seu HP é reduzido à metade.",new[]{LineaDescripcion("Ativação","Primeira vez com 50% de HP ou menos em cada batalha."),LineaDescripcion("Efeito",$"+{BonusEvasion} {eva} e +{BarreraOtorgada} {bar} (1 turno)."),LineaDescripcion("Limite","Uma vez por batalha.")},costoSuperior:string.Empty);return;}
+        {string eva=TerminoDescripcion(TerminoDescripcionId.Evasion,"Evasión","Estado_evasion");string bar=TerminoDescripcion(TerminoDescripcionId.Barrera,"Barrera","Estado_barrera");txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Pasiva: protege a la portadora cuando su HP se reduce a la mitad.",new[]{LineaDescripcion("Activación","Primera vez con 50% de HP o menos en cada batalla."),LineaDescripcion("Efecto",$"+{BonusEvasion} {eva} y +{BarreraOtorgada} {bar} (1 turno)."),LineaDescripcion("Límite","Una vez por batalla.")},costoSuperior:string.Empty);return;}
+
         string cuerpo = esIngles
             ? $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Passive</color>\n<color={colorEncabezado}><b>Trigger:</b></color> <color={colorValor}>First time below 50% HP each battle</color>\n<color={colorEncabezado}><b>Effect:</b></color> <color={colorValor}>+{BonusEvasion} Evasion, +{BarreraOtorgada} Barrier for 1 turn</color>"
             : esPortugues

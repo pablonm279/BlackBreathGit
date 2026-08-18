@@ -104,12 +104,43 @@ public class CargaDeEstoque : Habilidad
         string reglaCrucePt = NIVEL > 2 ? "nao pode atravessar obstáculos; pode atravessar aliados" : "nao pode atravessar obstáculos nem aliados";
         string reglaCruceEs = NIVEL > 2 ? "no puede atravesar obstáculos; puede atravesar aliados" : "no puede atravesar obstáculos ni aliados";
 
+        if (esIngles)
+        {
+            string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) proximaMejora = "+3 damage.";
+                else if (NIVEL == 2) proximaMejora = "Can cross allies.";
+                else if (NIVEL == 3) proximaMejora = "Option A: -1 AP cost. Option B: +2 damage per tile advanced.";
+            }
+
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloEn,
+                "Charges through enemies in the same row.",
+                new List<LineaDescripcionNormalizada>
+                {
+                    LineaDescripcion("Target", "All enemies in 1 row"),
+                    LineaDescripcion("Effect", $"Moves to the front column and attacks each target for {rangoDanio} + {agilidad} + {danioPorCasillaActual} per tile advanced as {danioPerforante}."),
+                    LineaDescripcion("Path", NIVEL > 2 ? "Can cross allies, but not obstacles." : "Cannot cross allies or obstacles."),
+                    LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} + {bonusAtaquePorCasilla} per tile advanced vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+                    LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+                },
+                proximaMejora,
+                mostrarIconoMelee: true);
+            return;
+        }
+        if(esPortugues){string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidade ({agilidadActual})");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +3 de dano.":NIVEL==2?"Próximo nível: pode atravessar aliados.":NIVEL==3?"Opção A: -1 de custo de AP. Opção B: +2 de dano por casa avançada.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Avança através de inimigos na mesma fileira.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","Todos os inimigos em 1 fileira"),LineaDescripcion("Efeito",$"Move-se para a coluna frontal e ataca cada alvo, causando {rangoDanio} + {agi} + {danioPorCasillaActual} por casa avançada como {dano}."),LineaDescripcion("Trajeto",NIVEL>2?"Pode atravessar aliados, mas não obstáculos.":"Não pode atravessar aliados nem obstáculos."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {agi}{bonusTirada} + {bonusAtaquePorCasilla} por casa avançada vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
+        {string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidad ({agilidadActual})");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +3 de daño.":NIVEL==2?"Próximo nivel: puede atravesar aliados.":NIVEL==3?"Opción A: -1 de costo de AP. Opción B: +2 de daño por casilla avanzada.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Carga a través de los enemigos de la misma fila.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","Todos los enemigos en 1 fila"),LineaDescripcion("Efecto",$"Se mueve a la columna frontal y ataca a cada objetivo, infligiendo {rangoDanio} + {agi} + {danioPorCasillaActual} por casilla avanzada como {dano}."),LineaDescripcion("Trayecto",NIVEL>2?"Puede atravesar aliados, pero no obstáculos.":"No puede atravesar aliados ni obstáculos."),LineaDescripcion("Tirada de Ataque",$"1d20 + {agi}{bonusTirada} + {bonusAtaquePorCasilla} por casilla avanzada vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
+
         string cuerpo = "";
         if (esIngles)
         {
             cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Melee row attack\n";
             cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> enemies on the same row\n";
-            cuerpo += $"<color={colorEncabezado}><b>Movement:</b></color> moves to front column; swaps a front ally to the tile behind\n";
             cuerpo += $"<color={colorEncabezado}><b>Cast rule:</b></color> {reglaCruceEn}\n";
             cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> 1d20 + {atributo}{bonusTirada} + {bonusAtaquePorCasilla} per tile advanced vs Defense\n";
             cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
@@ -120,7 +151,6 @@ public class CargaDeEstoque : Habilidad
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee em linha\n";
             cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> inimigos na mesma linha\n";
-            cuerpo += $"<color={colorEncabezado}><b>Movimento:</b></color> avanca ate a coluna frontal; troca aliado frontal para a casa de tras\n";
             cuerpo += $"<color={colorEncabezado}><b>Regra de uso:</b></color> {reglaCrucePt}\n";
             cuerpo += $"<color={colorEncabezado}><b>Rolagem:</b></color> 1d20 + {atributo}{bonusTirada} + {bonusAtaquePorCasilla} por casa avancada vs Defesa\n";
             cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
@@ -131,7 +161,6 @@ public class CargaDeEstoque : Habilidad
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Ataque melee en fila\n";
             cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> enemigos en la misma fila\n";
-            cuerpo += $"<color={colorEncabezado}><b>Movimiento:</b></color> avanza a columna frontal; intercambia aliado frontal hacia la casilla de atras\n";
             cuerpo += $"<color={colorEncabezado}><b>Regla de uso:</b></color> {reglaCruceEs}\n";
             cuerpo += $"<color={colorEncabezado}><b>Tirada:</b></color> 1d20 + {atributo}{bonusTirada} + {bonusAtaquePorCasilla} por casilla avanzada vs Defensa\n";
             cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";

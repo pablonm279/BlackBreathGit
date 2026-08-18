@@ -450,10 +450,12 @@ MonoBehaviour:
   hpMax: 19
   hpCurr: 19
   iDureza: 2
+  destruiblePorMismoLado: 1
   intDuracionTurnos: 0
   bPermiteAtacarDetras: 1
   "PrefabtxtDa\xF1o": {fileID: 4773948864690474365, guid: cb36988dcddf06045aab4be789304d7f, type: 3}
   unidadCanvas: {fileID: 1489090333822559996}
+  puntoEntrante: {fileID: 0}
   "txtDa\xF1o": {fileID: 0}
   CasillaPosicion: {fileID: 0}
   barraVida: {fileID: 1313975592113719097}
@@ -470,6 +472,7 @@ GameObject:
   - component: {fileID: 941790619872887782}
   - component: {fileID: 7909801009474106580}
   - component: {fileID: 3991850348679597319}
+  - component: {fileID: 2141599070146826913}
   m_Layer: 0
   m_Name: Image (1)
   m_TagString: Untagged
@@ -591,3 +594,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 933449daf2fb0c943acd95e5717375c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2141599070146826913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7418290366238379368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.87058824}
+  m_EffectDistance: {x: 0.38, y: -1}
+  m_UseGraphicAlpha: 1

@@ -11064,6 +11064,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     TMP_SpriteAsset spriteAssetRecursos = logDeCampania != null ? logDeCampania.SpriteAssetRecursos : null;
     if (spriteAssetRecursos != null)
     {
+      TextoIconosCombate.NormalizarSpriteAsset(spriteAssetRecursos);
       txtMesh.spriteAsset = spriteAssetRecursos;
     }
 
@@ -11129,7 +11130,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return textoBase;
     }
 
-    return textoBase + " <size=60%><sprite name=\"" + spriteName + "\"></size>";
+    return textoBase + " " + TextoIconosCombate.NormalizarIconosInline("<sprite name=\"" + spriteName + "\">");
   }
 
   private string ObtenerSpriteTextoRecurso(GameObject textoOrigen)
@@ -12437,6 +12438,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     txString = FloatingTextAnimator.NormalizarTextoRichText(txString);
     TMP_SpriteAsset spriteAssetRecursos = logDeCampania != null ? logDeCampania.SpriteAssetRecursos : null;
+    TextoIconosCombate.NormalizarSpriteAsset(spriteAssetRecursos);
     txString = TextoRecursosCampania.FormatearRecursos(txString, spriteAssetRecursos != null);
     colaTextos.Enqueue((txString, color));
     TryProcesarColaTextoFlotante();
@@ -12483,6 +12485,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           TMP_SpriteAsset spriteAssetRecursos = logDeCampania != null ? logDeCampania.SpriteAssetRecursos : null;
           if (spriteAssetRecursos != null)
           {
+            TextoIconosCombate.NormalizarSpriteAsset(spriteAssetRecursos);
             txtMesh.spriteAsset = spriteAssetRecursos;
           }
 

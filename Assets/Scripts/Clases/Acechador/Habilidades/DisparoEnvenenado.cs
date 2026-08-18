@@ -189,6 +189,50 @@ public class DisparoEnvenenado : Habilidad
     if (NIVEL == 4) { tituloPt = "Disparo Envenenado IV a"; }
     if (NIVEL == 5) { tituloPt = "Disparo Envenenado IV b"; }
 
+    if (esIngles)
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+      string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+      string veneno = TerminoDescripcion(TerminoDescripcionId.Veneno, "Poison", "Estado_veneno");
+      string venenoResumen = TerminoDescripcion(TerminoDescripcionId.Veneno, "poisoned");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) proximaMejora = "+1 Poison on a failed save.";
+        else if (NIVEL == 2) proximaMejora = "+1 save DC.";
+        else if (NIVEL == 3) proximaMejora = "Option A: +2 Poison. Option B: -1 cooldown.";
+      }
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Target", "1 target or obstacle"),
+        LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {agilidad} as {danioPerforante}."),
+        LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+        LineaDescripcion("Save", $"Target's {fortaleza} vs DC {dcBase}.", 1),
+        LineaDescripcion("Failed save", $"Applies {venenoAplicado} {veneno}.", 1)
+      };
+      if (nivelMaestria > 0)
+      {
+        lineas.Add(LineaDescripcion("Passive", $"Hand Crossbow Mastery (Tier {nivelMaestria})."));
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        $"Hand crossbow attack. Fires a {venenoResumen} bolt that can afflict the target.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidade ({agilidadActual})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante"); string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortitude","ic_fortaleza"); string ven=TerminoDescripcion(TerminoDescripcionId.Veneno,"Veneno","veneno"); string venRes=TerminoDescripcion(TerminoDescripcionId.Veneno,"envenenado"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 Veneno em uma falha.":NIVEL==2?"Próximo nível: +1 CD da salvaguarda.":NIVEL==3?"Opção A: +2 Veneno. Opção B: -1 de recarga.":null; var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} + {agi} como {dano}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {agi}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Salvaguarda",$"{fort} do alvo vs CD {dcBase}.",1),LineaDescripcion("Falha",$"Aplica {venenoAplicado} {ven}.",1)}; if(nivelMaestria>0)l.Add(LineaDescripcion("Passiva",$"Maestria com Besta de Mão (Nível {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,$"Ataque com besta de mão. Dispara um virote {venRes} que pode afligir o alvo.",l,prox); return;
+    }
+    {
+      string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidad ({agilidadActual})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante"); string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortaleza","ic_fortaleza"); string ven=TerminoDescripcion(TerminoDescripcionId.Veneno,"Veneno","veneno"); string venRes=TerminoDescripcion(TerminoDescripcionId.Veneno,"envenenado"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 Veneno con una salvación fallida.":NIVEL==2?"Próximo nivel: +1 CD de salvación.":NIVEL==3?"Opción A: +2 Veneno. Opción B: -1 de enfriamiento.":null; var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 objetivo u obstáculo"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} + {agi} como {dano}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {agi}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Salvación",$"{fort} del objetivo vs CD {dcBase}.",1),LineaDescripcion("Salvación fallida",$"Aplica {venenoAplicado} {ven}.",1)}; if(nivelMaestria>0)l.Add(LineaDescripcion("Pasiva",$"Maestría con Ballesta de Mano (Nivel {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,$"Ataque con ballesta de mano. Dispara un virote {venRes} que puede afectar al objetivo.",l,prox); return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {

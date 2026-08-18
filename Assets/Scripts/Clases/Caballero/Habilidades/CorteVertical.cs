@@ -74,6 +74,54 @@ public class Cortevertical : Habilidad
           ? "Ataque corpo a corpo com mandoble."
           : "Golpe frontal con el mandoble.";
 
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({fuerzaActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          "Vertical Cut",
+          "Delivers a heavy downward strike against one target.",
+          new[]
+          {
+            LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+            LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+            LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{ataqueTxt}{bonusAtaqueTxt} vs {defensa}. Fumble: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.")
+          },
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Força ({fuerzaActual})");
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Corte Vertical", "Desfere um golpe descendente pesado contra um alvo.", new[]
+        {
+          LineaDescripcion("Alvo", "1 alvo ou obstáculo em alcance corpo a corpo"),
+          LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {forca} como {danoCortante}."),
+          LineaDescripcion("Rolagem de Ataque", $"1d20 + {forca}{ataqueTxt}{bonusAtaqueTxt} vs {defesa}. Falha crítica: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.")
+        }, mostrarIconoMelee: true);
+        return;
+      }
+
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Fuerza ({fuerzaActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Corte Vertical", "Asesta un potente golpe descendente contra un objetivo.", new[]
+        {
+          LineaDescripcion("Objetivo", "1 objetivo u obstáculo en alcance cuerpo a cuerpo"),
+          LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {fuerza} como {danoCortante}."),
+          LineaDescripcion("Tirada de Ataque", $"1d20 + {fuerza}{ataqueTxt}{bonusAtaqueTxt} vs {defensa}. Pifia: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.")
+        }, mostrarIconoMelee: true);
+        return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {

@@ -29,6 +29,14 @@ public class MenuPersonajes : MonoBehaviour
   public Sprite Female001; //Purificadora
   public Sprite Female002; //Duelista
 
+  public GameObject clasePreview;
+
+  public GameObject clasePreviewCaballero;
+  public GameObject clasePreviewExplorador;
+  public GameObject clasePreviewAcechador;
+  public GameObject clasePreviewCanalizador;
+  public GameObject clasePreviewPurificadora;
+  public GameObject clasePreviewDuelista;
 
   public Personaje pSel;
 
@@ -89,6 +97,73 @@ public class MenuPersonajes : MonoBehaviour
     }
 
     LimpiarSeleccionVisual();
+  }
+
+  private void ActualizarPreviewClaseSeleccionada()
+  {
+    if (clasePreview == null)
+    {
+      return;
+    }
+
+    if (clasePreviewCaballero != null) clasePreviewCaballero.SetActive(false);
+    if (clasePreviewExplorador != null) clasePreviewExplorador.SetActive(false);
+    if (clasePreviewAcechador != null) clasePreviewAcechador.SetActive(false);
+    if (clasePreviewCanalizador != null) clasePreviewCanalizador.SetActive(false);
+    if (clasePreviewPurificadora != null) clasePreviewPurificadora.SetActive(false);
+    if (clasePreviewDuelista != null) clasePreviewDuelista.SetActive(false);
+
+    if (pSel == null)
+    {
+      return;
+    }
+
+    switch (pSel.IDClase)
+    {
+      case 1:
+        if (clasePreviewCaballero != null) clasePreviewCaballero.SetActive(true);
+        break;
+      case 2:
+        if (clasePreviewExplorador != null) clasePreviewExplorador.SetActive(true);
+        break;
+      case 3:
+        if (clasePreviewPurificadora != null) clasePreviewPurificadora.SetActive(true);
+        break;
+      case 4:
+        if (clasePreviewAcechador != null) clasePreviewAcechador.SetActive(true);
+        break;
+      case 5:
+        if (clasePreviewCanalizador != null) clasePreviewCanalizador.SetActive(true);
+        break;
+      case 6:
+        if (clasePreviewDuelista != null) clasePreviewDuelista.SetActive(true);
+        break;
+    }
+  }
+
+  public void abrirClasePreview()
+  {
+    if (clasePreview != null)
+    {
+      clasePreview.SetActive(true);
+      ActualizarPreviewClaseSeleccionada();
+    }
+  }
+
+  public void cerrarClasePreview()
+  {
+    if (clasePreview != null)
+    {
+      clasePreview.SetActive(false);
+    }
+  }
+
+  private void Update()
+  {
+    if (Input.GetKeyDown(KeyCode.Escape) && clasePreview != null && clasePreview.activeInHierarchy)
+    {
+      cerrarClasePreview();
+    }
   }
 
   public void AbrirEchar()
@@ -335,6 +410,10 @@ public class MenuPersonajes : MonoBehaviour
 
     CancelInvoke("ActualizarInfo");
     ActualizarInfo();
+    if (clasePreview != null && clasePreview.activeInHierarchy)
+    {
+      ActualizarPreviewClaseSeleccionada();
+    }
     if (scEquipo != null)
     {
       scEquipo.RefrescarInventarioSiAbierto();

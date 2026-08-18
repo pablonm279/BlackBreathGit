@@ -42,8 +42,31 @@ public class VigilanciaTrampa : Trampa
       return;
     }
 
+    ClaseExplorador claseExplorador = unidadCreadora.GetComponent<ClaseExplorador>();
+    if (claseExplorador == null)
+    {
+      Debug.LogWarning("VigilanciaTrampa no encontró ClaseExplorador en la unidad creadora.");
+      return;
+    }
+
     if (vigilancia.disparosEsteTurno > 0)
     {
+      if (claseExplorador.ObtenerCantidadFlechas() < 1)
+      {
+        string mensajeSinFlechas = TRADU.i != null && TRADU.i.nIdioma == 2
+          ? "No more arrows"
+          : TRADU.i != null && TRADU.i.nIdioma == 3
+            ? "Não há mais flechas"
+            : "No hay más flechas";
+        _ = unidadCreadora.GenerarTextoFlotante(mensajeSinFlechas, Color.gray, FloatingTextContext.Resist);
+        if (BattleManager.Instance != null)
+        {
+          BattleManager.Instance.EscribirLog(mensajeSinFlechas + ".");
+        }
+        ReducirUsos();
+        return;
+      }
+
       vigilancia.disparosEsteTurno--;
       //objetivo.AccionP_actual = 0; //Cuando a una IA le reacciona un personaje, se queda sin AP, para que no haga cosas mientras el pj reacciona
 
@@ -66,7 +89,7 @@ public class VigilanciaTrampa : Trampa
         tirada += 1;
       }
 
-      tiroArco.AplicarEfectosHabilidad(objetivo, tirada, null);
+      tiroArco.AplicarEfectosHabilidadConTipoDanio(objetivo, tirada, vigilancia.TipoDanioReaccion, null);
 
       if (objetivos != null)
       {

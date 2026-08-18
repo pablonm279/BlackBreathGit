@@ -24,7 +24,7 @@ public class Asesinar : Habilidad
 
       nombre = "Asesinar";
       costoAP = 3; 
-      costoPM = 1;
+      costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       claseAcechador = scEstaUnidad as ClaseAcechador;
@@ -98,6 +98,48 @@ public class Asesinar : Habilidad
     if (NIVEL == 3) { tituloPt = "Assassinar III"; }
     if (NIVEL == 4) { tituloPt = "Assassinar IV a"; }
     if (NIVEL == 5) { tituloPt = "Assassinar IV b"; }
+
+    if (esIngles)
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Hidden", "Estado_oculto");
+      string ocultoSinIcono = TerminoDescripcion(TerminoDescripcionId.Oculto, "Hidden");
+      string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) proximaMejora = "+2 base damage.";
+        else if (NIVEL == 2) proximaMejora = "+1 Attack Roll against isolated targets.";
+        else if (NIVEL == 3) proximaMejora = "Option A: +2 Valour on kill. Option B: +3 base damage.";
+      }
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Target", "1 enemy"),
+        LineaDescripcion("Requirement", $"Stalker is {oculto}."),
+        LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {agilidad} as {danioCortante}; +2 damage against Humanoids."),
+        LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+        LineaDescripcion("Isolated target", $"No units in adjacent tiles; +{bonoAtaqueAislado} Attack Roll and double final damage."),
+        LineaDescripcion("On kill", $"Gains {ocultoSinIcono}; the skill becomes available after 1 turn" + (NIVEL == 4 ? "; gains 2 Valour." : "."))
+      };
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "A lethal attack that is stronger against isolated targets.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string oculto=TerminoDescripcion(TerminoDescripcionId.Oculto,"Oculto","Estado_oculto"); string oculto2=TerminoDescripcion(TerminoDescripcionId.Oculto,"Oculto"); string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidade ({agilidadActual})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"dano Cortante","dano_cortante"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +2 de dano base.":NIVEL==2?"Próximo nível: +1 na Rolagem de Ataque contra alvos isolados.":NIVEL==3?"Opção A: +2 de Valentia ao matar. Opção B: +3 de dano base.":null;
+      txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Um ataque letal mais forte contra alvos isolados.",new[]{LineaDescripcion("Alvo","1 inimigo"),LineaDescripcion("Requisito",$"O Espreitador está {oculto}."),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} + {agi} como {dano}; +2 de dano contra Humanoides."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {agi}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Alvo isolado",$"Sem unidades nas casas adjacentes; +{bonoAtaqueAislado} na Rolagem de Ataque e dano final dobrado."),LineaDescripcion("Ao matar",$"Recebe {oculto2}; a habilidade fica disponível após 1 turno"+(NIVEL==4?"; recebe 2 de Valentia.":"."))},prox); return;
+    }
+    {
+      string oculto=TerminoDescripcion(TerminoDescripcionId.Oculto,"Oculto","Estado_oculto"); string oculto2=TerminoDescripcion(TerminoDescripcionId.Oculto,"Oculto"); string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidad ({agilidadActual})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"daño Cortante","dano_cortante"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +2 de daño base.":NIVEL==2?"Próximo nivel: +1 a la Tirada de Ataque contra objetivos aislados.":NIVEL==3?"Opción A: +2 de Valentía al matar. Opción B: +3 de daño base.":null;
+      txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Un ataque letal más fuerte contra objetivos aislados.",new[]{LineaDescripcion("Objetivo","1 enemigo"),LineaDescripcion("Requisito",$"El Acechador está {oculto}."),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} + {agi} como {dano}; +2 de daño contra Humanoides."),LineaDescripcion("Tirada de Ataque",$"1d20 + {agi}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Objetivo aislado",$"Sin unidades en casillas adyacentes; +{bonoAtaqueAislado} a la Tirada de Ataque y daño final doble."),LineaDescripcion("Al matar",$"Obtiene {oculto2}; la habilidad queda disponible después de 1 turno"+(NIVEL==4?"; obtiene 2 de Valentía.":"."))},prox); return;
+    }
 
     string cuerpo = "";
     if (esIngles)

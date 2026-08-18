@@ -61,6 +61,101 @@ public class CastigaraLosMalvados : Habilidad
       string lineaSalvacionEs = ConstruirLineaSalvacion(false, TipoSalvacionDescripcion.Mental, dcBase, "Pod", "Power", poderActual, "Poder");
       string lineaSalvacionEn = ConstruirLineaSalvacion(true, TipoSalvacionDescripcion.Mental, dcBase, "Poder", "Power", poderActual);
 
+      if (esIngles)
+      {
+        string marcaReactiva = TerminoDescripcion(TerminoDescripcionId.MarcaReactiva, "Reactive Mark", "Estado_reaccion");
+        string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental save", "ic_mental");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental");
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string porcentajeDanio = NIVEL == 5 ? "50%" : "33%";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Next Level: +1 save DC."; }
+          else if (NIVEL == 2) { proximaMejora = "Next Level: -1 cooldown."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +1 use.\nOption B: damage share increases to 50%."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Marks an enemy; damaging allies triggers Divine punishment.",
+          new[]
+          {
+            LineaDescripcion("Target", "1 enemy"),
+            LineaDescripcion("Effect", $"Applies {marcaReactiva}. Whenever the target damages one of your allies, it makes a {salvacionMental}."),
+            LineaDescripcion("Save", $"{mental} vs DC {dcBase} + {poder}", 1),
+            LineaDescripcion("Failed save", $"Suffers {rangoDanioEs} + {poder} + {porcentajeDanio} of damage dealt as {danioDivino}; loses all remaining {ap}.", 1),
+            LineaDescripcion("Ends", $"After {usos} failed saves, or when the target succeeds the save.")
+          },
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string marcaReactiva = TerminoDescripcion(TerminoDescripcionId.MarcaReactiva, "Marca Reativa", "Estado_reaccion");
+        string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "resistência Mental", "ic_mental");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental");
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string danoDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string porcentagemDanio = NIVEL == 5 ? "50%" : "33%";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 na DC da resistência."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: -1 de recarga."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: +1 uso.\nOpção B: a proporção de dano aumenta para 50%."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloPt,
+          "Marca um inimigo; causar dano a aliados ativa a punição Divina.",
+          new[]
+          {
+            LineaDescripcion("Alvo", "1 inimigo"),
+            LineaDescripcion("Efeito", $"Aplica {marcaReactiva}. Sempre que o alvo causa dano a um dos seus aliados, ele faz uma {salvacionMental}."),
+            LineaDescripcion("Resistência", $"{mental} vs DC {dcBase} + {poder}", 1),
+            LineaDescripcion("Falha", $"Sofre {rangoDanioEs} + {poder} + {porcentagemDanio} do dano causado como {danoDivino}; perde todo o {ap} restante.", 1),
+            LineaDescripcion("Termina", $"Após {usos} falhas na resistência, ou quando o alvo passa na resistência.")
+          },
+          proximaMejora);
+        return;
+      }
+
+      {
+        string marcaReactiva = TerminoDescripcion(TerminoDescripcionId.MarcaReactiva, "Marca Reactiva", "Estado_reaccion");
+        string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "TS Mental", "ic_mental");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental");
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string porcentajeDanio = NIVEL == 5 ? "50%" : "33%";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 a la DC de la salvación."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: -1 de enfriamiento."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: +1 uso.\nOpción B: la proporción de daño aumenta al 50%."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloEs,
+          "Marca a un enemigo; dañar a los aliados activa el castigo Divino.",
+          new[]
+          {
+            LineaDescripcion("Objetivo", "1 enemigo"),
+            LineaDescripcion("Efecto", $"Aplica {marcaReactiva}. Cada vez que el objetivo daña a uno de tus aliados, realiza una {salvacionMental}."),
+            LineaDescripcion("TS", $"{mental} vs DC {dcBase} + {poder}", 1),
+            LineaDescripcion("TS fallida", $"Sufre {rangoDanioEs} + {poder} + {porcentajeDanio} del daño infligido como {danioDivino}; pierde todo el {ap} restante.", 1),
+            LineaDescripcion("Termina", $"Después de {usos} TS fallidas, o cuando el objetivo supera la TS.")
+          },
+          proximaMejora);
+        return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {
@@ -128,7 +223,7 @@ public class CastigaraLosMalvados : Habilidad
       if (esIngles)
       {
         cuerpoNuevo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Reactive mark {iconoReaccion}</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy on the opposite side</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Trigger:</b></color> <color={colorValor}>When the marked unit damages an ally</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Mental vs DC {dcBase} + <color={colorPoder}>Power ({poderActual})</color></color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Failed save:</b></color> <color={colorValor}>{iconoDebuff} loses all remaining AP; {danio} of damage dealt. Type: Divine</color>\n";
@@ -137,7 +232,7 @@ public class CastigaraLosMalvados : Habilidad
       else if (esPortugues)
       {
         cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Marca reativa {iconoReaccion}</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo do lado oposto</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 inimigo</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Gatilho:</b></color> <color={colorValor}>Quando a unidade marcada causa dano a um aliado</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Resistencia:</b></color> <color={colorValor}>Mental vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Se falhar:</b></color> <color={colorValor}>{iconoDebuff} perde todo AP restante; {danio} do dano causado. Tipo: Divino</color>\n";
@@ -146,7 +241,7 @@ public class CastigaraLosMalvados : Habilidad
       else
       {
         cuerpoNuevo += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Marca reactiva {iconoReaccion}</color>\n";
-        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo del lado opuesto</color>\n";
+        cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 enemigo</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Disparo:</b></color> <color={colorValor}>Cuando la unidad marcada daña a un aliado</color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>TS:</b></color> <color={colorValor}>Mental vs DC {dcBase} + <color={colorPoder}>Poder ({poderActual})</color></color>\n";
         cuerpoNuevo += $"<color={colorEncabezado}><b>Si falla:</b></color> <color={colorValor}>{iconoDebuff} pierde todo AP restante; {danio} del daño infligido. Tipo: Divino</color>\n";

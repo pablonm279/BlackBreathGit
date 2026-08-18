@@ -56,13 +56,45 @@ public class Riposte : Habilidad
         string costoSuperior = $"{costoAP} {iconoAP}";
         string contraataque = ConstruirTextoContraataqueRiposte(bonusAtaqueReaccion, -2, esIngles, esPortugues);
 
+        if (esIngles)
+        {
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) proximaMejora = "+1 Defense on the intercepted hit.";
+                else if (NIVEL == 2) proximaMejora = "Counterattack loses its -1 Attack Roll penalty.";
+                else if (NIVEL == 3) proximaMejora = "Option A: Taking damage does not cancel Riposte. Option B: +1 use per turn.";
+            }
+
+            string contraataqueNormalizado = bonusAtaqueReaccion < 0
+                ? $"Thrust ({bonusAtaqueReaccion} Attack Roll, -2 damage)"
+                : "Thrust (-2 damage)";
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                titulo,
+                "Prepares to intercept melee attacks and counterattack misses.",
+                new[]
+                {
+                    LineaDescripcion("Target", "Self"),
+                    LineaDescripcion("Effect", "Prepares Riposte."),
+                    LineaDescripcion("Reaction", $"When an adjacent ally is targeted by a single-target melee attack, swaps with the ally, becomes the target and gains +{bonoDefensa} {defensa} for that hit; when an enemy misses a melee attack against the Duelist, counterattacks with {contraataqueNormalizado}.", 1),
+                    LineaDescripcion("Limit", $"{usos} use{(usos == 1 ? "" : "s")}.", 1),
+                    LineaDescripcion("Ends", seCancelaConDanio ? "After taking damage." : "Taking damage does not end it.", 1),
+                    LineaDescripcion("Use", "Ends the turn")
+                },
+                proximaMejora);
+            return;
+        }
+        if(esPortugues){string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 Defesa no golpe interceptado.":NIVEL==2?"Próximo nível: o contra-ataque perde a penalidade de -1 na Rolagem de Ataque.":NIVEL==3?"Opção A: sofrer dano não cancela Riposte. Opção B: +1 uso por turno.":null;string contra=bonusAtaqueReaccion<0?$"Estocada ({bonusAtaqueReaccion} na Rolagem de Ataque, -2 de dano)":"Estocada (-2 de dano)";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Prepara-se para interceptar ataques corpo a corpo e contra-atacar erros.",new[]{LineaDescripcion("Alvo","A própria Duelista"),LineaDescripcion("Efeito","Prepara Riposte."),LineaDescripcion("Reação",$"Quando um aliado adjacente é alvo de um ataque corpo a corpo de alvo único, troca de posição com ele, torna-se o alvo e recebe +{bonoDefensa} {def} para esse golpe; quando um inimigo erra um ataque corpo a corpo contra a Duelista, contra-ataca com {contra}.",1),LineaDescripcion("Limite",$"{usos} uso{(usos==1?"":"s")}.",1),LineaDescripcion("Termina",seCancelaConDanio?"Após sofrer dano.":"Sofrer dano não encerra o efeito.",1),LineaDescripcion("Uso","Encerra o turno")},prox);return;}
+        {string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 Defensa en el golpe interceptado.":NIVEL==2?"Próximo nivel: el contraataque pierde su penalización de -1 a la Tirada de Ataque.":NIVEL==3?"Opción A: recibir daño no cancela Riposte. Opción B: +1 uso por turno.":null;string contra=bonusAtaqueReaccion<0?$"Estocada ({bonusAtaqueReaccion} a la Tirada de Ataque, -2 de daño)":"Estocada (-2 de daño)";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Se prepara para interceptar ataques cuerpo a cuerpo y contraatacar fallos.",new[]{LineaDescripcion("Objetivo","La propia Duelista"),LineaDescripcion("Efecto","Prepara Riposte."),LineaDescripcion("Reacción",$"Cuando un aliado adyacente es objetivo de un ataque cuerpo a cuerpo de un solo objetivo, intercambia posiciones, se convierte en el objetivo y obtiene +{bonoDefensa} {def} para ese golpe; cuando un enemigo falla un ataque cuerpo a cuerpo contra la Duelista, contraataca con {contra}.",1),LineaDescripcion("Límite",$"{usos} uso{(usos==1?"":"s")}.",1),LineaDescripcion("Termina",seCancelaConDanio?"Después de recibir daño.":"Recibir daño no termina el efecto.",1),LineaDescripcion("Uso","Termina el turno")},prox);return;}
+
         string cuerpo = "";
         if (esIngles)
         {
             cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Self reaction\n";
             cuerpo += $"<color={colorEncabezado}><b>Trigger 1:</b></color> adjacent ally is targeted by a single-target enemy melee attack\n";
             cuerpo += $"<color={colorEncabezado}><b>Intercept:</b></color> swap positions, become target, +{bonoDefensa} Defense for that hit\n";
-            cuerpo += $"<color={colorEncabezado}><b>Trigger 2:</b></color> enemy misses a melee attack against her; counterattacks with base Thrust{contraataque}\n";
+            cuerpo += $"<color={colorEncabezado}><b>Trigger 2:</b></color> enemy misses a melee attack against her; counterattacks with Thrust{contraataque}\n";
             cuerpo += $"<color={colorEncabezado}><b>Uses:</b></color> {usos} per turn\n";
             cuerpo += seCancelaConDanio
                 ? $"<color={colorEncabezado}><b>Cancel:</b></color> removed when taking damage\n"

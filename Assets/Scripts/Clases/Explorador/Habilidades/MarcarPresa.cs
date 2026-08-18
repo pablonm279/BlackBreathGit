@@ -17,7 +17,7 @@ public class MarcarPresa : Habilidad
       nombre = "Marcar Presa";
       IDenClase = 4;
       costoAP = 1;
-      costoPM = 1;
+      costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       esZonal = false;
@@ -64,12 +64,110 @@ public class MarcarPresa : Habilidad
     string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
     string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
 
+    if (esIngles)
+    {
+      string marca = TerminoDescripcion(TerminoDescripcionId.MarcaPresa, "Prey Mark", "Estado_marcado");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour", "Valentía");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "max AP", "ap");
+      string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental Save", "ic_mental");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "+5% critical damage against the marked target."; }
+        else if (NIVEL == 2) { proximaMejora = "+5% Crit against the marked target."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: removes the penalty against other targets.\nOption B: +1 Valour, +1 max AP, and +1 Mental Save to the kill reward."; }
+      }
+
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Target", "1 enemy"),
+        LineaDescripcion("Effect", $"Applies {marca} for 3 turns."),
+        LineaDescripcion("Against target", $"+{bonoAtaqueMarca} Attack Roll, +{bonoCritPorcentajeMarca}% {critico}, +{bonoCritDanioMarca}% critical damage.", 1)
+      };
+      if (aplicaPenalidadPropia)
+      {
+        lineas.Add(LineaDescripcion("Penalty", "-2 to Attack Rolls against other targets (2 turns).", 1));
+      }
+      lineas.Add(LineaDescripcion("On marked kill", $"+{recompensaVal} {valentia}, +{recompensaApMax} {ap}, +{recompensaTsMental} {salvacionMental} (3 turns).", 1));
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Marks one enemy and improves attacks against it.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string marca = TerminoDescripcion(TerminoDescripcionId.MarcaPresa, "Marca de Presa", "Estado_marcado");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia", "Valentía");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP máximo", "ap");
+      string resistenciaMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Resistência Mental", "ic_mental");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nível: +5% de dano crítico contra o alvo marcado."; }
+        else if (NIVEL == 2) { proximaMejora = $"Próximo nível: +5% de {critico} contra o alvo marcado."; }
+        else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: remove a penalidade contra outros alvos.\nOpção B: +1 Valentia, +1 AP máximo e +1 Resistência Mental na recompensa por abate."; }
+      }
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Alvo", "1 inimigo"),
+        LineaDescripcion("Efeito", $"Aplica {marca} por 3 turnos."),
+        LineaDescripcion("Contra o alvo", $"+{bonoAtaqueMarca} na Rolagem de ataque, +{bonoCritPorcentajeMarca}% {critico}, +{bonoCritDanioMarca}% de dano crítico.", 1)
+      };
+      if (aplicaPenalidadPropia)
+      {
+        lineas.Add(LineaDescripcion("Penalidade", "-2 nas Rolagens de ataque contra outros alvos (2 turnos).", 1));
+      }
+      lineas.Add(LineaDescripcion("Ao abater o marcado", $"+{recompensaVal} {valentia}, +{recompensaApMax} {ap}, +{recompensaTsMental} {resistenciaMental} (3 turnos).", 1));
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloPt,
+        "Marca um inimigo e melhora os ataques contra ele.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
+    {
+      string marca = TerminoDescripcion(TerminoDescripcionId.MarcaPresa, "Marca de Presa", "Estado_marcado");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía", "Valentía");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP máximo", "ap");
+      string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "TS Mental", "ic_mental");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nivel: +5% de daño crítico contra el objetivo marcado."; }
+        else if (NIVEL == 2) { proximaMejora = $"Próximo nivel: +5% de {critico} contra el objetivo marcado."; }
+        else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: elimina la penalización contra otros objetivos.\nOpción B: +1 Valentía, +1 AP máximo y +1 TS Mental a la recompensa por baja."; }
+      }
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Objetivo", "1 enemigo"),
+        LineaDescripcion("Efecto", $"Aplica {marca} durante 3 turnos."),
+        LineaDescripcion("Contra el objetivo", $"+{bonoAtaqueMarca} a la Tirada de ataque, +{bonoCritPorcentajeMarca}% {critico}, +{bonoCritDanioMarca}% de daño crítico.", 1)
+      };
+      if (aplicaPenalidadPropia)
+      {
+        lineas.Add(LineaDescripcion("Penalización", "-2 a las Tiradas de ataque contra otros objetivos (2 turnos).", 1));
+      }
+      lineas.Add(LineaDescripcion("Al matar al marcado", $"+{recompensaVal} {valentia}, +{recompensaApMax} {ap}, +{recompensaTsMental} {salvacionMental} (3 turnos).", 1));
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloEs,
+        "Marca a un enemigo y mejora los ataques contra él.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {
       cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Mark\n";
       cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy\n";
-      cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> {costoPM} Valour\n";
       cuerpo += $"<color={colorEncabezado}><b>Mark duration:</b></color> 3 turns\n";
       cuerpo += $"<color={colorEncabezado}><b>Against marked target:</b></color> roll +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Crit, +{bonoCritDanioMarca}% crit damage\n";
       cuerpo += aplicaPenalidadPropia
@@ -81,7 +179,6 @@ public class MarcarPresa : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Marca\n";
       cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> {costoPM} Valentia\n";
       cuerpo += $"<color={colorEncabezado}><b>Duracao da marca:</b></color> 3 turnos\n";
       cuerpo += $"<color={colorEncabezado}><b>Contra marcado:</b></color> rolagem +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Critico, +{bonoCritDanioMarca}% dano critico\n";
       cuerpo += aplicaPenalidadPropia
@@ -93,7 +190,6 @@ public class MarcarPresa : Habilidad
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Marca\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentía\n";
       cuerpo += $"<color={colorEncabezado}><b>Duración de marca:</b></color> 3 turnos\n";
       cuerpo += $"<color={colorEncabezado}><b>Contra marcado:</b></color> tirada +{bonoAtaqueMarca}, +{bonoCritPorcentajeMarca}% Crítico, +{bonoCritDanioMarca}% daño crítico\n";
       cuerpo += aplicaPenalidadPropia

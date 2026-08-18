@@ -20,6 +20,7 @@ public class UnidadIdleMotion : MonoBehaviour
 
   private Unidad unidad;
   private RectTransform rectImagen;
+  private bool esControladaPorIA;
 
   private Vector2 offsetAplicado;
   private float rotacionAplicada;
@@ -34,6 +35,9 @@ public class UnidadIdleMotion : MonoBehaviour
   void Awake()
   {
     unidad = GetComponent<Unidad>();
+    // La presencia de IAUnidad es fija para toda la vida del objeto (no se agrega/quita en runtime),
+    // asi que se cachea una vez en vez de hacer GetComponent en cada LateUpdate.
+    esControladaPorIA = unidad != null && unidad.GetComponent<IAUnidad>() != null;
     VincularRect();
 
     faseX = Random.Range(0f, Mathf.PI * 2f);
@@ -107,7 +111,7 @@ public class UnidadIdleMotion : MonoBehaviour
     }
 
     // Si tiene IA, no es el turno activo de una unidad del jugador.
-    return unidad.GetComponent<IAUnidad>() == null;
+    return !esControladaPorIA;
   }
 
   void OnDisable()
@@ -136,6 +140,8 @@ public class UnidadIdleMotion : MonoBehaviour
       {
         return false;
       }
+
+      esControladaPorIA = unidad.GetComponent<IAUnidad>() != null;
     }
 
     if (rectImagen == null)

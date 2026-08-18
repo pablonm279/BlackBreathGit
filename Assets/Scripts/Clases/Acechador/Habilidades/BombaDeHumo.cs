@@ -18,7 +18,7 @@ public class BombaDeHumo : Habilidad
       IDenClase = 5;
       costoAP = 2;
       if(NIVEL > 2){costoAP--;}
-      costoPM = 1;
+      costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       esZonal = false;
@@ -63,6 +63,45 @@ public class BombaDeHumo : Habilidad
       if (NIVEL == 3) { tituloPt = "Bomba de Fumaca III"; }
       if (NIVEL == 4) { tituloPt = "Bomba de Fumaca IV a"; }
       if (NIVEL == 5) { tituloPt = "Bomba de Fumaca IV b"; }
+
+      if (esIngles)
+      {
+        string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Hidden", "Estado_oculto");
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Attack");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        string areaHumo = radioZona == 1
+          ? "the target tile and adjacent tiles"
+          : $"the target tile and all tiles within {radioZona} tiles";
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) proximaMejora = "-1 cooldown.";
+          else if (NIVEL == 2) proximaMejora = "-1 AP cost.";
+          else if (NIVEL == 3) proximaMejora = "Option A: +1 turn duration. Option B: radius 2 area.";
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Creates smoke that conceals units entering it.",
+          new[]
+          {
+            LineaDescripcion("Target", "1 tile"),
+            LineaDescripcion("Effect", $"Creates smoke on {areaHumo}."),
+            LineaDescripcion("On enter", $"Units gain {oculto}, +2 {ataque} and +5% {critico}."),
+            LineaDescripcion("Duration", $"{duracionHumo} turns")
+          },
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string oculto=TerminoDescripcion(TerminoDescripcionId.Oculto,"Oculto","Estado_oculto"); string atk=TerminoDescripcion(TerminoDescripcionId.Ataque,"Ataque"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string area=radioZona==1?"a casa alvo e as casas adjacentes":$"a casa alvo e todas as casas a até {radioZona} casas"; string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: -1 de recarga.":NIVEL==2?"Próximo nível: -1 de custo de AP.":NIVEL==3?"Opção A: +1 turno de duração. Opção B: área de raio 2.":null;
+        txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Cria fumaça que oculta as unidades que entram nela.",new[]{LineaDescripcion("Alvo","1 casa"),LineaDescripcion("Efeito",$"Cria fumaça sobre {area}."),LineaDescripcion("Ao entrar",$"Unidades recebem {oculto}, +2 {atk} e +5% {crit}."),LineaDescripcion("Duração",$"{duracionHumo} turnos")},prox); return;
+      }
+      {
+        string oculto=TerminoDescripcion(TerminoDescripcionId.Oculto,"Oculto","Estado_oculto"); string atk=TerminoDescripcion(TerminoDescripcionId.Ataque,"Ataque"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string area=radioZona==1?"la casilla objetivo y las casillas adyacentes":$"la casilla objetivo y todas las casillas a un máximo de {radioZona} casillas"; string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: -1 de enfriamiento.":NIVEL==2?"Próximo nivel: -1 de costo de AP.":NIVEL==3?"Opción A: +1 turno de duración. Opción B: área de radio 2.":null;
+        txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Crea humo que oculta a las unidades que entran en él.",new[]{LineaDescripcion("Objetivo","1 casilla"),LineaDescripcion("Efecto",$"Crea humo sobre {area}."),LineaDescripcion("Al entrar",$"Las unidades obtienen {oculto}, +2 {atk} y +5% {crit}."),LineaDescripcion("Duración",$"{duracionHumo} turnos")},prox); return;
+      }
 
       string cuerpo = "";
       if (esIngles)

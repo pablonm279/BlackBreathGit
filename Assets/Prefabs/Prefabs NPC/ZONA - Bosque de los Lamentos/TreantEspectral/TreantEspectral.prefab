@@ -416,6 +416,7 @@ MonoBehaviour:
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
   barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaSangradoColor: {r: 0.28, g: 0.015, b: 0.015, a: 1}
   barraVidaRatioInicioRojo: 0.2
   barraVidaOscurecerTurnoPasado: 0.72
   rotuloHabilidadOffset: {x: 0, y: 3.5}
@@ -627,7 +628,7 @@ MonoBehaviour:
   poseAtacar: {fileID: 21300000, guid: a48258460ee32c04e9af75e4aac2e4f4, type: 3}
   poseHabilidad: {fileID: 21300000, guid: a48258460ee32c04e9af75e4aac2e4f4, type: 3}
   poseRecibirDanio: {fileID: 0}
-  poseTurnoActivo: {fileID: 0}
+  poseTurnoActivo: {fileID: 21300000, guid: c8dafc49548dd1045991a69e204393b3, type: 3}
   duracionPoseAtacar: 1
   duracionPoseDanyo: 1
   duracionPoseHabilidad: 1

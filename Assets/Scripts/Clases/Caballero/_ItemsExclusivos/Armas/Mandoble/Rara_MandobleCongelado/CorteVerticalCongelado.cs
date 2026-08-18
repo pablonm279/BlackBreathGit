@@ -92,6 +92,48 @@ public class CorteVerticalCongelado : Habilidad
       string titulo = esIngles ? "Frozen Vertical Slash" : esPortugues ? "Corte Vertical Congelado" : "Corte Vertical Congelado";
       string subtitulo = esIngles ? "Heavy melee attack with extra Cold damage." : esPortugues ? "Ataque corpo a corpo pesado com dano de Gelo extra." : "Ataque melee pesado con dano Frio extra.";
       string efecto = esIngles ? "Extra damage: 1-10 Cold; on critical, 1-6 Cold to adjacent enemies" : esPortugues ? "Dano extra: 1-10 Gelo; em critico, 1-6 Gelo a inimigos adjacentes" : "Dano extra: 1-10 Frio; en critico, 1-6 Frio a enemigos adyacentes";
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string danioFrio = TerminoDescripcion(TerminoDescripcionId.DanioFrio, "Cold damage", "dano_hielo");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          titulo,
+          "A frozen strike that splashes Cold damage on critical hits.",
+          new[]
+          {
+            LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+            LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+            LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 10%. {critico}: {criticoPorcentaje}%.", 1),
+            LineaDescripcion("Weapon effect", $"Units suffer an additional 1-10 as {danioFrio}."),
+            LineaDescripcion("On critical", $"Adjacent enemies suffer 1-6 as {danioFrio}.", 1)
+          },
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Força ({stats.Fuerza})"); string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa"); string cortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante"); string frio = TerminoDescripcion(TerminoDescripcionId.DanioFrio, "dano de Frio", "dano_hielo"); string frioSemIcone = TerminoDescripcion(TerminoDescripcionId.DanioFrio, "dano de Frio"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "Um golpe congelante que espalha dano de Frio em acertos críticos.", new[]
+        {
+          LineaDescripcion("Alvo", "1 alvo ou obstáculo em alcance corpo a corpo"), LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {forca} como {cortante}."),
+          LineaDescripcion("Rolagem de Ataque", $"1d20 + {forca}{bonusTirada} vs {defesa}. Falha crítica: 10%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Efeito da arma", $"Unidades sofrem 1-10 adicional como {frio}."), LineaDescripcion("Em acerto crítico", $"Inimigos adjacentes sofrem 1-6 como {frioSemIcone}.", 1)
+        }, mostrarIconoMelee: true); return;
+      }
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Fuerza ({stats.Fuerza})"); string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa"); string cortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante"); string frio = TerminoDescripcion(TerminoDescripcionId.DanioFrio, "daño de Frío", "dano_hielo"); string frioSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioFrio, "daño de Frío"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "Un golpe congelante que propaga daño de Frío con los impactos críticos.", new[]
+        {
+          LineaDescripcion("Objetivo", "1 objetivo u obstáculo en alcance cuerpo a cuerpo"), LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {fuerza} como {cortante}."),
+          LineaDescripcion("Tirada de Ataque", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Pifia: 10%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Efecto del arma", $"Las unidades sufren 1-10 adicional como {frio}."), LineaDescripcion("Con impacto crítico", $"Los enemigos adyacentes sufren 1-6 como {frioSinIcono}.", 1)
+        }, mostrarIconoMelee: true); return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {
@@ -498,5 +540,3 @@ public class CorteVerticalCongelado : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
-
-

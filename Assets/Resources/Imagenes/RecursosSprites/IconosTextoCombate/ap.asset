@@ -101,6 +101,6 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
-    sprite: {fileID: 21300000, guid: b595b1b462018c346ac85238ab927859, type: 3}
+    sprite: {fileID: 21300000, guid: d386414f837c37744881f37387685d03, type: 3}
   spriteInfoList: []
   fallbackSpriteAssets: []

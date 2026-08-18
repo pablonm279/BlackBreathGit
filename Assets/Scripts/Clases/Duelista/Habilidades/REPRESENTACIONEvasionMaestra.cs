@@ -51,6 +51,47 @@ public class REPRESENTACIONEvasionMaestra : Habilidad
 
         string colorTitulo = "#5dade2";
         string colorEncabezado = "#44d3ec";
+        if (esIngles)
+        {
+            string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+            string apSinIcono = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP");
+            string impulso = TerminoDescripcion(TerminoDescripcionId.Impulso, "Impulse");
+            string evasion = TerminoDescripcion(TerminoDescripcionId.Evasion, "Evasion", "Estado_evasion");
+            string reflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflex", "ic_Reflejos");
+            string tambaleando = TerminoDescripcion(TerminoDescripcionId.Tambaleando, "Staggering");
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) proximaMejora = "+1 Impulse on trigger.";
+                else if (NIVEL == 2) proximaMejora = "+1 Evasion on trigger.";
+                else if (NIVEL == 3) proximaMejora = "Option A: +1 use per turn. Option B: Reflex save for Staggering.";
+            }
+
+            var lineas = new System.Collections.Generic.List<LineaDescripcionNormalizada>
+            {
+                LineaDescripcion("Trigger", "Dodges a melee attack."),
+                LineaDescripcion("Effect", $"Steps 1 tile backward and the attacker loses all remaining {ap}."),
+                LineaDescripcion("Movement", "If occupied, tries the rear diagonals; never enters trapped tiles."),
+                LineaDescripcion("Limit", $"{usosPorTurno} use{(usosPorTurno == 1 ? "" : "s")} per turn.")
+            };
+            if (daImpulso) lineas.Add(LineaDescripcion("Gain", $"+1 {impulso}."));
+            if (daEvasion) lineas.Add(LineaDescripcion("Gain", $"+1 {evasion}."));
+            if (aplicaTambaleando)
+            {
+                lineas.Add(LineaDescripcion("Save", $"Attacker's {reflejos} vs DC 10.", 1));
+                lineas.Add(LineaDescripcion("Failed save", $"Gains {tambaleando}: -1 max {apSinIcono}, -2 {defensa} (1 turn).", 1));
+            }
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                "Master Evasion " + sufijoNivel,
+                "Passive: Dodging a melee attack interrupts the attacker and creates distance.",
+                lineas,
+                proximaMejora);
+            return;
+        }
+        if(esPortugues){string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string ap2=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP");string imp=TerminoDescripcion(TerminoDescripcionId.Impulso,"Impulso");string eva=TerminoDescripcion(TerminoDescripcionId.Evasion,"Evasão","Estado_evasion");string refx=TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos,"Reflexos","ic_Reflejos");string tamb=TerminoDescripcion(TerminoDescripcionId.Tambaleando,"Cambaleante");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 Impulso ao ativar.":NIVEL==2?"Próximo nível: +1 Evasão ao ativar.":NIVEL==3?"Opção A: +1 uso por turno. Opção B: salvaguarda de Reflexos para Cambaleante.":null;var l=new System.Collections.Generic.List<LineaDescripcionNormalizada>{LineaDescripcion("Ativação","Desvia de um ataque corpo a corpo."),LineaDescripcion("Efeito",$"Recua 1 casa e o atacante perde todo o {ap} restante."),LineaDescripcion("Movimento","Se estiver ocupada, tenta as diagonais traseiras; nunca entra em casas com armadilhas."),LineaDescripcion("Limite",$"{usosPorTurno} uso{(usosPorTurno==1?"":"s")} por turno.")};if(daImpulso)l.Add(LineaDescripcion("Ganho",$"+1 {imp}."));if(daEvasion)l.Add(LineaDescripcion("Ganho",$"+1 {eva}."));if(aplicaTambaleando){l.Add(LineaDescripcion("Salvaguarda",$"{refx} do atacante vs CD 10.",1));l.Add(LineaDescripcion("Falha",$"Recebe {tamb}: -1 {ap2} máximo, -2 {def} (1 turno).",1));}txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Evasão Mestra "+sufijoNivel,"Passiva: desviar de um ataque corpo a corpo interrompe o atacante e cria distância.",l,prox,costoSuperior:string.Empty);return;}
+        {string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string ap2=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP");string imp=TerminoDescripcion(TerminoDescripcionId.Impulso,"Impulso");string eva=TerminoDescripcion(TerminoDescripcionId.Evasion,"Evasión","Estado_evasion");string refx=TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos,"Reflejos","ic_Reflejos");string tamb=TerminoDescripcion(TerminoDescripcionId.Tambaleando,"Tambaleante");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 Impulso al activarse.":NIVEL==2?"Próximo nivel: +1 Evasión al activarse.":NIVEL==3?"Opción A: +1 uso por turno. Opción B: salvación de Reflejos para Tambaleante.":null;var l=new System.Collections.Generic.List<LineaDescripcionNormalizada>{LineaDescripcion("Activación","Esquiva un ataque cuerpo a cuerpo."),LineaDescripcion("Efecto",$"Retrocede 1 casilla y el atacante pierde todo el {ap} restante."),LineaDescripcion("Movimiento","Si está ocupada, intenta las diagonales traseras; nunca entra en casillas con trampas."),LineaDescripcion("Límite",$"{usosPorTurno} uso{(usosPorTurno==1?"":"s")} por turno.")};if(daImpulso)l.Add(LineaDescripcion("Obtiene",$"+1 {imp}."));if(daEvasion)l.Add(LineaDescripcion("Obtiene",$"+1 {eva}."));if(aplicaTambaleando){l.Add(LineaDescripcion("Salvación",$"{refx} del atacante vs CD 10.",1));l.Add(LineaDescripcion("Salvación fallida",$"Obtiene {tamb}: -1 {ap2} máximo, -2 {def} (1 turno).",1));}txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Evasión Maestra "+sufijoNivel,"Pasiva: esquivar un ataque cuerpo a cuerpo interrumpe al atacante y crea distancia.",l,prox,costoSuperior:string.Empty);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

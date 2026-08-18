@@ -18,6 +18,87 @@ public class REPRESENTACIONAcumulacionProtegida : Habilidad
   
     public override void  ActualizarDescripcion()
     {
+      if (TRADU.i != null && TRADU.i.nIdioma == 2)
+      {
+        var statsUI = ObtenerStatsDescripcionUI();
+        string titulo = "Protected Gathering I";
+        if (NIVEL == 2) { titulo = "Protected Gathering II"; }
+        else if (NIVEL == 3) { titulo = "Protected Gathering III"; }
+        else if (NIVEL == 4) { titulo = "Protected Gathering IV a"; }
+        else if (NIVEL == 5) { titulo = "Protected Gathering IV b"; }
+
+        int barreraExtraIngles = NIVEL == 4 ? 6 : NIVEL > 1 ? 2 : 0;
+        int bonusMental = NIVEL > 2 ? 2 : 1;
+        string energia = TerminoDescripcion(TerminoDescripcionId.Energia, "Energy tier", "Estado_acumularenergia");
+        string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrier", "Estado_barrera");
+        string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental saves", "ic_mental");
+        string formula = $"1 + Power ({statsUI.Poder}) + 3 x current {energia}";
+        if (barreraExtraIngles > 0) { formula += $" + {barreraExtraIngles}"; }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Trigger", "Uses Gather Energy."),
+          LineaDescripcion("Effect", $"Gains {formula} as {barrera} and +{bonusMental} to {salvacionMental}."),
+          LineaDescripcion("Duration", "Until the start of the next turn.")
+        };
+        if (NIVEL == 5)
+        {
+          lineas.Add(LineaDescripcion("While Gathering", $"+1 {TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "Max AP", "ap")}."));
+        }
+
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+2 Barrier."; }
+          else if (NIVEL == 2) { proximaMejora = "+1 additional Mental save."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +4 additional Barrier.\nOption B: +1 Max AP while Gathering."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          titulo,
+          "Passive: Protects the Channeler while gathering Energy.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
+      {
+        bool pt = TRADU.i != null && TRADU.i.nIdioma == 3;
+        var statsUI = ObtenerStatsDescripcionUI();
+        string titulo = pt ? "Acúmulo Protegido I" : "Acumulación Protegida I";
+        if (NIVEL == 2) { titulo = pt ? "Acúmulo Protegido II" : "Acumulación Protegida II"; }
+        else if (NIVEL == 3) { titulo = pt ? "Acúmulo Protegido III" : "Acumulación Protegida III"; }
+        else if (NIVEL == 4) { titulo = pt ? "Acúmulo Protegido IV a" : "Acumulación Protegida IV a"; }
+        else if (NIVEL == 5) { titulo = pt ? "Acúmulo Protegido IV b" : "Acumulación Protegida IV b"; }
+        int barreraExtraLocalizada = NIVEL == 4 ? 6 : NIVEL > 1 ? 2 : 0;
+        int bonusMental = NIVEL > 2 ? 2 : 1;
+        string energia = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia" : "nivel de Energía", "Estado_acumularenergia");
+        string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, pt ? "Barreira" : "Barrera", "Estado_barrera");
+        string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, pt ? "resistências Mentais" : "salvaciones Mentales", "ic_mental");
+        string formula = $"1 + Poder ({statsUI.Poder}) + 3 x {(pt ? "nível atual de" : "nivel actual de")} {energia}";
+        if (barreraExtraLocalizada > 0) { formula += $" + {barreraExtraLocalizada}"; }
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion(pt ? "Gatilho" : "Desencadenante", pt ? "Usa Acumular Energia." : "Usa Acumular Energía."),
+          LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Recebe" : "Obtiene")} {formula} como {barrera} {(pt ? "e" : "y")} +{bonusMental} {(pt ? "às" : "a las")} {salvacionMental}."),
+          LineaDescripcion(pt ? "Duração" : "Duración", pt ? "Até o início do próximo turno." : "Hasta el inicio del próximo turno.")
+        };
+        if (NIVEL == 5) { lineas.Add(LineaDescripcion(pt ? "Enquanto acumula" : "Mientras acumula", $"+1 {TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP Máx.", "ap")}.")); }
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = pt ? "+2 de Barreira." : "+2 de Barrera."; }
+          else if (NIVEL == 2) { proximaMejora = pt ? "+1 adicional às resistências Mentais." : "+1 adicional a las salvaciones Mentales."; }
+          else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: +4 de Barreira adicionais.\nOpção B: +1 AP Máx. enquanto acumula." : "Opción A: +4 de Barrera adicionales.\nOpción B: +1 AP Máx. mientras acumula."; }
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          titulo,
+          pt ? "Passiva: protege o Canalizador enquanto acumula Energia." : "Pasiva: protege al Canalizador mientras acumula Energía.",
+          lineas,
+          proximaMejora,
+          costoSuperior: string.Empty);
+        return;
+      }
 
       if(NIVEL<2)
 {

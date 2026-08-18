@@ -1005,26 +1005,30 @@ public class Unidad : MonoBehaviour
   }
 
 
+private bool? indicadorTurnoActivoMostrado;
+private bool? animatorVueloHabilitadoMostrado;
+
 private void Update()
 {
   SincronizarEscaladosPorAtributos();
   estado_Condenado = Mathf.Clamp(estado_Condenado, 0, 3);
 
- if(BattleManager.Instance.unidadActiva == this)
-    {
-        transform.GetChild(1).gameObject.SetActive(true);
-    }
-    else
-    {
-        transform.GetChild(1).gameObject.SetActive(false);
-    }
+  bool esUnidadActiva = BattleManager.Instance.unidadActiva == this;
+  if (indicadorTurnoActivoMostrado != esUnidadActiva)
+  {
+    indicadorTurnoActivoMostrado = esUnidadActiva;
+    transform.GetChild(1).gameObject.SetActive(esUnidadActiva);
+  }
 
-    if (animator != null && unidadVoladora)
+  if (animator != null && unidadVoladora)
+  {
+    bool debeAnimarVuelo = estado_Volando && !bloquearAnimacionVuelo;
+    if (animatorVueloHabilitadoMostrado != debeAnimarVuelo)
     {
-      animator.enabled = estado_Volando && !bloquearAnimacionVuelo;
-        
-       
+      animatorVueloHabilitadoMostrado = debeAnimarVuelo;
+      animator.enabled = debeAnimarVuelo;
     }
+  }
 }
 
   void ActualizarAnimacionVuelo(Vector2 destino, bool instantaneo)
@@ -4754,6 +4758,7 @@ public virtual void AplicarDesesperanzado()
       txtMesh.richText = true;
       if (txString.Contains("<sprite") && BattleManager.Instance != null && BattleManager.Instance.SpriteAssetCombate != null)
       {
+        TextoIconosCombate.NormalizarSpriteAsset(BattleManager.Instance.SpriteAssetCombate);
         txtMesh.spriteAsset = BattleManager.Instance.SpriteAssetCombate;
       }
 

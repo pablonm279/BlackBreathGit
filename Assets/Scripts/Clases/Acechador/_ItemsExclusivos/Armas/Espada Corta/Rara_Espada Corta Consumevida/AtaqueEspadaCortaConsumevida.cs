@@ -100,6 +100,26 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
       string titulo = esIngles ? "Life-consuming Short Sword Slash" : esPortugues ? "Corte de Espada Curta Consomevida" : "Corte de Espada Corta Consumevida";
       string subtitulo = esIngles ? "Melee cut; on hit, grants temporary damage." : esPortugues ? "Corte corpo a corpo; ao acertar, concede dano temporario." : "Corte melee; al impactar, gana dano temporal.";
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+          LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+          LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion("On hit", "Gains +10% damage (2 turns).")
+        };
+        if (nivelMaestria > 0) lineas.Add(LineaDescripcion("Passive", $"Short Sword Mastery (Tier {nivelMaestria})."));
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(titulo, "A short sword attack that grants temporary damage.", lineas, mostrarIconoMelee: true);
+        return;
+      }
+      if (esPortugues)
+      { string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,$"Força ({stats.Fuerza})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string cort=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"dano Cortante","dano_cortante"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} + {forca} como {cort}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {forca}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Ao acertar","Recebe +10% de dano (2 turnos).")}; if(nivelMaestria>0)l.Add(LineaDescripcion("Passiva",$"Maestria com Espada Curta (Nível {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Um ataque com espada curta que concede dano temporário.",l,mostrarIconoMelee:true); return; }
+      { string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,$"Fuerza ({stats.Fuerza})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa"); string cort=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"daño Cortante","dano_cortante"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} + {fuerza} como {cort}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {fuerza}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Al impactar","Obtiene +10% de daño (2 turnos).")}; if(nivelMaestria>0)l.Add(LineaDescripcion("Pasiva",$"Maestría con Espada Corta (Nivel {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Un ataque con espada corta que otorga daño temporal.",l,mostrarIconoMelee:true); return; }
       string cuerpo = "";
       if (esIngles)
       {
@@ -521,7 +541,5 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
-
-
 
 

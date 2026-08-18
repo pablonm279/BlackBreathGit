@@ -98,6 +98,72 @@ public class TiroconArcoRalentizante : Habilidad
       string titulo = esIngles ? "Slowing Bow Shot" : esPortugues ? "Tiro com Arco Ralentizante" : "Tiro con Arco Ralentizante";
       string subtitulo = esIngles ? "Bow shot that can slow the target." : esPortugues ? "Disparo de arco que pode lentificar o alvo." : "Disparo de arco que puede ralentizar al objetivo.";
       string efecto = esIngles ? "On hit: Fortitude save vs DC 11; on failed save, Slowed for 2 turns" : esPortugues ? "Ao acertar: resistencia Fortitude vs CD 11; se falhar, Lento por 2 turnos" : "Al impactar: TS Fortaleza DC 11; si falla, Ralentizado 2 turnos";
+
+      if (esIngles)
+      {
+        string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({stats.Agilidad})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+        string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+        string ralentizado = TerminoDescripcion(TerminoDescripcionId.Ralentizado, "Slowed");
+        string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Arrow");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          "Slowing Bow Shot",
+          "Fires a heavy arrow that can slow its target.",
+          new[]
+          {
+            LineaDescripcion("Target", "1 enemy or obstacle"),
+            LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {agilidad} as {danioPerforante}; units make a Fortitude save."),
+            LineaDescripcion("Save", $"{fortaleza} vs DC 12", 1),
+            LineaDescripcion("Failed save", $"{ralentizado} (2 turns).", 1),
+            LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+            LineaDescripcion("Cost", $"1 {flecha}")
+          });
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string agilidade = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidade ({stats.Agilidad})");
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string danoPerfurante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "dano Perfurante", "dano_perforante");
+        string fortitude = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+        string lento = TerminoDescripcion(TerminoDescripcionId.Ralentizado, "Lento");
+        string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Tiro com Arco Ralentizante", "Dispara uma flecha pesada que pode deixar o alvo lento.", new[]
+        {
+          LineaDescripcion("Alvo", "1 inimigo ou obstáculo"),
+          LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {agilidade} como {danoPerfurante}; unidades fazem uma salvaguarda de Fortitude."),
+          LineaDescripcion("Salvaguarda", $"{fortitude} vs CD 12", 1),
+          LineaDescripcion("Falha", $"{lento} (2 turnos).", 1),
+          LineaDescripcion("Rolagem de Ataque", $"1d20 + {agilidade}{bonusTirada} vs {defesa}. Falha crítica: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion("Custo", $"1 {flecha}")
+        });
+        return;
+      }
+
+      {
+        string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidad ({stats.Agilidad})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string danoPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "daño Perforante", "dano_perforante");
+        string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortaleza", "ic_fortaleza");
+        string ralentizado = TerminoDescripcion(TerminoDescripcionId.Ralentizado, "Ralentizado");
+        string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Tiro con Arco Ralentizante", "Dispara una flecha pesada que puede ralentizar al objetivo.", new[]
+        {
+          LineaDescripcion("Objetivo", "1 enemigo u obstáculo"),
+          LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {agilidad} como {danoPerforante}; las unidades hacen una salvación de Fortaleza."),
+          LineaDescripcion("Salvación", $"{fortaleza} vs CD 12", 1),
+          LineaDescripcion("Salvación fallida", $"{ralentizado} (2 turnos).", 1),
+          LineaDescripcion("Tirada de Ataque", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Pifia: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion("Costo", $"1 {flecha}")
+        });
+        return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {

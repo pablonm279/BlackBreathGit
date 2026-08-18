@@ -24,6 +24,48 @@ public class REPRESENTACIONPasoCauteloso : Habilidad
     string colorTitulo = "#5dade2";
     string colorEncabezado = "#44d3ec";
 
+    if (esIngles)
+    {
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        "Cautious Step",
+        "Passive: Avoids one hostile tile effect each turn.",
+        new[]
+        {
+          LineaDescripcion("Trigger", "Enters a tile with a hostile effect."),
+          LineaDescripcion("Effect", "Evades that effect."),
+          LineaDescripcion("Limit", "Once per turn")
+        },
+        costoSuperior: string.Empty);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        "Passo Cauteloso",
+        "Passiva: evita um efeito de casa hostil por turno.",
+        new[]
+        {
+          LineaDescripcion("Ativação", "Entra em uma casa com um efeito hostil."),
+          LineaDescripcion("Efeito", "Evita esse efeito."),
+          LineaDescripcion("Limite", "Uma vez por turno")
+        },
+        costoSuperior: string.Empty);
+      return;
+    }
+
+    txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+      "Paso Cauteloso",
+      "Pasiva: evita un efecto de casilla hostil por turno.",
+      new[]
+      {
+        LineaDescripcion("Activación", "Entra en una casilla con un efecto hostil."),
+        LineaDescripcion("Efecto", "Evita ese efecto."),
+        LineaDescripcion("Límite", "Una vez por turno")
+      },
+      costoSuperior: string.Empty);
+    return;
+
     string titulo = "Paso Cauteloso";
     string subtitulo = "Evita una casilla hostil una vez por turno.";
     string cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n" +

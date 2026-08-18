@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 public static class TextoRecursosCampania
 {
-    private const string SpriteTagTamanoReducido = "<size=45%><sprite name=\"{0}\"></size>";
+    private const string SpriteTagNormalizado = "<size=125%><sprite name=\"{0}\"></size>";
 
     private static readonly Regex regexTagsTmp =
         new Regex(@"(<[^>]+>)", RegexOptions.Compiled);
@@ -41,7 +41,7 @@ public static class TextoRecursosCampania
             sb.Append(EsTagTmp(parte) ? parte : FormatearTextoVisible(parte));
         }
 
-        return sb.ToString();
+        return TextoIconosCombate.NormalizarIconosInline(sb.ToString());
     }
 
     private static string FormatearTextoVisible(string texto)
@@ -70,7 +70,7 @@ public static class TextoRecursosCampania
             Regex = new Regex(
                 @"(?<![\p{L}\p{N}_])(?:" + patronAliases + @")(?![\p{L}\p{N}_])",
                 RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-            SpriteTag = string.Format(SpriteTagTamanoReducido, spriteName);
+            SpriteTag = string.Format(SpriteTagNormalizado, spriteName);
         }
     }
 }

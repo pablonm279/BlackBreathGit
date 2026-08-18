@@ -19,7 +19,7 @@ public class HombroConHombro : Habilidad
       nombre = "HombroConHombro";
       IDenClase = 10;
       costoAP = 2;
-      costoPM = 2;
+      costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       esZonal = true;
@@ -67,6 +67,95 @@ public class HombroConHombro : Habilidad
       if (NIVEL == 3) { tituloPt = "Ombro a Ombro III"; }
       if (NIVEL == 4) { tituloPt = "Ombro a Ombro IV a"; }
       if (NIVEL == 5) { tituloPt = "Ombro a Ombro IV b"; }
+
+      if (esIngles)
+      {
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Attack");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour", "Valentía");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "max AP", "ap");
+        string invulnerable = TerminoDescripcion(TerminoDescripcionId.Invulnerable, "Invulnerable", "Estado_barrera");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+1 Defense."; }
+          else if (NIVEL == 2) { proximaMejora = "+1 Attack."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: Invulnerable for 1 turn.\nOption B: +1 max AP for 3 turns."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", "Self and adjacent allies in the same column"),
+          LineaDescripcion("Effect", $"Gain +{bonoDefensa} {defensa} and +{bonoAtaque} {ataque} (3 turns)."),
+          LineaDescripcion("Each target", $"Gains +1 {valentia}.", 1)
+        };
+        if (daInvulnerable)
+        {
+          lineas.Add(LineaDescripcion("Additional", $"Becomes {invulnerable} (1 turn).", 1));
+        }
+        if (daApMax)
+        {
+          lineas.Add(LineaDescripcion("Additional", $"Gains +1 {ap} (3 turns).", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Forms a compact defensive line with nearby allies.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia", "Valentía");
+        string invulneravel = TerminoDescripcion(TerminoDescripcionId.Invulnerable, "Invulnerável");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 Defesa."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +1 Ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Opção A: Invulnerável por 1 turno.\nOpção B: +1 AP máximo por 3 turnos."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Alvo", "O próprio usuário e aliados adjacentes na mesma coluna"),
+          LineaDescripcion("Efeito", $"Recebem +{bonoDefensa} {defesa} e +{bonoAtaque} {ataque} (3 turnos)."),
+          LineaDescripcion("Cada alvo", $"Recebe +1 de {valentia}.", 1)
+        };
+        if (daInvulnerable) { lineas.Add(LineaDescripcion("Adicional", $"Fica {invulneravel} (1 turno).", 1)); }
+        if (daApMax) { lineas.Add(LineaDescripcion("Adicional", $"Recebe +1 {ap} (3 turnos).", 1)); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloPt, "Forma uma linha defensiva compacta com aliados próximos.", lineas, proximaMejora);
+        return;
+      }
+
+      {
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía", "Valentía");
+        string invulnerable = TerminoDescripcion(TerminoDescripcionId.Invulnerable, "Invulnerable");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 Defensa."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +1 Ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Opción A: Invulnerable durante 1 turno.\nOpción B: +1 AP máximo durante 3 turnos."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Objetivo", "Uno mismo y aliados adyacentes en la misma columna"),
+          LineaDescripcion("Efecto", $"Obtienen +{bonoDefensa} {defensa} y +{bonoAtaque} {ataque} (3 turnos)."),
+          LineaDescripcion("Cada objetivo", $"Obtiene +1 de {valentia}.", 1)
+        };
+        if (daInvulnerable) { lineas.Add(LineaDescripcion("Adicional", $"Se vuelve {invulnerable} (1 turno).", 1)); }
+        if (daApMax) { lineas.Add(LineaDescripcion("Adicional", $"Obtiene +1 {ap} (3 turnos).", 1)); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloEs, "Forma una línea defensiva compacta con aliados cercanos.", lineas, proximaMejora);
+        return;
+      }
 
       string cuerpo = "";
       if (esIngles)

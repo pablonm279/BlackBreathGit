@@ -22,6 +22,94 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
         int criticoPorcentaje = NIVEL == 5 ? 10 : 5;
         string danioPropio = NIVEL < 2 ? "1-4" : NIVEL == 2 ? "0-3" : "0-2";
 
+        if (esInglesFormato)
+        {
+            string tituloIngles = "Excess of Power I";
+            if (NIVEL == 2) { tituloIngles = "Excess of Power II"; }
+            else if (NIVEL == 3) { tituloIngles = "Excess of Power III"; }
+            else if (NIVEL == 4) { tituloIngles = "Excess of Power IV a"; }
+            else if (NIVEL == 5) { tituloIngles = "Excess of Power IV b"; }
+
+            int duracionResiduo = NIVEL == 4 ? 3 : 2;
+            int bonusDanioArcano = NIVEL > 1 ? 4 : 3;
+            int apRestaurado = NIVEL > 2 ? 2 : 1;
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string residuo = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "Energy Residue", "Estado_acumularenergia");
+            string residuoPlural = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "Energy Residues");
+            string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage", "dano_arcano");
+            string danioArcanoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage");
+            string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+
+            var lineas = new List<LineaDescripcionNormalizada>
+            {
+                LineaDescripcion("Passive bonus", $"+{criticoPorcentaje}% {critico}."),
+                LineaDescripcion("Trigger", "Deals a critical hit."),
+                LineaDescripcion("Effect", $"Creates {residuos} {((residuos == 1) ? residuo : residuoPlural)} in a random nearby empty tile."),
+                LineaDescripcion("Backlash", $"Suffers {danioPropio} {danioArcano}."),
+                LineaDescripcion("Residue", $"Lasts {duracionResiduo} turns."),
+                LineaDescripcion("On contact", $"Gains +1 Attack and +{bonusDanioArcano} {danioArcanoSinIcono} ({duracionResiduo} turns); restores {apRestaurado} {ap}.", 1),
+                LineaDescripcion("Channeler", "Also restores 1-8 HP.", 2),
+                LineaDescripcion("Other units", $"Also suffer 1-8 {danioArcanoSinIcono}.", 2)
+            };
+
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) { proximaMejora = "-1 maximum backlash damage."; }
+                else if (NIVEL == 2) { proximaMejora = "-1 maximum backlash damage."; }
+                else if (NIVEL == 3) { proximaMejora = "Option A: +1 Energy Residue per critical hit.\nOption B: +5% Crit."; }
+            }
+
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloIngles,
+                "Passive: Critical hits create volatile Energy Residues and cause Arcane backlash.",
+                lineas,
+                proximaMejora);
+            return;
+        }
+
+        {
+            bool pt = esPortuguesFormato;
+            string titulo = pt ? "Excesso de Poder I" : "Exceso de Poder I";
+            if (NIVEL == 2) { titulo = pt ? "Excesso de Poder II" : "Exceso de Poder II"; }
+            else if (NIVEL == 3) { titulo = pt ? "Excesso de Poder III" : "Exceso de Poder III"; }
+            else if (NIVEL == 4) { titulo = pt ? "Excesso de Poder IV a" : "Exceso de Poder IV a"; }
+            else if (NIVEL == 5) { titulo = pt ? "Excesso de Poder IV b" : "Exceso de Poder IV b"; }
+            int duracionResiduo = NIVEL == 4 ? 3 : 2;
+            int bonusDanioArcano = NIVEL > 1 ? 4 : 3;
+            int apRestaurado = NIVEL > 2 ? 2 : 1;
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+            string residuo = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, pt ? "Resíduo Energético" : "Residuo Energético", "Estado_acumularenergia");
+            string residuoPlural = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, pt ? "Resíduos Energéticos" : "Residuos Energéticos");
+            string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano", "dano_arcano");
+            string danioArcanoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano");
+            string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+            var lineas = new List<LineaDescripcionNormalizada>
+            {
+                LineaDescripcion(pt ? "Bônus passivo" : "Bonificación pasiva", $"+{criticoPorcentaje}% {critico}."),
+                LineaDescripcion(pt ? "Gatilho" : "Desencadenante", pt ? "Causa um acerto crítico." : "Inflige un golpe crítico."),
+                LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Cria" : "Crea")} {residuos} {(residuos == 1 ? residuo : residuoPlural)} {(pt ? "em uma casa vazia próxima aleatória" : "en una casilla vacía cercana aleatoria")}."),
+                LineaDescripcion(pt ? "Retorno" : "Retroceso", $"{(pt ? "Sofre" : "Sufre")} {danioPropio} {danioArcano}."),
+                LineaDescripcion(pt ? "Resíduo" : "Residuo", $"{(pt ? "Dura" : "Dura")} {duracionResiduo} turnos."),
+                LineaDescripcion(pt ? "Ao entrar em contato" : "Al entrar en contacto", $"{(pt ? "Recebe" : "Obtiene")} +1 Ataque {(pt ? "e" : "y")} +{bonusDanioArcano} {danioArcanoSinIcono} ({duracionResiduo} turnos); {(pt ? "recupera" : "recupera")} {apRestaurado} {ap}.", 1),
+                LineaDescripcion("Canalizador", pt ? "Também recupera 1-8 PV." : "También recupera 1-8 PV.", 2),
+                LineaDescripcion(pt ? "Outras unidades" : "Otras unidades", $"{(pt ? "Também sofrem" : "También sufren")} 1-8 {danioArcanoSinIcono}.", 2)
+            };
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2 || NIVEL == 2) { proximaMejora = pt ? "-1 ao dano máximo de retorno." : "-1 al daño máximo de retroceso."; }
+                else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: +1 Resíduo Energético por acerto crítico.\nOpção B: +5% Crítico." : "Opción A: +1 Residuo Energético por golpe crítico.\nOpción B: +5% Crítico."; }
+            }
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                titulo,
+                pt ? "Passiva: os acertos críticos criam Resíduos Energéticos voláteis e causam retorno Arcano." : "Pasiva: los golpes críticos crean Residuos Energéticos volátiles y causan retroceso Arcano.",
+                lineas,
+                proximaMejora,
+                costoSuperior: string.Empty);
+            return;
+        }
+
         string tituloFormato = esInglesFormato ? "Excess of Power" : esPortuguesFormato ? "Excesso de Poder" : "Exceso de Poder";
         if (NIVEL < 2) { tituloFormato += " I"; }
         else if (NIVEL == 2) { tituloFormato += " II"; }

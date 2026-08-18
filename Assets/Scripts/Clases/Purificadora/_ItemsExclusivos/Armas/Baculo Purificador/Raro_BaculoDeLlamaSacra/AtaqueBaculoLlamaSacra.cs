@@ -39,6 +39,7 @@ public class AtaqueBaculoLlamaSacra : GolpeBaston
       txtDescripcion += "<color=#c8c8c8><b>MELEE</b> -Attack: <color=#ea0606>Power +1</color> - Damage: Fire 1d8 + Divine 1d4- </color>\n";
       txtDescripcion += "<color=#c8c8c8><b>Weapon Effect:</b> Burning 1. Against Ethereal, Undead, or Corrupted targets: +1d6 Divine damage.</color>\n\n";
       txtDescripcion += $"<color=#44d3ec>- Cooldown: {cooldownMax} \n- AP Cost: {costoAP} \n- Valour Cost: {costoPM} </color>";
+      ActualizarDescripcion();
       return;
     }
 
@@ -81,13 +82,76 @@ public class AtaqueBaculoLlamaSacra : GolpeBaston
       ? "Melee staff attack with Fire and Divine damage."
       : esPortugues
         ? "Ataque corpo a corpo de cajado com dano de Fogo e Divino."
-        : "Ataque melee de baculo con dano de Fuego y Divino.";
+        : "Ataque cuerpo a cuerpo de báculo con daño de Fuego y Divino.";
+
+    if (esIngles)
+    {
+      string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({stats.Poder})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string danioFuego = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "Fire damage", "dano_fuego");
+      string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino");
+      string danioDivinoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage");
+      string ardiendo = TerminoDescripcion(TerminoDescripcionId.Ardiendo, "Burning 1", "Estado_ardiendo");
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        titulo,
+        subtitulo,
+        new[]
+        {
+          LineaDescripcion("Target", "1 enemy or obstacle"),
+          LineaDescripcion("Effect", $"Deals 1-8 + {poder} as {danioFuego}, plus 1-4 + half {poder} as {danioDivino}."),
+          LineaDescripcion("Roll", $"1d20 + {poder}{bonusTirada} vs {defensa}. Fumble: 5%. Crit: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("On hit", $"Applies {ardiendo}. Ethereal, Undead, and Corrupted targets suffer an additional 1-6 {danioDivinoSinIcono}.", 1)
+        });
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({stats.Poder})");
+      string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+      string danoFogo = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "dano de Fogo", "dano_fuego");
+      string danoDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino");
+      string danoDivinoSemIcone = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino");
+      string emChamas = TerminoDescripcion(TerminoDescripcionId.Ardiendo, "Em Chamas 1", "Estado_ardiendo");
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        titulo,
+        subtitulo,
+        new[]
+        {
+          LineaDescripcion("Alvo", "1 inimigo ou obstáculo"),
+          LineaDescripcion("Efeito", $"Causa 1-8 + {poder} como {danoFogo}, mais 1-4 + metade de {poder} como {danoDivino}."),
+          LineaDescripcion("Rolagem", $"1d20 + {poder}{bonusTirada} vs {defesa}. Falha crítica: 5%. Crítico: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Ao acertar", $"Aplica {emChamas}. Alvos Etéreos, Mortos-vivos e Corrompidos sofrem 1-6 {danoDivinoSemIcone} adicional.", 1)
+        });
+      return;
+    }
+
+    {
+      string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({stats.Poder})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+      string danioFuego = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "daño de Fuego", "dano_fuego");
+      string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino");
+      string danioDivinoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino");
+      string ardiendo = TerminoDescripcion(TerminoDescripcionId.Ardiendo, "Ardiendo 1", "Estado_ardiendo");
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        titulo,
+        subtitulo,
+        new[]
+        {
+          LineaDescripcion("Objetivo", "1 enemigo u obstáculo"),
+          LineaDescripcion("Efecto", $"Causa 1-8 + {poder} como {danioFuego}, más 1-4 + la mitad de {poder} como {danioDivino}."),
+          LineaDescripcion("Tirada", $"1d20 + {poder}{bonusTirada} vs {defensa}. Pifia: 5%. Crítico: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Al impactar", $"Aplica {ardiendo}. Los objetivos Etéreos, No muertos y Corruptos sufren 1-6 {danioDivinoSinIcono} adicional.", 1)
+        });
+      return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {
       cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Melee attack</color>\n";
       cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> <color={colorValor}>1 enemy or obstacle in frontal melee range</color>\n";
-      cuerpo += $"<color={colorEncabezado}><b>Roll:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defense. Fumble: 5%. Crit: {criticoPorcentaje}%</color>\n";
+      cuerpo += $"<color={colorEncabezado}><b>Attack Roll:</b></color> <color={colorValor}>1d20 + {atributo}{bonusTirada} vs Defense. Fumble: 5%. Crit: {criticoPorcentaje}%</color>\n";
       cuerpo += $"<color={colorEncabezado}><b>Damage:</b></color> <color={colorValor}>1-8 Fire + {atributo}; 1-4 Divine + half {atributo}. Type: Fire/Divine</color>\n";
       cuerpo += $"<color={colorEncabezado}><b>Weapon effect:</b></color> <color={colorValor}>Burning 1. Against Ethereal, Undead, or Corrupted: +1-6 Divine</color>";
     }

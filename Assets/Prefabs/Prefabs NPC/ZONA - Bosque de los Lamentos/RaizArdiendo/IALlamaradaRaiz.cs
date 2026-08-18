@@ -18,6 +18,7 @@ public class IALlamaradaRaiz : IAHabilidad
   const float AnchoLinea = 0.04f;
   const int SegmentosLinea = 6;
 
+  public AudioClip sfxLlamarada;
   static Material materialLlamarada;
   static AnimationCurve curvaAnchoLlamarada;
   static readonly GradientColorKey[] colorKeysLlamarada = new GradientColorKey[]
@@ -84,6 +85,14 @@ public class IALlamaradaRaiz : IAHabilidad
    // scEstaUnidad.ReproducirAnimacionAtaque();
 
     PrepararInicioAnimacion(null, objetivo);
+
+    if (sfxLlamarada != null)
+    {
+      AudioSource audioSource = null;
+      AjustesAudio.ObtenerOAgregarAudioSource(gameObject, ref audioSource);
+      AjustesAudio.AplicarVolumenSfx(audioSource);
+      audioSource.PlayOneShot(sfxLlamarada);
+    }
 
     await BattleManager.DelayCombateAsync(450);
 

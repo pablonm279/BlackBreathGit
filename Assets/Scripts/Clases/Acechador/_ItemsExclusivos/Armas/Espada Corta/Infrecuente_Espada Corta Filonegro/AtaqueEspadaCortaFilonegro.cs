@@ -102,6 +102,27 @@ public class AtaqueEspadaCortaFilonegro : Habilidad
       int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
       string titulo = esIngles ? "Blackblade Short Sword Slash" : esPortugues ? "Corte de Espada Curta Fio Negro" : "Corte de Espada Corta Filonegro";
       string subtitulo = esIngles ? "Melee cut with higher critical chance and doubled critical damage." : esPortugues ? "Corte corpo a corpo com mais chance critica e dano critico dobrado." : "Corte melee con mas critico y dano critico duplicado.";
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        string criticoResumen = TerminoDescripcion(TerminoDescripcionId.Critico, "critical");
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+          LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+          LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Critico, "Critical"), "Deals double damage.")
+        };
+        if (nivelMaestria > 0) lineas.Add(LineaDescripcion("Passive", $"Short Sword Mastery (Tier {nivelMaestria})."));
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(titulo, $"A short sword attack with enhanced {criticoResumen} strikes.", lineas, mostrarIconoMelee: true);
+        return;
+      }
+      if (esPortugues)
+      { string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,$"Força ({stats.Fuerza})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string cort=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"dano Cortante","dano_cortante"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} + {forca} como {cort}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {forca}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Critico,"Acerto crítico"),"Causa dano dobrado.")}; if(nivelMaestria>0)l.Add(LineaDescripcion("Passiva",$"Maestria com Espada Curta (Nível {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Um ataque com espada curta com acertos críticos aprimorados.",l,mostrarIconoMelee:true); return; }
+      { string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,$"Fuerza ({stats.Fuerza})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa"); string cort=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"daño Cortante","dano_cortante"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} + {fuerza} como {cort}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {fuerza}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Critico,"Impacto crítico"),"Inflige daño doble.")}; if(nivelMaestria>0)l.Add(LineaDescripcion("Pasiva",$"Maestría con Espada Corta (Nivel {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Un ataque con espada corta con impactos críticos mejorados.",l,mostrarIconoMelee:true); return; }
       string cuerpo = "";
       if (esIngles)
       {
@@ -507,7 +528,4 @@ public class AtaqueEspadaCortaFilonegro : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
-
-
-
 

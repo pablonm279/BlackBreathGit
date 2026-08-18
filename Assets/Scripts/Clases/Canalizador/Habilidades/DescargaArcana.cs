@@ -68,6 +68,43 @@ public class DescargaArcana : Habilidad
       string ataqueTxt = modificadorAtaqueExtra == 0
         ? string.Empty
         : modificadorAtaqueExtra > 0 ? $" + {modificadorAtaqueExtra}" : $" - {Mathf.Abs(modificadorAtaqueExtra)}";
+      if (TRADU.i != null && TRADU.i.nIdioma == 2)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage", "dano_arcano");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          "Arcane Discharge",
+          "Launches a focused burst of Arcane energy at one target.",
+          new[]
+          {
+            LineaDescripcion("Target", "1 unit or obstacle"),
+            LineaDescripcion("Effect", $"On hit, deals {rangoDanioEs} + {poder} as {danioArcano}."),
+            LineaDescripcion("Attack Roll", $"1d20 + {poder}{ataqueTxt} vs {defensa}. Fumble: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%."),
+            LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+          });
+        return;
+      }
+      {
+        bool pt = TRADU.i != null && TRADU.i.nIdioma == 3;
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, pt ? "Defesa" : "Defensa", "IconoDefensa");
+        string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano", "dano_arcano");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string pifia = pt ? "Falha crítica" : "Pifia";
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          "Descarga Arcana",
+          pt ? "Lança uma rajada concentrada de energia Arcana contra um alvo." : "Lanza una descarga concentrada de energía Arcana contra un objetivo.",
+          new[]
+          {
+            LineaDescripcion(pt ? "Alvo" : "Objetivo", pt ? "1 unidade ou obstáculo" : "1 unidad u obstáculo"),
+            LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Ao acertar, causa" : "Al impactar, inflige")} {rangoDanioEs} + {poder} como {danioArcano}."),
+            LineaDescripcion(pt ? "Rolagem de ataque" : "Tirada de ataque", $"1d20 + {poder}{ataqueTxt} vs {defensa}. {pifia}: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%."),
+            LineaDescripcion(pt ? "Esforço" : "Esfuerzo", $"{(pt ? "Até" : "Hasta")} {esforzable} AP.")
+          });
+        return;
+      }
       string colorEncabezado = "#44d3ec";
       string colorValor = "#ffffff";
       string colorPoder = "#2aa6c8";
@@ -783,5 +820,3 @@ public class DescargaArcanaImpactoFx : MonoBehaviour
     return spriteChispa;
   }
 }
-
-

@@ -915,7 +915,7 @@ public class AtributosZona : MonoBehaviour
          sector: 2,
          distCaminoOverride: 0.74f,
           distNodoOverride: 0.80f,
-          rOverride: 6.2f,
+          rOverride: 6.0f,
           kOverride: 20);
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_LlamaEspectral,

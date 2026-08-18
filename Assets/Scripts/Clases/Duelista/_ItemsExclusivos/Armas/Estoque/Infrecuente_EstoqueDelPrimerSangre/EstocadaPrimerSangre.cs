@@ -33,6 +33,34 @@ public class EstocadaPrimerSangre : Estocada
         string tituloPt = "Estocada do Primeiro Sangue";
         nombre = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
 
+        if (esIngles)
+        {
+            string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, "Strength");
+            string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, "Agility");
+            string atributoMixto = $"{fuerza}/{agilidad} ({atributoMixtoActual})";
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string criticoSinIcono = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit");
+            string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+            string bonusTiradaNormalizado = FormatoModificadorDescripcion(ataqueActual) + FormatoModificadorDescripcion(bonusAtaque);
+            int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloEn,
+                "An opening thrust that punishes untouched targets.",
+                new[]
+                {
+                    LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+                    LineaDescripcion("Effect", $"On hit, deals {FormatearRangoDados(1, 8)} + {atributoMixto} as {danioPerforante}."),
+                    LineaDescripcion("Attack Roll", $"1d20 + {atributoMixto}{bonusTiradaNormalizado} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+                    LineaDescripcion("Penetration", $"Armor Penetration: {penetracionArmadura}."),
+                    LineaDescripcion("Full HP target", $"+{BonusAtaquePrimerSangre} Attack Roll, +{BonusDanioPlanoPrimerSangre} damage and +5% {criticoSinIcono}.")
+                },
+                mostrarIconoMelee: true);
+            return;
+        }
+        if(esPortugues){string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Força");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade");string mix=$"{forca}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string crit2=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante");string bonus=FormatoModificadorDescripcion(ataqueActual)+FormatoModificadorDescripcion(bonusAtaque);int pct=Mathf.Clamp(21-criticoBaseMin,0,20)*5;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Uma estocada inicial que pune alvos ilesos.",new[]{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {FormatearRangoDados(1,8)} + {mix} como {dano}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {mix}{bonus} vs {def}. Falha crítica: 5%. {crit}: {pct}%."),LineaDescripcion("Penetração",$"Penetração de Armadura: {penetracionArmadura}."),LineaDescripcion("Alvo com HP máximo",$"+{BonusAtaquePrimerSangre} na Rolagem de Ataque, +{BonusDanioPlanoPrimerSangre} de dano e +5% {crit2}.")},mostrarIconoMelee:true);return;}
+        {string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Fuerza");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidad");string mix=$"{fuerza}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string crit2=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante");string bonus=FormatoModificadorDescripcion(ataqueActual)+FormatoModificadorDescripcion(bonusAtaque);int pct=Mathf.Clamp(21-criticoBaseMin,0,20)*5;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Una estocada inicial que castiga a objetivos ilesos.",new[]{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {FormatearRangoDados(1,8)} + {mix} como {dano}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {mix}{bonus} vs {def}. Pifia: 5%. {crit}: {pct}%."),LineaDescripcion("Penetración",$"Penetración de Armadura: {penetracionArmadura}."),LineaDescripcion("Objetivo con HP máximo",$"+{BonusAtaquePrimerSangre} a la Tirada de Ataque, +{BonusDanioPlanoPrimerSangre} de daño y +5% {crit2}.")},mostrarIconoMelee:true);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

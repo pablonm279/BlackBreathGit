@@ -22,8 +22,7 @@ public class CorteHorizontal : Habilidad
     nombre = "Corte Horizontal";
     IDenClase = 3;
     costoAP = 4;
-    costoPM = 2;
-    if (NIVEL == 4) { costoPM -= 1; }
+    costoPM = 0;
     Usuario = this.gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     esZonal = true;
@@ -96,6 +95,89 @@ public class CorteHorizontal : Habilidad
       if (NIVEL == 3) { tituloPt = "Corte Horizontal III"; }
       if (NIVEL == 4) { tituloPt = "Corte Horizontal IV a"; }
       if (NIVEL == 5) { tituloPt = "Corte Horizontal IV b"; }
+
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({fuerzaActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+        string sangrado = TerminoDescripcion(TerminoDescripcionId.Sangrado, "Bleed", "Estado_sangrano");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+2 damage."; }
+          else if (NIVEL == 2) { proximaMejora = "+1 Attack Roll bonus."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: removes the former Valour cost.\nOption B: +1 Save DC and +1 Bleed."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Sweeps the greatsword across the frontal line and may inflict Bleed.",
+          new[]
+          {
+            LineaDescripcion("Target", "All units and obstacles in the 3-wide frontal area"),
+            LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+            LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{ataqueTxt} vs {defensa}. Fumble: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.", 1),
+            LineaDescripcion("Save", $"{fortaleza} vs DC {dcSangrado}", 1),
+            LineaDescripcion("Failed save", $"Gains +{sangradoAplicado} {sangrado}.", 1)
+          },
+          proximaMejora,
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Força ({fuerzaActual})");
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante");
+        string fortitude = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+        string sangramento = TerminoDescripcion(TerminoDescripcionId.Sangrado, "Sangramento", "sangrado");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +2 de dano."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +1 na Rolagem de Ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Opção A: remove o antigo custo de Valentia.\nOpção B: +1 CD da salvaguarda e +1 Sangramento."; }
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloPt, "Executa um amplo corte frontal com a espada grande.", new[]
+        {
+          LineaDescripcion("Alvo", "Todas as unidades e obstáculos na área frontal de 3 casas de largura"),
+          LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {forca} como {danoCortante}."),
+          LineaDescripcion("Rolagem de Ataque", $"1d20 + {forca}{ataqueTxt} vs {defesa}. Falha crítica: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Salvaguarda", $"{fortitude} vs CD {dcSangrado}", 1),
+          LineaDescripcion("Falha", $"Recebe +{sangradoAplicado} {sangramento}.", 1)
+        }, proximaMejora, mostrarIconoMelee: true);
+        return;
+      }
+
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Fuerza ({fuerzaActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante");
+        string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortaleza", "ic_fortaleza");
+        string sangrado = TerminoDescripcion(TerminoDescripcionId.Sangrado, "Sangrado", "sangrado");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +2 de daño."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +1 a la Tirada de Ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Opción A: elimina el antiguo costo de Valentía.\nOpción B: +1 CD de salvación y +1 Sangrado."; }
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloEs, "Ejecuta un amplio corte frontal con el mandoble.", new[]
+        {
+          LineaDescripcion("Objetivo", "Todas las unidades y obstáculos en el área frontal de 3 casillas de ancho"),
+          LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {fuerza} como {danoCortante}."),
+          LineaDescripcion("Tirada de Ataque", $"1d20 + {fuerza}{ataqueTxt} vs {defensa}. Pifia: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Salvación", $"{fortaleza} vs CD {dcSangrado}", 1),
+          LineaDescripcion("Salvación fallida", $"Obtiene +{sangradoAplicado} {sangrado}.", 1)
+        }, proximaMejora, mostrarIconoMelee: true);
+        return;
+      }
 
       string cuerpo = "";
       if (esIngles)

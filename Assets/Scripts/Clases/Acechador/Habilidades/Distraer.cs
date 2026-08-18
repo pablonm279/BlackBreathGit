@@ -85,6 +85,45 @@ public class Distraer : Habilidad
     if (NIVEL == 4) { tituloPt = "Distrair IV a"; }
     if (NIVEL == 5) { tituloPt = "Distrair IV b"; }
 
+    if (esIngles)
+    {
+      string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, $"Hidden ({escondidoGanado})", "Estado_oculto");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "max AP", "ap");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) proximaMejora = "+1 save DC.";
+        else if (NIVEL == 2) proximaMejora = "-1 max AP from Distracted.";
+        else if (NIVEL == 3) proximaMejora = "Option A: -1 max AP and -1 Defense. Option B: gains Hidden II if isolated.";
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Distracts one enemy without revealing the Stalker.",
+        new[]
+        {
+          LineaDescripcion("Target", "1 enemy"),
+          LineaDescripcion("Effect", "The target makes a save."),
+          LineaDescripcion("Save", $"Target's {mental} vs DC {dcBase}.", 1),
+          LineaDescripcion("Failed save", $"Distracted (2 turns): {apPenalty} {ap}, {defPenalty} {defensa}.", 1),
+          LineaDescripcion("Isolated target", $"No units in adjacent tiles; the Stalker gains {oculto}."),
+          LineaDescripcion("Stealth", "Discreet; does not reveal the Stalker.")
+        },
+        proximaMejora);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string mental=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Mental","ic_mental"); string defesa=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string oculto=TerminoDescripcion(TerminoDescripcionId.Oculto,$"Oculto ({escondidoGanado})","Estado_oculto"); string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP máximo","ap"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 CD da salvaguarda.":NIVEL==2?"Próximo nível: -1 AP máximo de Distraído.":NIVEL==3?"Opção A: -1 AP máximo e -1 Defesa. Opção B: recebe Oculto II se estiver isolado.":null;
+      txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Distrai um inimigo sem revelar o Espreitador.",new[]{LineaDescripcion("Alvo","1 inimigo"),LineaDescripcion("Efeito","O alvo faz uma salvaguarda."),LineaDescripcion("Salvaguarda",$"{mental} do alvo vs CD {dcBase}.",1),LineaDescripcion("Falha",$"Distraído (2 turnos): {apPenalty} {ap}, {defPenalty} {defesa}.",1),LineaDescripcion("Alvo isolado",$"Sem unidades nas casas adjacentes; o Espreitador recebe {oculto}."),LineaDescripcion("Furtividade","Discreto; não revela o Espreitador.")},prox); return;
+    }
+    {
+      string mental=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Mental","ic_mental"); string defensa=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa"); string oculto=TerminoDescripcion(TerminoDescripcionId.Oculto,$"Oculto ({escondidoGanado})","Estado_oculto"); string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP máximo","ap"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 CD de salvación.":NIVEL==2?"Próximo nivel: -1 AP máximo de Distraído.":NIVEL==3?"Opción A: -1 AP máximo y -1 Defensa. Opción B: obtiene Oculto II si está aislado.":null;
+      txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Distrae a un enemigo sin revelar al Acechador.",new[]{LineaDescripcion("Objetivo","1 enemigo"),LineaDescripcion("Efecto","El objetivo hace una salvación."),LineaDescripcion("Salvación",$"{mental} del objetivo vs CD {dcBase}.",1),LineaDescripcion("Salvación fallida",$"Distraído (2 turnos): {apPenalty} {ap}, {defPenalty} {defensa}.",1),LineaDescripcion("Objetivo aislado",$"Sin unidades en casillas adyacentes; el Acechador obtiene {oculto}."),LineaDescripcion("Sigilo","Discreto; no revela al Acechador.")},prox); return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {

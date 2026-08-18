@@ -1,0 +1,376 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1819659722926808195
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -6932064876483078984, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: poseIdle
+      value: 
+      objectReference: {fileID: 21300000, guid: 37c78696de6f907478ea0cfbfd52dc5b, type: 3}
+    - target: {fileID: -6932064876483078984, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: poseMover
+      value: 
+      objectReference: {fileID: 21300000, guid: ed66f71fcdbc9d64aabd81ae6b41c39c, type: 3}
+    - target: {fileID: -6932064876483078984, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: poseAtacar
+      value: 
+      objectReference: {fileID: 21300000, guid: 0797926b4ea046649a9f7c6c416b6ed3, type: 3}
+    - target: {fileID: -6932064876483078984, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: poseHabilidad
+      value: 
+      objectReference: {fileID: 21300000, guid: d677acc0fb91af343a1800216c31caf8, type: 3}
+    - target: {fileID: -6932064876483078984, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: poseTurnoActivo
+      value: 
+      objectReference: {fileID: 21300000, guid: 2827ee204ec53ac4c9f05ef125b7698b, type: 3}
+    - target: {fileID: -6932064876483078984, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: duracionPoseAtacar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6932064876483078984, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: duracionPoseHabilidad
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 704984108050394665, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 24.673
+      objectReference: {fileID: 0}
+    - target: {fileID: 704984108050394665, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -15.159
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516505517758023242, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: tierEnemigo
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5662508880646372543, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_Name
+      value: RufianEspadachin
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -4.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.54563
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6492555460361140137, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757104218895662427, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6757104218895662427, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7996714464312373375, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 37c78696de6f907478ea0cfbfd52dc5b, type: 3}
+    - target: {fileID: 7996714464312373375, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      propertyPath: m_PreserveAspect
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: -3053017527343582727, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+    - {fileID: 6192762264691156127, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5662508880646372543, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 11188502629976485}
+    - targetCorrespondingSourceObject: {fileID: 5662508880646372543, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4616291878094680934}
+    - targetCorrespondingSourceObject: {fileID: 5662508880646372543, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8700897857860958995}
+    - targetCorrespondingSourceObject: {fileID: 5662508880646372543, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6807408399650233589}
+  m_SourcePrefab: {fileID: 100100000, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+--- !u!1 &6329245449694257212 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5662508880646372543, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+  m_PrefabInstance: {fileID: 1819659722926808195}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &11188502629976485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6329245449694257212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d38cb6a0e244f1c4f9aa0fc39b5a564e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemigoUnidadRufianEspadachin
+  CasillaPosicion: {fileID: 0}
+  CasillaDeseadaMov: {fileID: 0}
+  CasillaForzadoaMover: {fileID: 0}
+  estaCargando: {fileID: 0}
+  valorCargando: 0
+  uRetrato: {fileID: 21300000, guid: 2827ee204ec53ac4c9f05ef125b7698b, type: 3}
+  uImage: {fileID: 8627405464330726652}
+  uNombre: "Rufi\xE1n Espadach\xEDn"
+  tags:
+  - Humanoide
+  at_iniciativa: 1
+  mod_iniciativa: 1
+  iniciativa_actual: 0
+  esEtereo: 0
+  at_maxHP: 30
+  mod_maxHP: 30
+  HP_actual: 30
+  at_maxAccionP: 3
+  esInmobil: 0
+  mod_maxAccionP: 3
+  AccionP_actual: 3
+  scTextoArmaduraFlash: {fileID: 0}
+  at_maxMeritoP: 0
+  mod_maxValentiaP: 0
+  ValentiaP_actual: 0
+  at_CarFuerza: 5
+  mod_CarFuerza: 5
+  at_CarAgilidad: 2
+  mod_CarAgilidad: 2
+  at_CarPoder: 1
+  mod_CarPoder: 1
+  at_Armadura: 1
+  mod_Armadura: 1
+  at_ResFuego: 0
+  mod_ResFuego: 0
+  at_ResHielo: 0
+  mod_ResHielo: 0
+  at_ResRayo: 0
+  mod_ResRayo: 0
+  at_ResAcido: 0
+  mod_ResAcido: 0
+  at_ResArcano: 0
+  mod_ResArcano: 0
+  at_ResNecro: 0
+  mod_ResNecro: 0
+  at_ResDivino: 0
+  mod_ResDivino: 0
+  at_Defensa: 13
+  mod_Defensa: 13
+  Defensa_AtaquesRepetidosRonda: 0
+  Defensa_BonusPASinUsar: 0
+  at_Ataque: 3
+  mod_Ataque: 3
+  mod_DanioPorcentaje: 0
+  at_CriticoRangoDado: 0
+  mod_CriticoRangoDado: 0
+  bonusCritDadoRecibido: 0
+  "at_CriticoDa\xF1oBonus": 0
+  "mod_CriticoDa\xF1oBonus": 0
+  at_TSReflejos: 2
+  mod_TSReflejos: 2
+  at_TSFortaleza: 5
+  mod_TSFortaleza: 5
+  at_TSMental: 2
+  mod_TSMental: 2
+  ConsumibleA: {fileID: 0}
+  ConsumibleB: {fileID: 0}
+  estado_ardiendo: 0
+  estado_congelado: 0
+  estado_aturdido: 0
+  estado_evasion: 1
+  estado_inmovil: 0
+  estado_armaduraModificador: 0
+  estado_acido: 0
+  estado_sangrado: 0
+  estado_veneno: 0
+  estado_invulnerable: 0
+  estado_regeneravida: 0
+  estado_regeneraarmadura: 0
+  estado_APModificador: 0
+  estado_ResistenciasReducidas: 0
+  estado_Condenado: 0
+  estado_CondenadoTurnosSeguidos: 0
+  ultimaUnidadQueLeHizoDanio: {fileID: 0}
+  estado_Escudado: 0
+  estado_MovimientoAbaratado: 0
+  estado_Corrupto: 0
+  unidadVoladora: 0
+  estado_Volando: 0
+  inmunidad_Ceguera: 0
+  inmunidad_Oscuridad: 0
+  inmunidad_Trampas: 0
+  bonusdam_fuego: 0
+  bonusdam_hielo: 0
+  bonusdam_rayo: 0
+  bonusdam_acido: 0
+  bonusdam_arcano: 0
+  bonusdam_necro: 0
+  bonusdam_divino: 0
+  debuffsImpactoArma: []
+  reduccionDanioRecibidoPorcentaje: 0
+  reduccionDanioCriticoRecibidoPorcentaje: 0
+  aumentoDanioCriticoRecibidoPorcentaje: 0
+  resistenciaEstadosPorcentaje: 0
+  espinasDanioPlano: 0
+  espinasDanioPorcentaje: 0
+  penetracionArmaduraPlano: 0
+  penetracionArmaduraHabilidadActual: 0
+  barreraDeDanio: 0
+  tejidoCuracMagica: 0
+  loMatoCorrompido: 0
+  entroComoAliado: 0
+  offsetVueloY: 13
+  duracionAnimacionVuelo: 0.4
+  desplazamientoAnimacionTurnoNuevoY: 1.7
+  duracionSubidaAnimacionTurnoNuevo: 0.12
+  duracionBajadaAnimacionTurnoNuevo: 0.12
+  apilarTextosFlotantes: 0
+  floatingTextSlotSpacing: 9
+  floatingTextSlotLifetimeFallback: 1.1
+  floatingTextMaxSlots: 4
+  floatingTextMinInterval: 0.05
+  floatingTextCrowdThreshold: 3
+  floatingTextCrowdIntervalStep: 0.01
+  floatingTextCrowdExtraIntervalMax: 0.03
+  scBattleManager: {fileID: 0}
+  puntoSaliente: {fileID: 0}
+  puntoEntrante: {fileID: 0}
+  goSANGRE: {fileID: 0}
+  velocidadMovimiento: 3.5
+  movimientoEnCurso: 0
+  NoSonidoAlMover: 0
+  sonidosRecibirDanio:
+  - {fileID: 8300000, guid: 128f5c484eb81d648be177f369ca4f8c, type: 3}
+  - {fileID: 8300000, guid: 79023d9cb1ec18540bbb755c50c701fe, type: 3}
+  - {fileID: 0}
+--- !u!114 &4616291878094680934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6329245449694257212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2a32d3758c71ed42a52c75f1fc61214, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IAEspadaLargaRufian
+  nombre: 
+  vfxImpacto: {fileID: 0}
+  vfxCasteo: {fileID: 0}
+  hAncho: 0
+  hAlcance: 0
+  esMelee: 0
+  afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
+  hCooldownMax: 0
+  hActualCooldown: 0
+  Usuario: {fileID: 0}
+  scEstaUnidad: {fileID: 0}
+  esHostil: 0
+  ignoraProvocacion: 0
+  prioridad: 0
+  costoAP: 0
+--- !u!114 &8700897857860958995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6329245449694257212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 435fc2746dfb8494bbdf65de7a99fb43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IALanzamientoDagaRufian
+  nombre: 
+  vfxImpacto: {fileID: 0}
+  vfxCasteo: {fileID: 0}
+  hAncho: 0
+  hAlcance: 0
+  esMelee: 0
+  afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
+  hCooldownMax: 0
+  hActualCooldown: 0
+  Usuario: {fileID: 0}
+  scEstaUnidad: {fileID: 0}
+  esHostil: 0
+  ignoraProvocacion: 0
+  prioridad: 0
+  costoAP: 0
+--- !u!114 &6807408399650233589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6329245449694257212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fb20f2fe79284147b925aecfdc10953, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReaccionOportunistaRufian
+  TipoTrigger: 0
+  usos: 0
+  permanente: 0
+  NIVEL: 0
+  nombre: 
+  descripcion: 
+  scEstaUnidad: {fileID: 0}
+  variableUnidad: {fileID: 0}
+  variableFlexible3: 0
+--- !u!114 &8627405464330726652 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7996714464312373375, guid: 2b4cf81a57320174f8d7e485facfe810, type: 3}
+  m_PrefabInstance: {fileID: 1819659722926808195}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

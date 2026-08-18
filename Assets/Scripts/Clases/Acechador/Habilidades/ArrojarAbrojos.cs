@@ -47,7 +47,7 @@ public class ArrojarAbrojos : Habilidad
       int dcBase = NIVEL > 2 ? 12 : 11;
       int bleedAplicado = 4 + (NIVEL == 4 ? 1 : 0);
       bool drenaAp = NIVEL == 5;
-      string danioBase = NIVEL > 1 ? FormatearRangoDados(1, 12, 1) : FormatearRangoDados(1, 12);
+      string danioBase = NIVEL > 1 ? "2-12" : "1-11";
       string colorTitulo = "#5dade2";
       string colorEncabezado = "#44d3ec";
       string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
@@ -65,6 +65,44 @@ public class ArrojarAbrojos : Habilidad
       if (NIVEL == 3) { tituloPt = "Lancar Abrolhos III"; }
       if (NIVEL == 4) { tituloPt = "Lancar Abrolhos IV a"; }
       if (NIVEL == 5) { tituloPt = "Lancar Abrolhos IV b"; }
+
+      if (esIngles)
+      {
+        string reflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflex", "ic_Reflejos");
+        string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+        string sangrado = TerminoDescripcion(TerminoDescripcionId.Sangrado, "Bleed", "Estado_sangrano");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) proximaMejora = "+1 trap damage.";
+          else if (NIVEL == 2) proximaMejora = "+1 save DC.";
+          else if (NIVEL == 3) proximaMejora = "Option A: +1 Bleed. Option B: -1 AP on a failed save.";
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Scatters discreet caltrop traps across several tiles.",
+          new[]
+          {
+            LineaDescripcion("Target", "1 tile and its empty diagonal tiles"),
+            LineaDescripcion("Effect", "Places one-use caltrop traps without revealing the Stalker."),
+            LineaDescripcion("Trigger", $"An enemy enters a trapped tile and suffers {danioBase} as {danioPerforante}."),
+            LineaDescripcion("Save", $"Target's {reflejos} vs DC {dcBase}.", 1),
+            LineaDescripcion("Failed save", $"Double damage; applies {bleedAplicado} {sangrado}" + (drenaAp ? $"; loses 1 {ap}." : "."), 1)
+          },
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string reflexos=TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos,"Reflexos","ic_Reflejos"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante"); string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangramento","Estado_sangrano"); string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 de dano da armadilha.":NIVEL==2?"Próximo nível: +1 CD da salvaguarda.":NIVEL==3?"Opção A: +1 Sangramento. Opção B: -1 AP em uma falha.":null;
+        txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Espalha discretamente armadilhas de abrolhos por várias casas.",new[]{LineaDescripcion("Alvo","1 casa e suas casas diagonais vazias"),LineaDescripcion("Efeito","Coloca armadilhas de abrolhos de uso único sem revelar o Espreitador."),LineaDescripcion("Ativação",$"Um inimigo entra em uma casa com armadilha e sofre {danioBase} como {dano}."),LineaDescripcion("Salvaguarda",$"{reflexos} do alvo vs CD {dcBase}.",1),LineaDescripcion("Falha",$"Dano dobrado; aplica {bleedAplicado} {sang}"+(drenaAp?$"; perde 1 {ap}.":"."),1)},prox); return;
+      }
+      {
+        string reflejos=TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos,"Reflejos","ic_Reflejos"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante"); string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangrado","Estado_sangrano"); string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 de daño de la trampa.":NIVEL==2?"Próximo nivel: +1 CD de salvación.":NIVEL==3?"Opción A: +1 Sangrado. Opción B: -1 AP con una salvación fallida.":null;
+        txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Esparce discretamente trampas de abrojos por varias casillas.",new[]{LineaDescripcion("Objetivo","1 casilla y sus casillas diagonales vacías"),LineaDescripcion("Efecto","Coloca trampas de abrojos de un solo uso sin revelar al Acechador."),LineaDescripcion("Activación",$"Un enemigo entra en una casilla con trampa y sufre {danioBase} como {dano}."),LineaDescripcion("Salvación",$"{reflejos} del objetivo vs CD {dcBase}.",1),LineaDescripcion("Salvación fallida",$"Daño doble; aplica {bleedAplicado} {sang}"+(drenaAp?$"; pierde 1 {ap}.":"."),1)},prox); return;
+      }
 
       string cuerpo = "";
       if (esIngles)

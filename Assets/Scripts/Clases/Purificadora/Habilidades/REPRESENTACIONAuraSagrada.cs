@@ -214,6 +214,113 @@ public class REPRESENTACIONAuraSagrada : Habilidad
       int bonusDivino = NIVEL < 3 ? 1 : 2;
       bool requiereFervor = NIVEL != 4;
 
+      if (TRADU.i != null && TRADU.i.nIdioma == 2)
+      {
+        string pasiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Passive");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string terminoBarrera = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrier", "Estado_barrera");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+1 Barrier."; }
+          else if (NIVEL == 2) { proximaMejora = "+1 Divine damage."; }
+          else if (NIVEL == 3) { proximaMejora = $"Option A: removes the {fervor} requirement.\nOption B: 3+ {fervor} doubles the bonuses."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", "All allies"),
+          LineaDescripcion("Effect", $"Grants +{barrera} {terminoBarrera} and +{bonusDivino} {danioDivino}.")
+        };
+        if (NIVEL == 5)
+        {
+          lineas.Add(LineaDescripcion("At 3+ Fervor", "Doubles the bonuses.", 1));
+        }
+        lineas.Add(LineaDescripcion("Requirement", requiereFervor ? $"1+ {fervor}." : $"No {fervor} required."));
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          $"Sacred Aura {SufijoNivel()}",
+          requiereFervor
+            ? $"{pasiva}: While the Purifier has {fervor}, improves all allies."
+            : $"{pasiva}: Improves all allies without requiring {fervor}.",
+          lineas,
+          proximaMejora,
+          costoSuperior: "");
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == 3)
+      {
+        string passiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Passiva");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string barreraTermino = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barreira", "Estado_barrera");
+        string danoDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 Barreira."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +1 de dano Divino."; }
+          else if (NIVEL == 3) { proximaMejora = $"Próximo nível: Opção A: remove o requisito de {fervor}.\nOpção B: 3+ {fervor} duplica os bônus."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Alvo", "Todos os aliados"),
+          LineaDescripcion("Efeito", $"Concede +{barrera} {barreraTermino} e +{bonusDivino} {danoDivino}.")
+        };
+        if (NIVEL == 5)
+        {
+          lineas.Add(LineaDescripcion("Com 3+ Fervor", "Duplica os bônus.", 1));
+        }
+        lineas.Add(LineaDescripcion("Requisito", requiereFervor ? $"1+ {fervor}." : $"Não requer {fervor}."));
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"Aura Sagrada {SufijoNivel()}",
+          requiereFervor
+            ? $"{passiva}: enquanto a Purificadora tem {fervor}, melhora todos os aliados."
+            : $"{passiva}: melhora todos os aliados sem requerer {fervor}.",
+          lineas,
+          proximaMejora,
+          costoSuperior: "");
+        return;
+      }
+
+      {
+        string pasiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Pasiva");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string barreraTermino = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrera", "Estado_barrera");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 Barrera."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +1 de daño Divino."; }
+          else if (NIVEL == 3) { proximaMejora = $"Próximo nivel: Opción A: elimina el requisito de {fervor}.\nOpción B: 3+ {fervor} duplica las bonificaciones."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Objetivo", "Todos los aliados"),
+          LineaDescripcion("Efecto", $"Otorga +{barrera} {barreraTermino} y +{bonusDivino} {danioDivino}.")
+        };
+        if (NIVEL == 5)
+        {
+          lineas.Add(LineaDescripcion("Con 3+ Fervor", "Duplica las bonificaciones.", 1));
+        }
+        lineas.Add(LineaDescripcion("Requisito", requiereFervor ? $"1+ {fervor}." : $"No requiere {fervor}."));
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"Aura Sagrada {SufijoNivel()}",
+          requiereFervor
+            ? $"{pasiva}: mientras la Purificadora tiene {fervor}, mejora a todos los aliados."
+            : $"{pasiva}: mejora a todos los aliados sin requerir {fervor}.",
+          lineas,
+          proximaMejora,
+          costoSuperior: "");
+        return;
+      }
+
       string titulo = $"Aura Sagrada {SufijoNivel()}";
       string subtitulo = requiereFervor
         ? "<color=#4f5552>Pasiva: con Fervor, mejora a los aliados.</color>"
@@ -322,6 +429,3 @@ public class REPRESENTACIONAuraSagrada : Habilidad
 
 
 }
-
-
-

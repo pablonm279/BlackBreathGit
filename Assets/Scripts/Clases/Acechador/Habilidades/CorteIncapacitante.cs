@@ -109,6 +109,51 @@ public class CorteIncapacitante : Habilidad
     if (NIVEL == 4) { tituloPt = "Corte Incapacitante IV a"; }
     if (NIVEL == 5) { tituloPt = "Corte Incapacitante IV b"; }
 
+    if (esIngles)
+    {
+      string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({fuerzaActual})");
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+      string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+      string sangrado = TerminoDescripcion(TerminoDescripcionId.Sangrado, "Bleed", "Estado_sangrano");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) proximaMejora = "+1 Attack Roll.";
+        else if (NIVEL == 2) proximaMejora = "+1 save DC.";
+        else if (NIVEL == 3) proximaMejora = "Option A: +3 Bleed. Option B: +1 turn duration.";
+      }
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+        LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+        LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+        LineaDescripcion("Save", $"Target's {fortaleza} vs DC {dcBase} + {agilidad} ({dcTotal}).", 1),
+        LineaDescripcion("Failed save", $"Crippled: Immobile, -20% damage and -2 Attack ({duracion} turns)" + (NIVEL == 4 ? $"; applies 3 {sangrado}." : "."), 1)
+      };
+      if (nivelMaestria > 0)
+      {
+        lineas.Add(LineaDescripcion("Passive", $"Short Sword Mastery (Tier {nivelMaestria})."));
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Short sword attack. Can cripple the target.",
+        lineas,
+        proximaMejora,
+        mostrarIconoMelee: true);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,$"Força ({fuerzaActual})"); string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidade ({agilidadActual})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"dano Cortante","dano_cortante"); string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortitude","ic_fortaleza"); string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangramento","sangrado"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 na Rolagem de Ataque.":NIVEL==2?"Próximo nível: +1 CD da salvaguarda.":NIVEL==3?"Opção A: +3 Sangramento. Opção B: +1 turno de duração.":null; var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} + {forca} como {dano}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {forca}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Salvaguarda",$"{fort} do alvo vs CD {dcBase} + {agi} ({dcTotal}).",1),LineaDescripcion("Falha",$"Incapacitado: Imóvel, -20% de dano e -2 Ataque ({duracion} turnos)"+(NIVEL==4?$"; aplica 3 {sang}.":"."),1)}; if(nivelMaestria>0)l.Add(LineaDescripcion("Passiva",$"Maestria com Espada Curta (Nível {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Ataque com espada curta. Pode incapacitar o alvo.",l,prox,mostrarIconoMelee:true); return;
+    }
+    {
+      string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,$"Fuerza ({fuerzaActual})"); string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidad ({agilidadActual})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"daño Cortante","dano_cortante"); string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortaleza","ic_fortaleza"); string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangrado","sangrado"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 a la Tirada de Ataque.":NIVEL==2?"Próximo nivel: +1 CD de salvación.":NIVEL==3?"Opción A: +3 Sangrado. Opción B: +1 turno de duración.":null; var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} + {fuerza} como {dano}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {fuerza}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Salvación",$"{fort} del objetivo vs CD {dcBase} + {agi} ({dcTotal}).",1),LineaDescripcion("Salvación fallida",$"Incapacitado: Inmóvil, -20% de daño y -2 Ataque ({duracion} turnos)"+(NIVEL==4?$"; aplica 3 {sang}.":"."),1)}; if(nivelMaestria>0)l.Add(LineaDescripcion("Pasiva",$"Maestría con Espada Corta (Nivel {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Ataque con espada corta. Puede incapacitar al objetivo.",l,prox,mostrarIconoMelee:true); return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {

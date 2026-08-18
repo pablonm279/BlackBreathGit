@@ -92,6 +92,49 @@ public class CorteVerticalSagrado : Habilidad
       string titulo = esIngles ? "Sacred Vertical Slash" : esPortugues ? "Corte Vertical Sagrado" : "Corte Vertical Sagrado";
       string subtitulo = esIngles ? "Heavy melee attack with Divine damage against Undead and Ethereal." : esPortugues ? "Ataque corpo a corpo pesado com dano Divino contra Mortos-vivos e Etereos." : "Ataque melee pesado con dano Divino contra Nomuertos y Etereos.";
       string efecto = esIngles ? "Against Undead/Ethereal: +1-8 Divine" : esPortugues ? "Contra Morto-vivo/Etereo: +1-8 Divino" : "Contra Nomuerto/Etereo: +1-8 Divino";
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          titulo,
+          "A sacred strike that punishes Undead and Ethereal targets.",
+          new[]
+          {
+            LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+            LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+            LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 10%. {critico}: {criticoPorcentaje}%.", 1),
+            LineaDescripcion("Weapon effect", $"Undead and Ethereal targets suffer an additional 1-8 as {danioDivino}.")
+          },
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Força ({stats.Fuerza})"); string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string cortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante"); string divino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "Um golpe sagrado que pune alvos Mortos-vivos e Etéreos.", new[]
+        {
+          LineaDescripcion("Alvo", "1 alvo ou obstáculo em alcance corpo a corpo"), LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {forca} como {cortante}."),
+          LineaDescripcion("Rolagem de Ataque", $"1d20 + {forca}{bonusTirada} vs {defesa}. Falha crítica: 10%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Efeito da arma", $"Alvos Mortos-vivos e Etéreos sofrem 1-8 adicional como {divino}.")
+        }, mostrarIconoMelee: true); return;
+      }
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Fuerza ({stats.Fuerza})"); string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string cortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante"); string divino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "Un golpe sagrado que castiga a objetivos No Muertos y Etéreos.", new[]
+        {
+          LineaDescripcion("Objetivo", "1 objetivo u obstáculo en alcance cuerpo a cuerpo"), LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {fuerza} como {cortante}."),
+          LineaDescripcion("Tirada de Ataque", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Pifia: 10%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Efecto del arma", $"Los objetivos No Muertos y Etéreos sufren 1-8 adicional como {divino}.")
+        }, mostrarIconoMelee: true); return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {
@@ -479,5 +522,3 @@ public class CorteVerticalSagrado : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
-
-

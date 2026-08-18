@@ -63,6 +63,122 @@ public class EscudodeFe : Habilidad
       if (NIVEL == 4) { tituloPt = "Escudo da Fe IV a"; }
       if (NIVEL == 5) { tituloPt = "Escudo da Fe IV b"; }
 
+      if (esIngles)
+      {
+        string trampa = TerminoDescripcion(TerminoDescripcionId.TrampaProtectora, "ward trap");
+        string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrier", "Estado_barrera");
+        string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+        string reflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflex", "ic_Reflejos");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"your Fervor ({fervorActual})");
+        string fervorSinValor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour");
+        string efectoDisparo = $"Grants +{bonusBarrera} {barrera} and +{bonusTS} to {fortaleza}, {reflejos}, and {mental}";
+        if (agregaDefensa) { efectoDisparo += $", +1 {defensa}"; }
+        if (agregaCuracion) { efectoDisparo += ", and restores 2-12 HP"; }
+        efectoDisparo += $". Values use {fervor} at cast.";
+
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = $"Next Level: -1 {valentia} cost."; }
+          else if (NIVEL == 2) { proximaMejora = "Next Level: +1 Defense on trigger."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +1 turn duration.\nOption B: restores an additional 2-12 HP on trigger."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Places ward tiles that protect allies using current Fervor.",
+          new[]
+          {
+            LineaDescripcion("Target", "1 Tile"),
+            LineaDescripcion("Effect", $"Places a {trampa} on the selected tile and adjacent tiles."),
+            LineaDescripcion("On trigger", efectoDisparo, 1),
+            LineaDescripcion("Duration", $"{duracionTurnos} turns"),
+            LineaDescripcion("Requirement", $"Requires 1+ {fervorSinValor}; does not consume it.")
+          },
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string trampa = TerminoDescripcion(TerminoDescripcionId.TrampaProtectora, "armadilha protetora");
+        string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barreira", "Estado_barrera");
+        string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+        string reflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflexos", "ic_Reflejos");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"Fervor atual ({fervorActual})");
+        string fervorSinValor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia");
+        string efeitoDisparo = $"Concede +{bonusBarrera} {barrera} e +{bonusTS} a {fortaleza}, {reflejos} e {mental}";
+        if (agregaDefensa) { efeitoDisparo += $", +1 {defensa}"; }
+        if (agregaCuracion) { efeitoDisparo += ", e restaura 2-12 HP"; }
+        efeitoDisparo += $". Valores usam {fervor} ao usar.";
+
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = $"Próximo nível: -1 de custo de {valentia}."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +1 Defesa ao ativar."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: +1 turno de duração.\nOpção B: restaura 2-12 HP adicionais ao ativar."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloPt,
+          "Coloca proteções que defendem aliados usando o Fervor atual.",
+          new[]
+          {
+            LineaDescripcion("Alvo", "1 célula"),
+            LineaDescripcion("Efeito", $"Coloca uma {trampa} na célula selecionada e nas adjacentes."),
+            LineaDescripcion("Ao ativar", efeitoDisparo, 1),
+            LineaDescripcion("Duração", $"{duracionTurnos} turnos"),
+            LineaDescripcion("Requisito", $"Requer 1+ {fervorSinValor}; não o consome.")
+          },
+          proximaMejora);
+        return;
+      }
+
+      {
+        string trampa = TerminoDescripcion(TerminoDescripcionId.TrampaProtectora, "trampa protectora");
+        string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrera", "Estado_barrera");
+        string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortaleza", "ic_fortaleza");
+        string reflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflejos", "ic_Reflejos");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"Fervor actual ({fervorActual})");
+        string fervorSinValor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia");
+        string efectoDisparo = $"Otorga +{bonusBarrera} {barrera} y +{bonusTS} a {fortaleza}, {reflejos} y {mental}";
+        if (agregaDefensa) { efectoDisparo += $", +1 {defensa}"; }
+        if (agregaCuracion) { efectoDisparo += ", y restaura 2-12 HP"; }
+        efectoDisparo += $". Los valores usan {fervor} al lanzar.";
+
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = $"Próximo nivel: -1 de costo de {valentia}."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +1 Defensa al activarse."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: +1 turno de duración.\nOpción B: restaura 2-12 HP adicionales al activarse."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloEs,
+          "Coloca zonas protectoras que defienden aliados usando el Fervor actual.",
+          new[]
+          {
+            LineaDescripcion("Objetivo", "1 casilla"),
+            LineaDescripcion("Efecto", $"Coloca una {trampa} en la casilla seleccionada y las adyacentes."),
+            LineaDescripcion("Al activarse", efectoDisparo, 1),
+            LineaDescripcion("Duración", $"{duracionTurnos} turnos"),
+            LineaDescripcion("Requisito", $"Requiere 1+ {fervorSinValor}; no lo consume.")
+          },
+          proximaMejora);
+        return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {

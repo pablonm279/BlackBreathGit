@@ -18,7 +18,58 @@ public class REPRESENTACIONFervorConjunto : Habilidad
 
     public override void  ActualizarDescripcion()
     {
+        if (TRADU.i != null && TRADU.i.nIdioma == 2)
+        {
+            string pasiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Passive");
+            string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+            string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino");
+            string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrier", "Estado_barrera");
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                "Joint Fervor",
+                $"{pasiva}: Caravan Hope generates {fervor} for the Purifier.",
+                new[]
+                {
+                    LineaDescripcion("Effect", $"Caravan Hope generates {fervor}."),
+                    LineaDescripcion("Per Fervor", $"+1 {danioDivino} and +1 {barrera}.")
+                },
+                costoSuperior: "");
+            return;
+        }
+
         string titulo = "Fervor Conjunto";
+        if (TRADU.i.nIdioma == 3)
+        {
+            string passiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Passiva");
+            string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+            string danoDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino");
+            string barreira = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barreira", "Estado_barrera");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                titulo,
+                $"{passiva}: a Esperança da caravana gera {fervor} para a Purificadora.",
+                new[]
+                {
+                    LineaDescripcion("Efeito", $"A Esperança da caravana gera {fervor}."),
+                    LineaDescripcion("Por Fervor", $"+1 {danoDivino} e +1 {barreira}.")
+                },
+                costoSuperior: "");
+            return;
+        }
+
+        string pasivaEs = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Pasiva");
+        string fervorEs = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string danioDivinoEs = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino");
+        string barreraEs = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrera", "Estado_barrera");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+            titulo,
+            $"{pasivaEs}: la Esperanza de la caravana genera {fervorEs} para la Purificadora.",
+            new[]
+            {
+                LineaDescripcion("Efecto", $"La Esperanza de la caravana genera {fervorEs}."),
+                LineaDescripcion("Por Fervor", $"+1 {danioDivinoEs} y +1 {barreraEs}.")
+            },
+            costoSuperior: "");
+        return;
+
         string subtitulo = "<color=#4f5552>Pasiva: la Esperanza genera Fervor para la Purificadora.</color>";
         string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +
                         "<color=#44d3ec><b>Fuente:</b></color> <color=#ffffff>Esperanza de la caravana.</color>\n" +

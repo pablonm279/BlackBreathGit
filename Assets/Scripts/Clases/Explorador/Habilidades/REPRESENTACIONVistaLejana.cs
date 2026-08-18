@@ -26,6 +26,72 @@ public class REPRESENTACIONVistaLejana : Habilidad
       bool critico = NIVEL == 4;
       bool defensa = NIVEL == 5;
 
+      if (esIngles)
+      {
+        string criticoTermino = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        string defensaTermino = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+5% Damage."; }
+          else if (NIVEL == 2) { proximaMejora = "+1 Attack."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +5% Crit.\nOption B: +1 Defense."; }
+        }
+
+        string buff = $"+{ataque} Attack, +{danioPorcentaje}% Damage";
+        if (critico) { buff += $", +5% {criticoTermino}"; }
+        if (defensa) { buff += $", +1 {defensaTermino}"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          $"Long Sight {SufijoNivel()}",
+          "Passive: Improves bow attacks from the rear column.",
+          new[]
+          {
+            LineaDescripcion("Trigger", "Starts the turn in the last column."),
+            LineaDescripcion("Buff", buff)
+          },
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string criticoTermino = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string defensaTermino = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +5% de Dano."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +1 Ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Opção A: +5% de Crítico.\nOpção B: +1 Defesa."; }
+        }
+        string buff = $"+{ataque} Ataque, +{danioPorcentaje}% de Dano";
+        if (critico) { buff += $", +5% de {criticoTermino}"; }
+        if (defensa) { buff += $", +1 {defensaTermino}"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"Visão Longa {SufijoNivel()}", "Passiva: melhora os ataques com arco a partir da coluna traseira.",
+          new[] { LineaDescripcion("Ativação", "Começa o turno na última coluna."), LineaDescripcion("Bônus", buff) }, proximaMejora, costoSuperior: string.Empty);
+        return;
+      }
+
+      {
+        string criticoTermino = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string defensaTermino = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +5% de Daño."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +1 Ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Opción A: +5% de Crítico.\nOpción B: +1 Defensa."; }
+        }
+        string buff = $"+{ataque} Ataque, +{danioPorcentaje}% de Daño";
+        if (critico) { buff += $", +5% de {criticoTermino}"; }
+        if (defensa) { buff += $", +1 {defensaTermino}"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"Vista Lejana {SufijoNivel()}", "Pasiva: mejora los ataques con arco desde la columna trasera.",
+          new[] { LineaDescripcion("Activación", "Comienza el turno en la última columna."), LineaDescripcion("Bonificación", buff) }, proximaMejora, costoSuperior: string.Empty);
+        return;
+      }
+
       string titulo = $"Vista Lejana {SufijoNivel()}";
       string subtitulo = "Proporciona bonificaciones al ataque si el Explorador comienza su turno en la última columna.";
       string cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n" +

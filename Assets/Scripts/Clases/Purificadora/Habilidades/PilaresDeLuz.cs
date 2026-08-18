@@ -65,6 +65,92 @@ public class PilaresDeLuz : Habilidad
       if (NIVEL == 4) { tituloPt = "Pilares de Luz IV a"; }
       if (NIVEL == 5) { tituloPt = "Pilares de Luz IV b"; }
 
+      if (esIngles)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino", "69%");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Next Level: +6 pillar HP."; }
+          else if (NIVEL == 2) { proximaMejora = "Next Level: +2 pillar retaliation damage."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +3 damage resistance.\nOption B: +1 pillar."; }
+        }
+
+        string estadisticasPilar = $"{vidaPilar} HP";
+        if (resistenciaDanio > 0) { estadisticasPilar += $", {resistenciaDanio} damage resistance"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Creates holy pillars that damage enemies when attacked.",
+          new[]
+          {
+            LineaDescripcion("Target", "1 Tile"),
+            LineaDescripcion("Effect", $"Creates up to {cantidadPilares} pillars in the same column, using the selected tile and free adjacent tiles."),
+            LineaDescripcion("Pillar", estadisticasPilar, 1),
+            LineaDescripcion("When hit", $"The attacker suffers {rangoDanioPilarEs} + {poder} as {danioDivino}; doubled against Undead and Ethereal targets.", 1),
+            LineaDescripcion("Duration", $"{duracionTurnos} turns")
+          },
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string danoDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino", "69%");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +6 HP do pilar."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +2 de dano de retaliação do pilar."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: +3 de resistência a dano.\nOpção B: +1 pilar."; }
+        }
+
+        string estatisticasPilar = $"{vidaPilar} HP";
+        if (resistenciaDanio > 0) { estatisticasPilar += $", {resistenciaDanio} de resistência a dano"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloPt,
+          "Cria pilares sagrados que causam dano aos inimigos quando atacados.",
+          new[]
+          {
+            LineaDescripcion("Alvo", "1 célula"),
+            LineaDescripcion("Efeito", $"Cria até {cantidadPilares} pilares na mesma coluna, usando a célula selecionada e células adjacentes livres."),
+            LineaDescripcion("Pilar", estatisticasPilar, 1),
+            LineaDescripcion("Ao ser atingido", $"O atacante sofre {rangoDanioPilarEs} + {poder} como {danoDivino}; dobrado contra Mortos-vivos e Etéreos.", 1),
+            LineaDescripcion("Duração", $"{duracionTurnos} turnos")
+          },
+          proximaMejora);
+        return;
+      }
+
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino", "69%");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +6 HP del pilar."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +2 de daño de represalia del pilar."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: +3 de resistencia al daño.\nOpción B: +1 pilar."; }
+        }
+
+        string estadisticasPilar = $"{vidaPilar} HP";
+        if (resistenciaDanio > 0) { estadisticasPilar += $", {resistenciaDanio} de resistencia al daño"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloEs,
+          "Crea pilares sagrados que dañan a los enemigos cuando son atacados.",
+          new[]
+          {
+            LineaDescripcion("Objetivo", "1 casilla"),
+            LineaDescripcion("Efecto", $"Crea hasta {cantidadPilares} pilares en la misma columna, usando la casilla seleccionada y casillas adyacentes libres."),
+            LineaDescripcion("Pilar", estadisticasPilar, 1),
+            LineaDescripcion("Al ser impactado", $"El atacante sufre {rangoDanioPilarEs} + {poder} como {danioDivino}; se duplica contra No muertos y Etéreos.", 1),
+            LineaDescripcion("Duración", $"{duracionTurnos} turnos")
+          },
+          proximaMejora);
+        return;
+      }
+
       string danioPilarEs = bonusDanio > 0
         ? $"{rangoDanioPilarEs} + <color=#ea0606>Pod ({poderActual})</color>"
         : $"{rangoDanioPilarEs} + <color=#ea0606>Pod ({poderActual})</color>";

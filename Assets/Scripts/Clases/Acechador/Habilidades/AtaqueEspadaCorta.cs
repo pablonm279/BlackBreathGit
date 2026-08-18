@@ -86,6 +86,44 @@ public class AtaqueEspadaCorta : Habilidad
           : $"<color={colorFuerza}>Fuerza ({fuerzaActual})</color>";
       string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({fuerzaActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+          LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+          LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%.")
+        };
+        if (nivelMaestria > 0)
+        {
+          lineas.Add(LineaDescripcion("Passive", $"Short Sword Mastery (Tier {nivelMaestria})."));
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          "Short Sword Slash",
+          "Short sword attack. Slashes one target.",
+          lineas,
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Força ({fuerzaActual})"); string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa"); string dano = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        var lineas = new List<LineaDescripcionNormalizada> { LineaDescripcion("Alvo", "1 alvo ou obstáculo em alcance corpo a corpo"), LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {forca} como {dano}."), LineaDescripcion("Rolagem de Ataque", $"1d20 + {forca}{bonusTirada} vs {defesa}. Falha crítica: 5%. {critico}: {criticoPorcentaje}%.") };
+        if (nivelMaestria > 0) lineas.Add(LineaDescripcion("Passiva", $"Maestria com Espada Curta (Nível {nivelMaestria})."));
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Corte com Espada Curta", "Ataque com espada curta. Corta um alvo.", lineas, mostrarIconoMelee: true); return;
+      }
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Fuerza ({fuerzaActual})"); string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa"); string dano = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        var lineas = new List<LineaDescripcionNormalizada> { LineaDescripcion("Objetivo", "1 objetivo u obstáculo en alcance cuerpo a cuerpo"), LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {fuerza} como {dano}."), LineaDescripcion("Tirada de Ataque", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Pifia: 5%. {critico}: {criticoPorcentaje}%.") };
+        if (nivelMaestria > 0) lineas.Add(LineaDescripcion("Pasiva", $"Maestría con Espada Corta (Nivel {nivelMaestria})."));
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Corte con Espada Corta", "Ataque con espada corta. Corta a un objetivo.", lineas, mostrarIconoMelee: true); return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {

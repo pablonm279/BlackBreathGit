@@ -306,7 +306,6 @@ public class EspectroPlanoMaterialVisual : MonoBehaviour
         bool entrarPlanoMaterial = enPlanoMaterial && !estabaEnPlanoMaterial;
         AplicarSpritesSegunPlano(enPlanoMaterial);
         estabaEnPlanoMaterial = enPlanoMaterial;
-        ReproducirVfxTransicionPlano();
         IniciarTransicion(instantaneo, AlphaObjetivo(enPlanoMaterial), entrarPlanoMaterial);
     }
 

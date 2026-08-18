@@ -19,30 +19,55 @@ public class REPRESENTACIONAlmaEndeble : Habilidad
 
     public override void  ActualizarDescripcion()
     {
-        string titulo = "Alma Endeble";
-        string subtitulo = "<color=#4f5552>Debilidad: recibe Aflicciones segun el Aliento Negro.</color>";
-        string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Debilidad</color>\n" +
-                        "<color=#44d3ec><b>Fuente:</b></color> <color=#ffffff>Aliento Negro.</color>\n" +
-                        "<color=#44d3ec><b>Efecto:</b></color> <color=#ffffff>Las Aflicciones de combate escalan con su intensidad.</color>";
-
-        if (TRADU.i.nIdioma == 2)
+        if (TRADU.i != null && TRADU.i.nIdioma == 2)
         {
-            titulo = "Fragile Soul";
-            subtitulo = "<color=#4f5552>Weakness: suffers Afflictions based on Black Breath.</color>";
-            cuerpo = "<color=#44d3ec><b>Type:</b></color> <color=#ffffff>Weakness</color>\n" +
-                     "<color=#44d3ec><b>Source:</b></color> <color=#ffffff>Black Breath.</color>\n" +
-                     "<color=#44d3ec><b>Effect:</b></color> <color=#ffffff>Combat Afflictions scale with its intensity.</color>";
-        }
-        else if (TRADU.i.nIdioma == 3)
-        {
-            titulo = "Alma Fragil";
-            subtitulo = "<color=#4f5552>Fraqueza: sofre Aflicoes conforme o Respiro Negro.</color>";
-            cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Fraqueza</color>\n" +
-                     "<color=#44d3ec><b>Fonte:</b></color> <color=#ffffff>Respiro Negro.</color>\n" +
-                     "<color=#44d3ec><b>Efeito:</b></color> <color=#ffffff>Aflicoes de combate escalam com sua intensidade.</color>";
+            string debilidad = TerminoDescripcion(TerminoDescripcionId.Debilidad, "Weakness");
+            string aflicciones = TerminoDescripcion(TerminoDescripcionId.Afliccion, "Combat Afflictions", "Estado_debuff");
+            string alientoNegro = TerminoDescripcion(TerminoDescripcionId.AlientoNegro, "Black Breath");
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                "Fragile Soul",
+                $"{debilidad}: Suffers Afflictions based on {alientoNegro}.",
+                new[]
+                {
+                    LineaDescripcion("Effect", $"{aflicciones} scale with the intensity of {alientoNegro}."),
+                    LineaDescripcion("Source", alientoNegro)
+                },
+                costoSuperior: "",
+                colorTitulo: "#cb5000");
+            return;
         }
 
-        txtDescripcion = ConstruirDescripcionEstandar($"<size=115%>{titulo}</size>", subtitulo, cuerpo, "", "#cb5000");
+        if (TRADU.i != null && TRADU.i.nIdioma == 3)
+        {
+            string fraqueza = TerminoDescripcion(TerminoDescripcionId.Debilidad, "Fraqueza");
+            string aflicciones = TerminoDescripcion(TerminoDescripcionId.Afliccion, "Aflições de combate", "Estado_debuff");
+            string respiroNegro = TerminoDescripcion(TerminoDescripcionId.AlientoNegro, "Respiro Negro");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "Alma Frágil",
+                $"{fraqueza}: sofre Aflições conforme o {respiroNegro}.",
+                new[]
+                {
+                    LineaDescripcion("Efeito", $"{aflicciones} escalam com a intensidade do {respiroNegro}."),
+                    LineaDescripcion("Fonte", respiroNegro)
+                },
+                costoSuperior: "",
+                colorTitulo: "#cb5000");
+            return;
+        }
+
+        string debilidadEs = TerminoDescripcion(TerminoDescripcionId.Debilidad, "Debilidad");
+        string afliccionesEs = TerminoDescripcion(TerminoDescripcionId.Afliccion, "Aflicciones de combate", "Estado_debuff");
+        string alientoNegroEs = TerminoDescripcion(TerminoDescripcionId.AlientoNegro, "Aliento Negro");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+            "Alma Endeble",
+            $"{debilidadEs}: sufre Aflicciones según el {alientoNegroEs}.",
+            new[]
+            {
+                LineaDescripcion("Efecto", $"{afliccionesEs} escalan con la intensidad del {alientoNegroEs}."),
+                LineaDescripcion("Fuente", alientoNegroEs)
+            },
+            costoSuperior: "",
+            colorTitulo: "#cb5000");
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla nada){}

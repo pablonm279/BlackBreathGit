@@ -74,6 +74,35 @@ public class Estocada : Habilidad
                 : $"<color={colorFuerza}>Fuerza</color>/<color={colorAgilidad}>Agilidad</color> ({atributoMixtoActual})";
         string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
+        if (esIngles)
+        {
+            string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, "Strength");
+            string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, "Agility");
+            string atributoMixto = $"{fuerza}/{agilidad} ({atributoMixtoActual})";
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+            string penetracion = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Armor Penetration", "IconoArmadura");
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                "Thrust",
+                "A precise thrust that pierces armor.",
+                new List<LineaDescripcionNormalizada>
+                {
+                    LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+                    LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {atributoMixto} as {danioPerforante}."),
+                    LineaDescripcion("Attack Roll", $"1d20 + {atributoMixto}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+                    LineaDescripcion("Penetration", $"{penetracion}: {penetracionArmadura}."),
+                    LineaDescripcion("Scaling", $"Half {fuerza} + half {agilidad}, rounded up."),
+                    LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+                },
+                mostrarIconoMelee: true);
+            return;
+        }
+
+        if (esPortugues)
+        { string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Força"); string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade"); string mix=$"{forca}/{agi} ({atributoMixtoActual})"; string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante"); string pen=TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura,"Penetração de Armadura","IconoArmadura"); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Estocada","Uma estocada precisa que perfura armadura.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} + {mix} como {dano}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetração",$"{pen}: {penetracionArmadura}."),LineaDescripcion("Escalonamento",$"Metade de {forca} + metade de {agi}, arredondado para cima."),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},mostrarIconoMelee:true); return; }
+        { string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Fuerza"); string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidad"); string mix=$"{fuerza}/{agi} ({atributoMixtoActual})"; string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante"); string pen=TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura,"Penetración de Armadura","IconoArmadura"); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Estocada","Una estocada precisa que perfora armadura.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} + {mix} como {dano}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetración",$"{pen}: {penetracionArmadura}."),LineaDescripcion("Escalado",$"Mitad de {fuerza} + mitad de {agi}, redondeado hacia arriba."),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},mostrarIconoMelee:true); return; }
+
         string cuerpo = "";
         if (esIngles)
         {

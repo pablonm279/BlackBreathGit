@@ -101,6 +101,112 @@ public class Rafaga : Habilidad
         : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
     string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaqueNivel);
 
+    if (esIngles)
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+      string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Arrow");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour", "Valentía");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "+1 Attack Roll bonus."; }
+        else if (NIVEL == 2) { proximaMejora = "-1 cooldown."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: -1 Valour cost.\nOption B: +2 Attack Roll bonus."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Spends remaining AP and Arrows on repeated shots.",
+        new[]
+        {
+          LineaDescripcion("Target", "1 enemy"),
+          LineaDescripcion("Effect", "Repeatedly attacks the target; selects another enemy if it dies."),
+          LineaDescripcion("Repeat", $"While current {ap} and {flecha}s remain; each shot consumes 1 AP and 1 Arrow.", 1),
+          LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("On hit", $"Suffers {rangoDanio} + {agilidad} as {danioPerforante}.", 1),
+          LineaDescripcion("Cost", $"{costoPM} {valentia}; requires 1 {flecha}"),
+          LineaDescripcion("Ends", "Ends the turn")
+        },
+        proximaMejora);
+
+      if (EsEscenaCampaña())
+      {
+        ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+        if (clase != null && clase.ObtenerCantidadFlechas() < 1)
+        {
+          txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+        }
+      }
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string agilidade = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidade ({agilidadActual})");
+      string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+      string danoPerfurante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "dano Perfurante", "dano_perforante");
+      string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 na Rolagem de ataque."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nível: -1 de recarga."; }
+        else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: -1 de custo de Valentia.\nOpção B: +2 na Rolagem de ataque."; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloPt,
+        "Gasta o AP e as Flechas restantes em tiros repetidos.",
+        new[]
+        {
+          LineaDescripcion("Alvo", "1 inimigo"),
+          LineaDescripcion("Efeito", "Ataca o alvo repetidamente; seleciona outro inimigo se ele morrer."),
+          LineaDescripcion("Repetição", $"Enquanto restarem {ap} atual e {flecha}s; cada tiro consome 1 AP e 1 Flecha.", 1),
+          LineaDescripcion("Rolagem de ataque", $"1d20 + {agilidade}{bonusTirada} vs {defesa}. Falha crítica: 5%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Ao acertar", $"Sofre {rangoDanio} + {agilidade} como {danoPerfurante}.", 1),
+          LineaDescripcion("Requisito", $"1 {flecha}"),
+          LineaDescripcion("Uso", "Encerra o turno")
+        },
+        proximaMejora);
+      return;
+    }
+
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidad ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+      string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "daño Perforante", "dano_perforante");
+      string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 a la Tirada de ataque."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nivel: -1 de enfriamiento."; }
+        else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: -1 de costo de Valentía.\nOpción B: +2 a la Tirada de ataque."; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloEs.Replace("Rafaga", "Ráfaga"),
+        "Gasta el AP y las Flechas restantes en disparos repetidos.",
+        new[]
+        {
+          LineaDescripcion("Objetivo", "1 enemigo"),
+          LineaDescripcion("Efecto", "Ataca repetidamente al objetivo; selecciona otro enemigo si muere."),
+          LineaDescripcion("Repetición", $"Mientras queden {ap} actual y {flecha}s; cada disparo consume 1 AP y 1 Flecha.", 1),
+          LineaDescripcion("Tirada de ataque", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Pifia: 5%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Al impactar", $"Sufre {rangoDanio} + {agilidad} como {danioPerforante}.", 1),
+          LineaDescripcion("Requisito", $"1 {flecha}"),
+          LineaDescripcion("Uso", "Termina el turno")
+        },
+        proximaMejora);
+      return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {
@@ -511,8 +617,6 @@ public class Rafaga : Habilidad
    
  
 }
-
-
 
 
 

@@ -16,8 +16,7 @@ public class HaciaLasSombras : Habilidad
       nombre = "Hacia Las Sombras";
       IDenClase = 9; // Termina turno
       costoAP = 1;
-      costoPM = 1;
-      if(NIVEL == 5){costoPM--;}
+      costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       esZonal = false;
@@ -62,6 +61,40 @@ public class HaciaLasSombras : Habilidad
     if (NIVEL == 3) { tituloPt = "Para as Sombras III"; }
     if (NIVEL == 4) { tituloPt = "Para as Sombras IV a"; }
     if (NIVEL == 5) { tituloPt = "Para as Sombras IV b"; }
+
+    if (esIngles)
+    {
+      string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Hidden (2)", "Estado_oculto");
+      string evasion = TerminoDescripcion(TerminoDescripcionId.Evasion, $"Evasion ({evasionGanada})", "Estado_evasion");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) proximaMejora = "-1 cooldown.";
+        else if (NIVEL == 2) proximaMejora = "+1 Evasion.";
+        else if (NIVEL == 3) proximaMejora = "Option A: does not end the turn. Option B: no Valour cost.";
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Teleports, removes debuffs and returns the Stalker to stealth.",
+        new[]
+        {
+          LineaDescripcion("Target", "1 empty tile on the Stalker's side"),
+          LineaDescripcion("Effect", $"Teleports to the target tile, removes debuffs and gains {oculto} and {evasion}."),
+          LineaDescripcion("Use", terminaTurno ? "Ends the turn." : "Does not end the turn.")
+        },
+        proximaMejora);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string oculto=TerminoDescripcion(TerminoDescripcionId.Oculto,"Oculto (2)","Estado_oculto"); string evasao=TerminoDescripcion(TerminoDescripcionId.Evasion,$"Evasão ({evasionGanada})","Estado_evasion"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: -1 de recarga.":NIVEL==2?"Próximo nível: +1 Evasão.":NIVEL==3?"Opção A: não encerra o turno. Opção B: sem custo de Valentia.":null;
+      txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Teleporta, remove efeitos negativos e devolve o Espreitador à furtividade.",new[]{LineaDescripcion("Alvo","1 casa vazia no lado do Espreitador"),LineaDescripcion("Efeito",$"Teleporta para a casa alvo, remove efeitos negativos e recebe {oculto} e {evasao}."),LineaDescripcion("Uso",terminaTurno?"Encerra o turno.":"Não encerra o turno.")},prox); return;
+    }
+    {
+      string oculto=TerminoDescripcion(TerminoDescripcionId.Oculto,"Oculto (2)","Estado_oculto"); string evasion=TerminoDescripcion(TerminoDescripcionId.Evasion,$"Evasión ({evasionGanada})","Estado_evasion"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: -1 de enfriamiento.":NIVEL==2?"Próximo nivel: +1 Evasión.":NIVEL==3?"Opción A: no termina el turno. Opción B: sin costo de Valentía.":null;
+      txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Teletransporta, elimina penalizaciones y devuelve al Acechador al sigilo.",new[]{LineaDescripcion("Objetivo","1 casilla vacía del lado del Acechador"),LineaDescripcion("Efecto",$"Se teletransporta a la casilla objetivo, elimina penalizaciones y obtiene {oculto} y {evasion}."),LineaDescripcion("Uso",terminaTurno?"Termina el turno.":"No termina el turno.")},prox); return;
+    }
 
     string cuerpo = "";
     if (esIngles)

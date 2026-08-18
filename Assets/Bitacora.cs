@@ -721,6 +721,7 @@ public abstract class Bitacora : MonoBehaviour
         TMP_SpriteAsset spriteAsset = esCombate ? SpriteAssetCombate : SpriteAssetRecursos;
         if (spriteAsset != null)
         {
+            TextoIconosCombate.NormalizarSpriteAsset(spriteAsset);
             LogText.spriteAsset = spriteAsset;
         }
     }

@@ -53,6 +53,38 @@ public class REPRESENTACIONDanzaDelEstoque : Habilidad
 
         string colorTitulo = "#5dade2";
         string colorEncabezado = "#44d3ec";
+        if (esIngles)
+        {
+            string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+            string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Attack");
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string danzando = TerminoDescripcion(TerminoDescripcionId.Danzando, "Dancing");
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) proximaMejora = "+5% max HP threshold.";
+                else if (NIVEL == 2) proximaMejora = "+5% damage against targets within the threshold.";
+                else if (NIVEL == 3) proximaMejora = "Option A: +1 AP on kill. Option B: Dancing grants +5% Crit.";
+            }
+
+            string buff = $"Stackable; +1 {ataque}, +15% damage";
+            if (bonusCritPorcentaje > 0) buff += $", +{bonusCritPorcentaje}% {critico}";
+            buff += " (1 turn).";
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                "Sword Dance " + sufijoNivel,
+                "Passive: Finishes weakened enemies and chains momentum on kills.",
+                new[]
+                {
+                    LineaDescripcion("Effect", $"Deals +{bonusDanio}% damage to enemies at {umbralVida}% max HP or less."),
+                    LineaDescripcion("On kill", $"During the Duelist's turn, immediately gains +{apAlMatar} {ap} and {danzando}."),
+                    LineaDescripcion("Dancing", buff, 1)
+                },
+                proximaMejora);
+            return;
+        }
+        if(esPortugues){string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string atk=TerminoDescripcion(TerminoDescripcionId.Ataque,"Ataque");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string danca=TerminoDescripcion(TerminoDescripcionId.Danzando,"Dançando");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +5% ao limiar de HP máximo.":NIVEL==2?"Próximo nível: +5% de dano contra alvos dentro do limiar.":NIVEL==3?"Opção A: +1 AP ao matar. Opção B: Dançando concede +5% de Crítico.":null;string buff=$"Acumulável; +1 {atk}, +15% de dano";if(bonusCritPorcentaje>0)buff+=$", +{bonusCritPorcentaje}% {crit}";buff+=" (1 turno).";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Dança da Espada "+sufijoNivel,"Passiva: finaliza inimigos enfraquecidos e encadeia impulso ao matar.",new[]{LineaDescripcion("Efeito",$"Causa +{bonusDanio}% de dano a inimigos com {umbralVida}% do HP máximo ou menos."),LineaDescripcion("Ao matar",$"Durante o turno da Duelista, recebe imediatamente +{apAlMatar} {ap} e {danca}."),LineaDescripcion("Dançando",buff,1)},prox,costoSuperior:string.Empty);return;}
+        {string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string atk=TerminoDescripcion(TerminoDescripcionId.Ataque,"Ataque");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string danza=TerminoDescripcion(TerminoDescripcionId.Danzando,"Danzando");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +5% al umbral de HP máximo.":NIVEL==2?"Próximo nivel: +5% de daño contra objetivos dentro del umbral.":NIVEL==3?"Opción A: +1 AP al matar. Opción B: Danzando otorga +5% de Crítico.":null;string buff=$"Acumulable; +1 {atk}, +15% de daño";if(bonusCritPorcentaje>0)buff+=$", +{bonusCritPorcentaje}% {crit}";buff+=" (1 turno).";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Danza de la Espada "+sufijoNivel,"Pasiva: remata enemigos debilitados y encadena impulso al matar.",new[]{LineaDescripcion("Efecto",$"Inflige +{bonusDanio}% de daño a enemigos con {umbralVida}% del HP máximo o menos."),LineaDescripcion("Al matar",$"Durante el turno de la Duelista, obtiene inmediatamente +{apAlMatar} {ap} y {danza}."),LineaDescripcion("Danzando",buff,1)},prox,costoSuperior:string.Empty);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

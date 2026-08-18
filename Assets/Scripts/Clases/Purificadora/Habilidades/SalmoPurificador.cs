@@ -33,6 +33,7 @@ public class SalmoPurificador : Habilidad
      
       
       imHab = Resources.Load<Sprite>("imHab/Purificadora_SalmoPurificador");
+      requiereRecurso = 1;
      
 
     }
@@ -57,6 +58,101 @@ public class SalmoPurificador : Habilidad
     if (NIVEL == 3) { tituloPt = "Salmo Purificador III"; }
     if (NIVEL == 4) { tituloPt = "Salmo Purificador IV a"; }
     if (NIVEL == 5) { tituloPt = "Salmo Purificador IV b"; }
+
+    if (esIngles)
+    {
+      string debuffs = TerminoDescripcion(TerminoDescripcionId.Debuff, "debuffs", "Estado_debuff");
+      string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour", "Valentía");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Next Level: removes +1 debuff per unit."; }
+        else if (NIVEL == 2) { proximaMejora = "Next Level: -1 cooldown."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: removes +1 debuff.\nOption B: grants +1 Valour per removed debuff."; }
+      }
+
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Target", "1 ally and adjacent ones from its position."),
+        LineaDescripcion("Effect", $"Removes up to {debuffsPorUnidad} removable {debuffs} or negative states from each affected ally.")
+      };
+      if (daValentia)
+      {
+        lineas.Add(LineaDescripcion("Per effect removed", $"Grants +1 {valentia} to that ally.", 1));
+      }
+      lineas.Add(LineaDescripcion("Cost", $"1 {fervor}"));
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Cleanses debuffs and negative states from allies.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string debuffs = TerminoDescripcion(TerminoDescripcionId.Debuff, "debuffs", "Estado_debuff");
+      string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia", "Valentía");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nível: remove +1 debuff por unidade."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nível: -1 de recarga."; }
+        else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: remove +1 debuff.\nOpção B: concede +1 Valentia por debuff removido."; }
+      }
+
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Alvo", "1 aliado e os adjacentes a partir da posição dele."),
+        LineaDescripcion("Efeito", $"Remove até {debuffsPorUnidad} {debuffs} removíveis ou estados negativos de cada aliado afetado.")
+      };
+      if (daValentia)
+      {
+        lineas.Add(LineaDescripcion("Por efeito removido", $"Concede +1 {valentia} a esse aliado.", 1));
+      }
+      lineas.Add(LineaDescripcion("Custo", $"1 {fervor}"));
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloPt,
+        "Remove debuffs e estados negativos de aliados.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
+    {
+      string debuffs = TerminoDescripcion(TerminoDescripcionId.Debuff, "debuffs", "Estado_debuff");
+      string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía", "Valentía");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nivel: remueve +1 debuff por unidad."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nivel: -1 de enfriamiento."; }
+        else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: remueve +1 debuff.\nOpción B: otorga +1 Valentía por debuff removido."; }
+      }
+
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Objetivo", "1 aliado y los adyacentes desde su posición."),
+        LineaDescripcion("Efecto", $"Remueve hasta {debuffsPorUnidad} {debuffs} removibles o estados negativos de cada aliado afectado.")
+      };
+      if (daValentia)
+      {
+        lineas.Add(LineaDescripcion("Por efecto removido", $"Otorga +1 {valentia} a ese aliado.", 1));
+      }
+      lineas.Add(LineaDescripcion("Costo", $"1 {fervor}"));
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloEs,
+        "Limpia debuffs y estados negativos de aliados.",
+        lineas,
+        proximaMejora);
+      return;
+    }
 
     string cuerpo = "";
     if (esIngles)
@@ -83,7 +179,7 @@ public class SalmoPurificador : Habilidad
         cuerpo += "<b>Extra IV b:</b> +1 Valentia para cada unidade afetada por Debuff removido\n";
       }
       cuerpo += "<b>Requisito:</b> Precisa de pelo menos 1 Fervor para ativar\n";
-      cuerpo += "<b>Ao usar:</b> Nao consome Fervor";
+      cuerpo += "<b>Ao usar:</b> Consome 1 Fervor";
     }
     else
     {
@@ -96,7 +192,7 @@ public class SalmoPurificador : Habilidad
         cuerpo += "<b>Extra IV b:</b> +1 Valentía a cada unidad afectada por cada Debuff removido\n";
       }
       cuerpo += "<b>Requisito:</b> Necesita al menos 1 Fervor para activarse\n";
-      cuerpo += "<b>Al lanzar:</b> No consume Fervor";
+      cuerpo += "<b>Al lanzar:</b> Consume 1 Fervor";
     }
 
     string costos = esIngles
@@ -144,7 +240,7 @@ public class SalmoPurificador : Habilidad
       cuerpoNuevo += $"<color={colorEncabezado}><b>Alvo:</b></color> <color={colorValor}>1 unidade e unidades adjacentes</color>\n";
       cuerpoNuevo += $"<color={colorEncabezado}><b>Efeito:</b></color> <color={colorValor}>Remove ate {debuffsPorUnidad} debuffs removiveis ou estados negativos por unidade afetada</color>\n";
       if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valentia por debuff removido.</color>\n"; }
-      cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requer 1+ Fervor; nao consome.</color>";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Custo:</b></color> <color={colorValor}>1 Fervor.</color>";
     }
     else
     {
@@ -152,7 +248,7 @@ public class SalmoPurificador : Habilidad
       cuerpoNuevo += $"<color={colorEncabezado}><b>Objetivo:</b></color> <color={colorValor}>1 unidad y unidades adyacentes</color>\n";
       cuerpoNuevo += $"<color={colorEncabezado}><b>Efecto:</b></color> <color={colorValor}>Remueve hasta {debuffsPorUnidad} debuffs removibles o estados negativos por unidad afectada</color>\n";
       if (daValentia) { cuerpoNuevo += $"<color={colorEncabezado}><b>Extra:</b></color> <color={colorValor}>+1 Valentía por debuff removido.</color>\n"; }
-      cuerpoNuevo += $"<color={colorEncabezado}><b>Requisito:</b></color> <color={colorValor}>Requiere 1+ Fervor; no lo consume.</color>";
+      cuerpoNuevo += $"<color={colorEncabezado}><b>Costo:</b></color> <color={colorValor}>1 Fervor.</color>";
     }
 
     txtDescripcion =
@@ -197,6 +293,73 @@ public class SalmoPurificador : Habilidad
     }
 
     Casilla Origen;
+    private Casilla casillaPreviewActual;
+    private readonly List<Unidad> unidadesPreviewSalmo = new List<Unidad>();
+
+    public override void ActualizarPreviewCasilla(Casilla casilla)
+    {
+      if (casilla == casillaPreviewActual)
+      {
+        return;
+      }
+
+      LimpiarPreviewCasilla();
+
+      if (casilla == null || casilla.Presente == null)
+      {
+        return;
+      }
+
+      Unidad objetivo = casilla.Presente.GetComponent<Unidad>();
+      if (objetivo == null || !lObjetivosPosibles.Contains(objetivo))
+      {
+        return;
+      }
+
+      casillaPreviewActual = casilla;
+      AgregarUnidadPreview(objetivo);
+
+      foreach (Casilla adyacente in casilla.ObtenerCasillasAlrededor(1))
+      {
+        if (adyacente == null || adyacente.Presente == null)
+        {
+          continue;
+        }
+
+        Unidad unidadAdyacente = adyacente.Presente.GetComponent<Unidad>();
+        AgregarUnidadPreview(unidadAdyacente);
+      }
+
+      foreach (Unidad unidadPreview in unidadesPreviewSalmo)
+      {
+        unidadPreview.Marcar(1);
+      }
+
+      BattleManager.Instance?.AplicarFadeHoverObjetivoHabilidad(unidadesPreviewSalmo);
+    }
+
+    public override void LimpiarPreviewCasilla()
+    {
+      foreach (Unidad unidadPreview in unidadesPreviewSalmo)
+      {
+        if (unidadPreview != null)
+        {
+          unidadPreview.Marcar(0);
+        }
+      }
+
+      unidadesPreviewSalmo.Clear();
+      casillaPreviewActual = null;
+    }
+
+    private void AgregarUnidadPreview(Unidad unidad)
+    {
+      if (unidad != null && !unidadesPreviewSalmo.Contains(unidad))
+      {
+        unidadesPreviewSalmo.Add(unidad);
+      }
+    }
+
     public override void Activar()
     {
        if(Usuario.GetComponent<ClasePurificadora>().ObtenerFervor() > 0)
@@ -220,6 +383,7 @@ public class SalmoPurificador : Habilidad
      
      if(obj is Unidad) //Acá van los efectos a Unidades.
      {
+       Usuario.GetComponent<ClasePurificadora>().CambiarFervor(-1);
        
       
        Unidad objetivo = (Unidad)obj;

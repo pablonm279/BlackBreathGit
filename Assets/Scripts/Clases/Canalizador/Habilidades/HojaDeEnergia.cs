@@ -39,7 +39,7 @@ public class HojaDeEnergia : Habilidad
       if (NIVEL == 4) { targetEspecial = 4;}
 
       bonusAtaque = -1;
-      if(NIVEL > 2){bonusAtaque += 1000;}
+      if(NIVEL > 2){bonusAtaque += 1;}
       XdDanio = 2;
       daniodX = 6; //2d6
       tipoDanio = 10; //Verdadero
@@ -82,6 +82,75 @@ public class HojaDeEnergia : Habilidad
     string bonusAtaqueEs = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
     string bonusAtaqueEn = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
     string rangoDanioEs = FormatearRangoDados(2, 6, bonusDanioNivel);
+    int criticoPorcentajeNormalizado = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
+    string bonusTirada = FormatoModificadorDescripcion(ataqueActual) + FormatoModificadorDescripcion(bonusAtaqueNivel);
+
+    if (esIngles)
+    {
+      string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({fuerzaActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string danioVerdadero = TerminoDescripcion(TerminoDescripcionId.DanioVerdadero, "True damage");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+      string sangradoTermino = TerminoDescripcion(TerminoDescripcionId.Sangrado, "Bleed", "Estado_sangrano");
+      string resistencias = TerminoDescripcion(TerminoDescripcionId.Resistencias, "all Resistances", "Estado_resreducidas");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "+2 damage."; }
+        else if (NIVEL == 2) { proximaMejora = "Removes the -1 Attack Roll penalty."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: +1 area width.\nOption B: +1 Bleed and -2 additional Resistances."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Sweeps a condensed energy blade across the front line.",
+        new[]
+        {
+          LineaDescripcion("Target", $"{ancho}-wide frontal area"),
+          LineaDescripcion("Effect", $"On hit, deals {rangoDanioEs} + {fuerza} as {danioVerdadero}."),
+          LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentajeNormalizado}%."),
+          LineaDescripcion("Save", $"{fortaleza} vs DC 12.", 1),
+          LineaDescripcion("Failed save", $"Gains {sangrado} {sangradoTermino}; -{reduccionRes} to {resistencias}.", 1),
+          LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+        },
+        proximaMejora,
+        mostrarIconoMelee: true);
+      return;
+    }
+
+    {
+      bool pt = esPortugues;
+      string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"{(pt ? "Força" : "Fuerza")} ({fuerzaActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, pt ? "Defesa" : "Defensa", "IconoDefensa");
+      string danioVerdadero = TerminoDescripcion(TerminoDescripcionId.DanioVerdadero, pt ? "dano Verdadeiro" : "daño Verdadero");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, pt ? "Fortitude" : "Fortaleza", "ic_fortaleza");
+      string sangradoTermino = TerminoDescripcion(TerminoDescripcionId.Sangrado, pt ? "Sangramento" : "Sangrado", "Estado_sangrano");
+      string resistencias = TerminoDescripcion(TerminoDescripcionId.Resistencias, pt ? "todas as Resistências" : "todas las Resistencias", "Estado_resreducidas");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = pt ? "+2 de dano." : "+2 de daño."; }
+        else if (NIVEL == 2) { proximaMejora = pt ? "Remove a penalidade de -1 na Rolagem de ataque." : "Elimina la penalización de -1 a la Tirada de ataque."; }
+        else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: +1 de largura da área.\nOpção B: +1 Sangramento e -2 adicionais às Resistências." : "Opción A: +1 al ancho del área.\nOpción B: +1 Sangrado y -2 adicionales a las Resistencias."; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        pt ? tituloPt : tituloEs,
+        pt ? "Varre a linha frontal com uma lâmina de energia condensada." : "Barre la línea frontal con una hoja de energía condensada.",
+        new[]
+        {
+          LineaDescripcion(pt ? "Alvo" : "Objetivo", $"{(pt ? "Área frontal com" : "Área frontal de")} {ancho} {(pt ? "de largura" : "de ancho")}"),
+          LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Ao acertar, causa" : "Al impactar, inflige")} {rangoDanioEs} + {fuerza} como {danioVerdadero}."),
+          LineaDescripcion(pt ? "Rolagem de ataque" : "Tirada de ataque", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. {(pt ? "Falha crítica" : "Pifia")}: 5%. {critico}: {criticoPorcentajeNormalizado}%."),
+          LineaDescripcion(pt ? "Salvamento" : "Salvación", $"{fortaleza} vs CD 12.", 1),
+          LineaDescripcion(pt ? "Falha no salvamento" : "Salvación fallida", $"{(pt ? "Recebe" : "Obtiene")} {sangrado} {sangradoTermino}; -{reduccionRes} {(pt ? "a" : "a")} {resistencias}.", 1),
+          LineaDescripcion(pt ? "Esforço" : "Esfuerzo", $"{(pt ? "Até" : "Hasta")} {esforzable} AP.")
+        },
+        proximaMejora,
+        mostrarIconoMelee: true);
+      return;
+    }
 
     string danioEs = $"{rangoDanioEs} + <color=#ea0606>Fue ({fuerzaActual})</color>";
     string danioEn = bonusDanioNivel > 0

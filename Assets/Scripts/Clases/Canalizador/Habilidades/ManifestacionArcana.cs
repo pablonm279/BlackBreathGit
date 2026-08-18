@@ -59,6 +59,78 @@ public class ManifestacionArcana : Habilidad
     if (NIVEL == 4) { tituloPt = "Manifestacao Arcana IV a"; }
     if (NIVEL == 5) { tituloPt = "Manifestacao Arcana IV b"; }
 
+    if (esIngles)
+    {
+      string energia = TerminoDescripcion(TerminoDescripcionId.Energia, "Energy tier", "Estado_acumularenergia");
+      string manifestacion = TerminoDescripcion(TerminoDescripcionId.ManifestacionArcana, "Arcane Manifestation");
+      string residuos = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "Energy Residues", "Estado_acumularenergia");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "+1 Attack to the summon."; }
+        else if (NIVEL == 2) { proximaMejora = "+1 Defense to the summon."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: +1 Max AP to the summon.\nOption B: requires only 1 Energy tier."; }
+      }
+
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Target", "1 tile"),
+        LineaDescripcion("Requirement", $"{energiaRequerida}+ {energia}."),
+        LineaDescripcion("Effect", $"Summons 1 {manifestacion} on the target tile."),
+        LineaDescripcion("On summon", $"Absorbs and destroys all {residuos} on the battlefield.", 1),
+        LineaDescripcion("Per residue", "+5% Damage and +6 Max HP.", 1)
+      };
+      if (bonusAtaqueBase > 0) { lineas.Add(LineaDescripcion("Base bonus", $"+{bonusAtaqueBase} Attack.")); }
+      if (bonusDefensaBase > 0) { lineas.Add(LineaDescripcion("Base bonus", $"+{bonusDefensaBase} Defense.")); }
+      if (bonusAPMax > 0) { lineas.Add(LineaDescripcion("Base bonus", $"+{bonusAPMax} Max AP.")); }
+      lineas.Add(LineaDescripcion("Summon turn", $"Starts with 0 {ap}."));
+      lineas.Add(LineaDescripcion("Effort", $"Up to {esforzable} AP."));
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Creates an Arcane Manifestation empowered by every Energy Residue on the battlefield.",
+        lineas,
+        proximaMejora,
+        colorTitulo: "#ab47bc");
+      return;
+    }
+
+    {
+      bool pt = esPortugues;
+      string energia = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia" : "nivel de Energía", "Estado_acumularenergia");
+      string manifestacion = TerminoDescripcion(TerminoDescripcionId.ManifestacionArcana, pt ? "Manifestação Arcana" : "Manifestación Arcana");
+      string residuos = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, pt ? "Resíduos Energéticos" : "Residuos Energéticos", "Estado_acumularenergia");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = pt ? "+1 de Ataque para a invocação." : "+1 de Ataque para la invocación."; }
+        else if (NIVEL == 2) { proximaMejora = pt ? "+1 de Defesa para a invocação." : "+1 de Defensa para la invocación."; }
+        else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: +1 AP Máx. para a invocação.\nOpção B: requer apenas 1 nível de Energia." : "Opción A: +1 AP Máx. para la invocación.\nOpción B: requiere solo 1 nivel de Energía."; }
+      }
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion(pt ? "Alvo" : "Objetivo", pt ? "1 casa" : "1 casilla"),
+        LineaDescripcion(pt ? "Requisito" : "Requisito", $"{energiaRequerida}+ {energia}."),
+        LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Invoca" : "Invoca")} 1 {manifestacion} {(pt ? "na casa escolhida" : "en la casilla elegida")}."),
+        LineaDescripcion(pt ? "Ao invocar" : "Al invocar", $"{(pt ? "Absorve e destrói todos os" : "Absorbe y destruye todos los")} {residuos} {(pt ? "do campo de batalha" : "del campo de batalla")}.", 1),
+        LineaDescripcion(pt ? "Por resíduo" : "Por residuo", pt ? "+5% de Dano e +6 PV Máx." : "+5% de Daño y +6 PV Máx.", 1)
+      };
+      if (bonusAtaqueBase > 0) { lineas.Add(LineaDescripcion(pt ? "Bônus base" : "Bonificación base", $"+{bonusAtaqueBase} {(pt ? "Ataque" : "Ataque")}.")); }
+      if (bonusDefensaBase > 0) { lineas.Add(LineaDescripcion(pt ? "Bônus base" : "Bonificación base", $"+{bonusDefensaBase} {(pt ? "Defesa" : "Defensa")}.")); }
+      if (bonusAPMax > 0) { lineas.Add(LineaDescripcion(pt ? "Bônus base" : "Bonificación base", $"+{bonusAPMax} AP Máx.")); }
+      lineas.Add(LineaDescripcion(pt ? "Turno da invocação" : "Turno de la invocación", $"{(pt ? "Começa" : "Comienza")} com 0 {ap}."));
+      lineas.Add(LineaDescripcion(pt ? "Esforço" : "Esfuerzo", $"{(pt ? "Até" : "Hasta")} {esforzable} AP."));
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        pt ? tituloPt : tituloEs,
+        pt ? "Cria uma Manifestação Arcana fortalecida por cada Resíduo Energético no campo de batalha." : "Crea una Manifestación Arcana fortalecida por cada Residuo Energético del campo de batalla.",
+        lineas,
+        proximaMejora,
+        colorTitulo: "#ab47bc");
+      return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {

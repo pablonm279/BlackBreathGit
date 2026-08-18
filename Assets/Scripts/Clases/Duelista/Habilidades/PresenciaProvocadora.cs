@@ -65,6 +65,43 @@ public class PresenciaProvocadora : Habilidad
         string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
         string contraataque = ConstruirTextoContraataque(bonusAtaqueContra, bonusDanioContra, esIngles, esPortugues);
 
+        if (esIngles)
+        {
+            string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+            string provocado = TerminoDescripcion(TerminoDescripcionId.Provocado, "Provoked");
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string armadura = TerminoDescripcion(TerminoDescripcionId.Armadura, "Armor", "IconoArmadura");
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) proximaMejora = "+1 save DC.";
+                else if (NIVEL == 2) proximaMejora = "Distracted applies -1 additional Armor.";
+                else if (NIVEL == 3) proximaMejora = "Option A: Counterattack loses its penalties. Option B: -1 AP cost.";
+            }
+
+            string contraataqueNormalizado = bonusAtaqueContra == 0 && bonusDanioContra == 0
+                ? "Base Thrust."
+                : $"Base Thrust with {bonusAtaqueContra} Attack Roll and {bonusDanioContra} damage.";
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloEn,
+                "Provokes enemies and punishes missed melee attacks.",
+                new[]
+                {
+                    LineaDescripcion("Target", "All enemies"),
+                    LineaDescripcion("Effect", "Each target makes a Mental save."),
+                    LineaDescripcion("Save", $"Target's {mental} vs DC {dcMental}.", 1),
+                    LineaDescripcion("Failed save", $"Applies {provocado} and Distracted: {reduccionDefensa} {defensa}, {reduccionArmadura} {armadura} (2 turns).", 1),
+                    LineaDescripcion("Reaction", $"For 1 turn, whenever an enemy misses a melee attack against the Duelist, the Duelist counterattacks with {contraataqueNormalizado}"),
+                    LineaDescripcion("Limit", "Unlimited reactions until the next turn."),
+                    LineaDescripcion("Use", "Ends the turn."),
+                    LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+                },
+                proximaMejora);
+            return;
+        }
+        if(esPortugues){string mental=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Mental","ic_mental");string prov=TerminoDescripcion(TerminoDescripcionId.Provocado,"Provocado");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string arm=TerminoDescripcion(TerminoDescripcionId.Armadura,"Armadura","IconoArmadura");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 CD da salvaguarda.":NIVEL==2?"Próximo nível: Distraído aplica -1 Armadura adicional.":NIVEL==3?"Opção A: o contra-ataque perde suas penalidades. Opção B: -1 de custo de AP.":null;string contra=bonusAtaqueContra==0&&bonusDanioContra==0?"Estocada base.":$"Estocada base com {bonusAtaqueContra} na Rolagem de Ataque e {bonusDanioContra} de dano.";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Provoca inimigos e pune ataques corpo a corpo que erram.",new[]{LineaDescripcion("Alvo","Todos os inimigos"),LineaDescripcion("Efeito","Cada alvo faz uma salvaguarda Mental."),LineaDescripcion("Salvaguarda",$"{mental} do alvo vs CD {dcMental}.",1),LineaDescripcion("Falha",$"Aplica {prov} e Distraído: {reduccionDefensa} {def}, {reduccionArmadura} {arm} (2 turnos).",1),LineaDescripcion("Reação",$"Por 1 turno, sempre que um inimigo erra um ataque corpo a corpo contra a Duelista, ela contra-ataca com {contra}"),LineaDescripcion("Limite","Reações ilimitadas até o próximo turno."),LineaDescripcion("Uso","Encerra o turno."),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},prox);return;}
+        {string mental=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Mental","ic_mental");string prov=TerminoDescripcion(TerminoDescripcionId.Provocado,"Provocado");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string arm=TerminoDescripcion(TerminoDescripcionId.Armadura,"Armadura","IconoArmadura");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 CD de salvación.":NIVEL==2?"Próximo nivel: Distraído aplica -1 Armadura adicional.":NIVEL==3?"Opción A: el contraataque pierde sus penalizaciones. Opción B: -1 de costo de AP.":null;string contra=bonusAtaqueContra==0&&bonusDanioContra==0?"Estocada base.":$"Estocada base con {bonusAtaqueContra} a la Tirada de Ataque y {bonusDanioContra} de daño.";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Provoca a los enemigos y castiga los ataques cuerpo a cuerpo fallidos.",new[]{LineaDescripcion("Objetivo","Todos los enemigos"),LineaDescripcion("Efecto","Cada objetivo hace una salvación Mental."),LineaDescripcion("Salvación",$"{mental} del objetivo vs CD {dcMental}.",1),LineaDescripcion("Salvación fallida",$"Aplica {prov} y Distraído: {reduccionDefensa} {def}, {reduccionArmadura} {arm} (2 turnos).",1),LineaDescripcion("Reacción",$"Durante 1 turno, cuando un enemigo falla un ataque cuerpo a cuerpo contra la Duelista, ella contraataca con {contra}"),LineaDescripcion("Límite","Reacciones ilimitadas hasta el próximo turno."),LineaDescripcion("Uso","Termina el turno."),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},prox);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

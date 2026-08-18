@@ -27,6 +27,37 @@ public class EstocadaRosaNegra : Estocada
         string tituloPt = "Estocada da Rosa Negra";
         nombre = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
 
+        if (esIngles)
+        {
+            string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, "Strength");
+            string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, "Agility");
+            string atributoMixto = $"{fuerza}/{agilidad} ({atributoMixtoActual})";
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+            string sangrado = TerminoDescripcion(TerminoDescripcionId.Sangrado, "Bleed", "Estado_sangrano");
+            string bonusTiradaNormalizado = FormatoModificadorDescripcion(ataqueActual) + FormatoModificadorDescripcion(bonusAtaque);
+            int criticoPorcentaje = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloEn,
+                "A graceful thrust that can leave the target bleeding.",
+                new[]
+                {
+                    LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+                    LineaDescripcion("Effect", $"On hit, deals {FormatearRangoDados(1, 8)} + {atributoMixto} as {danioPerforante}."),
+                    LineaDescripcion("Attack Roll", $"1d20 + {atributoMixto}{bonusTiradaNormalizado} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+                    LineaDescripcion("Penetration", $"Armor Penetration: {penetracionArmadura}."),
+                    LineaDescripcion("Save", $"Target's {fortaleza} vs DC {DificultadSangrado}.", 1),
+                    LineaDescripcion("Failed save", $"Gains {sangrado} ({DuracionSangrado} turns).", 1)
+                },
+                mostrarIconoMelee: true);
+            return;
+        }
+        if(esPortugues){string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Força");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade");string mix=$"{forca}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortitude","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante");string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangramento","Estado_sangrano");string bonus=FormatoModificadorDescripcion(ataqueActual)+FormatoModificadorDescripcion(bonusAtaque);int pct=Mathf.Clamp(21-criticoBaseMin,0,20)*5;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Uma estocada elegante que pode deixar o alvo sangrando.",new[]{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {FormatearRangoDados(1,8)} + {mix} como {dano}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {mix}{bonus} vs {def}. Falha crítica: 5%. {crit}: {pct}%."),LineaDescripcion("Penetração",$"Penetração de Armadura: {penetracionArmadura}."),LineaDescripcion("Salvaguarda",$"{fort} do alvo vs CD {DificultadSangrado}.",1),LineaDescripcion("Falha",$"Recebe {sang} ({DuracionSangrado} turnos).",1)},mostrarIconoMelee:true);return;}
+
+        {string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Fuerza");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidad");string mix=$"{fuerza}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortaleza","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante");string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangrado","Estado_sangrano");string bonus=FormatoModificadorDescripcion(ataqueActual)+FormatoModificadorDescripcion(bonusAtaque);int pct=Mathf.Clamp(21-criticoBaseMin,0,20)*5;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Una estocada elegante que puede dejar sangrando al objetivo.",new[]{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {FormatearRangoDados(1,8)} + {mix} como {dano}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {mix}{bonus} vs {def}. Pifia: 5%. {crit}: {pct}%."),LineaDescripcion("Penetración",$"Penetración de Armadura: {penetracionArmadura}."),LineaDescripcion("Salvación",$"{fort} del objetivo vs CD {DificultadSangrado}.",1),LineaDescripcion("Salvación fallida",$"Obtiene {sang} ({DuracionSangrado} turnos).",1)},mostrarIconoMelee:true);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

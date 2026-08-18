@@ -236,6 +236,85 @@ public class REPRESENTACIONDeterminacion : Habilidad
   {
     string iconoBuff = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_buff\"></voffset></size><space=-0.35em>";
     int danoPorValentia = NIVEL == 5 ? 7 : 5;
+    if (TRADU.i != null && TRADU.i.nIdioma == 2)
+    {
+      string valentiaResumen = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour", "Valentía");
+      string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Attack");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Motivated also grants +1 to all Saving Throws."; }
+        else if (NIVEL == 2) { proximaMejora = "Euphoric also grants +1 Attack."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: starts battle with 5 Valour.\nOption B: +7% damage per Valour point."; }
+      }
+
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Effect", $"Deals +{danoPorValentia}% Damage per {valentia} point.")
+      };
+      if (NIVEL >= 2)
+      {
+        lineas.Add(LineaDescripcion("Motivated", "Also gains +1 to all Saving Throws."));
+      }
+      if (NIVEL >= 3)
+      {
+        lineas.Add(LineaDescripcion("Euphoric", $"Also gains +1 {ataque}."));
+      }
+      if (NIVEL == 4)
+      {
+        lineas.Add(LineaDescripcion("Start", $"Begins battle with 5 {valentia}."));
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        $"Determination {SufijoNivel()}",
+        $"Passive: Increases damage based on current {valentiaResumen}.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == 3)
+    {
+      string valentiaResumo = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia", "Valentía");
+      string valentiaSemIcone = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia");
+      string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nível: Motivado também concede +1 a todas as Salvaguardas."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nível: Eufórico também concede +1 Ataque."; }
+        else if (NIVEL == 3) { proximaMejora = "Opção A: começa a batalha com 5 de Valentia.\nOpção B: +7% de dano por ponto de Valentia."; }
+      }
+      var lineas = new List<LineaDescripcionNormalizada> { LineaDescripcion("Efeito", $"Causa +{danoPorValentia}% de Dano por ponto de {valentia}.") };
+      if (NIVEL >= 2) { lineas.Add(LineaDescripcion("Motivado", "Também recebe +1 a todas as Salvaguardas.")); }
+      if (NIVEL >= 3) { lineas.Add(LineaDescripcion("Eufórico", $"Também recebe +1 {ataque}.")); }
+      if (NIVEL == 4) { lineas.Add(LineaDescripcion("Início", $"Começa a batalha com 5 de {valentiaSemIcone}.")); }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"Determinação {SufijoNivel()}", $"Passiva: aumenta o dano com base na {valentiaResumo} atual.", lineas, proximaMejora, costoSuperior: string.Empty);
+      return;
+    }
+
+    {
+      string valentiaResumen = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía");
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía", "Valentía");
+      string valentiaSinIcono = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía");
+      string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nivel: Motivado también otorga +1 a todas las Salvaciones."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nivel: Eufórico también otorga +1 Ataque."; }
+        else if (NIVEL == 3) { proximaMejora = "Opción A: comienza la batalla con 5 de Valentía.\nOpción B: +7% de daño por punto de Valentía."; }
+      }
+      var lineas = new List<LineaDescripcionNormalizada> { LineaDescripcion("Efecto", $"Inflige +{danoPorValentia}% de Daño por punto de {valentia}.") };
+      if (NIVEL >= 2) { lineas.Add(LineaDescripcion("Motivado", "También obtiene +1 a todas las Salvaciones.")); }
+      if (NIVEL >= 3) { lineas.Add(LineaDescripcion("Eufórico", $"También obtiene +1 {ataque}.")); }
+      if (NIVEL == 4) { lineas.Add(LineaDescripcion("Inicio", $"Comienza la batalla con 5 de {valentiaSinIcono}.")); }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"Determinación {SufijoNivel()}", $"Pasiva: aumenta el daño según la {valentiaResumen} actual.", lineas, proximaMejora, costoSuperior: string.Empty);
+      return;
+    }
+
     string titulo = $"Determinacion {SufijoNivel()}";
     string subtitulo = $"<color=#4f5552>Pasiva: +{danoPorValentia}% dano por punto de Valentia.</color>";
     string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +

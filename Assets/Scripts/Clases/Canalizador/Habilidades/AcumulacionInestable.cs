@@ -64,6 +64,63 @@ public class AcumulacionInestable : Habilidad
     bool arrancaEnCooldown = NIVEL != 4;
     bool recibeDanioPropio = NIVEL != 5;
 
+    if (esIngles)
+    {
+      string energia = TerminoDescripcion(TerminoDescripcionId.Energia, "Energy tier", "Estado_acumularenergia");
+      string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage", "dano_arcano");
+      string danioArcanoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "-1 cooldown."; }
+        else if (NIVEL == 2) { proximaMejora = "+2 Arcane damage."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: does not start on cooldown.\nOption B: no backlash damage."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "Forces an immediate increase in Energy at the risk of Arcane backlash.",
+        new[]
+        {
+          LineaDescripcion("Target", "Self"),
+          LineaDescripcion("Effect", $"Gains +1 {energia}."),
+          LineaDescripcion("Buff", $"+{bonusDanioArcano} {danioArcano} this turn."),
+          LineaDescripcion("Backlash", recibeDanioPropio ? $"Suffers 1-6 {danioArcanoSinIcono}." : "None."),
+          LineaDescripcion("Battle start", arrancaEnCooldown ? "Starts on cooldown." : "Available immediately.")
+        },
+        proximaMejora);
+      return;
+    }
+
+    if (esPortugues || !esIngles)
+    {
+      bool pt = esPortugues;
+      string energia = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia" : "nivel de Energía", "Estado_acumularenergia");
+      string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano", "dano_arcano");
+      string danioArcanoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = pt ? "-1 de recarga." : "-1 de recarga."; }
+        else if (NIVEL == 2) { proximaMejora = pt ? "+2 de dano Arcano." : "+2 de daño Arcano."; }
+        else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: não começa em recarga.\nOpção B: sem dano de retorno." : "Opción A: no comienza en recarga.\nOpción B: sin daño de retorno."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        pt ? tituloPt : tituloEs,
+        pt ? "Força um aumento imediato de Energia, com o risco de um retorno Arcano." : "Fuerza un aumento inmediato de Energía, con el riesgo de un retorno Arcano.",
+        new[]
+        {
+          LineaDescripcion(pt ? "Alvo" : "Objetivo", pt ? "Próprio" : "Propio"),
+          LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Recebe" : "Obtiene")} +1 {energia}."),
+          LineaDescripcion(pt ? "Bônus" : "Mejora", $"+{bonusDanioArcano} {danioArcano} {(pt ? "neste turno" : "este turno")}."),
+          LineaDescripcion(pt ? "Retorno" : "Retroceso", recibeDanioPropio ? $"{(pt ? "Sofre" : "Sufre")} 1-6 {danioArcanoSinIcono}." : pt ? "Nenhum." : "Ninguno."),
+          LineaDescripcion(pt ? "Início da batalha" : "Inicio de batalla", arrancaEnCooldown ? (pt ? "Começa em recarga." : "Comienza en recarga.") : (pt ? "Disponível imediatamente." : "Disponible de inmediato."))
+        },
+        proximaMejora);
+      return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {
@@ -240,7 +297,7 @@ public class AcumulacionInestable : Habilidad
 
       scCana.CambiarEnergia(1);
 
-      int rand = UnityEngine.Random.Range(1,6);
+      int rand = UnityEngine.Random.Range(1,7);
       if (NIVEL != 5 ) { scCana.RecibirDanio(rand, 8, false, null);  }
  
 

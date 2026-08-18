@@ -70,6 +70,98 @@ public class ImprovisarFlechas : Habilidad
       string flechasGanadasPt = flechasFijas > 0 ? $"AP atuais + {flechasFijas}" : "AP atuais";
       string flechasGanadasEs = flechasFijas > 0 ? $"AP actuales + {flechasFijas}" : "AP actuales";
 
+      if (esIngles)
+      {
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string flechas = TerminoDescripcion(TerminoDescripcionId.Flecha, "Arrows");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        string penetracion = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Armor Penetration", "IconoArmadura");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+1 fixed Arrow."; }
+          else if (NIVEL == 2) { proximaMejora = "+5% Crit to the buff."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +1 fixed Arrow.\nOption B: +15% Damage to the buff."; }
+        }
+
+        string buff = $"+{criticoPorcentaje}% {critico}, +{buffPenetracion} {penetracion}";
+        if (sumaDanioNivel5)
+        {
+          buff += ", +15% Damage";
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Turns remaining AP into arrows and a temporary combat boost.",
+          new[]
+          {
+            LineaDescripcion("Target", "Self"),
+            LineaDescripcion("Effect", $"Gains current {ap} + {flechasFijas} {flechas}; current AP becomes 0."),
+            LineaDescripcion("Buff", $"{buff} ({duracionBuff} turns)")
+          },
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string flechas = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flechas");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string penetracion = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Penetração de Armadura", "IconoArmadura");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 Flecha fixa."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +5% de Crítico ao buff."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: +1 Flecha fixa.\nOpção B: +15% de Dano ao buff."; }
+        }
+
+        string buff = $"+{criticoPorcentaje}% {critico}, +{buffPenetracion} {penetracion}";
+        if (sumaDanioNivel5) { buff += ", +15% Dano"; }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloPt,
+          "Transforma o AP restante em flechas e um reforço temporário de combate.",
+          new[]
+          {
+            LineaDescripcion("Alvo", "Si mesmo"),
+            LineaDescripcion("Efeito", $"Ganha o {ap} atual + {flechasFijas} {flechas}; o AP atual se torna 0."),
+            LineaDescripcion("Buff", $"{buff} ({duracionBuff} turnos)")
+          },
+          proximaMejora);
+        return;
+      }
+
+      {
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string flechas = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flechas");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string penetracion = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Penetración de Armadura", "IconoArmadura");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 Flecha fija."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +5% de Crítico al buff."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: +1 Flecha fija.\nOpción B: +15% de Daño al buff."; }
+        }
+
+        string buff = $"+{criticoPorcentaje}% {critico}, +{buffPenetracion} {penetracion}";
+        if (sumaDanioNivel5) { buff += ", +15% Dano"; }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloEs,
+          "Convierte AP restantes en flechas y un refuerzo temporal de combate.",
+          new[]
+          {
+            LineaDescripcion("Objetivo", "Uno mismo"),
+            LineaDescripcion("Efecto", $"Gana {ap} actuales + {flechasFijas} {flechas}; los AP actuales quedan en 0."),
+            LineaDescripcion("Buff", $"{buff} ({duracionBuff} turnos)")
+          },
+          proximaMejora);
+        return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {

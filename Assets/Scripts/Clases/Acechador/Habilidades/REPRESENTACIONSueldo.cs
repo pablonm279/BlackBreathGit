@@ -15,6 +15,25 @@ public class REPRESENTACIONSueldo : Habilidad
 
    public override void ActualizarDescripcion()
    {
+      if (TRADU.i != null && TRADU.i.nIdioma == 2)
+      {
+         txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+            "Salary",
+            "Campaign Passive: The Stalker works by contract, charging the caravan each rest.",
+            new[]
+            {
+               LineaDescripcion("Cost", "20 gold per rest"),
+               LineaDescripcion("Exception", "No payment if Hope is above 70.")
+            });
+         return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == 3)
+      {
+         txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Salário","Passiva de Campanha: o Espreitador trabalha por contrato e cobra da caravana a cada descanso.",new[]{LineaDescripcion("Custo","20 moedas de ouro por descanso"),LineaDescripcion("Exceção","Não cobra se a Esperança estiver acima de 70.")},costoSuperior:string.Empty); return;
+      }
+      txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Sueldo","Pasiva de Campaña: el Acechador trabaja por contrato y cobra a la caravana en cada descanso.",new[]{LineaDescripcion("Costo","20 monedas de oro por descanso"),LineaDescripcion("Excepción","No cobra si la Esperanza supera 70.")},costoSuperior:string.Empty); return;
+
       string titulo = "Sueldo";
       string bajada = "El Acechador cobra 20 monedas de oro al descansar.";
       string etiquetaTipo = "Tipo";
@@ -27,7 +46,7 @@ public class REPRESENTACIONSueldo : Habilidad
       if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
       {
          titulo = "Salary";
-         bajada = "The Stalker charges 20 gold coins when resting.";
+         bajada = "The Stalker works by contract, charging the caravan each rest.";
          etiquetaTipo = "Type";
          etiquetaCosto = "Cost";
          etiquetaExcepcion = "Exception";

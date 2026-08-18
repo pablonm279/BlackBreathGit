@@ -18,16 +18,13 @@ public class Vigilancia : Habilidad
   {
     nombre = "Vigilancia";
     costoAP = 2;
-    costoPM = 2;
+    costoPM = 0;
     IDenClase = 6;
-
-    if (NIVEL == 4)
-    { costoPM--; }
 
     Usuario = this.gameObject;
     scEstaUnidad = Usuario.GetComponent<Unidad>();
     esZonal = false;
-    enArea = 1;//esto es solamente para que marque de azul las casillas afectadas, no tiene otro efecto
+    enArea = NIVEL == 4 ? 2 : 1; // IVa incluye diagonales para previsualizar un area cuadrada de 3x3.
     poneTrampas = true;
     esforzable = 0;
     esCargable = false;
@@ -35,11 +32,11 @@ public class Vigilancia : Habilidad
     esHostil = true;
     cooldownMax = 3;
     bAfectaObstaculos = false;
+    tipoDanio = 1; // Perforante.
 
 
 
-    requiereRecurso = 2; //esto es para que el boton no se active al apretar si no tiene X recursos (ej Flecha). Ver en BotonHabilidad.
-    if (NIVEL == 5) { requiereRecurso++; }
+    requiereRecurso = 0; // La Flecha se comprueba y consume al efectuar cada disparo reactivo.
 
 
     imHab = Resources.Load<Sprite>("imHab/Explorador_Vigilancia");
@@ -86,41 +83,132 @@ public class Vigilancia : Habilidad
         : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
     string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonoTiradaReaccion);
 
+    if (esIngles)
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+      string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Arrow");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2 || NIVEL == 2) { proximaMejora = "+1 reaction Attack Roll bonus."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: Expands the zone into a 3x3 square.\nOption B: +1 reaction shot."; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        tituloEn,
+        "The Explorer watches a zone, triggering reaction attacks against entering enemies.",
+        new[]
+        {
+          LineaDescripcion("Target", NIVEL == 4 ? "3x3 square zone." : "+ shaped zone."),
+          LineaDescripcion("Effect", "Triggers a reaction shot against enemies entering tiles in that zone."),
+          LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("On hit", $"Suffers {rangoDanioReaccion} + {agilidad} as {danioPerforante}.", 1),
+          LineaDescripcion("Limit", $"Up to {disparosPorUso} reaction shots.", 1),
+          LineaDescripcion("Requirement", $"1 {flecha} per shot."),
+          LineaDescripcion("Use", "Ends the turn")
+        },
+        proximaMejora);
+
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string agilidade = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidade ({agilidadActual})");
+      string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+      string danoPerfurante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "dano Perfurante", "dano_perforante");
+      string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2 || NIVEL == 2) { proximaMejora = "Próximo nível: +1 na Rolagem de ataque de reação."; }
+        else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: expande a zona para um quadrado 3x3.\nOpção B: +1 tiro de reação."; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloPt,
+        "A Exploradora vigia uma zona e ativa ataques de reação contra inimigos que entram nela.",
+        new[]
+        {
+          LineaDescripcion("Alvo", NIVEL == 4 ? "Zona quadrada 3x3." : "Zona em forma de +."),
+          LineaDescripcion("Efeito", "Ativa um tiro de reação contra inimigos que entram em casas dessa zona."),
+          LineaDescripcion("Rolagem de ataque", $"1d20 + {agilidade}{bonusTirada} vs {defesa}. Falha crítica: 5%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Ao acertar", $"Sofre {rangoDanioReaccion} + {agilidade} como {danoPerfurante}.", 1),
+          LineaDescripcion("Limite", $"Até {disparosPorUso} tiros de reação.", 1),
+          LineaDescripcion("Requisito", $"1 {flecha} por tiro."),
+          LineaDescripcion("Uso", "Encerra o turno")
+        },
+        proximaMejora);
+      return;
+    }
+
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidad ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+      string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "daño Perforante", "dano_perforante");
+      string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2 || NIVEL == 2) { proximaMejora = "Próximo nivel: +1 a la Tirada de ataque de reacción."; }
+        else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: amplía la zona a un cuadrado de 3x3.\nOpción B: +1 disparo de reacción."; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloEs,
+        "La Exploradora vigila una zona y activa ataques de reacción contra los enemigos que entran en ella.",
+        new[]
+        {
+          LineaDescripcion("Objetivo", NIVEL == 4 ? "Zona cuadrada de 3x3." : "Zona con forma de +."),
+          LineaDescripcion("Efecto", "Activa un disparo de reacción contra los enemigos que entran en casillas de esa zona."),
+          LineaDescripcion("Tirada de ataque", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Pifia: 5%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Al impactar", $"Sufre {rangoDanioReaccion} + {agilidad} como {danioPerforante}.", 1),
+          LineaDescripcion("Límite", $"Hasta {disparosPorUso} disparos de reacción.", 1),
+          LineaDescripcion("Requisito", $"1 {flecha} por disparo."),
+          LineaDescripcion("Uso", "Termina el turno")
+        },
+        proximaMejora);
+      return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {
       cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Reactive ranged setup ({6} range)\n";
       cuerpo += $"<color={colorEncabezado}><b>Target:</b></color> 1 enemy; creates a watch zone centered on target tile\n";
-      cuerpo += $"<color={colorEncabezado}><b>Cost:</b></color> {costoPM} Valour; requires {requiereRecurso} Arrows\n";
+      cuerpo += $"<color={colorEncabezado}><b>Requirement:</b></color> 1 Arrow per shot\n";
       cuerpo += $"<color={colorEncabezado}><b>Setup:</b></color> empty tiles in the zone become 1-turn traps, 1 use each\n";
       cuerpo += $"<color={colorEncabezado}><b>Reaction limit:</b></color> up to {disparosPorUso} shots total; consumes 1 Arrow per shot\n";
       cuerpo += $"<color={colorEncabezado}><b>Reaction roll:</b></color> 1d20 + {atributo}{bonusTirada} vs Defense\n";
       cuerpo += $"<color={colorEncabezado}><b>Fumble:</b></color> 5%   <color={colorEncabezado}><b>Crit:</b></color> {criticoPorcentaje}%\n";
-      cuerpo += $"<color={colorEncabezado}><b>Reaction damage:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Slashing\n";
+      cuerpo += $"<color={colorEncabezado}><b>Reaction damage:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Type:</b></color> Piercing\n";
       cuerpo += $"<color={colorEncabezado}><b>Turn flow:</b></color> ends turn";
     }
     else if (esPortugues)
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Preparacao reativa a distancia ({6} alcance)\n";
       cuerpo += $"<color={colorEncabezado}><b>Alvo:</b></color> 1 inimigo; cria uma zona centrada na casa alvo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Custo:</b></color> {costoPM} Valentia; requer {requiereRecurso} Flechas\n";
+      cuerpo += $"<color={colorEncabezado}><b>Requisito:</b></color> 1 Flecha por disparo\n";
       cuerpo += $"<color={colorEncabezado}><b>Preparacao:</b></color> casas vazias da zona viram armadilhas de 1 turno, 1 uso cada\n";
       cuerpo += $"<color={colorEncabezado}><b>Limite reativo:</b></color> ate {disparosPorUso} disparos no total; consome 1 Flecha por disparo\n";
       cuerpo += $"<color={colorEncabezado}><b>Rolagem reativa:</b></color> 1d20 + {atributo}{bonusTirada} vs Defesa\n";
       cuerpo += $"<color={colorEncabezado}><b>Falha critica:</b></color> 5%   <color={colorEncabezado}><b>Critico:</b></color> {criticoPorcentaje}%\n";
-      cuerpo += $"<color={colorEncabezado}><b>Dano reativo:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Dano reativo:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perfurante\n";
       cuerpo += $"<color={colorEncabezado}><b>Fluxo de turno:</b></color> termina turno";
     }
     else
     {
       cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Preparacion reactiva a distancia ({6} alcance)\n";
       cuerpo += $"<color={colorEncabezado}><b>Objetivo:</b></color> 1 enemigo; crea una zona de vigilancia centrada en la casilla objetivo\n";
-      cuerpo += $"<color={colorEncabezado}><b>Costo:</b></color> {costoPM} Valentía; requiere {requiereRecurso} Flechas\n";
+      cuerpo += $"<color={colorEncabezado}><b>Requisito:</b></color> 1 Flecha por disparo\n";
       cuerpo += $"<color={colorEncabezado}><b>Preparacion:</b></color> casillas vacias de la zona se vuelven trampas de 1 turno, 1 uso cada una\n";
       cuerpo += $"<color={colorEncabezado}><b>Limite reactivo:</b></color> hasta {disparosPorUso} disparos en total; consume 1 Flecha por disparo\n";
       cuerpo += $"<color={colorEncabezado}><b>Tirada reactiva:</b></color> 1d20 + {atributo}{bonusTirada} vs Defensa\n";
       cuerpo += $"<color={colorEncabezado}><b>Pifia:</b></color> 5%   <color={colorEncabezado}><b>Crítico:</b></color> {criticoPorcentaje}%\n";
-      cuerpo += $"<color={colorEncabezado}><b>Daño reactivo:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Cortante\n";
+      cuerpo += $"<color={colorEncabezado}><b>Daño reactivo:</b></color> {rangoDanioReaccion} + {atributo}. <color={colorEncabezado}><b>Tipo:</b></color> Perforante\n";
       cuerpo += $"<color={colorEncabezado}><b>Flujo de turno:</b></color> termina turno";
     }
 
@@ -192,6 +280,7 @@ public class Vigilancia : Habilidad
     
     
     public int disparosEsteTurno = 0;
+    public int TipoDanioReaccion => tipoDanio;
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaObjetivo)
     {
      
@@ -220,7 +309,7 @@ public class Vigilancia : Habilidad
       Debug.LogWarning("Vigilancia.AplicarEfectosHabilidad no pudo determinar casilla objetivo.");
       return;
      }
-     List<Casilla> lCasillas = casillaDestino.ObtenerCasillasAlrededor(1);
+     List<Casilla> lCasillas = casillaDestino.ObtenerCasillasAlrededor(NIVEL == 4 ? 2 : 1);
      lCasillas.Add(casillaDestino);
 
      foreach(Casilla cas in lCasillas)

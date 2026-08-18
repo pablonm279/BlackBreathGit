@@ -63,6 +63,89 @@ public class PosturaDefensiva : Habilidad
       if (NIVEL == 4) { tituloPt = "Postura Defensiva IV a"; }
       if (NIVEL == 5) { tituloPt = "Postura Defensiva IV b"; }
 
+      if (esIngles)
+      {
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Attack");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+1 Defense."; }
+          else if (NIVEL == 2) { proximaMejora = "+1 Attack while in the stance."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: taking damage no longer removes the reaction.\nOption B: +1 reaction use."; }
+        }
+
+        string buff = $"+{bonoDefensa} {defensa}";
+        if (bonoAtaque > 0)
+        {
+          buff += $", +{bonoAtaque} {ataque}";
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Assumes a defensive stance and prepares a melee counterattack.",
+          new[]
+          {
+            LineaDescripcion("Target", "Self"),
+            LineaDescripcion("Effect", $"Gains {buff} (2 turns)."),
+            LineaDescripcion("Reaction", "Counterattacks with Vertical Cut when an enemy misses a melee attack.", 1),
+            LineaDescripcion("Limit", $"{usosReaccion} use{(usosReaccion == 1 ? string.Empty : "s")}.", 1),
+            LineaDescripcion("Ends", seCancelaAlRecibirDanio ? "The reaction ends after taking damage." : "Taking damage does not end the reaction.", 1),
+            LineaDescripcion("Use", "Ends the turn")
+          },
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 Defesa."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +1 Ataque enquanto estiver na postura."; }
+          else if (NIVEL == 3) { proximaMejora = "Opção A: sofrer dano não remove mais a reação.\nOpção B: +1 uso da reação."; }
+        }
+        string buff = $"+{bonoDefensa} {defesa}";
+        if (bonoAtaque > 0) { buff += $", +{bonoAtaque} {ataque}"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloPt, "Assume uma postura defensiva e prepara um contra-ataque corpo a corpo.", new[]
+        {
+          LineaDescripcion("Alvo", "O próprio usuário"),
+          LineaDescripcion("Efeito", $"Recebe {buff} (2 turnos)."),
+          LineaDescripcion("Reação", "Contra-ataca com Corte Vertical quando um inimigo erra um ataque corpo a corpo.", 1),
+          LineaDescripcion("Limite", $"{usosReaccion} uso{(usosReaccion == 1 ? string.Empty : "s")}.", 1),
+          LineaDescripcion("Termina", seCancelaAlRecibirDanio ? "A reação termina após sofrer dano." : "Sofrer dano não encerra a reação.", 1),
+          LineaDescripcion("Uso", "Encerra o turno")
+        }, proximaMejora);
+        return;
+      }
+
+      {
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 Defensa."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +1 Ataque mientras está en la postura."; }
+          else if (NIVEL == 3) { proximaMejora = "Opción A: recibir daño ya no elimina la reacción.\nOpción B: +1 uso de la reacción."; }
+        }
+        string buff = $"+{bonoDefensa} {defensa}";
+        if (bonoAtaque > 0) { buff += $", +{bonoAtaque} {ataque}"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloEs, "Adopta una postura defensiva y prepara un contraataque cuerpo a cuerpo.", new[]
+        {
+          LineaDescripcion("Objetivo", "Uno mismo"),
+          LineaDescripcion("Efecto", $"Obtiene {buff} (2 turnos)."),
+          LineaDescripcion("Reacción", "Contraataca con Corte Vertical cuando un enemigo falla un ataque cuerpo a cuerpo.", 1),
+          LineaDescripcion("Límite", $"{usosReaccion} uso{(usosReaccion == 1 ? string.Empty : "s")}.", 1),
+          LineaDescripcion("Termina", seCancelaAlRecibirDanio ? "La reacción termina después de recibir daño." : "Recibir daño no termina la reacción.", 1),
+          LineaDescripcion("Uso", "Termina el turno")
+        }, proximaMejora);
+        return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {

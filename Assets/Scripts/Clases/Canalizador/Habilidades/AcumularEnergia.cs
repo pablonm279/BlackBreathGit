@@ -49,6 +49,83 @@ public class AcumularEnergia : Habilidad
       if (nivelAcumulacionProtegida > 1) { barreraProtegida += 2; }
       if (nivelAcumulacionProtegida == 4) { barreraProtegida += 4; }
       int tsMentalProtegida = nivelAcumulacionProtegida > 2 ? 2 : 1;
+      if (esIngles)
+      {
+        string energia = TerminoDescripcion(TerminoDescripcionId.Energia, "Energy tier", "Estado_acumularenergia");
+        string energiaSinIcono = TerminoDescripcion(TerminoDescripcionId.Energia, "Energy tier");
+        string acumulando = TerminoDescripcion(TerminoDescripcionId.Acumulando, "Gathering");
+        string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental save", "ic_mental");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        string apMax = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "Max AP", "ap");
+        string apMaxSinIcono = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "Max AP");
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", "Self"),
+          LineaDescripcion("Effect", $"Starts {acumulando} until the start of the next turn."),
+          LineaDescripcion("When damaged", $"Makes a {salvacionMental} vs DC 10 + 33% of damage taken.", 1),
+          LineaDescripcion("Failed save", $"Stops {acumulando}.", 1),
+          LineaDescripcion("If maintained", $"Gains +1 {energia} at the start of the next turn.", 1),
+          LineaDescripcion("Energy 1", $"+10% Damage, +5% {critico}."),
+          LineaDescripcion("Energy 2", $"+25% Damage, +5% {TerminoDescripcion(TerminoDescripcionId.Critico, "Crit")}, +1 {apMax}."),
+          LineaDescripcion("Energy 3", $"+40% Damage, +10% {TerminoDescripcion(TerminoDescripcionId.Critico, "Crit")}, +2 {apMaxSinIcono}.")
+        };
+
+        if (nivelAcumulacionProtegida > 0)
+        {
+          int barreraExtra = nivelAcumulacionProtegida == 4 ? 6 : nivelAcumulacionProtegida > 1 ? 2 : 0;
+          string formulaBarrera = $"1 + Power ({poderActual}) + 3 x current {energiaSinIcono}";
+          if (barreraExtra > 0) { formulaBarrera += $" + {barreraExtra}"; }
+          string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrier", "Estado_barrera");
+          lineas.Add(LineaDescripcion("Protected Gathering", $"Gains {formulaBarrera} {barrera} and +{tsMentalProtegida} to {TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental saves")} until the next turn."));
+          if (nivelAcumulacionProtegida == 5)
+          {
+            lineas.Add(LineaDescripcion("While Gathering", $"+1 {apMaxSinIcono}.", 1));
+          }
+        }
+
+        lineas.Add(LineaDescripcion("Use", "Ends the turn."));
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          "Gather Energy",
+          "Concentrates until the next turn to increase Energy by 1.",
+          lineas);
+        return;
+      }
+      {
+        bool pt = esPortugues;
+        string energia = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia" : "nivel de Energía", "Estado_acumularenergia");
+        string energiaSinIcono = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia" : "nivel de Energía");
+        string acumulando = TerminoDescripcion(TerminoDescripcionId.Acumulando, pt ? "Acumulando" : "Acumulando");
+        string salvacionMental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, pt ? "resistência Mental" : "salvación Mental", "ic_mental");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string apMax = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP Máx.", "ap");
+        string apMaxSinIcono = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP Máx.");
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion(pt ? "Alvo" : "Objetivo", pt ? "Próprio" : "Propio"),
+          LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Começa a" : "Comienza a")} {acumulando} {(pt ? "até o início do próximo turno" : "hasta el inicio del próximo turno")}."),
+          LineaDescripcion(pt ? "Ao sofrer dano" : "Al recibir daño", $"{(pt ? "Faz uma" : "Hace una")} {salvacionMental} vs CD 10 + 33% {(pt ? "do dano sofrido" : "del daño recibido")}.", 1),
+          LineaDescripcion(pt ? "Falha" : "Fallo", $"{(pt ? "Para de" : "Deja de")} {acumulando}.", 1),
+          LineaDescripcion(pt ? "Se mantido" : "Si se mantiene", $"{(pt ? "Recebe" : "Obtiene")} +1 {energia} {(pt ? "no início do próximo turno" : "al inicio del próximo turno")}.", 1),
+          LineaDescripcion("Energia 1", $"+10% {(pt ? "Dano" : "Daño")}, +5% {critico}."),
+          LineaDescripcion("Energia 2", $"+25% {(pt ? "Dano" : "Daño")}, +5% {TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico")}, +1 {apMax}."),
+          LineaDescripcion("Energia 3", $"+40% {(pt ? "Dano" : "Daño")}, +10% {TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico")}, +2 {apMaxSinIcono}.")
+        };
+        if (nivelAcumulacionProtegida > 0)
+        {
+          int barreraExtra = nivelAcumulacionProtegida == 4 ? 6 : nivelAcumulacionProtegida > 1 ? 2 : 0;
+          string formulaBarrera = $"1 + Poder ({poderActual}) + 3 x {energiaSinIcono} atual";
+          if (barreraExtra > 0) { formulaBarrera += $" + {barreraExtra}"; }
+          string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, pt ? "Barreira" : "Barrera", "Estado_barrera");
+          lineas.Add(LineaDescripcion(pt ? "Acúmulo protegido" : "Acumulación protegida", $"{(pt ? "Recebe" : "Obtiene")} {formulaBarrera} como {barrera} {(pt ? "e" : "y")} +{tsMentalProtegida} {(pt ? "às" : "a las")} {TerminoDescripcion(TerminoDescripcionId.SalvacionMental, pt ? "resistências Mentais" : "salvaciones Mentales")} {(pt ? "até o próximo turno" : "hasta el próximo turno")}."));
+          if (nivelAcumulacionProtegida == 5) { lineas.Add(LineaDescripcion(pt ? "Enquanto acumula" : "Mientras acumula", $"+1 {apMaxSinIcono}.", 1)); }
+        }
+        lineas.Add(LineaDescripcion("Uso", pt ? "Encerra o turno." : "Termina el turno."));
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          pt ? "Acumular Energia" : "Acumular Energía",
+          pt ? "Concentra-se até o próximo turno para aumentar a Energia em 1." : "Se concentra hasta el próximo turno para aumentar la Energía en 1.",
+          lineas);
+        return;
+      }
       string colorEncabezado = "#44d3ec";
       string colorValor = "#ffffff";
       string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
@@ -69,7 +146,7 @@ public class AcumularEnergia : Habilidad
       if (esIngles)
       {
         cuerpo += "<b>Type:</b> Self\n";
-        cuerpo += "<b>Effect on cast:</b> Applies <b>Gathering</b> buff (1 round)\n";
+        cuerpo += "<b>Effect on cast:</b> Starts <b>Gathering</b> (1 round)\n";
         cuerpo += "<b>If concentration is maintained:</b> +1 Energy Tier on next turn\n";
         cuerpo += "<b>Energy I:</b> +10% Damage, +5% Critical\n";
         cuerpo += "<b>Energy II:</b> +15% Damage, +1 Max AP\n";
@@ -570,8 +647,5 @@ public class AcumularEnergiaCanalizadorFx : MonoBehaviour
     return spriteDescarga;
   }
 }
-
-
-
 
 

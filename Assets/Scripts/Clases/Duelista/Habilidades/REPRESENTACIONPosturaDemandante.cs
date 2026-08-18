@@ -50,6 +50,25 @@ public class REPRESENTACIONPosturaDemandante : Habilidad
                 ? "Golpes pesados deixam a Duelista cambaleando por um turno."
                 : "Los golpes fuertes dejan a la Duelista tambaleando por un turno.";
 
+        if (esIngles)
+        {
+            string tambaleando = TerminoDescripcion(TerminoDescripcionId.Tambaleando, "Staggering");
+            string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                titulo,
+                "Passive: Heavy hits leave the Duelist staggered.",
+                new[]
+                {
+                    LineaDescripcion("Trigger", "A hit deals more than 20% max HP."),
+                    LineaDescripcion("Effect", $"Gains {tambaleando}: -1 max {ap}, -2 {defensa} (1 turn)."),
+                    LineaDescripcion("Limit", "Once per turn.")
+                });
+            return;
+        }
+        if(esPortugues){string tamb=TerminoDescripcion(TerminoDescripcionId.Tambaleando,"Cambaleante");string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Passiva: golpes pesados deixam a Duelista cambaleante.",new[]{LineaDescripcion("Ativação","Um golpe causa mais de 20% do HP máximo."),LineaDescripcion("Efeito",$"Recebe {tamb}: -1 {ap} máximo, -2 {def} (1 turno)."),LineaDescripcion("Limite","Uma vez por turno.")},costoSuperior:string.Empty);return;}
+        {string tamb=TerminoDescripcion(TerminoDescripcionId.Tambaleando,"Tambaleante");string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Pasiva: los golpes fuertes dejan a la Duelista tambaleante.",new[]{LineaDescripcion("Activación","Un golpe inflige más del 20% del HP máximo."),LineaDescripcion("Efecto",$"Obtiene {tamb}: -1 {ap} máximo, -2 {def} (1 turno)."),LineaDescripcion("Límite","Una vez por turno.")},costoSuperior:string.Empty);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

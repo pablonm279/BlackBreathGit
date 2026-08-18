@@ -239,6 +239,92 @@ public class REPRESENTACIONEcosDivinos : Habilidad
       string rangoAliados = RangoAliados();
       string rangoEnemigos = RangoEnemigos();
 
+      if (TRADU.i != null && TRADU.i.nIdioma == 2)
+      {
+        string pasiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Passive");
+        string ecoDivino = TerminoDescripcion(TerminoDescripcionId.EcoDivino, "Divine Echo");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour", "Valentía");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "Divine damage", "dano_divino");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL <= 2) { proximaMejora = "+2 damage and healing."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +5 healing.\nOption B: +5 damage."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          $"Divine Echoes {SufijoNivel()}",
+          $"{pasiva}: Creates one {ecoDivino} each turn.",
+          new[]
+          {
+            LineaDescripcion("Effect", $"Creates 1 {ecoDivino} each turn on a random tile on either side of the battlefield."),
+            LineaDescripcion("On contact", ""),
+            LineaDescripcion("Allies", $"Restores {rangoAliados} HP and grants +1 {valentia}; the Purifier also gains +1 {fervor}.", 1),
+            LineaDescripcion("Enemies", $"Suffer {rangoEnemigos} {danioDivino}.", 1)
+          },
+          proximaMejora,
+          costoSuperior: "");
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == 3)
+      {
+        string passiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Passiva");
+        string ecoDivino = TerminoDescripcion(TerminoDescripcionId.EcoDivino, "Eco Divino");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia", "Valentía");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string danoDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "dano Divino", "dano_divino");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL <= 2) { proximaMejora = "Próximo nível: +2 de dano e cura."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: +5 de cura.\nOpção B: +5 de dano."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"Ecos Divinos {SufijoNivel()}",
+          $"{passiva}: cria um {ecoDivino} a cada turno.",
+          new[]
+          {
+            LineaDescripcion("Efeito", $"Cria 1 {ecoDivino} a cada turno em uma célula aleatória de qualquer lado do campo de batalha."),
+            LineaDescripcion("Ao contato", ""),
+            LineaDescripcion("Aliados", $"Restaura {rangoAliados} HP e concede +1 {valentia}; a Purificadora também ganha +1 {fervor}.", 1),
+            LineaDescripcion("Inimigos", $"Sofrem {rangoEnemigos} {danoDivino}.", 1)
+          },
+          proximaMejora,
+          costoSuperior: "");
+        return;
+      }
+
+      {
+        string pasiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Pasiva");
+        string ecoDivino = TerminoDescripcion(TerminoDescripcionId.EcoDivino, "Eco Divino");
+        string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía", "Valentía");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, "Fervor");
+        string danioDivino = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "daño Divino", "dano_divino");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL <= 2) { proximaMejora = "Próximo nivel: +2 de daño y curación."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: +5 de curación.\nOpción B: +5 de daño."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"Ecos Divinos {SufijoNivel()}",
+          $"{pasiva}: crea un {ecoDivino} cada turno.",
+          new[]
+          {
+            LineaDescripcion("Efecto", $"Crea 1 {ecoDivino} cada turno en una casilla aleatoria de cualquier lado del campo de batalla."),
+            LineaDescripcion("Al contacto", ""),
+            LineaDescripcion("Aliados", $"Restaura {rangoAliados} HP y otorga +1 {valentia}; la Purificadora también gana +1 {fervor}.", 1),
+            LineaDescripcion("Enemigos", $"Sufren {rangoEnemigos} {danioDivino}.", 1)
+          },
+          proximaMejora,
+          costoSuperior: "");
+        return;
+      }
+
       string titulo = $"Ecos Divinos {SufijoNivel()}";
       string subtitulo = "<color=#4f5552>Pasiva: crea un eco por turno.</color>";
       string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +

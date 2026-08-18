@@ -145,6 +145,7 @@ public class BattleManager : MonoBehaviour
   private bool tooltipValorHoverActivo;
   private Unidad unidadHoverBajoMouse;
   private Unidad unidadMarcadaHoverObjetivoHabilidad;
+  private bool poseTurnoActivoMarcadaPorSeleccion;
   private bool redirigiendoClickUnidadCentralizado;
   private int frameUltimoClickUnidadCentralizado = -1;
   private GameObject panelSuperiorIntroBatalla;
@@ -1916,6 +1917,10 @@ public class BattleManager : MonoBehaviour
 
   private void CancelarHabilidadActiva()
   {
+    LiberarPoseTurnoActivoMarcadaPorSeleccion();
+    unidadMarcadaHoverObjetivoHabilidad?.Marcar(0);
+    unidadMarcadaHoverObjetivoHabilidad = null;
+
     if (HabilidadActiva == null)
     {
       ActualizarVisibilidadIndicadorEsfuerzo();
@@ -2325,6 +2330,10 @@ public class BattleManager : MonoBehaviour
 
   public void LimpiarSeleccionHabilidadActual()
   {
+    LiberarPoseTurnoActivoMarcadaPorSeleccion();
+    unidadMarcadaHoverObjetivoHabilidad?.Marcar(0);
+    unidadMarcadaHoverObjetivoHabilidad = null;
+
     LimpiarFadeHoverObjetivoHabilidad();
     LimpiarPreviewHoverHostil();
     _habilidadActiva?.LimpiarMarcasUnidadesPosibles();
@@ -3147,8 +3156,10 @@ public class BattleManager : MonoBehaviour
 
     if (unidadMarcadaHoverObjetivoHabilidad != nuevaUnidadMarcada)
     {
+      LiberarPoseTurnoActivoMarcadaPorSeleccion();
       unidadMarcadaHoverObjetivoHabilidad?.Marcar(0);
       unidadMarcadaHoverObjetivoHabilidad = nuevaUnidadMarcada;
+      ActivarPoseTurnoActivoMarcadaPorSeleccion();
     }
 
     unidadMarcadaHoverObjetivoHabilidad?.Marcar(1);
@@ -3157,6 +3168,62 @@ public class BattleManager : MonoBehaviour
     {
       infoChar?.ReaplicarMarcadoPrioritario();
     }
+  }
+
+  private bool DebeMostrarPoseTurnoActivoAlSeleccionar(Unidad unidad)
+  {
+    if (unidad == null || HabilidadActiva == null || !HabilidadActiva.esHostil || unidadActiva == null)
+    {
+      return false;
+    }
+
+    if (unidad.GetComponent<IAUnidad>() == null
+      || unidad.CasillaPosicion == null
+      || unidadActiva.CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    return unidad.CasillaPosicion.lado != unidadActiva.CasillaPosicion.lado;
+  }
+
+  // Reutiliza la misma regla que el hover (habilidad hostil + objetivo IA + bando opuesto) para que
+  // Habilidad.Resolver() pueda sostener la pose de "objetivo hostil" en el/los objetivo/s confirmados
+  // durante todo el ataque, sin duplicar la condicion y sin tocar el mecanismo de hover existente.
+  public bool DebeMantenerPoseObjetivoHostilDuranteAtaque(Unidad unidad)
+  {
+    return DebeMostrarPoseTurnoActivoAlSeleccionar(unidad);
+  }
+
+  private void ActivarPoseTurnoActivoMarcadaPorSeleccion()
+  {
+    if (poseTurnoActivoMarcadaPorSeleccion || !DebeMostrarPoseTurnoActivoAlSeleccionar(unidadMarcadaHoverObjetivoHabilidad))
+    {
+      return;
+    }
+
+    UnidadPoseController pose = unidadMarcadaHoverObjetivoHabilidad.GetComponent<UnidadPoseController>();
+    if (pose == null || pose.poseTurnoActivo == null)
+    {
+      return;
+    }
+
+    pose.EnterPoseObjetivoHostil();
+    poseTurnoActivoMarcadaPorSeleccion = true;
+  }
+
+  private void LiberarPoseTurnoActivoMarcadaPorSeleccion()
+  {
+    if (!poseTurnoActivoMarcadaPorSeleccion)
+    {
+      return;
+    }
+
+    UnidadPoseController pose = unidadMarcadaHoverObjetivoHabilidad != null
+      ? unidadMarcadaHoverObjetivoHabilidad.GetComponent<UnidadPoseController>()
+      : null;
+    pose?.ExitPoseObjetivoHostil();
+    poseTurnoActivoMarcadaPorSeleccion = false;
   }
 
   private bool EstaPunteroSobreUIExterna()
@@ -3315,6 +3382,7 @@ public class BattleManager : MonoBehaviour
 
     if (unidadMarcadaHoverObjetivoHabilidad != null)
     {
+      LiberarPoseTurnoActivoMarcadaPorSeleccion();
       unidadMarcadaHoverObjetivoHabilidad.Marcar(0);
       unidadMarcadaHoverObjetivoHabilidad = null;
     }

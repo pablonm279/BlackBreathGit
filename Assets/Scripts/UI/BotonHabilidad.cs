@@ -166,23 +166,26 @@ public class BotonHabilidad : MonoBehaviour
         TMP_SpriteAsset spriteAsset = ObtenerSpriteAssetIconosCombate();
         if (txtDescHab != null && spriteAsset != null)
         {
+            TextoIconosCombate.NormalizarSpriteAsset(spriteAsset);
             txtDescHab.spriteAsset = spriteAsset;
         }
 
         string descripcion = Habilidad.LimpiarCostoValentiaDescripcion(HabilidadRepresentada.txtDescripcion);
         bool incluirIconos = spriteAsset != null;
+        string descripcionFormateada;
         if (HabilidadRepresentada != null && HabilidadRepresentada.GetType().Name.Contains("REPRESENTACION"))
         {
-            txtDescHab.text = TextoIconosCombate.LimitarRepeticionIconos(
+            descripcionFormateada = TextoIconosCombate.LimitarRepeticionIconos(
                 TextoIconosCombate.FormatearIconosDespuesDelTitulo(descripcion, incluirIconos),
                 2);
         }
         else
         {
-            txtDescHab.text = TextoIconosCombate.LimitarRepeticionIconos(
+            descripcionFormateada = TextoIconosCombate.LimitarRepeticionIconos(
                 TextoIconosCombate.FormatearIconosDesdeBloqueMecanico(descripcion, incluirIconos),
                 2);
         }
+        txtDescHab.text = TextoIconosCombate.NormalizarIconosInline(descripcionFormateada);
         goDesc.SetActive(true);
 
         // Asegurarnos de que el goDesc (RectTransform) no salga de los margenes de la pantalla
@@ -371,7 +374,7 @@ public class BotonHabilidad : MonoBehaviour
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClaseExplorador>().ObtenerCantidadFlechas() < HabilidadRepresentada.requiereRecurso)
                 { BattleManager.Instance.unidadActiva.GenerarTextoFlotante(TRADU.i.Traducir("No hay suficientes flechas"), Color.gray, FloatingTextContext.Resist); ReproducirRechazoInteraccion(); return; }
             }
-            if (HabilidadRepresentada.nombre == "Enmendar")
+            if (HabilidadRepresentada.nombre == "Enmendar" || HabilidadRepresentada.nombre == "Salmo Purificador")
             {
                 if (BattleManager.Instance.unidadActiva.gameObject.GetComponent<ClasePurificadora>().ObtenerFervor() < HabilidadRepresentada.requiereRecurso)
                 {

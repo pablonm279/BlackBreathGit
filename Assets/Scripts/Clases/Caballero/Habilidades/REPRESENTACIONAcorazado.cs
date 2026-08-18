@@ -208,6 +208,68 @@ public class REPRESENTACIONAcorazado : Habilidad
       else if (NIVEL == 3 || NIVEL == 5) { umbralDanio = 8; }
       else if (NIVEL == 4) { umbralDanio = 10; }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == 2)
+      {
+        string armaduraResumen = TerminoDescripcion(TerminoDescripcionId.Armadura, "Armor");
+        string armadura = TerminoDescripcion(TerminoDescripcionId.Armadura, "Armor", "IconoArmadura");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Armor reduction threshold becomes 7+ physical damage."; }
+          else if (NIVEL == 2) { proximaMejora = "Armor reduction threshold becomes 8+ physical damage."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: threshold becomes 10+ physical damage.\nOption B: Armor cannot drop below half its initial value."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Effect", $"{armadura} is reduced only after taking {umbralDanio}+ physical damage from one hit.")
+        };
+        if (NIVEL == 5)
+        {
+          lineas.Add(LineaDescripcion("Limit", "Armor cannot drop below half its initial value."));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          $"Armored {SufijoNivel()}",
+          $"Passive: {armaduraResumen} resists hits below {umbralDanio} physical damage.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == 3)
+      {
+        string armadura = TerminoDescripcion(TerminoDescripcionId.Armadura, "Armadura", "IconoArmadura");
+        string armaduraResumo = TerminoDescripcion(TerminoDescripcionId.Armadura, "Armadura");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: o limiar de redução de Armadura passa a ser 7+ de dano físico."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: o limiar de redução de Armadura passa a ser 8+ de dano físico."; }
+          else if (NIVEL == 3) { proximaMejora = "Opção A: o limiar passa a ser 10+ de dano físico.\nOpção B: a Armadura não pode cair abaixo da metade de seu valor inicial."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada> { LineaDescripcion("Efeito", $"A {armadura} só é reduzida após sofrer {umbralDanio}+ de dano físico de um único golpe.") };
+        if (NIVEL == 5) { lineas.Add(LineaDescripcion("Limite", "A Armadura não pode cair abaixo da metade de seu valor inicial.")); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"Blindado {SufijoNivel()}", $"Passiva: a {armaduraResumo} resiste a golpes inferiores a {umbralDanio} de dano físico.", lineas, proximaMejora, costoSuperior: string.Empty);
+        return;
+      }
+
+      {
+        string armadura = TerminoDescripcion(TerminoDescripcionId.Armadura, "Armadura", "IconoArmadura");
+        string armaduraResumen = TerminoDescripcion(TerminoDescripcionId.Armadura, "Armadura");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: el umbral de reducción de Armadura pasa a ser 7+ de daño físico."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: el umbral de reducción de Armadura pasa a ser 8+ de daño físico."; }
+          else if (NIVEL == 3) { proximaMejora = "Opción A: el umbral pasa a ser 10+ de daño físico.\nOpción B: la Armadura no puede bajar de la mitad de su valor inicial."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada> { LineaDescripcion("Efecto", $"La {armadura} solo se reduce tras recibir {umbralDanio}+ de daño físico de un solo golpe.") };
+        if (NIVEL == 5) { lineas.Add(LineaDescripcion("Límite", "La Armadura no puede bajar de la mitad de su valor inicial.")); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"Acorazado {SufijoNivel()}", $"Pasiva: la {armaduraResumen} resiste golpes inferiores a {umbralDanio} de daño físico.", lineas, proximaMejora, costoSuperior: string.Empty);
+        return;
+      }
+
       string titulo = $"Acorazado {SufijoNivel()}";
       string subtitulo = $"<color=#4f5552>Pasiva: la Armadura solo baja si recibe {umbralDanio}+ daño físico.</color>";
       string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +

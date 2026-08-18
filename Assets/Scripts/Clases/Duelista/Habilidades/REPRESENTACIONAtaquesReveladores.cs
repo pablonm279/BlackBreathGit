@@ -56,6 +56,36 @@ public class REPRESENTACIONAtaquesReveladores : Habilidad
 
         string colorTitulo = "#5dade2";
         string colorEncabezado = "#44d3ec";
+        if (esIngles)
+        {
+            string vulnerabilidad = TerminoDescripcion(TerminoDescripcionId.VulnerabilidadExpuesta, "Exposed Vulnerability");
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) proximaMejora = "+10% critical damage taken.";
+                else if (NIVEL == 2) proximaMejora = "+5% Crit against exposed targets.";
+                else if (NIVEL == 3) proximaMejora = "Option A: +15% critical damage taken. Option B: +1 turn duration.";
+            }
+
+            string efectoVulnerabilidad = $"Attacks against the target gain +{bonusCritPorcentaje}% {critico}";
+            if (bonusDanioCritico > 0) efectoVulnerabilidad += $"; critical hits deal +{bonusDanioCritico}% damage";
+            efectoVulnerabilidad += ".";
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                "Revealing Attacks " + sufijoNivel,
+                "Passive: Damaging enemies exposes them to critical follow-up attacks.",
+                new[]
+                {
+                    LineaDescripcion("Trigger", "Deals damage to an enemy."),
+                    LineaDescripcion("Effect", $"Applies {vulnerabilidad} ({duracion} turns; stackable)."),
+                    LineaDescripcion("Exposed", efectoVulnerabilidad, 1)
+                },
+                proximaMejora);
+            return;
+        }
+        if(esPortugues){string vuln=TerminoDescripcion(TerminoDescripcionId.VulnerabilidadExpuesta,"Vulnerabilidade Exposta");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +10% de dano crítico sofrido.":NIVEL==2?"Próximo nível: +5% de Crítico contra alvos expostos.":NIVEL==3?"Opção A: +15% de dano crítico sofrido. Opção B: +1 turno de duração.":null;string ef=$"Ataques contra o alvo recebem +{bonusCritPorcentaje}% {crit}";if(bonusDanioCritico>0)ef+=$"; acertos críticos causam +{bonusDanioCritico}% de dano";ef+=".";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Ataques Reveladores "+sufijoNivel,"Passiva: causar dano aos inimigos os expõe a ataques críticos posteriores.",new[]{LineaDescripcion("Ativação","Causa dano a um inimigo."),LineaDescripcion("Efeito",$"Aplica {vuln} ({duracion} turnos; acumulável)."),LineaDescripcion("Exposto",ef,1)},prox,costoSuperior:string.Empty);return;}
+        {string vuln=TerminoDescripcion(TerminoDescripcionId.VulnerabilidadExpuesta,"Vulnerabilidad Expuesta");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +10% de daño crítico recibido.":NIVEL==2?"Próximo nivel: +5% de Crítico contra objetivos expuestos.":NIVEL==3?"Opción A: +15% de daño crítico recibido. Opción B: +1 turno de duración.":null;string ef=$"Los ataques contra el objetivo obtienen +{bonusCritPorcentaje}% {crit}";if(bonusDanioCritico>0)ef+=$"; los impactos críticos infligen +{bonusDanioCritico}% de daño";ef+=".";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Ataques Reveladores "+sufijoNivel,"Pasiva: infligir daño a los enemigos los expone a ataques críticos posteriores.",new[]{LineaDescripcion("Activación","Inflige daño a un enemigo."),LineaDescripcion("Efecto",$"Aplica {vuln} ({duracion} turnos; acumulable)."),LineaDescripcion("Expuesto",ef,1)},prox,costoSuperior:string.Empty);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

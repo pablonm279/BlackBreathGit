@@ -2317,6 +2317,7 @@ public class EventosAdmin : MonoBehaviour
     {
         if (txtDescripcion != null && spriteAssetRecursos != null)
         {
+            TextoIconosCombate.NormalizarSpriteAsset(spriteAssetRecursos);
             txtDescripcion.spriteAsset = spriteAssetRecursos;
         }
     }

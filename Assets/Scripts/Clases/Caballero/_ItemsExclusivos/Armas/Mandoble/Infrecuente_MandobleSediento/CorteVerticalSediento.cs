@@ -92,6 +92,46 @@ public class CorteVerticalSediento : Habilidad
       string titulo = esIngles ? "Thirsty Vertical Slash" : esPortugues ? "Corte Vertical Sedento" : "Corte Vertical Sediento";
       string subtitulo = esIngles ? "Heavy melee attack; stronger against wounded targets." : esPortugues ? "Ataque corpo a corpo pesado; melhora contra alvos feridos." : "Ataque melee pesado; mejora contra objetivos heridos.";
       string efecto = esIngles ? "If target has 50% HP or less and is not Construct: +1 attack, +5% Crit" : esPortugues ? "Se o alvo tem 50% HP ou menos e nao e Construto: +1 ataque, +5% Critico" : "Si el objetivo tiene 50% HP o menos y no es Constructo: +1 ataque, +5% Critico";
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          titulo,
+          "A heavy strike that becomes more accurate against wounded targets.",
+          new[]
+          {
+            LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+            LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+            LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 10%. {critico}: {criticoPorcentaje}%.", 1),
+            LineaDescripcion("Weapon effect", $"Against a non-Construct unit at 50% HP or less: +1 Attack and +5% {critico}.")
+          },
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Força ({stats.Fuerza})"); string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa"); string cortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico"); string criticoSemIcone = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "Um golpe pesado que fica mais preciso contra alvos feridos.", new[]
+        {
+          LineaDescripcion("Alvo", "1 alvo ou obstáculo em alcance corpo a corpo"), LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {forca} como {cortante}."),
+          LineaDescripcion("Rolagem de Ataque", $"1d20 + {forca}{bonusTirada} vs {defesa}. Falha crítica: 10%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Efeito da arma", $"Contra uma unidade que não seja Construto com 50% de HP ou menos: +1 Ataque e +5% de {criticoSemIcone}.")
+        }, mostrarIconoMelee: true); return;
+      }
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Fuerza ({stats.Fuerza})"); string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa"); string cortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico"); string criticoSinIcono = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "Un golpe pesado que se vuelve más preciso contra objetivos heridos.", new[]
+        {
+          LineaDescripcion("Objetivo", "1 objetivo u obstáculo en alcance cuerpo a cuerpo"), LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {fuerza} como {cortante}."),
+          LineaDescripcion("Tirada de Ataque", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Pifia: 10%. {critico}: {criticoPorcentaje}%.", 1),
+          LineaDescripcion("Efecto del arma", $"Contra una unidad que no sea Constructo con 50% de HP o menos: +1 Ataque y +5% de {criticoSinIcono}.")
+        }, mostrarIconoMelee: true); return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {
@@ -472,7 +512,4 @@ public class CorteVerticalSediento : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
-
-
-
 

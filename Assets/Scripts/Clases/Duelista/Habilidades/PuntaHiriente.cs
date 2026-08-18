@@ -101,6 +101,46 @@ public class PuntaHiriente : Habilidad
                 : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
         string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
+        if (esIngles)
+        {
+            string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, "Strength");
+            string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, "Agility");
+            string atributoMixto = $"{fuerza}/{agilidad} ({atributoMixtoActual})";
+            string agilidadSave = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+            string provocado = TerminoDescripcion(TerminoDescripcionId.Provocado, "Provoked");
+            string adolorido = TerminoDescripcion(TerminoDescripcionId.Adolorido, "Sore");
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) proximaMejora = "+1 Attack Roll.";
+                else if (NIVEL == 2) proximaMejora = "+1 save DC.";
+                else if (NIVEL == 3) proximaMejora = "Option A: +3 Armor Penetration. Option B: +1 turn Sore duration.";
+            }
+
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloEn,
+                "Provokes the target and can reduce its offense.",
+                new List<LineaDescripcionNormalizada>
+                {
+                    LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+                    LineaDescripcion("Effect", $"On hit, deals {rangoDanio} as {danioPerforante} and applies {provocado} (2 turns)."),
+                    LineaDescripcion("Attack Roll", $"1d20 + {atributoMixto}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+                    LineaDescripcion("Penetration", $"Armor Penetration: {penetracion}."),
+                    LineaDescripcion("Save", $"Target's {fortaleza} vs DC {dcBase} + {agilidadSave} ({dcTotal}).", 1),
+                    LineaDescripcion("Failed save", $"Applies {adolorido}: -10% damage and -2 Attack ({duracionAdolorido} turns).", 1),
+                    LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+                },
+                proximaMejora,
+                mostrarIconoMelee: true);
+            return;
+        }
+        if(esPortugues){string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Força");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade");string mix=$"{forca}/{agi} ({atributoMixtoActual})";string agiS=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidade ({agilidadActual})");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortitude","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante");string prov=TerminoDescripcion(TerminoDescripcionId.Provocado,"Provocado");string dor=TerminoDescripcion(TerminoDescripcionId.Adolorido,"Dolorido");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 na Rolagem de Ataque.":NIVEL==2?"Próximo nível: +1 CD da salvaguarda.":NIVEL==3?"Opção A: +3 Penetração de Armadura. Opção B: +1 turno de duração de Dolorido.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Provoca o alvo e pode reduzir seu ataque.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} como {dano} e aplica {prov} (2 turnos)."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetração",$"Penetração de Armadura: {penetracion}."),LineaDescripcion("Salvaguarda",$"{fort} do alvo vs CD {dcBase} + {agiS} ({dcTotal}).",1),LineaDescripcion("Falha",$"Aplica {dor}: -10% de dano e -2 Ataque ({duracionAdolorido} turnos).",1),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
+        {string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Fuerza");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidad");string mix=$"{fuerza}/{agi} ({atributoMixtoActual})";string agiS=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidad ({agilidadActual})");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortaleza","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante");string prov=TerminoDescripcion(TerminoDescripcionId.Provocado,"Provocado");string dol=TerminoDescripcion(TerminoDescripcionId.Adolorido,"Adolorido");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 a la Tirada de Ataque.":NIVEL==2?"Próximo nivel: +1 CD de salvación.":NIVEL==3?"Opción A: +3 Penetración de Armadura. Opción B: +1 turno de duración de Adolorido.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Provoca al objetivo y puede reducir su ataque.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} como {dano} y aplica {prov} (2 turnos)."),LineaDescripcion("Tirada de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetración",$"Penetración de Armadura: {penetracion}."),LineaDescripcion("Salvación",$"{fort} del objetivo vs CD {dcBase} + {agiS} ({dcTotal}).",1),LineaDescripcion("Salvación fallida",$"Aplica {dol}: -10% de daño y -2 Ataque ({duracionAdolorido} turnos).",1),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

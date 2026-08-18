@@ -61,12 +61,44 @@ public class RecuperarAire : Habilidad
         string iconoCooldown = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"cooldown\"></voffset></size><space=-0.35em>";
         string costoSuperior = $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}";
 
+        if (esIngles)
+        {
+            string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+            string defensaTermino = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string curacion = TerminoDescripcion(TerminoDescripcionId.Curacion, "healing");
+            string impulsoTermino = TerminoDescripcion(TerminoDescripcionId.Impulso, "Impulse");
+            string valentiaTermino = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour", "Valentía");
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) proximaMejora = "+1 Defense.";
+                else if (NIVEL == 2) proximaMejora = "+1-10 healing.";
+                else if (NIVEL == 3) proximaMejora = "Option A: +1 Impulse. Option B: +1 Valour.";
+            }
+
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloEn,
+                "Recovers in the rear column and prepares for the next turn.",
+                new[]
+                {
+                    LineaDescripcion("Target", "Self"),
+                    LineaDescripcion("Requirement", "Rear column."),
+                    LineaDescripcion("Effect", $"Restores {rangoCuracion} HP as {curacion}; gains +{impulso} {impulsoTermino} and +{valentia} {valentiaTermino}."),
+                    LineaDescripcion("Buff", $"+{apMax} max {ap} (2 turns), {defensa} {defensaTermino} until next turn."),
+                    LineaDescripcion("Use", "Ends the turn.")
+                },
+                proximaMejora);
+            return;
+        }
+        if(esPortugues){string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string cura=TerminoDescripcion(TerminoDescripcionId.Curacion,"cura");string imp=TerminoDescripcion(TerminoDescripcionId.Impulso,"Impulso");string val=TerminoDescripcion(TerminoDescripcionId.Valentia,"Valentia","Valentía");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 Defesa.":NIVEL==2?"Próximo nível: +1-10 de cura.":NIVEL==3?"Opção A: +1 Impulso. Opção B: +1 Valentia.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Recupera-se na coluna traseira e se prepara para o próximo turno.",new[]{LineaDescripcion("Alvo","A própria Duelista"),LineaDescripcion("Requisito","Coluna traseira."),LineaDescripcion("Efeito",$"Restaura {rangoCuracion} HP como {cura}; recebe +{impulso} {imp} e +{valentia} {val}."),LineaDescripcion("Bônus",$"+{apMax} {ap} máximo (2 turnos), {defensa} {def} até o próximo turno."),LineaDescripcion("Uso","Encerra o turno.")},prox);return;}
+        {string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string cura=TerminoDescripcion(TerminoDescripcionId.Curacion,"curación");string imp=TerminoDescripcion(TerminoDescripcionId.Impulso,"Impulso");string val=TerminoDescripcion(TerminoDescripcionId.Valentia,"Valentía","Valentía");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 Defensa.":NIVEL==2?"Próximo nivel: +1-10 de curación.":NIVEL==3?"Opción A: +1 Impulso. Opción B: +1 Valentía.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Se recupera en la columna trasera y se prepara para el siguiente turno.",new[]{LineaDescripcion("Objetivo","La propia Duelista"),LineaDescripcion("Requisito","Columna trasera."),LineaDescripcion("Efecto",$"Restaura {rangoCuracion} HP como {cura}; obtiene +{impulso} {imp} y +{valentia} {val}."),LineaDescripcion("Bonificación",$"+{apMax} {ap} máximo (2 turnos), {defensa} {def} hasta el próximo turno."),LineaDescripcion("Uso","Termina el turno.")},prox);return;}
+
         string cuerpo = "";
         if (esIngles)
         {
             cuerpo += $"<color={colorEncabezado}><b>Type:</b></color> Self recovery\n";
             cuerpo += $"<color={colorEncabezado}><b>Position:</b></color> rear column only\n";
-            cuerpo += $"<color={colorEncabezado}><b>Effect (2 turns):</b></color> +{apMax} Max AP, {defensa} Defense\n";
+            cuerpo += $"<color={colorEncabezado}><b>Effect:</b></color> +{apMax} Max AP (2 turns), {defensa} Defense until next turn\n";
             cuerpo += $"<color={colorEncabezado}><b>Immediate:</b></color> heals {rangoCuracion}, +{impulso} Impulse, +{valentia} Valour\n";
             cuerpo += $"<color={colorEncabezado}><b>Turn flow:</b></color> ends turn";
         }
@@ -74,7 +106,7 @@ public class RecuperarAire : Habilidad
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Recuperacao propria\n";
             cuerpo += $"<color={colorEncabezado}><b>Posicao:</b></color> apenas na coluna traseira\n";
-            cuerpo += $"<color={colorEncabezado}><b>Efeito (2 turnos):</b></color> +{apMax} AP max, {defensa} Defesa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efeito:</b></color> +{apMax} AP max (2 turnos), {defensa} Defesa ate o proximo turno\n";
             cuerpo += $"<color={colorEncabezado}><b>Imediato:</b></color> cura {rangoCuracion}, +{impulso} Impulso, +{valentia} Valentía\n";
             cuerpo += $"<color={colorEncabezado}><b>Fluxo de turno:</b></color> termina turno";
         }
@@ -82,7 +114,7 @@ public class RecuperarAire : Habilidad
         {
             cuerpo += $"<color={colorEncabezado}><b>Tipo:</b></color> Recuperacion propia\n";
             cuerpo += $"<color={colorEncabezado}><b>Posicion:</b></color> solo en columna trasera\n";
-            cuerpo += $"<color={colorEncabezado}><b>Efecto (2 turnos):</b></color> +{apMax} AP max, {defensa} Defensa\n";
+            cuerpo += $"<color={colorEncabezado}><b>Efecto:</b></color> +{apMax} AP max (2 turnos), {defensa} Defensa hasta el próximo turno\n";
             cuerpo += $"<color={colorEncabezado}><b>Inmediato:</b></color> cura {rangoCuracion}, +{impulso} Impulso, +{valentia} Valentía\n";
             cuerpo += $"<color={colorEncabezado}><b>Flujo de turno:</b></color> termina turno";
         }

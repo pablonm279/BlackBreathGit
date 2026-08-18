@@ -146,6 +146,43 @@ public class TiroBallestaDeMano : Habilidad
         : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
     string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
+    if (esIngles)
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Target", "1 target or obstacle"),
+        LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {agilidad} as {danioPerforante}."),
+        LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%.")
+      };
+      if (nivelMaestria > 0)
+      {
+        lineas.Add(LineaDescripcion("Passive", $"Hand Crossbow Mastery (Tier {nivelMaestria})."));
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        "Hand Crossbow Shot",
+        "Hand crossbow attack. Fires at one target.",
+        lineas);
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string agilidade = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidade ({agilidadActual})"); string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa"); string dano = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "dano Perfurante", "dano_perforante"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      var lineas = new List<LineaDescripcionNormalizada> { LineaDescripcion("Alvo", "1 alvo ou obstáculo"), LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {agilidade} como {dano}."), LineaDescripcion("Rolagem de Ataque", $"1d20 + {agilidade}{bonusTirada} vs {defesa}. Falha crítica: 5%. {critico}: {criticoPorcentaje}%.") };
+      if (nivelMaestria > 0) lineas.Add(LineaDescripcion("Passiva", $"Maestria com Besta de Mão (Nível {nivelMaestria})."));
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Disparo de Besta de Mão", "Ataque com besta de mão. Dispara contra um alvo.", lineas); return;
+    }
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidad ({agilidadActual})"); string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa"); string dano = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "daño Perforante", "dano_perforante"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      var lineas = new List<LineaDescripcionNormalizada> { LineaDescripcion("Objetivo", "1 objetivo u obstáculo"), LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {agilidad} como {dano}."), LineaDescripcion("Tirada de Ataque", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Pifia: 5%. {critico}: {criticoPorcentaje}%.") };
+      if (nivelMaestria > 0) lineas.Add(LineaDescripcion("Pasiva", $"Maestría con Ballesta de Mano (Nivel {nivelMaestria})."));
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Disparo de Ballesta de Mano", "Ataque con ballesta de mano. Dispara a un objetivo.", lineas); return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {

@@ -18,6 +18,36 @@ public class REPRESENTACIONSobrecarga : Habilidad
   
     public override void  ActualizarDescripcion()
     {
+          if (TRADU.i != null && TRADU.i.nIdioma == 2)
+          {
+            string energia = TerminoDescripcion(TerminoDescripcionId.Energia, "Energy tier", "Estado_acumularenergia");
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+              "Overload",
+              "After a battle: The Channeler receives damage in campaign according to the Energy level reached in battle.",
+              new[]
+              {
+                LineaDescripcion("Trigger", "End of combat."),
+                LineaDescripcion("Effect", $"Suffers 15% of Max HP per remaining {energia}."),
+                LineaDescripcion("Limit", "Current HP cannot be reduced below 1.")
+              });
+            return;
+          }
+
+          {
+            bool pt = TRADU.i != null && TRADU.i.nIdioma == 3;
+            string energia = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia" : "nivel de Energía", "Estado_acumularenergia");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+              "Sobrecarga",
+              pt ? "Após uma batalha: o Canalizador sofre dano na campanha de acordo com o nível de Energia alcançado em combate." : "Después de una batalla: el Canalizador recibe daño en campaña según el nivel de Energía alcanzado en combate.",
+              new[]
+              {
+                LineaDescripcion(pt ? "Gatilho" : "Desencadenante", pt ? "Fim do combate." : "Fin del combate."),
+                LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Sofre 15% dos" : "Sufre el 15% de los")} PV Máx. por cada {energia} restante."),
+                LineaDescripcion(pt ? "Limite" : "Límite", pt ? "Os PV atuais não podem ser reduzidos abaixo de 1." : "Los PV actuales no pueden reducirse por debajo de 1.")
+              },
+              costoSuperior: string.Empty);
+            return;
+          }
 
       
          txtDescripcion = "<color=#5dade2><b>Sobrecarga</b></color>\n\n"; 
@@ -41,7 +71,7 @@ public class REPRESENTACIONSobrecarga : Habilidad
           string iconoEnergia = "<space=0.35em><size=150%><voffset=0.34em><sprite name=\"Estado_acumularenergia\"></voffset></size><space=-0.35em>";
           string titulo = esIngles ? "Overload" : "Sobrecarga";
           string subtitulo = esIngles
-            ? "Campaign drawback based on Energy left at combat end."
+            ? "After a battle: The Channeler receives damage in campaign according to the Energy level reached in battle."
             : esPortugues
               ? "Custo de campanha baseado na Energia restante ao fim do combate."
               : "Costo de campaña segun la Energía restante al final del combate.";

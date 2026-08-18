@@ -63,6 +63,62 @@ public class CorteDaga : Habilidad
           : $"<color={colorFuerza}>Fuerza ({fuerzaActual})</color>";
       string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({fuerzaActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          "Dagger Slash",
+          "Slashes one target with a dagger.",
+          new[]
+          {
+            LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+            LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+            LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%.")
+          },
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Força ({fuerzaActual})");
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          "Corte de Adaga",
+          "Corta um alvo com uma adaga.",
+          new[]
+          {
+            LineaDescripcion("Alvo", "1 alvo ou obstáculo em alcance corpo a corpo"),
+            LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {forca} como {danoCortante}."),
+            LineaDescripcion("Rolagem de ataque", $"1d20 + {forca}{bonusTirada} vs {defesa}. Falha crítica: 5%. {critico}: {criticoPorcentaje}%.")
+          },
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Fuerza ({fuerzaActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          "Corte de Daga",
+          "Corta a un objetivo con una daga.",
+          new[]
+          {
+            LineaDescripcion("Objetivo", "1 objetivo u obstáculo en alcance cuerpo a cuerpo"),
+            LineaDescripcion("Efecto", $"Al impactar, causa {rangoDanio} + {fuerza} como {danioCortante}."),
+            LineaDescripcion("Tirada de ataque", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Pifia: 5%. {critico}: {criticoPorcentaje}%.")
+          },
+          mostrarIconoMelee: true);
+        return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {
@@ -455,9 +511,4 @@ public class CorteDaga : Habilidad
       return false;
     }
 }
-
-
-
-
-
 

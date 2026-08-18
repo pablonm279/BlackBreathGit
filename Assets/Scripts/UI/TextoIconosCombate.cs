@@ -1,20 +1,27 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using TMPro;
+using UnityEngine.TextCore;
 
 public static class TextoIconosCombate
 {
-    private const string margenIzquierdoIcono = " <space=0.95em>";
-    private const string margenDerechoIcono = "<space=-0.35em>";
-    private const string offsetVerticalIcono = "0.34em";
-    private const string escalaIcono = "175%";
+    private const string escalaIcono = "121%";
+    private const float proporcionBearingVertical = 0.78f;
+
+    private static readonly HashSet<int> spriteAssetsNormalizados = new HashSet<int>();
 
     private static readonly Regex regexTagsTmp =
         new Regex(@"(<[^>]+>)", RegexOptions.Compiled);
 
     private static readonly Regex regexBloqueIconoInline =
         new Regex(
-            @"(?:\s*<space=[^>]+>)?(?:<size=[^>]+>)?(?:<voffset=[^>]+>)?<sprite name=""(?<name>[^""]+)""(?:\s*/)?>(?:</voffset>)?(?:</size>)?(?:\s*<space=[^>]+>)?",
+            @"(?:<space=[^>]+>)?(?:<size=[^>]+>)?(?:<voffset=[^>]+>)?<sprite name=""(?<name>[^""]+)""(?:\s*/)?>(?:</voffset>)?(?:</size>)?(?:<space=[^>]+>)?",
+            RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    private static readonly Regex regexEspaciadoIconoNormalizado =
+        new Regex(
+            @"(?<antes>[ \t]*)(?<icono><size=" + escalaIcono + @"><sprite name=""[^""]+""(?:\s*/)?></size>)(?<despues>[ \t]*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private static readonly Regex regexInicioBloqueMecanico =
@@ -83,6 +90,7 @@ public static class TextoIconosCombate
 
         string[] partes = regexTagsTmp.Split(texto);
         var sb = new StringBuilder(texto.Length + 64);
+        bool dentroTerminoSemantico = false;
 
         for (int i = 0; i < partes.Length; i++)
         {
@@ -92,7 +100,22 @@ public static class TextoIconosCombate
                 continue;
             }
 
-            sb.Append(EsTagTmp(parte) ? parte : FormatearTextoVisible(parte));
+            if (EsTagTmp(parte))
+            {
+                if (EsInicioTerminoSemantico(parte))
+                {
+                    dentroTerminoSemantico = true;
+                }
+                else if (EsFinTerminoSemantico(parte))
+                {
+                    dentroTerminoSemantico = false;
+                }
+
+                sb.Append(parte);
+                continue;
+            }
+
+            sb.Append(dentroTerminoSemantico ? parte : FormatearTextoVisible(parte));
         }
 
         return sb.ToString();
@@ -152,7 +175,7 @@ public static class TextoIconosCombate
         }
 
         string spriteName = ObtenerSpriteDanio(tipoDanio);
-        return string.IsNullOrEmpty(spriteName) ? string.Empty : margenIzquierdoIcono + CrearSpriteTag(spriteName);
+        return string.IsNullOrEmpty(spriteName) ? string.Empty : " " + CrearSpriteTag(spriteName);
     }
 
     public static string LimitarRepeticionIconos(string texto, int maxRepeticionesPorIcono = 2)
@@ -182,12 +205,52 @@ public static class TextoIconosCombate
         });
     }
 
+    public static string NormalizarIconosInline(string texto)
+    {
+        if (string.IsNullOrEmpty(texto))
+        {
+            return texto;
+        }
+
+        string normalizado = regexBloqueIconoInline.Replace(
+            texto,
+            match => CrearSpriteTag(match.Groups["name"].Value));
+
+        return regexEspaciadoIconoNormalizado.Replace(normalizado, match =>
+        {
+            int indiceAnterior = match.Index - 1;
+            int indiceSiguiente = match.Index + match.Length;
+            bool conservarEspacioAntes = match.Groups["antes"].Length > 0 &&
+                                         indiceAnterior >= 0 &&
+                                         normalizado[indiceAnterior] != '\n' &&
+                                         normalizado[indiceAnterior] != '\r';
+            bool conservarEspacioDespues = match.Groups["despues"].Length > 0 &&
+                                           indiceSiguiente < normalizado.Length &&
+                                           normalizado[indiceSiguiente] != '\n' &&
+                                           normalizado[indiceSiguiente] != '\r';
+
+            return (conservarEspacioAntes ? " " : string.Empty) +
+                   match.Groups["icono"].Value +
+                   (conservarEspacioDespues ? " " : string.Empty);
+        });
+    }
+
+    public static void NormalizarSpriteAsset(TMP_SpriteAsset spriteAsset)
+    {
+        if (spriteAsset == null)
+        {
+            return;
+        }
+
+        NormalizarSpriteAssetRecursivo(spriteAsset);
+    }
+
     private static string FormatearTextoVisible(string texto)
     {
         for (int i = 0; i < iconos.Length; i++)
         {
             IconoAlias icono = iconos[i];
-            texto = icono.Regex.Replace(texto, match => match.Value + margenIzquierdoIcono + icono.SpriteTag);
+            texto = icono.Regex.Replace(texto, match => match.Value + " " + icono.SpriteTag);
         }
 
         return texto;
@@ -196,6 +259,16 @@ public static class TextoIconosCombate
     private static bool EsTagTmp(string texto)
     {
         return texto.Length > 1 && texto[0] == '<' && texto[texto.Length - 1] == '>';
+    }
+
+    private static bool EsInicioTerminoSemantico(string texto)
+    {
+        return texto.StartsWith("<link=\"skill-term:", System.StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool EsFinTerminoSemantico(string texto)
+    {
+        return texto.Equals("</link>", System.StringComparison.OrdinalIgnoreCase);
     }
 
     private static string ObtenerSpriteDanio(int tipoDanio)
@@ -218,7 +291,61 @@ public static class TextoIconosCombate
 
     private static string CrearSpriteTag(string spriteName)
     {
-        return "<size=" + escalaIcono + "><voffset=" + offsetVerticalIcono + "><sprite name=\"" + spriteName + "\"></voffset></size>" + margenDerechoIcono;
+        return "<size=" + escalaIcono + "><sprite name=\"" + spriteName + "\"></size>";
+    }
+
+    private static void NormalizarSpriteAssetRecursivo(TMP_SpriteAsset spriteAsset)
+    {
+        if (spriteAsset == null || !spriteAssetsNormalizados.Add(spriteAsset.GetInstanceID()))
+        {
+            return;
+        }
+
+        List<TMP_SpriteCharacter> caracteres = spriteAsset.spriteCharacterTable;
+        for (int i = 0; i < caracteres.Count; i++)
+        {
+            TMP_SpriteCharacter caracter = caracteres[i];
+            if (caracter != null)
+            {
+                caracter.scale = 1f;
+            }
+        }
+
+        List<TMP_SpriteGlyph> glifos = spriteAsset.spriteGlyphTable;
+        for (int i = 0; i < glifos.Count; i++)
+        {
+            TMP_SpriteGlyph glifo = glifos[i];
+            if (glifo == null)
+            {
+                continue;
+            }
+
+            GlyphMetrics metricas = glifo.metrics;
+            if (glifo.sprite != null)
+            {
+                var rectImportado = glifo.sprite.textureRect;
+                metricas.width = rectImportado.width;
+                metricas.height = rectImportado.height;
+                glifo.glyphRect = new GlyphRect(rectImportado);
+            }
+
+            metricas.horizontalBearingX = 0f;
+            metricas.horizontalBearingY = metricas.height * proporcionBearingVertical;
+            metricas.horizontalAdvance = metricas.width;
+            glifo.metrics = metricas;
+            glifo.scale = 1f;
+        }
+
+        List<TMP_SpriteAsset> fallbacks = spriteAsset.fallbackSpriteAssets;
+        if (fallbacks == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < fallbacks.Count; i++)
+        {
+            NormalizarSpriteAssetRecursivo(fallbacks[i]);
+        }
     }
 
     private readonly struct IconoAlias

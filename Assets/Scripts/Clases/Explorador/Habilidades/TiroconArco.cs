@@ -70,6 +70,77 @@ public class TiroconArco : Habilidad
         : $"<color={colorAgilidad}>Agilidad ({agilidadActual})</color>";
     string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
+    if (esIngles)
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+      string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+      string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Arrow");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string rangoDanioReal = FormatearRangoDados(XdDanio, daniodX, 1);
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        "Bow Shot",
+        "Fires a single arrow at one target.",
+        new[]
+        {
+          LineaDescripcion("Target", "1 enemy or obstacle"),
+          LineaDescripcion("Effect", $"On hit, deals {rangoDanioReal} + {agilidad} as {danioCortante}."),
+          LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion("Cost", $"1 {flecha}")
+        });
+
+      if (EsEscenaCampaña())
+      {
+        ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
+        if (clase != null && clase.ObtenerCantidadFlechas() < 1)
+        {
+          txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+        }
+      }
+      return;
+    }
+
+    if (esPortugues)
+    {
+      string agilidade = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidade ({agilidadActual})");
+      string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+      string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante");
+      string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string rangoDanioReal = FormatearRangoDados(XdDanio, daniodX, 1);
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        "Tiro com Arco",
+        "Dispara uma única flecha contra um alvo.",
+        new[]
+        {
+          LineaDescripcion("Alvo", "1 inimigo ou obstáculo"),
+          LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanioReal} + {agilidade} como {danoCortante}."),
+          LineaDescripcion("Rolagem de ataque", $"1d20 + {agilidade}{bonusTirada} vs {defesa}. Falha crítica: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion("Custo", $"1 {flecha}")
+        });
+      return;
+    }
+
+    {
+      string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidad ({agilidadActual})");
+      string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+      string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante");
+      string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string rangoDanioReal = FormatearRangoDados(XdDanio, daniodX, 1);
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        "Tiro con Arco",
+        "Dispara una sola flecha contra un objetivo.",
+        new[]
+        {
+          LineaDescripcion("Objetivo", "1 enemigo u obstáculo"),
+          LineaDescripcion("Efecto", $"Al impactar, causa {rangoDanioReal} + {agilidad} como {danioCortante}."),
+          LineaDescripcion("Tirada de ataque", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Pifia: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion("Costo", $"1 {flecha}")
+        });
+      return;
+    }
+
     string cuerpo = "";
     if (esIngles)
     {
@@ -183,6 +254,20 @@ public class TiroconArco : Habilidad
     protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
         return Task.CompletedTask;
+    }
+
+    public void AplicarEfectosHabilidadConTipoDanio(object obj, int tirada, int tipoDanioTemporal, Casilla casillaOrigenTrampas = null)
+    {
+      int tipoDanioOriginal = tipoDanio;
+      tipoDanio = tipoDanioTemporal;
+      try
+      {
+        AplicarEfectosHabilidad(obj, tirada, casillaOrigenTrampas);
+      }
+      finally
+      {
+        tipoDanio = tipoDanioOriginal;
+      }
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)

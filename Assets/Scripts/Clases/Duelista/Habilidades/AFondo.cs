@@ -92,6 +92,44 @@ public class AFondo : Habilidad
                 : $"<color={colorFuerza}>Fuerza</color>/<color={colorAgilidad}>Agilidad</color> ({atributoMixtoActual})";
         string bonusTirada = TextoModificadorDescripcion(ataqueActual) + TextoModificadorDescripcion(bonusAtaque);
 
+        if (esIngles)
+        {
+            string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, "Strength");
+            string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, "Agility");
+            string atributoMixto = $"{fuerza}/{agilidad} ({atributoMixtoActual})";
+            string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+            string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude", "ic_fortaleza");
+            string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+            string danioPerforante = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "Piercing damage", "dano_perforante");
+            string sangrado = TerminoDescripcion(TerminoDescripcionId.Sangrado, "Bleed", "Estado_sangrano");
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) proximaMejora = "+2 damage.";
+                else if (NIVEL == 2) proximaMejora = "+1 Armor Penetration.";
+                else if (NIVEL == 3) proximaMejora = "Option A: +2 Bleed. Option B: +5% Crit.";
+            }
+
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloEn,
+                "Pierces a target and the 2 rear diagonals, potentially causing Bleed.",
+                new List<LineaDescripcionNormalizada>
+                {
+                    LineaDescripcion("Target", "1 enemy and the 2 rear diagonal tiles"),
+                    LineaDescripcion("Effect", $"On hit, deals {rangoDanio} as {danioPerforante}."),
+                    LineaDescripcion("Attack Roll", $"1d20 + {atributoMixto}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+                    LineaDescripcion("Penetration", $"Armor Penetration: {penetracionArmadura}."),
+                    LineaDescripcion("Save", $"Target's {fortaleza} vs DC {dcFortitud}.", 1),
+                    LineaDescripcion("Failed save", $"If damaged, gains {sangradoAplicado} {sangrado}.", 1),
+                    LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+                },
+                proximaMejora,
+                mostrarIconoMelee: true);
+            return;
+        }
+        if(esPortugues){string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Força");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade");string mix=$"{forca}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortitude","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante");string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangramento","Estado_sangrano");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +2 de dano.":NIVEL==2?"Próximo nível: +1 Penetração de Armadura.":NIVEL==3?"Opção A: +2 Sangramento. Opção B: +5% de Crítico.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Perfura um alvo e as 2 diagonais traseiras, podendo causar Sangramento.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 inimigo e as 2 casas diagonais traseiras"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} como {dano}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetração",$"Penetração de Armadura: {penetracionArmadura}."),LineaDescripcion("Salvaguarda",$"{fort} do alvo vs CD {dcFortitud}.",1),LineaDescripcion("Falha",$"Se sofrer dano, recebe {sangradoAplicado} {sang}.",1),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
+        {string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Fuerza");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidad");string mix=$"{fuerza}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortaleza","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante");string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangrado","Estado_sangrano");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +2 de daño.":NIVEL==2?"Próximo nivel: +1 Penetración de Armadura.":NIVEL==3?"Opción A: +2 Sangrado. Opción B: +5% de Crítico.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Perfora a un objetivo y las 2 diagonales traseras, con posibilidad de causar Sangrado.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 enemigo y las 2 casillas diagonales traseras"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} como {dano}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetración",$"Penetración de Armadura: {penetracionArmadura}."),LineaDescripcion("Salvación",$"{fort} del objetivo vs CD {dcFortitud}.",1),LineaDescripcion("Salvación fallida",$"Si recibe daño, obtiene {sangradoAplicado} {sang}.",1),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
+
         string cuerpo = "";
         if (esIngles)
         {

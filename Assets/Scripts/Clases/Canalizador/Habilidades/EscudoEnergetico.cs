@@ -55,17 +55,90 @@ public class EscudoEnergetico : Habilidad
         int usosReaccion = NIVEL == 5 ? 3 : 2;
         bool seCancelaConDanio = NIVEL != 4;
 
+        if (esIngles)
+        {
+            string energia = TerminoDescripcion(TerminoDescripcionId.Energia, "current Energy tier", "Estado_acumularenergia");
+            string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, "Barrier", "Estado_barrera");
+            string descargaArcana = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane Discharge");
+            string residuo = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "Energy Residue", "Estado_acumularenergia");
+            string bonusAtaqueTextoNormalizado = bonusAtaqueReaccion > 0 ? $" with +{bonusAtaqueReaccion} Attack Roll" : string.Empty;
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) { proximaMejora = "+4 base Barrier."; }
+                else if (NIVEL == 2) { proximaMejora = "+1 Attack Roll to the counterattack."; }
+                else if (NIVEL == 3) { proximaMejora = "Option A: taking damage no longer removes the reaction.\nOption B: +1 reaction use."; }
+            }
+
+            var lineas = new List<LineaDescripcionNormalizada>
+            {
+                LineaDescripcion("Target", "Self"),
+                LineaDescripcion("Effect", $"Gains {barreraBase} + 10 x {energia} as {barrera}."),
+                LineaDescripcion("Reaction", "A ranged enemy misses the Channeler."),
+                LineaDescripcion("Counterattack", $"Uses {descargaArcana}{bonusAtaqueTextoNormalizado} on enemy and creates 1 {residuo} in a random nearby empty tile.", 1),
+                LineaDescripcion("Limit", $"{usosReaccion} reaction uses per cast.", 1)
+            };
+            if (seCancelaConDanio)
+            {
+                lineas.Add(LineaDescripcion("Reaction ends", "When the Channeler takes damage, or after all uses are spent.", 1));
+            }
+            else
+            {
+                lineas.Add(LineaDescripcion("Reaction ends", "After all uses are spent.", 1));
+            }
+            lineas.Add(LineaDescripcion("Duration", "Barrier: 1 round."));
+
+            txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+                tituloEn,
+                "Creates a reactive barrier that counters missed ranged attacks.",
+                lineas,
+                proximaMejora);
+            return;
+        }
+
+        {
+            bool pt = esPortugues;
+            string energia = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia atual" : "nivel de Energía actual", "Estado_acumularenergia");
+            string barrera = TerminoDescripcion(TerminoDescripcionId.Barrera, pt ? "Barreira" : "Barrera", "Estado_barrera");
+            string descargaArcana = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Descarga Arcana");
+            string residuo = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, pt ? "Resíduo Energético" : "Residuo Energético", "Estado_acumularenergia");
+            string bonusAtaqueTextoLocalizado = bonusAtaqueReaccion > 0 ? (pt ? $" com +{bonusAtaqueReaccion} na Rolagem de ataque" : $" con +{bonusAtaqueReaccion} a la Tirada de ataque") : string.Empty;
+            string proximaMejora = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) { proximaMejora = pt ? "+4 de Barreira base." : "+4 de Barrera base."; }
+                else if (NIVEL == 2) { proximaMejora = pt ? "+1 na Rolagem de ataque do contra-ataque." : "+1 a la Tirada de ataque del contraataque."; }
+                else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: sofrer dano não remove mais a reação.\nOpção B: +1 uso da reação." : "Opción A: recibir daño ya no elimina la reacción.\nOpción B: +1 uso de la reacción."; }
+            }
+            var lineas = new List<LineaDescripcionNormalizada>
+            {
+                LineaDescripcion(pt ? "Alvo" : "Objetivo", pt ? "Próprio" : "Propio"),
+                LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "Recebe" : "Obtiene")} {barreraBase} + 10 x {energia} como {barrera}."),
+                LineaDescripcion(pt ? "Reação" : "Reacción", pt ? "Um inimigo à distância erra o Canalizador." : "Un enemigo a distancia falla contra el Canalizador."),
+                LineaDescripcion(pt ? "Contra-ataque" : "Contraataque", $"{(pt ? "Usa" : "Usa")} {descargaArcana}{bonusAtaqueTextoLocalizado} {(pt ? "contra o inimigo e cria" : "contra el enemigo y crea")} 1 {residuo} {(pt ? "em uma casa vazia próxima aleatória" : "en una casilla vacía cercana aleatoria")}.", 1),
+                LineaDescripcion(pt ? "Limite" : "Límite", $"{usosReaccion} {(pt ? "usos da reação por conjuração" : "usos de la reacción por uso")}.", 1)
+            };
+            lineas.Add(LineaDescripcion(pt ? "Fim da reação" : "Fin de la reacción", seCancelaConDanio ? (pt ? "Quando o Canalizador sofre dano ou quando todos os usos são gastos." : "Cuando el Canalizador recibe daño o se gastan todos los usos.") : (pt ? "Quando todos os usos são gastos." : "Cuando se gastan todos los usos."), 1));
+            lineas.Add(LineaDescripcion(pt ? "Duração" : "Duración", pt ? "Barreira: 1 rodada." : "Barrera: 1 ronda."));
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                pt ? tituloPt : tituloEs,
+                pt ? "Cria uma barreira reativa que contra-ataca ataques à distância que erram." : "Crea una barrera reactiva que contraataca los ataques a distancia que fallan.",
+                lineas,
+                proximaMejora);
+            return;
+        }
+
         string cuerpo = "";
         if (esIngles)
         {
             cuerpo += "<b>Type:</b> Self\n";
-            cuerpo += $"<b>Barrier:</b> {barreraBase} + 10 x current Energy Tier (2 rounds)\n";
+            cuerpo += $"<b>Barrier:</b> {barreraBase} + 10 x current Energy Tier (1 round)\n";
             cuerpo += $"<b>Reaction:</b> On failed enemy projectile, counters with Arcane Discharge";
             if (bonusAtaqueReaccion > 0)
             {
                 cuerpo += $" (+{bonusAtaqueReaccion} attack roll)";
             }
-            cuerpo += " and creates 1 Energy Residue nearby\n";
+            cuerpo += " on enemy and creates 1 Energy Residue nearby\n";
             cuerpo += $"<b>Reaction Uses per cast:</b> {usosReaccion}\n";
             cuerpo += seCancelaConDanio
                 ? "<b>Condition:</b> Shield is removed if user takes damage"
@@ -74,7 +147,7 @@ public class EscudoEnergetico : Habilidad
         else if (esPortugues)
         {
             cuerpo += "<b>Tipo:</b> Propria\n";
-            cuerpo += $"<b>Barreira:</b> {barreraBase} + 10 x Nivel de Energia atual (2 rodadas)\n";
+            cuerpo += $"<b>Barreira:</b> {barreraBase} + 10 x Nivel de Energia atual (1 rodada)\n";
             cuerpo += $"<b>Reacao:</b> Contra projetil inimigo falho, contra-ataca com Descarga Arcana";
             if (bonusAtaqueReaccion > 0)
             {
@@ -89,7 +162,7 @@ public class EscudoEnergetico : Habilidad
         else
         {
             cuerpo += "<b>Tipo:</b> Propia\n";
-            cuerpo += $"<b>Barrera:</b> {barreraBase} + 10 x Nivel de Energia actual (2 rondas)\n";
+            cuerpo += $"<b>Barrera:</b> {barreraBase} + 10 x Nivel de Energia actual (1 ronda)\n";
             cuerpo += $"<b>Reacción:</b> Ante proyectil enemigo fallido, contraataca con Descarga Arcana";
             if (bonusAtaqueReaccion > 0)
             {
@@ -135,15 +208,15 @@ public class EscudoEnergetico : Habilidad
         if (esIngles)
         {
             cuerpoFormato += $"<color={colorEncabezado}><b>Type:</b></color> <color={colorValor}>Self buff</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Barrier:</b></color> <color={colorValor}>+{barreraBase} + 10 x current Energy Tier for 2 rounds</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Reaction:</b></color> <color={colorValor}>{iconoReaccion} On failed enemy projectile: Arcane Discharge{bonusAtaqueTexto}, creates {iconoEnergia} 1 Energy Residue nearby</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Barrier:</b></color> <color={colorValor}>+{barreraBase} + 10 x current Energy Tier for 1 round</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Reaction:</b></color> <color={colorValor}>{iconoReaccion} On failed enemy projectile: Arcane Discharge{bonusAtaqueTexto} on enemy and creates {iconoEnergia} 1 Energy Residue nearby</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Uses:</b></color> <color={colorValor}>{usosReaccion} reactions per cast</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Condition:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Removed when user takes damage" : "Not removed by incoming damage")}</color>";
         }
         else if (esPortugues)
         {
             cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Barreira:</b></color> <color={colorValor}>+{barreraBase} + 10 x Nivel de Energia atual por 2 rodadas</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Barreira:</b></color> <color={colorValor}>+{barreraBase} + 10 x Nivel de Energia atual por 1 rodada</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Reacao:</b></color> <color={colorValor}>{iconoReaccion} Se projetil inimigo falha: Descarga Arcana{bonusAtaqueTexto}, cria {iconoEnergia} 1 Residuo Energetico proximo</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usosReaccion} reacoes por uso</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Condicao:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Remove ao receber dano" : "Nao remove ao receber dano")}</color>";
@@ -151,7 +224,7 @@ public class EscudoEnergetico : Habilidad
         else
         {
             cuerpoFormato += $"<color={colorEncabezado}><b>Tipo:</b></color> <color={colorValor}>Auto buff</color>\n";
-            cuerpoFormato += $"<color={colorEncabezado}><b>Barrera:</b></color> <color={colorValor}>+{barreraBase} + 10 x Nivel de Energia actual por 2 rondas</color>\n";
+            cuerpoFormato += $"<color={colorEncabezado}><b>Barrera:</b></color> <color={colorValor}>+{barreraBase} + 10 x Nivel de Energia actual por 1 ronda</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Reacción:</b></color> <color={colorValor}>{iconoReaccion} Si proyectil enemigo falla: Descarga Arcana{bonusAtaqueTexto}, crea {iconoEnergia} 1 Residuo Energetico cercano</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Usos:</b></color> <color={colorValor}>{usosReaccion} reacciones por uso</color>\n";
             cuerpoFormato += $"<color={colorEncabezado}><b>Condición:</b></color> <color={colorValor}>{(seCancelaConDanio ? "Se remueve al recibir daño" : "No se remueve al recibir daño")}</color>";

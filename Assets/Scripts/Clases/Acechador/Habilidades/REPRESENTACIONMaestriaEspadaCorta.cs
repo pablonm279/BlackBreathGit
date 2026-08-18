@@ -30,6 +30,42 @@ public class REPRESENTACIONMaestriaEspadaCorta : Habilidad
     string extra = reduceAp ? "-1 costo AP" : "";
     string proximo = ProximoNivel();
 
+    if (TRADU.i != null && TRADU.i.nIdioma == 2)
+    {
+      string ataqueTermino = TerminoDescripcion(TerminoDescripcionId.Ataque, "Attack");
+      string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+      string criticoTermino = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+      string bonus = $"+{ataque} {ataqueTermino}, +{danio} {danioCortante}" + (critico > 0 ? $", +{critico}% {criticoTermino}" : ".");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) proximaMejora = "+5% Crit.";
+        else if (NIVEL == 2) proximaMejora = "-1 AP cost.";
+        else if (NIVEL == 3) proximaMejora = "Option A: +5% Crit and +2 damage. Option B: +1 Attack and +2 damage.";
+      }
+      var lineas = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("Applies to", "Short sword attacks."),
+        LineaDescripcion("Bonus", bonus)
+      };
+      if (reduceAp) lineas.Add(LineaDescripcion("Cost", $"-1 {ap}."));
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        $"Short Sword Mastery {sufijo}",
+        "Passive: Improves attacks made with the short sword.",
+        lineas,
+        proximaMejora);
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == 3)
+    {
+      string atk = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque"); string danoT = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante"); string critT = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico"); string apT = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap"); string bonus = $"+{ataque} {atk}, +{danio} {danoT}" + (critico > 0 ? $", +{critico}% {critT}" : "."); string prox = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "Próximo nível: +5% de Crítico." : NIVEL == 2 ? "Próximo nível: -1 de custo de AP." : NIVEL == 3 ? "Opção A: +5% de Crítico e +2 de dano. Opção B: +1 Ataque e +2 de dano." : null; var l = new List<LineaDescripcionNormalizada>{LineaDescripcion("Aplica-se a", "Ataques com espada curta."), LineaDescripcion("Bônus", bonus)}; if(reduceAp)l.Add(LineaDescripcion("Custo", $"-1 {apT}.")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada($"Maestria com Espada Curta {sufijo}","Passiva: melhora os ataques feitos com a espada curta.",l,prox,costoSuperior:string.Empty); return;
+    }
+    {
+      string atk = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque"); string danoT = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante"); string critT = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico"); string apT = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap"); string bonus = $"+{ataque} {atk}, +{danio} {danoT}" + (critico > 0 ? $", +{critico}% {critT}" : "."); string prox = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "Próximo nivel: +5% de Crítico." : NIVEL == 2 ? "Próximo nivel: -1 de costo de AP." : NIVEL == 3 ? "Opción A: +5% de Crítico y +2 de daño. Opción B: +1 Ataque y +2 de daño." : null; var l = new List<LineaDescripcionNormalizada>{LineaDescripcion("Se aplica a", "Ataques con espada corta."), LineaDescripcion("Bonificación", bonus)}; if(reduceAp)l.Add(LineaDescripcion("Costo", $"-1 {apT}.")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada($"Maestría con Espada Corta {sufijo}","Pasiva: mejora los ataques realizados con la espada corta.",l,prox,costoSuperior:string.Empty); return;
+    }
+
     if (critico > 0)
     {
       bonificador += $", +{critico}% Crítico";
@@ -38,7 +74,7 @@ public class REPRESENTACIONMaestriaEspadaCorta : Habilidad
     if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
     {
       titulo = $"Short Sword Mastery {sufijo}";
-      bajada = "Improves attacks made with a short sword.";
+      bajada = "Improves attacks made with the short sword.";
       etiquetaTipo = "Type";
       etiquetaAplica = "Applies to";
       etiquetaBonus = "Bonus";

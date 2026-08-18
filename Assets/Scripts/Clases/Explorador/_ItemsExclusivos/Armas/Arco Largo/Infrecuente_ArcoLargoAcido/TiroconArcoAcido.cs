@@ -99,6 +99,69 @@ public class TiroconArcoAcido : Habilidad
       string titulo = esIngles ? "Acid Bow Shot" : esPortugues ? "Tiro com Arco Acido" : "Tiro con Arco Acido";
       string subtitulo = esIngles ? "Bow shot with extra Acid damage." : esPortugues ? "Disparo de arco com dano Acido extra." : "Disparo de arco con dano Acido extra.";
       string efecto = esIngles ? "Extra damage: 1-6 Acid; on graze 1-2 Acid" : esPortugues ? "Dano extra: 1-6 Acido; em raspao 1-2 Acido" : "Dano extra: 1-6 Acido; en roce 1-2 Acido";
+
+      if (esIngles)
+      {
+        string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agility ({stats.Agilidad})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string danioAcido = TerminoDescripcion(TerminoDescripcionId.DanioAcido, "Acid damage", "dano_acido");
+        string danioAcidoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioAcido, "Acid damage");
+        string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Arrow");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          "Acid Bow Shot",
+          "Fires an arrow coated with acid.",
+          new[]
+          {
+            LineaDescripcion("Target", "1 enemy or obstacle"),
+            LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {agilidad} as {danioCortante} and 1-6 {danioAcido}."),
+            LineaDescripcion("Graze", $"Deals 1-2 additional {danioAcidoSinIcono}.", 1),
+            LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+            LineaDescripcion("Cost", $"1 {flecha}")
+          });
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string agilidade = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidade ({stats.Agilidad})");
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante");
+        string danoAcido = TerminoDescripcion(TerminoDescripcionId.DanioAcido, "dano Ácido", "dano_acido");
+        string danoAcidoSemIcone = TerminoDescripcion(TerminoDescripcionId.DanioAcido, "dano Ácido");
+        string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Tiro com Arco Ácido", "Dispara uma flecha revestida de ácido.", new[]
+        {
+          LineaDescripcion("Alvo", "1 inimigo ou obstáculo"),
+          LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {agilidade} como {danoCortante} e 1-6 de {danoAcido}."),
+          LineaDescripcion("De raspão", $"Causa 1-2 de {danoAcidoSemIcone} adicional.", 1),
+          LineaDescripcion("Rolagem de Ataque", $"1d20 + {agilidade}{bonusTirada} vs {defesa}. Falha crítica: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion("Custo", $"1 {flecha}")
+        });
+        return;
+      }
+
+      {
+        string agilidad = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidad ({stats.Agilidad})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante");
+        string danoAcido = TerminoDescripcion(TerminoDescripcionId.DanioAcido, "daño Ácido", "dano_acido");
+        string danoAcidoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioAcido, "daño Ácido");
+        string flecha = TerminoDescripcion(TerminoDescripcionId.Flecha, "Flecha");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Tiro con Arco Ácido", "Dispara una flecha recubierta de ácido.", new[]
+        {
+          LineaDescripcion("Objetivo", "1 enemigo u obstáculo"),
+          LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {agilidad} como {danoCortante} y 1-6 de {danoAcido}."),
+          LineaDescripcion("Roce", $"Inflige 1-2 de {danoAcidoSinIcono} adicional.", 1),
+          LineaDescripcion("Tirada de Ataque", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Pifia: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion("Costo", $"1 {flecha}")
+        });
+        return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {

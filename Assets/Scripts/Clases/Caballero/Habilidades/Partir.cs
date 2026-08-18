@@ -23,7 +23,7 @@ public class Partir : Habilidad
       nombre = "Partir";
       IDenClase = 6;
       costoAP = 4;
-      costoPM = 1;
+      costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       esZonal = false;
@@ -92,6 +92,106 @@ public class Partir : Habilidad
       string costoSuperior = cooldownMax > 0
         ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
         : $"{costoAP} {iconoAP}";
+
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({fuerzaActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+        string aterrorizado = TerminoDescripcion(TerminoDescripcionId.Aterrorizado, "Terrified", "Estado_debuff");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "max AP", "ap");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+4 damage."; }
+          else if (NIVEL == 2) { proximaMejora = "+2 Attack Roll bonus."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +2 Save DC on kill.\nOption B: +5% Crit."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+          LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
+          LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{ataqueTxt} vs {defensa}. Fumble: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.", 1)
+        };
+        if (penetracionArmadura > 0)
+        {
+          string penetracion = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Armor Penetration", "IconoArmadura");
+          lineas.Add(LineaDescripcion("Penetration", $"{penetracion}: {penetracionArmadura}"));
+        }
+        lineas.Add(LineaDescripcion("On kill", "All enemies make a Mental save."));
+        lineas.Add(LineaDescripcion("Save", $"{mental} vs DC {dcMiedo}", 1));
+        lineas.Add(LineaDescripcion("Failed save", $"Becomes {aterrorizado} for 2 turns: -2 Attack, -1 {ap}, -2 Mental Save.", 1));
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "A powerful execution strike that may terrify every enemy on kill.",
+          lineas,
+          proximaMejora,
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Força ({fuerzaActual})");
+        string defesa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defesa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+        string aterrorizado = TerminoDescripcion(TerminoDescripcionId.Aterrorizado, "Aterrorizado");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +4 de dano."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +2 na Rolagem de Ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Opção A: +2 CD da salvaguarda ao matar.\nOpção B: +5% de Crítico."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Alvo", "1 alvo ou obstáculo em alcance corpo a corpo"),
+          LineaDescripcion("Efeito", $"Ao acertar, causa {rangoDanio} + {forca} como {danoCortante}."),
+          LineaDescripcion("Rolagem de Ataque", $"1d20 + {forca}{ataqueTxt} vs {defesa}. Falha crítica: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.", 1)
+        };
+        if (penetracionArmadura > 0) { string penetracao = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Penetração de Armadura", "IconoArmadura"); lineas.Add(LineaDescripcion("Penetração", $"{penetracao}: {penetracionArmadura}")); }
+        lineas.Add(LineaDescripcion("Ao matar", "Todos os inimigos fazem uma salvaguarda Mental."));
+        lineas.Add(LineaDescripcion("Salvaguarda", $"{mental} vs CD {dcMiedo}", 1));
+        lineas.Add(LineaDescripcion("Falha", $"Fica {aterrorizado} por 2 turnos: -2 Ataque, -1 {ap}, -2 Salvaguarda Mental.", 1));
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloPt, "Um poderoso golpe de execução que pode aterrorizar todos os inimigos ao matar.", lineas, proximaMejora, mostrarIconoMelee: true);
+        return;
+      }
+
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Fuerza ({fuerzaActual})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defensa", "IconoDefensa");
+        string danoCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "daño Cortante", "dano_cortante");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+        string aterrorizado = TerminoDescripcion(TerminoDescripcionId.Aterrorizado, "Aterrorizado");
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +4 de daño."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +2 a la Tirada de Ataque."; }
+          else if (NIVEL == 3) { proximaMejora = "Opción A: +2 CD de salvación al matar.\nOpción B: +5% de Crítico."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Objetivo", "1 objetivo u obstáculo en alcance cuerpo a cuerpo"),
+          LineaDescripcion("Efecto", $"Al impactar, inflige {rangoDanio} + {fuerza} como {danoCortante}."),
+          LineaDescripcion("Tirada de Ataque", $"1d20 + {fuerza}{ataqueTxt} vs {defensa}. Pifia: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.", 1)
+        };
+        if (penetracionArmadura > 0) { string penetracion = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "Penetración de Armadura", "IconoArmadura"); lineas.Add(LineaDescripcion("Penetración", $"{penetracion}: {penetracionArmadura}")); }
+        lineas.Add(LineaDescripcion("Al matar", "Todos los enemigos hacen una salvación Mental."));
+        lineas.Add(LineaDescripcion("Salvación", $"{mental} vs CD {dcMiedo}", 1));
+        lineas.Add(LineaDescripcion("Salvación fallida", $"Se vuelve {aterrorizado} durante 2 turnos: -2 Ataque, -1 {ap}, -2 Salvación Mental.", 1));
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloEs, "Un poderoso golpe de ejecución que puede aterrorizar a todos los enemigos al matar.", lineas, proximaMejora, mostrarIconoMelee: true);
+        return;
+      }
 
       string cuerpo = "";
       if (esIngles)

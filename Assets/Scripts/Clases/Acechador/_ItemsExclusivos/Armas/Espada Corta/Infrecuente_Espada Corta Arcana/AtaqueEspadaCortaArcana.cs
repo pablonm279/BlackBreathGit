@@ -100,6 +100,31 @@ public class AtaqueEspadaCortaArcana : Habilidad
       int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
       string titulo = esIngles ? "Arcane Short Sword Slash" : esPortugues ? "Corte de Espada Curta Arcana" : "Corte de Espada Corta Arcana";
       string subtitulo = esIngles ? "Melee cut with extra Arcane damage." : esPortugues ? "Corte corpo a corpo com dano Arcano extra." : "Corte melee con dano Arcano extra.";
+      if (esIngles)
+      {
+        string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
+        string defensa = TerminoDescripcion(TerminoDescripcionId.Defensa, "Defense", "IconoDefensa");
+        string danioCortante = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "Slashing damage", "dano_cortante");
+        string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage", "dano_arcano");
+        string danioArcanoSinIcono = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage");
+        string arcanoResumen = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "arcane");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
+          LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}, plus 1-4 {danioArcano}."),
+          LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
+          LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Critico, "Critical"), $"{danioArcanoSinIcono} becomes 1-8.")
+        };
+        if (nivelMaestria > 0) lineas.Add(LineaDescripcion("Passive", $"Short Sword Mastery (Tier {nivelMaestria})."));
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(titulo, $"A short sword attack infused with {arcanoResumen} energy.", lineas, mostrarIconoMelee: true);
+        return;
+      }
+      if (esPortugues)
+      {
+        string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,$"Força ({stats.Fuerza})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string cort=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"dano Cortante","dano_cortante"); string arc=TerminoDescripcion(TerminoDescripcionId.DanioArcano,"dano Arcano","dano_arcano"); string arc2=TerminoDescripcion(TerminoDescripcionId.DanioArcano,"dano Arcano"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} + {forca} como {cort}, mais 1-4 de {arc}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {forca}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Critico,"Acerto crítico"),$"O {arc2} passa a ser 1-8.")}; if(nivelMaestria>0)l.Add(LineaDescripcion("Passiva",$"Maestria com Espada Curta (Nível {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Um ataque com espada curta imbuído de energia arcana.",l,mostrarIconoMelee:true); return;
+      }
+      { string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,$"Fuerza ({stats.Fuerza})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa"); string cort=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"daño Cortante","dano_cortante"); string arc=TerminoDescripcion(TerminoDescripcionId.DanioArcano,"daño Arcano","dano_arcano"); string arc2=TerminoDescripcion(TerminoDescripcionId.DanioArcano,"daño Arcano"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} + {fuerza} como {cort}, más 1-4 de {arc}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {fuerza}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Critico,"Impacto crítico"),$"El {arc2} pasa a ser 1-8.")}; if(nivelMaestria>0)l.Add(LineaDescripcion("Pasiva",$"Maestría con Espada Corta (Nivel {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Un ataque con espada corta imbuido de energía arcana.",l,mostrarIconoMelee:true); return; }
       string cuerpo = "";
       if (esIngles)
       {
@@ -516,4 +541,3 @@ public class AtaqueEspadaCortaArcana : Habilidad
       return 0; //Devuelve 0 si no hay nada 
     }
 }
-

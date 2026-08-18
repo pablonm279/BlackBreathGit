@@ -25,6 +25,77 @@ public class REPRESENTACIONReconocimiento : Habilidad
       int iniciativa = NIVEL < 2 ? 0 : NIVEL == 2 ? 1 : 2;
       int retrasoRefuerzos = NIVEL == 5 ? 2 : 1;
 
+      if (esIngles)
+      {
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2 || NIVEL == 2) { proximaMejora = "+1 Initiative."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: +1 AP.\nOption B: delays reinforcements by +1 turn."; }
+        }
+
+        string aliados = $"+{apPrimerTurno} {ap}";
+        if (iniciativa > 0)
+        {
+          aliados += $", +{iniciativa} Initiative";
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          $"Reconnaissance {SufijoNivel()}",
+          "Passive: Grants the party an opening advantage.",
+          new[]
+          {
+            LineaDescripcion("Allies", $"{aliados} on the first turn."),
+            LineaDescripcion("Enemy reinforcements", $"Arrive {retrasoRefuerzos} turn{(retrasoRefuerzos == 1 ? "" : "s")} later.")
+          },
+          proximaMejora,
+          costoSuperior: string.Empty);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2 || NIVEL == 2) { proximaMejora = "Próximo nível: +1 Iniciativa."; }
+          else if (NIVEL == 3) { proximaMejora = "Opção A: +1 AP.\nOpção B: atrasa os reforços em +1 turno."; }
+        }
+        string aliados = $"+{apPrimerTurno} {ap}";
+        if (iniciativa > 0) { aliados += $", +{iniciativa} Iniciativa"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"Reconhecimento {SufijoNivel()}",
+          "Passiva: concede uma vantagem inicial ao grupo.",
+          new[]
+          {
+            LineaDescripcion("Aliados", $"{aliados} no primeiro turno."),
+            LineaDescripcion("Reforços inimigos", $"Chegam {retrasoRefuerzos} turno{(retrasoRefuerzos == 1 ? "" : "s")} depois.")
+          }, proximaMejora, costoSuperior: string.Empty);
+        return;
+      }
+
+      {
+        string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2 || NIVEL == 2) { proximaMejora = "Próximo nivel: +1 Iniciativa."; }
+          else if (NIVEL == 3) { proximaMejora = "Opción A: +1 AP.\nOpción B: retrasa los refuerzos +1 turno."; }
+        }
+        string aliados = $"+{apPrimerTurno} {ap}";
+        if (iniciativa > 0) { aliados += $", +{iniciativa} Iniciativa"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"Reconocimiento {SufijoNivel()}",
+          "Pasiva: otorga al grupo una ventaja inicial.",
+          new[]
+          {
+            LineaDescripcion("Aliados", $"{aliados} durante el primer turno."),
+            LineaDescripcion("Refuerzos enemigos", $"Llegan {retrasoRefuerzos} turno{(retrasoRefuerzos == 1 ? "" : "s")} más tarde.")
+          }, proximaMejora, costoSuperior: string.Empty);
+        return;
+      }
+
       string titulo = $"Reconocimiento {SufijoNivel()}";
       string subtitulo = "Otorga ventaja inicial al grupo.";
       string cuerpo = $"<color={colorEncabezado}><b>Tipo:</b></color> Pasiva\n" +

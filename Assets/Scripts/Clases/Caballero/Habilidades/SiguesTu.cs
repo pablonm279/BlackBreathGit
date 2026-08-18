@@ -17,7 +17,7 @@ public class SiguesTu : Habilidad
       nombre = "Sigues T\u00FA";
       IDenClase = 8;
       costoAP = 1;
-      costoPM = 1;
+      costoPM = 0;
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
       esZonal = false;
@@ -60,6 +60,96 @@ public class SiguesTu : Habilidad
       if (NIVEL == 4) { tituloPt = "Voce e o Próximo IV a"; }
       if (NIVEL == 5) { tituloPt = "Voce e o Próximo IV b"; }
 
+      if (esIngles)
+      {
+        string objetivoMarcado = TerminoDescripcion(TerminoDescripcionId.MarcaSiguesTu, "Marked target");
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Attack");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+10% Crit against the marked target."; }
+          else if (NIVEL == 2) { proximaMejora = "+2 damage against the marked target."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: the debuff has no save.\nOption B: +2 debuff duration."; }
+        }
+
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Target", "1 enemy"),
+          LineaDescripcion("Effect", $"Marks the target (3 turns)."),
+          LineaDescripcion(objetivoMarcado, $"Vertical Cut and Cleave gain +5 {ataque}, +{bonusDanioMarca} damage{(bonusCritMarca > 0 ? $", +{bonusCritMarcaPorcentaje}% {critico}" : string.Empty)}.", 1),
+          LineaDescripcion("Mark use", "Consumed on the first Vertical Cut or Cleave attempt.", 1)
+        };
+        if (sinSalvacion)
+        {
+          lineas.Add(LineaDescripcion("Debuff", $"-2 {ataque} ({durDebuff} turns); no save."));
+        }
+        else
+        {
+          lineas.Add(LineaDescripcion("Enemy Save", $"{mental} vs DC {dcSalvacion}"));
+          lineas.Add(LineaDescripcion("Failed Save", $"Frightened: -2 {ataque} ({durDebuff} turns).", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "The Knight points at an enemy, making attacks against it more effective.",
+          lineas,
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+        string alvoMarcado = TerminoDescripcion(TerminoDescripcionId.MarcaSiguesTu, "Alvo marcado");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +10% de Crítico contra o alvo marcado."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +2 de dano contra o alvo marcado."; }
+          else if (NIVEL == 3) { proximaMejora = "Opção A: o efeito negativo não tem salvaguarda.\nOpção B: +2 de duração do efeito negativo."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Alvo", "1 inimigo"),
+          LineaDescripcion("Efeito", "Marca o alvo (3 turnos)."),
+          LineaDescripcion(alvoMarcado, $"Corte Vertical e Partir recebem +5 {ataque}, +{bonusDanioMarca} de dano{(bonusCritMarca > 0 ? $", +{bonusCritMarcaPorcentaje}% de {critico}" : string.Empty)}.", 1),
+          LineaDescripcion("Uso da marca", "É consumida na primeira tentativa de Corte Vertical ou Partir.", 1)
+        };
+        if (sinSalvacion) { lineas.Add(LineaDescripcion("Efeito negativo", $"-2 {ataque} ({durDebuff} turnos); sem salvaguarda.")); }
+        else { lineas.Add(LineaDescripcion("Salvaguarda inimiga", $"{mental} vs CD {dcSalvacion}")); lineas.Add(LineaDescripcion("Falha", $"Amedrontado: -2 {ataque} ({durDebuff} turnos).", 1)); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloPt, "O Cavaleiro aponta para um inimigo, tornando os ataques contra ele mais eficazes.", lineas, proximaMejora);
+        return;
+      }
+
+      {
+        string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque");
+        string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+        string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental", "ic_mental");
+        string objetivoMarcado = TerminoDescripcion(TerminoDescripcionId.MarcaSiguesTu, "Objetivo marcado");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +10% de Crítico contra el objetivo marcado."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +2 de daño contra el objetivo marcado."; }
+          else if (NIVEL == 3) { proximaMejora = "Opción A: la penalización no tiene salvación.\nOpción B: +2 de duración de la penalización."; }
+        }
+        var lineas = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("Objetivo", "1 enemigo"),
+          LineaDescripcion("Efecto", "Marca al objetivo (3 turnos)."),
+          LineaDescripcion(objetivoMarcado, $"Corte Vertical y Partir obtienen +5 {ataque}, +{bonusDanioMarca} de daño{(bonusCritMarca > 0 ? $", +{bonusCritMarcaPorcentaje}% de {critico}" : string.Empty)}.", 1),
+          LineaDescripcion("Uso de la marca", "Se consume en el primer intento de Corte Vertical o Partir.", 1)
+        };
+        if (sinSalvacion) { lineas.Add(LineaDescripcion("Penalización", $"-2 {ataque} ({durDebuff} turnos); sin salvación.")); }
+        else { lineas.Add(LineaDescripcion("Salvación enemiga", $"{mental} vs CD {dcSalvacion}")); lineas.Add(LineaDescripcion("Salvación fallida", $"Asustado: -2 {ataque} ({durDebuff} turnos).", 1)); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloEs, "El Caballero señala a un enemigo, haciendo más eficaces los ataques contra él.", lineas, proximaMejora);
+        return;
+      }
+
       string colorEncabezado = "#44d3ec";
       string colorValor = "#ffffff";
       string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
@@ -90,8 +180,8 @@ public class SiguesTu : Habilidad
         }
         else
         {
-          cuerpo += $"{lineaSalvacionEn}\n";
-          cuerpo += $"<b>On failed save:</b> -2 Attack for {durDebuff} turns";
+          cuerpo += $"<b>Enemy Save:</b> Mental vs DC {dcSalvacion}\n";
+          cuerpo += $"<b>Failed Save:</b> Frightened: -2 Attack ({durDebuff} turns)";
         }
       }
       else if (esPortugues)
@@ -182,8 +272,8 @@ public class SiguesTu : Habilidad
         }
         else
         {
-          cuerpoFormato += $"<color={colorEncabezado}><b>Save:</b></color> <color={colorValor}>Mental vs DC {dcSalvacion}</color>\n";
-          cuerpoFormato += $"<color={colorEncabezado}><b>On failed save:</b></color> <color={colorValor}>{iconoDebuff} -2 Attack for {durDebuff} turns</color>";
+          cuerpoFormato += $"<color={colorEncabezado}><b>Enemy Save:</b></color> <color={colorValor}>Mental vs DC {dcSalvacion}</color>\n";
+          cuerpoFormato += $"<color={colorEncabezado}><b>Failed Save:</b></color> <color={colorValor}>{iconoDebuff} Frightened: -2 Attack ({durDebuff} turns)</color>";
         }
       }
       else if (esPortugues)

@@ -77,6 +77,61 @@ public class DescargaDePoder : Habilidad
 
       string rangoDanioEs = FormatearRangoDados(3, 6, danioFijo);
 
+      if (esIngles)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+        string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "Arcane damage", "dano_arcano");
+        string salvacionReflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "Reflex", "ic_Reflejos");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "+5 damage."; }
+          else if (NIVEL == 2) { proximaMejora = "+1 Save DC."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: -1 AP cost.\nOption B: -1 cooldown."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Unleashes an Arcane shockwave through a T-shaped area.",
+          new[]
+          {
+            LineaDescripcion("Target", "T-shaped area"),
+            LineaDescripcion("Effect", $"Units in the area suffer {rangoDanioEs} + {poder} as {danioArcano}."),
+            LineaDescripcion("Save", $"{salvacionReflejos} vs DC {dcSalvacion}.", 1),
+            LineaDescripcion("Successful save", "Suffers 50% damage.", 1),
+            LineaDescripcion("Effort", $"Up to {esforzable} AP.")
+          },
+          proximaMejora);
+        return;
+      }
+
+      {
+        bool pt = esPortugues;
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string danioArcano = TerminoDescripcion(TerminoDescripcionId.DanioArcano, pt ? "dano Arcano" : "daño Arcano", "dano_arcano");
+        string salvacionReflejos = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, pt ? "Reflexos" : "Reflejos", "ic_Reflejos");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = pt ? "+5 de dano." : "+5 de daño."; }
+          else if (NIVEL == 2) { proximaMejora = "+1 CD de salvación."; }
+          else if (NIVEL == 3) { proximaMejora = pt ? "Opção A: -1 de custo de AP.\nOpção B: -1 de recarga." : "Opción A: -1 al costo de AP.\nOpción B: -1 de recarga."; }
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          pt ? tituloPt : tituloEs,
+          pt ? "Libera uma onda de choque Arcana através de uma área em forma de T." : "Libera una onda de choque Arcana a través de un área en forma de T.",
+          new[]
+          {
+            LineaDescripcion(pt ? "Alvo" : "Objetivo", pt ? "Área em forma de T" : "Área en forma de T"),
+            LineaDescripcion(pt ? "Efeito" : "Efecto", $"{(pt ? "As unidades na área sofrem" : "Las unidades en el área sufren")} {rangoDanioEs} + {poder} como {danioArcano}."),
+            LineaDescripcion(pt ? "Salvamento" : "Salvación", $"{salvacionReflejos} vs CD {dcSalvacion}.", 1),
+            LineaDescripcion(pt ? "Salvamento bem-sucedido" : "Salvación exitosa", pt ? "Sofre 50% do dano." : "Sufre el 50% del daño.", 1),
+            LineaDescripcion(pt ? "Esforço" : "Esfuerzo", $"{(pt ? "Até" : "Hasta")} {esforzable} AP.")
+          },
+          proximaMejora);
+        return;
+      }
+
       string danioEs = $"{rangoDanioEs} + <color=#ea0606>Pod ({poderActual})</color>";
       string danioEn = danioFijo > 0
         ? $"3d6 + {danioFijo} + <color=#ea0606>Power ({poderActual})</color>"

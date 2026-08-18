@@ -15,6 +15,33 @@ public class REPRESENTACIONSigiloso : Habilidad
 
   public override void ActualizarDescripcion()
   {
+    if (TRADU.i != null && TRADU.i.nIdioma == 2)
+    {
+      string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Hidden", "Estado_oculto");
+      string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Attack");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        "Stealthy",
+        "Passive: Begins combat in stealth unless enemies ambush the party.",
+        new[]
+        {
+          LineaDescripcion("Start", $"Gains {oculto} at the start of combat."),
+          LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Oculto, "While Hidden"), $"+2 {ataque}, +5% {critico} and +10% damage."),
+          LineaDescripcion("Extra", "Ignores night combat penalties.")
+        });
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == 3)
+    {
+      string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Oculto", "Estado_oculto"); string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Furtivo","Passiva: começa o combate furtivo, a menos que os inimigos embosquem o grupo.",new[]{LineaDescripcion("Início",$"Recebe {oculto} no início do combate."),LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Oculto,"Enquanto estiver Oculto"),$"+2 {ataque}, +5% {critico} e +10% de dano."),LineaDescripcion("Extra","Ignora penalidades de combate noturno.")},costoSuperior:string.Empty); return;
+    }
+    {
+      string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Oculto", "Estado_oculto"); string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Sigiloso","Pasiva: comienza el combate en sigilo, salvo que los enemigos embosquen al grupo.",new[]{LineaDescripcion("Inicio",$"Obtiene {oculto} al comienzo del combate."),LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Oculto,"Mientras está Oculto"),$"+2 {ataque}, +5% {critico} y +10% de daño."),LineaDescripcion("Extra","Ignora las penalizaciones del combate nocturno.")},costoSuperior:string.Empty); return;
+    }
+
     string titulo = "Sigiloso";
     string bajada = "Empieza en sigilo si el combate no es una emboscada enemiga.";
     string etiquetaTipo = "Tipo";

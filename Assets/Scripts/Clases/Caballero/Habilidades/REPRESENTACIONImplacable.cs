@@ -221,6 +221,95 @@ public class REPRESENTACIONImplacable : Habilidad
     int duracion = NIVEL == 5 ? 3 : 2;
     int usos = NIVEL == 4 ? 2 : 1;
 
+    if (TRADU.i != null && TRADU.i.nIdioma == 2)
+    {
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valour", "Valentía");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "max AP", "ap");
+      string fuerzaTermino = TerminoDescripcion(TerminoDescripcionId.Fuerza, "Strength");
+      string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Mental Save", "ic_mental");
+      string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Fortitude Save", "ic_fortaleza");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crit", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "+1 Strength and +2 Fortitude Save in the buff."; }
+        else if (NIVEL == 2) { proximaMejora = "+5% Crit in the buff."; }
+        else if (NIVEL == 3) { proximaMejora = "Option A: -1 Maximum Valour and +1 use.\nOption B: +1 turn duration."; }
+      }
+
+      string efecto = $"Gains +2 {ap}, +{fuerza} {fuerzaTermino}, +20% Damage, +3 {mental}";
+      if (NIVEL > 1) { efecto += $", +2 {fortaleza}"; }
+      if (NIVEL > 2) { efecto += $", +5% {critico}"; }
+      efecto += ".";
+
+      txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+        $"Relentless {SufijoNivel()}",
+        "Passive: Reaching maximum Valour triggers a powerful temporary buff.",
+        new[]
+        {
+          LineaDescripcion("Base", $"+{valentiaMaxima} Maximum {valentia}."),
+          LineaDescripcion("Trigger", "Reaches maximum Valour."),
+          LineaDescripcion("Effect", efecto, 1),
+          LineaDescripcion("Duration", $"{duracion} turns", 1),
+          LineaDescripcion("Uses", $"{usos} per battle", 1)
+        },
+        proximaMejora);
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == 3)
+    {
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia", "Valentía");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP máximo", "ap");
+      string forca = TerminoDescripcion(TerminoDescripcionId.Fuerza, "Força");
+      string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Salvaguarda Mental", "ic_mental");
+      string fortitude = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Salvaguarda de Fortitude", "ic_fortaleza");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 Força e +2 Salvaguarda de Fortitude no bônus."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nível: +5% de Crítico no bônus."; }
+        else if (NIVEL == 3) { proximaMejora = "Opção A: -1 Valentia Máxima e +1 uso.\nOpção B: +1 turno de duração."; }
+      }
+      string efeito = $"Recebe +2 {ap}, +{fuerza} {forca}, +20% de Dano, +3 {mental}";
+      if (NIVEL > 1) { efeito += $", +2 {fortitude}"; }
+      if (NIVEL > 2) { efeito += $", +5% de {critico}"; }
+      efeito += ".";
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"Implacável {SufijoNivel()}", "Passiva: alcançar a Valentia máxima ativa um poderoso bônus temporário.", new[]
+      {
+        LineaDescripcion("Base", $"+{valentiaMaxima} de {valentia} Máxima."), LineaDescripcion("Ativação", "Alcança a Valentia máxima."),
+        LineaDescripcion("Efeito", efeito, 1), LineaDescripcion("Duração", $"{duracion} turnos", 1), LineaDescripcion("Usos", $"{usos} por batalha", 1)
+      }, proximaMejora, costoSuperior: string.Empty);
+      return;
+    }
+
+    {
+      string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentía", "Valentía");
+      string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP máximo", "ap");
+      string fuerzaTermino = TerminoDescripcion(TerminoDescripcionId.Fuerza, "Fuerza");
+      string mental = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "Salvación Mental", "ic_mental");
+      string fortaleza = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "Salvación de Fortaleza", "ic_fortaleza");
+      string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");
+      string proximaMejora = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 Fuerza y +2 Salvación de Fortaleza en la bonificación."; }
+        else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +5% de Crítico en la bonificación."; }
+        else if (NIVEL == 3) { proximaMejora = "Opción A: -1 Valentía Máxima y +1 uso.\nOpción B: +1 turno de duración."; }
+      }
+      string efecto = $"Obtiene +2 {ap}, +{fuerza} {fuerzaTermino}, +20% de Daño, +3 {mental}";
+      if (NIVEL > 1) { efecto += $", +2 {fortaleza}"; }
+      if (NIVEL > 2) { efecto += $", +5% de {critico}"; }
+      efecto += ".";
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"Implacable {SufijoNivel()}", "Pasiva: alcanzar la Valentía máxima activa una potente bonificación temporal.", new[]
+      {
+        LineaDescripcion("Base", $"+{valentiaMaxima} de {valentia} Máxima."), LineaDescripcion("Activación", "Alcanza la Valentía máxima."),
+        LineaDescripcion("Efecto", efecto, 1), LineaDescripcion("Duración", $"{duracion} turnos", 1), LineaDescripcion("Usos", $"{usos} por batalla", 1)
+      }, proximaMejora, costoSuperior: string.Empty);
+      return;
+    }
+
     string titulo = $"Implacable {SufijoNivel()}";
     string subtitulo = $"<color=#4f5552>Pasiva: +{valentiaMaxima} Valentía Máxima; con Valentía al máximo gana un buff.</color>";
     string cuerpo = "<color=#44d3ec><b>Tipo:</b></color> <color=#ffffff>Pasiva</color>\n" +

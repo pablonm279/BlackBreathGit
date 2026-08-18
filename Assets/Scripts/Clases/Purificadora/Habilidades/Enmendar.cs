@@ -68,6 +68,80 @@ public class Enmendar : Habilidad
       if (NIVEL == 5) { tituloPt = "Remendar IV b"; }
 
       string bonusPlanoTexto = bonusPlano > 0 ? $" + {bonusPlano}" : "";
+      if (esIngles)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"your Fervor ({fervorActual})");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Next Level: +1 flat healing."; }
+          else if (NIVEL == 2) { proximaMejora = "Next Level: +2 flat healing."; }
+          else if (NIVEL == 3) { proximaMejora = "Option A: no Fervor requirement or consumption.\nOption B: retains Fervor requirement and consumption."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaIngles(
+          tituloEn,
+          "Heals one ally, scaling with Power and current Fervor.",
+          new[]
+          {
+            LineaDescripcion("Target", "1 ally"),
+            LineaDescripcion("Effect", $"Restores 4-18{bonusPlanoTexto} + {poder} + {fervor} HP as magical healing."),
+            LineaDescripcion("Cost", consumeFervor ? "1 Fervor" : "None")
+          },
+          proximaMejora);
+        return;
+      }
+
+      if (esPortugues)
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"Fervor atual ({fervorActual})");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nível: +1 de cura fixa."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nível: +2 de cura fixa."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nível: Opção A: sem requisito nem consumo de Fervor.\nOpção B: mantém o requisito e o consumo de Fervor."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloPt,
+          "Cura um aliado, escalando com Poder e o Fervor atual.",
+          new[]
+          {
+            LineaDescripcion("Alvo", "1 aliado"),
+            LineaDescripcion("Efeito", $"Restaura 4-18{bonusPlanoTexto} + {poder} + {fervor} HP como cura mágica."),
+            LineaDescripcion("Custo", consumeFervor ? "1 Fervor" : "Nenhum")
+          },
+          proximaMejora);
+        return;
+      }
+
+      {
+        string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
+        string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"Fervor actual ({fervorActual})");
+        string proximaMejora = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejora = "Próximo nivel: +1 de curación fija."; }
+          else if (NIVEL == 2) { proximaMejora = "Próximo nivel: +2 de curación fija."; }
+          else if (NIVEL == 3) { proximaMejora = "Próximo nivel: Opción A: sin requisito ni consumo de Fervor.\nOpción B: mantiene el requisito y el consumo de Fervor."; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloEs,
+          "Cura a un aliado, escalando con Poder y el Fervor actual.",
+          new[]
+          {
+            LineaDescripcion("Objetivo", "1 aliado"),
+            LineaDescripcion("Efecto", $"Restaura 4-18{bonusPlanoTexto} + {poder} + {fervor} HP como curación mágica."),
+            LineaDescripcion("Costo", consumeFervor ? "1 Fervor" : "Ninguno")
+          },
+          proximaMejora);
+        return;
+      }
+
       string cuerpo = "";
       if (esIngles)
       {
@@ -756,7 +830,3 @@ public class PurificadoraReceptorSutilFx : MonoBehaviour
     return spriteGota;
   }
 }
-
-
-
-
