@@ -632,53 +632,29 @@ public static class ItemIconGeneratorTools
             return default;
         }
 
-        string texPath = AssetDatabase.GetAssetPath(tex);
-        if (string.IsNullOrWhiteSpace(texPath))
-        {
-            return default;
-        }
-
-        TextureImporter importer = AssetImporter.GetAtPath(texPath) as TextureImporter;
-        bool changedReadable = false;
-        bool prevReadable = false;
-
-        if (importer != null)
-        {
-            if (!readableStateCache.TryGetValue(texPath, out prevReadable))
-            {
-                prevReadable = importer.isReadable;
-                readableStateCache[texPath] = prevReadable;
-            }
-
-            if (!importer.isReadable)
-            {
-                importer.isReadable = true;
-                importer.SaveAndReimport();
-                changedReadable = true;
-            }
-        }
-
         Rect r = sprite.rect;
         int x = Mathf.FloorToInt(r.x);
         int y = Mathf.FloorToInt(r.y);
         int w = Mathf.FloorToInt(r.width);
         int h = Mathf.FloorToInt(r.height);
 
-        Color[] pixels;
-        try
-        {
-            pixels = tex.GetPixels(x, y, w, h);
-        }
-        catch
-        {
-            pixels = null;
-        }
-
-        if (changedReadable && importer != null)
-        {
-            importer.isReadable = prevReadable;
-            importer.SaveAndReimport();
-        }
+        // FIX (bug pre-existente, dos intentos anteriores fallaron): la version
+        // original forzaba "Read/Write Enabled" en el importer y llamaba
+        // SaveAndReimport() para poder usar Texture2D.GetPixels(...). Eso
+        // recrea el objeto nativo de la textura; la referencia vieja ("tex")
+        // quedaba obsoleta y GetPixels fallaba en silencio (excepcion
+        // atrapada) para CUALQUIER textura que no tuviera ya ese flag
+        // tildado (la gran mayoria del proyecto) -> icono 100% transparente.
+        // Un primer intento de "revalidar" tex/sprite despues del reimport
+        // seguia siendo fragil (dependia de timing de AssetDatabase) y en la
+        // practica termino en 0 iconos generados.
+        //
+        // Solucion mas robusta: leer los pixeles por GPU (Graphics.Blit a un
+        // RenderTexture + ReadPixels). Esto funciona sin importar el flag
+        // "Read/Write Enabled" y sin tocar el importer ni el AssetDatabase
+        // para nada, asi que no hay reimport ni referencias que se puedan
+        // volver obsoletas.
+        Color[] pixels = LeerPixelesViaGPU(tex, x, y, w, h);
 
         data = new SpritePixelsData
         {
@@ -689,6 +665,42 @@ public static class ItemIconGeneratorTools
 
         cache?.Add(sprite, data);
         return data;
+    }
+
+    private static Color[] LeerPixelesViaGPU(Texture2D tex, int x, int y, int w, int h)
+    {
+        if (tex == null || w <= 0 || h <= 0)
+        {
+            return null;
+        }
+
+        RenderTexture rt = RenderTexture.GetTemporary(tex.width, tex.height, 0, RenderTextureFormat.ARGB32);
+        RenderTexture anterior = RenderTexture.active;
+        Texture2D lectura = null;
+
+        try
+        {
+            Graphics.Blit(tex, rt);
+            RenderTexture.active = rt;
+
+            lectura = new Texture2D(w, h, TextureFormat.RGBA32, false);
+            lectura.ReadPixels(new Rect(x, y, w, h), 0, 0, false);
+            lectura.Apply();
+            return lectura.GetPixels();
+        }
+        catch
+        {
+            return null;
+        }
+        finally
+        {
+            RenderTexture.active = anterior;
+            RenderTexture.ReleaseTemporary(rt);
+            if (lectura != null)
+            {
+                Object.DestroyImmediate(lectura);
+            }
+        }
     }
 
     private static void ConfigurarImportadorSprite(string assetPath)

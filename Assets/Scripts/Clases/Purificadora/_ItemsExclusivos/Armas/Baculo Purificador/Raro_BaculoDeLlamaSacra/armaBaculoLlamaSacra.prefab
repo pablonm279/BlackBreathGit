@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd490e26dd3afcd40be351087b3c1a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imItem: {fileID: 21300000, guid: 3df4c1bd92bff3b4094cfa3be785888d, type: 3}
+  persistentItemId: 
+  imItem: {fileID: 21300000, guid: be4bb99b087ac194890e299969de42e1, type: 3}
   sNombreItem: Baculo de Llama Sacra
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 03000000
@@ -145,8 +146,6 @@ MonoBehaviour:
   vfxCasteo: {fileID: 0}
   requiereRecurso: 0
   costoPM: 0
-  cooldownMax: 0
-  cooldownActual: 0
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   NIVEL: 0
@@ -163,6 +162,10 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0
