@@ -1486,8 +1486,8 @@ public class PrePartidaManager : MonoBehaviour
             return zonaId switch
             {
                 ZonaBosqueArdiente =>
-                    "The caravan will set out from the outskirts of the Forest of Glain, now known as the <b>Burning Forest</b>, after flames consumed much of it.\n\n"
-                    + "Beyond the fire, they will have to face the forest's ancient guardians, deformed by burns, consumed by fury, and empowered by the Black Breath.",
+                    "The caravan will set out from the outskirts of the Forest of Glain, now known as the <b>Burning Forest</b>, after flames consumed a vast portion of it.\n\n"
+                    + "Beyond the fire, they will have to face the forest's ancient guardians, deformed by flames and empowered by the Black Breath.",
                 ZonaPasoVientoHelado =>
                     "The caravan must climb the steep and dangerous Crossed Mountains until it reaches Frozenwind Passage.\n\n"
                     + "This narrow gorge is the only known route across the mountain range. The relentless cold and wild creatures will not be the only dangers: the Kale'Tav tribe will not allow any intruder to cross their territory.",

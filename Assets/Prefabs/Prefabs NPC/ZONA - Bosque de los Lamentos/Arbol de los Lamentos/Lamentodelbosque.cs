@@ -60,6 +60,7 @@ public class Lamentodelbosque : IAHabilidad
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
     hActualCooldown = hCooldownMax;
     scEstaUnidad.ReproducirAnimacionAtaque();
+    ArbolLamentosVFX.CrearCasteo(scEstaUnidad, TipoVFXArbolLamentos.Lamento);
 
      object Objetivo = EstablecerObjetivoPrioritario(); //Esto es cuando el objetivo es uno solo,
      List<object> unidadesEnZona = ObtenerUnidadesEnZona(ObtenerAfectadosZonaObjetivo(zonaX, zonaY, Objetivo));
@@ -90,6 +91,7 @@ public class Lamentodelbosque : IAHabilidad
     }
   public void AplicarEfectosEnZona(List<Casilla> casillas)
   {
+    HashSet<GameObject> objetivosProcesados = new HashSet<GameObject>();
 
     foreach (Casilla cas in casillas)
     {
@@ -98,7 +100,7 @@ public class Lamentodelbosque : IAHabilidad
       //-----
 
 
-      if (cas.Presente != null)
+      if (cas.Presente != null && objetivosProcesados.Add(cas.Presente))
       {
         if (cas.Presente.GetComponent<Unidad>() != null)
         {
@@ -206,6 +208,7 @@ public class Lamentodelbosque : IAHabilidad
   void VFXAplicar(GameObject objetivo)
   {
     LamentoBosqueVFX.Crear(objetivo);
+    ArbolLamentosVFX.CrearImpacto(objetivo, TipoVFXArbolLamentos.Lamento);
   }
 
 

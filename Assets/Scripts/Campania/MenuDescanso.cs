@@ -236,11 +236,11 @@ public class MenuDescanso : MonoBehaviour
       }
 
 
-      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Recolección de Suministros</b></u>\n\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se dedicarán a recolectar distintos suministros de las inmediaciones al campamento.\n\n");
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Recolección de Suministros</b></u>\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles reúnen suministros cerca del campamento.\n\n");
       int suministrosMinimos = (int)CampaignManager.Instance.AplicarRecoleccionSuministrosPresagios(valor);
       int suministrosMaximos = (int)CampaignManager.Instance.AplicarRecoleccionSuministrosPresagios(valor + 10);
-      tareaCivilDescripcion.text += TRADU.i.Traducir($"<color=#d8a205>Se juntarán entre ") + suministrosMinimos + TRADU.i.Traducir(" y ") + suministrosMaximos + TRADU.i.Traducir(" suministros. </color>\n\n\n");
+      tareaCivilDescripcion.text += "<color=#d8a205>• +" + suministrosMinimos + "–" + suministrosMaximos + " " + TRADU.i.Traducir("Suministros") + "</color>\n\n";
 
       chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -271,11 +271,11 @@ public class MenuDescanso : MonoBehaviour
       }
 
 
-      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Recolección de Materiales</b></u>\n\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles se dedicarán a recolectar materiales básicos en la región.\n\n");
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Recolección de Materiales</b></u>\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles reúnen materiales básicos de la región.\n\n");
       int materialesMinimos = (int)CampaignManager.Instance.AplicarRecoleccionMaterialesPresagios(valor);
       int materialesMaximos = (int)CampaignManager.Instance.AplicarRecoleccionMaterialesPresagios(valor + 10);
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Se juntarán entre ") + materialesMinimos + TRADU.i.Traducir(" y ") + materialesMaximos + TRADU.i.Traducir(" materiales. </color>\n\n\n");
+      tareaCivilDescripcion.text += "<color=#d8a205>• +" + materialesMinimos + "–" + materialesMaximos + " " + TRADU.i.Traducir("Materiales") + "</color>\n\n";
 
       chancesAtaqueACaravana = 25 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -294,9 +294,11 @@ public class MenuDescanso : MonoBehaviour
 
       tareaCivilSeleccionada = n;
 
-      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Feria</b></u>\n\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("Durante 8 h, los civiles organizarán una feria con varios juegos y celebraciones.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Al finalizar las 8 h: se conseguirán entre 10 y 15 de Esperanza y se consumirán 20% más de Suministros. <color=#bb280d>+10% chances de Emboscada.</color></color>\n\n\n");
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Feria</b></u>\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles organizan una feria con juegos y celebraciones.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• +10 a 15 Esperanza</color>\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• Consumo de Suministros +20%</color>\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#bb280d>• Riesgo de Emboscada +10%</color>\n\n");
 
       chancesAtaqueACaravana = 30 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 60 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -313,9 +315,11 @@ public class MenuDescanso : MonoBehaviour
 
       tareaCivilSeleccionada = n;
 
-      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Día Libre</b></u>\n\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("Durante 10 h, los civiles descansarán para recobrar fuerzas.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Al finalizar las 10 h: se conseguirán 6 de Esperanza, la Fatiga bajará a 0 y la curación de personajes tendrá +10%.</color>\n\n\n");
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Día Libre</b></u>\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles descansan para recobrar fuerzas.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• +6 Esperanza</color>\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• Fatiga se reinicia a 0</color>\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• Curación de personajes +10%</color>\n\n");
 
       chancesAtaqueACaravana = 20 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 50 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -333,9 +337,11 @@ public class MenuDescanso : MonoBehaviour
 
       tareaCivilSeleccionada = n;
 
-      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Estado de Alerta</b></u>\n\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("Durante el descanso, se asignarán a los civiles mas aptos físicamente a la vigilancia del area circundante al campamento.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>Reduce chances de ataque a caravana. +20% a Exploración. -10 Esperanza.</color>\n\n\n");
+      tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Estado de Alerta</b></u>\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles más aptos vigilan los alrededores del campamento.\n\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• Riesgo de ataque a la caravana: reducido</color>\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• Exploración +20%</color>\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#bb280d>• Esperanza −10</color>\n\n");
 
       chancesAtaqueACaravana = 0 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
       chancesExploracion = 80 + CampaignManager.Instance.scAtributosZona.modChanceExploracion;
@@ -348,7 +354,7 @@ public class MenuDescanso : MonoBehaviour
     string etiquetaDuracion = idioma == TRADU.IdiomaIngles
       ? "Duration: "
       : idioma == TRADU.IdiomaPortugues ? "Duração: " : "Duración: ";
-    tareaCivilDescripcion.text += "\n<color=#B8C7D9>" + etiquetaDuracion + Mathf.RoundToInt(horasTarea) + "h</color>";
+    tareaCivilDescripcion.text += "<color=#B8C7D9>" + etiquetaDuracion + Mathf.RoundToInt(horasTarea) + "h</color>";
 
     Actualizar();
     ActualizarEscalaTareaCivilSeleccionada();
@@ -384,7 +390,7 @@ public class MenuDescanso : MonoBehaviour
         continue;
       }
 
-      if (pers.ActividadSeleccionada == 7) //Explorador: Caza Nocturna
+      if (pers.ActividadSeleccionada == 7) //Explorador: Caza
       {
         chancesAtaqueACaravana += 3;
 
@@ -1194,8 +1200,7 @@ public class MenuDescanso : MonoBehaviour
       CampaignManager.Instance.intTipoClima = 1;
       CampaignManager.Instance.widgetClima.sprite = CampaignManager.Instance.clima_sol;
 
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Es un día hermoso. +5 Esperanza."));
-      CampaignManager.Instance.CambiarEsperanzaActual(5);
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Es un día hermoso. +10% Rango de Visión."));
 
     }
     else if (random < CampaignManager.Instance.scAtributosZona.Clima_chances_Calor)

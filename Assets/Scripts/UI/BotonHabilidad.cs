@@ -4,9 +4,10 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using System.Net;
 
-public class BotonHabilidad : MonoBehaviour
+public class BotonHabilidad : MonoBehaviour, IPointerClickHandler
 {
     private int costoMovimientoPreview = -1;
     private const string TooltipEsforzarId = "combate_esforzar";
@@ -20,6 +21,7 @@ public class BotonHabilidad : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtDescHab;
     [SerializeField] private TMP_SpriteAsset spriteAssetIconosCombate;
     [SerializeField] private float hoverDelay = 0.35f;
+    [SerializeField] private GameObject pinHab;
 
     [SerializeField] private GameObject prefabCirculoAccion;
     [SerializeField] private GameObject seleccionada;
@@ -34,10 +36,23 @@ public class BotonHabilidad : MonoBehaviour
     TextMeshProUGUI nombreHabilidad;
     private Coroutine hoverDescripcionRoutine;
     private bool hoverDescripcionActiva;
+    // En campaña (fuera de batalla), un click deja la descripción fijada para que el jugador
+    // pueda mover el mouse hacia el tooltip y hacer hover sobre los términos resaltados.
+    private bool descripcionFijada;
+    // Único botón (fuera de batalla) con su descripción abierta a la vez: al abrir una nueva,
+    // se cierra la anterior (aplica tanto a hover como a fijado por click).
+    private static BotonHabilidad botonConDescripcionAbierta;
     private RectTransform rectBoton;
     private Image imagenBoton;
     private Image realceInteraccion;
     private RectTransform rectRealceInteraccion;
+    private RectTransform rectPinHab;
+    private Image imagenPinHab;
+    private Vector2 tamanoBaseBoton;
+    private Vector2 posicionBasePinHab;
+    private Vector3 escalaBasePinHab;
+    private Color colorBasePinHab;
+    private bool pinHabEscalaInicializada;
     private Coroutine animacionInteraccionRoutine;
     private Vector3 escalaBaseBoton;
     private Quaternion rotacionBaseBoton;
@@ -49,6 +64,8 @@ public class BotonHabilidad : MonoBehaviour
     private static readonly Color colorRealceNormal = new Color(1f, 0.84f, 0.38f, 1f);
     private static readonly Color colorRealceRechazo = new Color(1f, 0.18f, 0.12f, 1f);
     private static readonly Color colorRealceDisponible = new Color(0.55f, 1f, 0.72f, 1f);
+    private const float EscalaPinHabFijado = 1.16f;
+    private const float AlphaPinHabHover = 0.6f;
     private void Awake()
     {
         scUiBotonesHabilidades = transform.parent.GetComponent<UIBotonesHabilidades>();
@@ -61,6 +78,14 @@ public class BotonHabilidad : MonoBehaviour
         {
             seleccionada.SetActive(false);
         }
+        AsegurarPinHab();
+        CachearAjustePinHab();
+        ActualizarIndicadorPinCampania();
+    }
+
+    private void OnRectTransformDimensionsChange()
+    {
+        AjustarPinHabAlTamanoBoton();
     }
 
     void Start()
@@ -106,6 +131,12 @@ public class BotonHabilidad : MonoBehaviour
         hoverDescripcionActiva = false;
         hoverDescripcionRoutine = null;
         animacionInteraccionRoutine = null;
+        descripcionFijada = false;
+        ActualizarIndicadorPinCampania();
+        if (botonConDescripcionAbierta == this)
+        {
+            botonConDescripcionAbierta = null;
+        }
 
         if (rectBoton != null)
         {
@@ -114,6 +145,177 @@ public class BotonHabilidad : MonoBehaviour
         }
         RestaurarRealceInteraccion();
         AplicarAlphaRealce(ObtenerAlphaRealce(BotonActivo));
+        if (goDesc != null)
+        {
+            goDesc.SetActive(false);
+        }
+        BattleManager.Instance?.OcultarPanelDescripcionHabilidad(HabilidadRepresentada, true);
+    }
+
+    // Cierra la descripción de este botón sin afectar a botonConDescripcionAbierta (lo hace
+    // el llamador, que ya está por asignarse a sí mismo como el nuevo abierto).
+    private void CerrarDescripcionPropia()
+    {
+        descripcionFijada = false;
+        hoverDescripcionActiva = false;
+        ActualizarIndicadorPinCampania();
+        if (hoverDescripcionRoutine != null)
+        {
+            StopCoroutine(hoverDescripcionRoutine);
+            hoverDescripcionRoutine = null;
+        }
+        if (goDesc != null)
+        {
+            goDesc.SetActive(false);
+        }
+    }
+
+    // En campaña, hace click-para-fijar la descripción (no interfiere con el uso de la
+    // habilidad en batalla, que se activa por otro camino).
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (EstaEnBatallaActiva())
+        {
+            return;
+        }
+
+        descripcionFijada = !descripcionFijada;
+        ActualizarIndicadorPinCampania();
+        if (descripcionFijada)
+        {
+            MostrarDescripcion();
+        }
+        else
+        {
+            if (botonConDescripcionAbierta == this)
+            {
+                botonConDescripcionAbierta = null;
+            }
+            if (!hoverDescripcionActiva && goDesc != null)
+            {
+                goDesc.SetActive(false);
+            }
+            ActualizarIndicadorPinCampania();
+        }
+    }
+
+    private void ActualizarIndicadorPinCampania()
+    {
+        AsegurarPinHab();
+
+        bool esCampania = !EstaEnBatallaActiva();
+        if (pinHab != null)
+        {
+            bool mostrarIndicador = esCampania && (hoverDescripcionActiva || descripcionFijada);
+            pinHab.SetActive(mostrarIndicador);
+
+            if (imagenPinHab != null)
+            {
+                Color color = colorBasePinHab;
+                color.a *= descripcionFijada ? 1f : AlphaPinHabHover;
+                imagenPinHab.color = color;
+                imagenPinHab.raycastTarget = false;
+            }
+        }
+
+        AjustarPinHabAlTamanoBoton();
+    }
+
+    private void AsegurarPinHab()
+    {
+        if (pinHab != null)
+        {
+            return;
+        }
+
+        Transform encontrado = BuscarHijoPorNombre(transform, "Pinhab");
+        if (encontrado != null)
+        {
+            pinHab = encontrado.gameObject;
+        }
+    }
+
+    private void CachearAjustePinHab()
+    {
+        if (rectBoton == null || pinHab == null)
+        {
+            return;
+        }
+
+        rectPinHab = pinHab.GetComponent<RectTransform>();
+        if (rectPinHab == null)
+        {
+            return;
+        }
+
+        imagenPinHab = pinHab.GetComponent<Image>();
+        if (imagenPinHab != null)
+        {
+            colorBasePinHab = imagenPinHab.color;
+        }
+
+        tamanoBaseBoton = rectBoton.rect.size;
+        posicionBasePinHab = rectPinHab.anchoredPosition;
+        escalaBasePinHab = rectPinHab.localScale;
+        pinHabEscalaInicializada = tamanoBaseBoton.x > 0f && tamanoBaseBoton.y > 0f;
+        AjustarPinHabAlTamanoBoton();
+    }
+
+    private void AjustarPinHabAlTamanoBoton()
+    {
+        if (!pinHabEscalaInicializada || rectBoton == null || rectPinHab == null)
+        {
+            return;
+        }
+
+        Vector2 tamanoActual = rectBoton.rect.size;
+        if (tamanoActual.x <= 0f || tamanoActual.y <= 0f)
+        {
+            return;
+        }
+
+        Vector2 proporcion = new Vector2(
+            tamanoActual.x / tamanoBaseBoton.x,
+            tamanoActual.y / tamanoBaseBoton.y);
+
+        rectPinHab.anchoredPosition = Vector2.Scale(posicionBasePinHab, proporcion);
+        float multiplicadorFijado = descripcionFijada ? EscalaPinHabFijado : 1f;
+        rectPinHab.localScale = new Vector3(
+            escalaBasePinHab.x * proporcion.x * multiplicadorFijado,
+            escalaBasePinHab.y * proporcion.y * multiplicadorFijado,
+            escalaBasePinHab.z);
+    }
+
+    private Transform BuscarHijoPorNombre(Transform raiz, string nombre)
+    {
+        if (raiz == null)
+        {
+            return null;
+        }
+
+        foreach (Transform hijo in raiz)
+        {
+            if (hijo.name == nombre)
+            {
+                return hijo;
+            }
+
+            Transform encontrado = BuscarHijoPorNombre(hijo, nombre);
+            if (encontrado != null)
+            {
+                return encontrado;
+            }
+        }
+
+        return null;
+    }
+
+    private bool EstaEnBatallaActiva()
+    {
+        return BattleManager.Instance != null
+            && CampaignManager.Instance != null
+            && CampaignManager.Instance.scAdministradorEscenas != null
+            && CampaignManager.Instance.scAdministradorEscenas.escenaActual == 1;
     }
 
     public void hoverDescripcion(int n)
@@ -121,6 +323,7 @@ public class BotonHabilidad : MonoBehaviour
         if (n == 1)
         {
             hoverDescripcionActiva = true;
+            ActualizarIndicadorPinCampania();
             TransicionarInteraccion(ObtenerEscalaInteraccion(BotonActivo), ObtenerAlphaRealce(), 0.1f);
             if (hoverDescripcionRoutine != null)
             {
@@ -140,13 +343,29 @@ public class BotonHabilidad : MonoBehaviour
         else
         {
             hoverDescripcionActiva = false;
+            ActualizarIndicadorPinCampania();
             TransicionarInteraccion(ObtenerEscalaInteraccion(BotonActivo), ObtenerAlphaRealce(), 0.1f);
             if (hoverDescripcionRoutine != null)
             {
                 StopCoroutine(hoverDescripcionRoutine);
                 hoverDescripcionRoutine = null;
             }
-            goDesc.SetActive(false);
+
+            if (descripcionFijada)
+            {
+                // La descripción quedó fijada por click: se mantiene visible para poder
+                // hacer hover sobre los términos resaltados dentro del tooltip.
+                return;
+            }
+
+            if (EstaEnBatallaActiva())
+            {
+                BattleManager.Instance.OcultarPanelDescripcionHabilidad(HabilidadRepresentada, false);
+            }
+            if (goDesc != null)
+            {
+                goDesc.SetActive(false);
+            }
         }
     }
 
@@ -162,6 +381,23 @@ public class BotonHabilidad : MonoBehaviour
 
     private void MostrarDescripcion()
     {
+        if (HabilidadRepresentada == null)
+        {
+            return;
+        }
+
+        if (EstaEnBatallaActiva())
+        {
+            BattleManager.Instance.TryMostrarPanelDescripcionHabilidad(HabilidadRepresentada, false);
+            return;
+        }
+
+        if (botonConDescripcionAbierta != null && botonConDescripcionAbierta != this)
+        {
+            botonConDescripcionAbierta.CerrarDescripcionPropia();
+        }
+        botonConDescripcionAbierta = this;
+
         HabilidadRepresentada.ActualizarDescripcion();
         TMP_SpriteAsset spriteAsset = ObtenerSpriteAssetIconosCombate();
         if (txtDescHab != null && spriteAsset != null)
@@ -170,22 +406,8 @@ public class BotonHabilidad : MonoBehaviour
             txtDescHab.spriteAsset = spriteAsset;
         }
 
-        string descripcion = Habilidad.LimpiarCostoValentiaDescripcion(HabilidadRepresentada.txtDescripcion);
-        bool incluirIconos = spriteAsset != null;
-        string descripcionFormateada;
-        if (HabilidadRepresentada != null && HabilidadRepresentada.GetType().Name.Contains("REPRESENTACION"))
-        {
-            descripcionFormateada = TextoIconosCombate.LimitarRepeticionIconos(
-                TextoIconosCombate.FormatearIconosDespuesDelTitulo(descripcion, incluirIconos),
-                2);
-        }
-        else
-        {
-            descripcionFormateada = TextoIconosCombate.LimitarRepeticionIconos(
-                TextoIconosCombate.FormatearIconosDesdeBloqueMecanico(descripcion, incluirIconos),
-                2);
-        }
-        txtDescHab.text = TextoIconosCombate.NormalizarIconosInline(descripcionFormateada);
+        txtDescHab.text = ConstruirDescripcionFormateada(HabilidadRepresentada, spriteAsset, DebeMostrarEtiquetaIntrinsecaCampania());
+        TerminoHoverDetector.AsegurarEn(txtDescHab);
         goDesc.SetActive(true);
 
         // Asegurarnos de que el goDesc (RectTransform) no salga de los margenes de la pantalla
@@ -236,7 +458,124 @@ public class BotonHabilidad : MonoBehaviour
             return spriteAssetIconosCombate;
         }
 
-        return BattleManager.Instance != null ? BattleManager.Instance.SpriteAssetCombate : null;
+        return EstaEnBatallaActiva() ? BattleManager.Instance.SpriteAssetCombate : null;
+    }
+
+    public static string ConstruirDescripcionFormateada(Habilidad habilidad, TMP_SpriteAsset spriteAsset, bool incluirEtiquetaIntrinseca = false)
+    {
+        if (habilidad == null)
+        {
+            return string.Empty;
+        }
+
+        string descripcion = Habilidad.LimpiarCostoValentiaDescripcion(habilidad.txtDescripcion);
+        if (incluirEtiquetaIntrinseca)
+        {
+            descripcion = InsertarEtiquetaIntrinseca(descripcion);
+        }
+
+        bool incluirIconos = spriteAsset != null;
+        string descripcionFormateada;
+        if (habilidad.GetType().Name.Contains("REPRESENTACION"))
+        {
+            descripcionFormateada = TextoIconosCombate.LimitarRepeticionIconos(
+                TextoIconosCombate.FormatearIconosDespuesDelTitulo(descripcion, incluirIconos),
+                2);
+        }
+        else
+        {
+            descripcionFormateada = TextoIconosCombate.LimitarRepeticionIconos(
+                TextoIconosCombate.FormatearIconosDesdeBloqueMecanico(descripcion, incluirIconos),
+                2);
+        }
+
+        return TextoIconosCombate.NormalizarIconosInline(descripcionFormateada);
+    }
+
+    private bool DebeMostrarEtiquetaIntrinsecaCampania()
+    {
+        Habilidad habilidad = HabilidadRepresentada;
+        if (habilidad == null || EstaEnBatallaActiva())
+        {
+            return false;
+        }
+
+        if (habilidad.NIVEL < 0)
+        {
+            return true;
+        }
+
+        Personaje personaje = scMenuPersonajes != null ? scMenuPersonajes.pSel : null;
+        if (personaje == null)
+        {
+            return false;
+        }
+
+        if (personaje.itemArma != null && habilidad.agregaDesdeArmaUI == personaje.itemArma)
+        {
+            return true;
+        }
+
+        switch (personaje.IDClase)
+        {
+            case 1:
+                return habilidad is REPRESENTACIONCorajeInquebrantable;
+            case 2:
+                return habilidad is REPRESENTACIONPasoCauteloso
+                    || habilidad is ImprovisarFlechas
+                    || habilidad is CorteDaga;
+            case 3:
+                return habilidad is REPRESENTACIONAlmaEndeble
+                    || habilidad is REPRESENTACIONFervorConjunto;
+            case 4:
+                return habilidad is REPRESENTACIONSueldo
+                    || habilidad is REPRESENTACIONSigiloso
+                    || habilidad is TiroBallestaDeMano;
+            case 5:
+                return habilidad is REPRESENTACIONSobrecarga
+                    || habilidad is AcumularEnergia
+                    || habilidad is DescargaArcana;
+            case 6:
+                return habilidad is REPRESENTACIONPasoLigero
+                    || habilidad is REPRESENTACIONPosturaDemandante;
+            default:
+                return false;
+        }
+    }
+
+    private static string InsertarEtiquetaIntrinseca(string descripcion)
+    {
+        if (string.IsNullOrEmpty(descripcion))
+        {
+            return descripcion;
+        }
+
+        const string idTermino = "intrinsic";
+        string etiqueta = ObtenerTextoIntrinseca();
+        string lineaIntrinseca = $"<link=\"skill-term:{idTermino}\"><color=#8f8f8f><i>{etiqueta}</i></color></link>";
+        int indicePrimerBloque = descripcion.IndexOf("\n\n", System.StringComparison.Ordinal);
+        if (indicePrimerBloque < 0)
+        {
+            return descripcion + "\n" + lineaIntrinseca;
+        }
+
+        return descripcion.Insert(indicePrimerBloque, "\n" + lineaIntrinseca);
+    }
+
+    private static string ObtenerTextoIntrinseca()
+    {
+        int idioma = TRADU.i != null ? TRADU.i.nIdioma : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
+        if (idioma == TRADU.IdiomaIngles)
+        {
+            return "Intrinsic";
+        }
+
+        if (idioma == TRADU.IdiomaPortugues)
+        {
+            return "Intrínseca";
+        }
+
+        return "Intrínseca";
     }
 
     private void CachearSpritesCirculosAccion()
@@ -297,10 +636,31 @@ public class BotonHabilidad : MonoBehaviour
 
     public void ActivarHabilidad(bool yaVienedeCargando)
     {
-        if (!yaVienedeCargando
-            && BattleManager.Instance != null
-            && BattleManager.Instance.EntradaBatallaBloqueadaPorUI)
+        if (!EstaEnBatallaActiva())
         {
+            return;
+        }
+
+        TutorialCombate tutorialCombate = BattleManager.Instance.scTutorialCombate;
+        bool habilidadPermitidaPorTutorial = tutorialCombate == null
+            || tutorialCombate.PermiteHabilidadEnPasoActual(HabilidadRepresentada);
+        if (!habilidadPermitidaPorTutorial)
+        {
+            return;
+        }
+
+        if (!yaVienedeCargando
+            && BattleManager.Instance.EntradaBatallaBloqueadaPorUI
+            && (tutorialCombate == null || !tutorialCombate.EsPasoSeleccionBallesta()))
+        {
+            return;
+        }
+
+        if (HabilidadRepresentada is REPRESENTACIONEvasionMaestra evasionMaestra)
+        {
+            evasionMaestra.AlternarEnCombate();
+            BattleManager.Instance.TryMostrarPanelDescripcionHabilidad(evasionMaestra, false);
+            ReproducirConfirmacionInteraccion();
             return;
         }
 
@@ -311,11 +671,11 @@ public class BotonHabilidad : MonoBehaviour
                 .Add("abilityType", HabilidadRepresentada.GetType().Name));
         }
 
-        if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
+        if(tutorialCombate != null && tutorialCombate.tutorialCombateActivo)
         {
-            if(BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() < 4)
+            if(tutorialCombate.ObtenerPasoActual() < 4)
             {
-                BattleManager.Instance.scTutorialCombate.SiguientePasoCombate();
+                tutorialCombate.SiguientePasoCombate();
             }
         }
 
@@ -517,6 +877,7 @@ public class BotonHabilidad : MonoBehaviour
         VisualBotonActivo(1);
         // BattleManager.Instance.OpacarCasillasMelee();
         BotonActivo = true;
+        BattleManager.Instance.TryMostrarPanelDescripcionHabilidad(HabilidadRepresentada, true);
         ReproducirConfirmacionInteraccion();
         if (BattleManager.Instance.unidadActiva.valorCargando > 0)
         {
@@ -547,6 +908,7 @@ public class BotonHabilidad : MonoBehaviour
             BattleManager.Instance.lObstaculosPosiblesHabilidadActiva.Clear();
             BattleManager.Instance.SeleccionandoObjetivo = false;
             BattleManager.Instance.HabilidadActiva = null;
+            BattleManager.Instance.OcultarPanelDescripcionHabilidad(HabilidadRepresentada, true);
 
             BattleManager.Instance.scUIContadorAP.ResetearCirculos();
 
@@ -564,6 +926,7 @@ public class BotonHabilidad : MonoBehaviour
         if (BotonActivo == true)
         { VisualBotonActivo(0, omitirTilteo); }
         BotonActivo = false;
+        BattleManager.Instance?.OcultarPanelDescripcionHabilidad(HabilidadRepresentada, true);
     }
 
     public GameObject Oscurecedor;
@@ -713,7 +1076,8 @@ public class BotonHabilidad : MonoBehaviour
     private Vector3 ObtenerEscalaInteraccion(bool seleccionado)
     {
         Vector3 escala = escalaBaseBoton + (seleccionado ? Vector3.one * 0.2f : Vector3.zero);
-        if (hoverDescripcionActiva)
+        // El agrandado por hover solo aplica en batalla; en campaña el botón no debe cambiar de tamaño al pasar el mouse.
+        if (hoverDescripcionActiva && EstaEnBatallaActiva())
         {
             escala.x *= 1.035f;
             escala.y *= 1.035f;

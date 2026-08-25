@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TutorialCombate : MonoBehaviour
 {
+    private const string PasoSeleccionBallesta = "Paso3 - Accion 1";
+    private const string PasoSeleccionDistraer = "Paso7 - Accion 5";
+
     [SerializeField] private TutorialManager tutorialManager;
     [SerializeField] private GameObject[] pasosCombate;
 
@@ -11,12 +15,57 @@ public class TutorialCombate : MonoBehaviour
     private bool primerCombateProcesado;
     [SerializeField]private int pasoActual = -1;
     private Coroutine coroutineForzarPaso;
+    private RectTransform flechaHabilidad;
+    private RectTransform botonHabilidadSenalada;
+    private int pasoFlechaCache = -1;
+    private readonly Dictionary<Selectable, bool> interactablesPrevios = new Dictionary<Selectable, bool>();
 
 
 
     private void Start()
     {
         OcultarTodosLosPasos();
+    }
+
+    private void OnEnable()
+    {
+        Habilidad.OnUsarHabilidad += AlUsarHabilidad;
+    }
+
+    private void LateUpdate()
+    {
+        if (EsPasoSeleccionBallesta())
+        {
+            PosicionarFlechaSobreHabilidad<TiroBallestaDeMano>();
+            BloquearInteraccionesUIExceptoBallesta();
+            return;
+        }
+
+        RestaurarInteraccionesUI();
+        if (EsPasoSeleccionDistraer())
+        {
+            PosicionarFlechaSobreHabilidad<Distraer>();
+        }
+    }
+
+    private void OnDisable()
+    {
+        Habilidad.OnUsarHabilidad -= AlUsarHabilidad;
+        RestaurarInteraccionesUI();
+    }
+
+    private void AlUsarHabilidad(object sender, System.EventArgs e)
+    {
+        if (!EsPasoSeleccionDistraer() || !(sender is Distraer))
+        {
+            return;
+        }
+
+        PosicionarFlechaSobreHabilidad<Distraer>();
+        if (flechaHabilidad != null)
+        {
+            flechaHabilidad.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>
@@ -76,6 +125,7 @@ public class TutorialCombate : MonoBehaviour
 
     public void PasoAnteriorCombate()
     {
+        if (EsPasoSeleccionBallesta()) return;
         if (!tutorialCombateActivo || !TienePasosCombate()) return;
         if (pasoActual <= 0)
         {
@@ -91,6 +141,7 @@ public class TutorialCombate : MonoBehaviour
     }
     public void omitirTutorialCombate()
     {
+        if (EsPasoSeleccionBallesta()) return;
 
         FinalizarTutorialCombate();
     }
@@ -134,6 +185,27 @@ public class TutorialCombate : MonoBehaviour
     public int ObtenerPasoActual()
     {
         return pasoActual;
+    }
+
+    public bool EsPasoSeleccionBallesta()
+    {
+        return tutorialCombateActivo
+            && IndicePasoValido(pasoActual)
+            && pasosCombate[pasoActual] != null
+            && pasosCombate[pasoActual].name == PasoSeleccionBallesta;
+    }
+
+    public bool PermiteHabilidadEnPasoActual(Habilidad habilidad)
+    {
+        return !EsPasoSeleccionBallesta() || habilidad is TiroBallestaDeMano;
+    }
+
+    private bool EsPasoSeleccionDistraer()
+    {
+        return tutorialCombateActivo
+            && IndicePasoValido(pasoActual)
+            && pasosCombate[pasoActual] != null
+            && pasosCombate[pasoActual].name == PasoSeleccionDistraer;
     }
 
     private bool TienePasosCombate()
@@ -194,8 +266,153 @@ public class TutorialCombate : MonoBehaviour
     {
         tutorialCombateActivo = true;
         pasoActual = Mathf.Clamp(paso, 0, pasosCombate.Length - 1);
+        flechaHabilidad = null;
+        botonHabilidadSenalada = null;
+        pasoFlechaCache = -1;
         OcultarTodosLosPasos();
         MostrarPaso(pasoActual);
+    }
+
+    private void PosicionarFlechaSobreHabilidad<T>() where T : Habilidad
+    {
+        if (pasoFlechaCache != pasoActual)
+        {
+            flechaHabilidad = null;
+            botonHabilidadSenalada = null;
+            pasoFlechaCache = pasoActual;
+        }
+
+        if (flechaHabilidad == null)
+        {
+            flechaHabilidad = BuscarHijoPorNombre(pasosCombate[pasoActual].transform, "FLECHA") as RectTransform;
+            if (flechaHabilidad != null)
+            {
+                Graphic[] graficosFlecha = flechaHabilidad.GetComponentsInChildren<Graphic>(true);
+                for (int i = 0; i < graficosFlecha.Length; i++)
+                {
+                    graficosFlecha[i].raycastTarget = false;
+                }
+            }
+        }
+
+        if (botonHabilidadSenalada == null || !botonHabilidadSenalada.gameObject.activeInHierarchy)
+        {
+            BotonHabilidad[] botones = FindObjectsByType<BotonHabilidad>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            for (int i = 0; i < botones.Length; i++)
+            {
+                if (botones[i].HabilidadRepresentada is T)
+                {
+                    botonHabilidadSenalada = botones[i].transform as RectTransform;
+                    break;
+                }
+            }
+        }
+
+        if (flechaHabilidad == null || botonHabilidadSenalada == null)
+        {
+            return;
+        }
+
+        RectTransform padreFlecha = flechaHabilidad.parent as RectTransform;
+        if (padreFlecha == null)
+        {
+            return;
+        }
+
+        Canvas canvasBoton = botonHabilidadSenalada.GetComponentInParent<Canvas>();
+        Camera camaraBoton = canvasBoton != null && canvasBoton.renderMode != RenderMode.ScreenSpaceOverlay
+            ? canvasBoton.worldCamera
+            : null;
+        Vector3 puntoSuperior = botonHabilidadSenalada.TransformPoint(
+            new Vector3(botonHabilidadSenalada.rect.center.x, botonHabilidadSenalada.rect.yMax, 0f));
+        Vector2 puntoPantalla = RectTransformUtility.WorldToScreenPoint(camaraBoton, puntoSuperior);
+
+        Canvas canvasFlecha = flechaHabilidad.GetComponentInParent<Canvas>();
+        Camera camaraFlecha = canvasFlecha != null && canvasFlecha.renderMode != RenderMode.ScreenSpaceOverlay
+            ? canvasFlecha.worldCamera
+            : null;
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            padreFlecha, puntoPantalla, camaraFlecha, out Vector2 puntoLocal))
+        {
+            float separacion = flechaHabilidad.rect.height * 0.5f + 10f;
+            flechaHabilidad.anchoredPosition = puntoLocal + Vector2.up * separacion;
+        }
+    }
+
+    private static Transform BuscarHijoPorNombre(Transform raiz, string nombre)
+    {
+        for (int i = 0; i < raiz.childCount; i++)
+        {
+            Transform hijo = raiz.GetChild(i);
+            if (hijo.name.Contains(nombre))
+            {
+                return hijo;
+            }
+
+            Transform encontrado = BuscarHijoPorNombre(hijo, nombre);
+            if (encontrado != null)
+            {
+                return encontrado;
+            }
+        }
+
+        return null;
+    }
+
+    private void BloquearInteraccionesUIExceptoBallesta()
+    {
+        Selectable[] selectables = FindObjectsByType<Selectable>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < selectables.Length; i++)
+        {
+            Selectable selectable = selectables[i];
+            if (selectable == null)
+            {
+                continue;
+            }
+
+            if (EsParteDelBotonBallesta(selectable.transform))
+            {
+                if (interactablesPrevios.TryGetValue(selectable, out bool interactablePrevio))
+                {
+                    selectable.interactable = interactablePrevio;
+                    interactablesPrevios.Remove(selectable);
+                }
+                continue;
+            }
+
+            if (!interactablesPrevios.ContainsKey(selectable))
+            {
+                interactablesPrevios.Add(selectable, selectable.interactable);
+            }
+
+            selectable.interactable = false;
+        }
+    }
+
+    private bool EsParteDelBotonBallesta(Transform elemento)
+    {
+        return botonHabilidadSenalada != null
+            && (elemento == botonHabilidadSenalada
+                || elemento.IsChildOf(botonHabilidadSenalada)
+                || botonHabilidadSenalada.IsChildOf(elemento));
+    }
+
+    private void RestaurarInteraccionesUI()
+    {
+        if (interactablesPrevios.Count == 0)
+        {
+            return;
+        }
+
+        foreach (KeyValuePair<Selectable, bool> estado in interactablesPrevios)
+        {
+            if (estado.Key != null)
+            {
+                estado.Key.interactable = estado.Value;
+            }
+        }
+
+        interactablesPrevios.Clear();
     }
 
     private void ReforzarPasoTutorialSiguienteFrame()

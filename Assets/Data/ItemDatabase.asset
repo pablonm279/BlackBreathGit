@@ -6744,7 +6744,7 @@ MonoBehaviour:
     excluirDeTiendas: 0
   - listaTitulo: Arma - Estoque de la Medianoche
     id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_EPICO_ESTOQUEDELAMEDIANOCHE_ARMAESTOQUEDELAMEDIANOCHE
-    prefab: {fileID: -7845728578984888629, guid: 21f5a0da441804047b39bc2b9c74ac98, type: 3}
+    prefab: {fileID: 0}
     nombre: Estoque de la Medianoche
     descripcion: Un estoque templado bajo la luna nueva. Cada estocada parece recordar
       al duelo anterior.
@@ -6888,12 +6888,12 @@ MonoBehaviour:
         cantResistenciaEstadosPorcentaje: 0
         cantEspinasDanioPlano: 0
         cantEspinasDanioPorcentaje: 0
-    habilidadAtaque: {fileID: 670376592415151795, guid: 21f5a0da441804047b39bc2b9c74ac98, type: 3}
+    habilidadAtaque: {fileID: 0}
     habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: Arma - Estoque de la Rosa Negra
     id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMAS_ESTOQUE_RARA_ESTOQUEDELAROSANEGRA_ARMAESTOQUEDELAROSANEGRA
     prefab: {fileID: -7845728578984888629, guid: c11b6a7feca646be9053378a70fae17c, type: 3}
@@ -7311,7 +7311,7 @@ MonoBehaviour:
     excluirDeTiendas: 0
   - listaTitulo: Arma - Guantelete Canalizador
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMAS_ARMAGUANTELETECANALIZADOR
-    prefab: {fileID: 2146779242688120123, guid: 0876a1d7dbf0cc14690709e93e9cedb1, type: 3}
+    prefab: {fileID: 0}
     nombre: Guantelete Canalizador
     descripcion: Un guantelete de cuero reforzado con hilos conductores. El punto
       de partida de todo Canalizador.
@@ -7420,8 +7420,8 @@ MonoBehaviour:
     habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: Arma - Guantelete de Llamas
     id: ITEM_SCRIPTS_EQUIPO_ARMAS_ARCODEEXPLORADOR_GUANTELETEDELLAMAS
     prefab: {fileID: -107623814344834064, guid: d3ffdb2de68b58d438e583f22869baeb, type: 3}
@@ -7542,7 +7542,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 4
     icono: {fileID: 21300000, guid: 5c478d7e18fccdd43a977496afc1fead, type: 3}
-    precio: 620
+    precio: 650
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 05000000
@@ -7687,7 +7687,7 @@ MonoBehaviour:
     excluirDeTiendas: 0
   - listaTitulo: Arma - Guantelete de Resonancia
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMAS_ARMAGUANTELETERESONANCIA
-    prefab: {fileID: 1874652695050061159, guid: c8a43b5822fcea54ebb0116214954f48, type: 3}
+    prefab: {fileID: 0}
     nombre: Guantelete de Resonancia
     descripcion: Vibra levemente al canalizar, como si respondiera antes de ser invocado.
     categoria: Arma
@@ -7795,11 +7795,11 @@ MonoBehaviour:
     habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: Arma - Guantelete de Sobrecarga Controlada
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMAS_ARMAGUANTELETESOBRECARGACONTROLADA
-    prefab: {fileID: 6395565311620855289, guid: 27200f33cc4376245a55d60a8cf2299d, type: 3}
+    prefab: {fileID: 0}
     nombre: Guantelete de Sobrecarga Controlada
     descripcion: "Deja escapar un poco de energ\xEDa arcana en cada golpe, a prop\xF3sito."
     categoria: Arma
@@ -7904,14 +7904,14 @@ MonoBehaviour:
         cantEspinasDanioPlano: 0
         cantEspinasDanioPorcentaje: 0
     habilidadAtaque: {fileID: 0}
-    habilidadExtra1: {fileID: 3729235376379783691, guid: 27200f33cc4376245a55d60a8cf2299d, type: 3}
+    habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: Arma - Guantelete del Circuito Roto
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMAS_ARMAGUANTELETECIRCUITOROTO
-    prefab: {fileID: 1822737589982314910, guid: 10b514b85a677e840b08ca3ebb52245c, type: 3}
+    prefab: {fileID: 0}
     nombre: Guantelete del Circuito Roto
     descripcion: Las runas estan fracturadas, pero eso solo lo vuelve mas impredecible.
     categoria: Arma
@@ -8019,11 +8019,11 @@ MonoBehaviour:
     habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: "Arma - Guantelete del V\xF3rtice Arcano"
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMAS_ARMAGUANTELETEVORTICEARCANO
-    prefab: {fileID: 8553342052487824886, guid: a0d49479f571b8846aeac947539c734d, type: 3}
+    prefab: {fileID: 0}
     nombre: "Guantelete del V\xF3rtice Arcano"
     descripcion: "Un v\xF3rtice diminuto y estable gira en la palma. Nunca deja de
       girar del todo."
@@ -8129,11 +8129,11 @@ MonoBehaviour:
         cantEspinasDanioPlano: 0
         cantEspinasDanioPorcentaje: 0
     habilidadAtaque: {fileID: 0}
-    habilidadExtra1: {fileID: 5862490622633235680, guid: a0d49479f571b8846aeac947539c734d, type: 3}
+    habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: Arma - Guantelete Estrella
     id: ITEM_SCRIPTS_EQUIPO_ARMAS_ARCODEEXPLORADOR_GUANTELETEDEESTRELLA
     prefab: {fileID: -107623814344834064, guid: a1e508ce285f66244913afd56396ff96, type: 3}
@@ -8704,7 +8704,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 4
     icono: {fileID: 21300000, guid: 19eca93c5e86fb548a55bc79b891eacc, type: 3}
-    precio: 475
+    precio: 650
     nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -9079,7 +9079,7 @@ MonoBehaviour:
     categoria: Arma
     rareza: 0
     icono: {fileID: 21300000, guid: 670e754138cde4243a30aafdfa641e6a, type: 3}
-    precio: 100
+    precio: 125
     nivelMejora: 1
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
@@ -12479,8 +12479,8 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: 9ed20ba673fa6ee428daa2768519d842, type: 3}
-    precio: 200
-    nivelMejora: 1
+    precio: 230
+    nivelMejora: 2
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
     requisitoFue: 3
@@ -12591,8 +12591,8 @@ MonoBehaviour:
     categoria: Armadura
     rareza: 1
     icono: {fileID: 21300000, guid: b53b86bcb3e165a42b508790e4a318b2, type: 3}
-    precio: 235
-    nivelMejora: 1
+    precio: 310
+    nivelMejora: 3
     idEfectoEspecial: 0
     clasesPermitidas: 01000000
     requisitoFue: 3
@@ -14266,7 +14266,7 @@ MonoBehaviour:
     excluirDeTiendas: 0
   - listaTitulo: "Armadura - Gambes\xF3n del Comp\xE1s Perfecto"
     id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_EPICO_GAMBESONDELCOMPASPERFECTO_ARMADURAGAMBESONDELCOMPASPERFECTO
-    prefab: {fileID: 554627427726029727, guid: 3b2cd08e917d7cd4d9efc0cd03d4dc79, type: 3}
+    prefab: {fileID: 0}
     nombre: "Gambes\xF3n del Comp\xE1s Perfecto"
     descripcion: "Cosido para acompa\xF1ar cada paso, sin estorbar ni uno solo."
     categoria: Armadura
@@ -14374,8 +14374,8 @@ MonoBehaviour:
     habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: Armadura - Gambeson del Temple
     id: ITEM_SCRIPTS_CLASES_DUELISTA_ITEMSEXCLUSIVOS_ARMADURAS_GAMBESON_INFRECUENTE_GAMBESONDELTEMPLE_ARMADURAGAMBESONDELTEMPLE
     prefab: {fileID: 9114552496750484229, guid: f428f6fed753441294557be0441c8bef, type: 3}
@@ -14604,7 +14604,7 @@ MonoBehaviour:
     excluirDeTiendas: 0
   - listaTitulo: "Armadura - Manto de Contenci\xF3n"
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURAMANTOCONTENCION
-    prefab: {fileID: 6192336602399005876, guid: 12073919905fb644ba42f792fc5a4fca, type: 3}
+    prefab: {fileID: 0}
     nombre: "Manto de Contenci\xF3n"
     descripcion: "Cosido con hilo resistente al arcano, para que la energ\xEDa no
       se escape antes de tiempo."
@@ -14713,11 +14713,11 @@ MonoBehaviour:
     habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: "Armadura - Manto de Disipaci\xF3n"
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURAMANTODISIPACION
-    prefab: {fileID: 5618258335615119047, guid: 7b43f7f558e75db4b9b385472071da64, type: 3}
+    prefab: {fileID: 0}
     nombre: "Manto de Disipaci\xF3n"
     descripcion: "Dispersa el exceso de energ\xEDa antes de que desestabilice a quien
       lo lleva."
@@ -14823,14 +14823,14 @@ MonoBehaviour:
         cantEspinasDanioPlano: 0
         cantEspinasDanioPorcentaje: 0
     habilidadAtaque: {fileID: 0}
-    habilidadExtra1: {fileID: 6654651098532976124, guid: 7b43f7f558e75db4b9b385472071da64, type: 3}
+    habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: Armadura - Manto del Aprendiz Arcano
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURAMANTOAPRENDIZARCANO
-    prefab: {fileID: 9150545078936088969, guid: 964c9661fae82eb4f8fa94a1b292ee28, type: 3}
+    prefab: {fileID: 0}
     nombre: Manto del Aprendiz Arcano
     descripcion: "Tela simple, tejida para no interferir con el flujo de energ\xEDa."
     categoria: Armadura
@@ -14938,11 +14938,11 @@ MonoBehaviour:
     habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: Armadura - Manto del Circuito Estable
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURAMANTOCIRCUITOESTABLE
-    prefab: {fileID: 1805304420633567225, guid: 4e6c4ea97c49c134786bc93c1d53cb35, type: 3}
+    prefab: {fileID: 0}
     nombre: Manto del Circuito Estable
     descripcion: "Las runas de este manto se mantienen en su lugar incluso bajo presi\xF3n."
     categoria: Armadura
@@ -15050,11 +15050,11 @@ MonoBehaviour:
     habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: "Armadura - Manto del N\xFAcleo Inestable"
     id: ITEM_SCRIPTS_CLASES_CANALIZADOR_ITEMSEXCLUSIVOS_ARMADURAS_ARMADURAMANTONUCLEOINESTABLE
-    prefab: {fileID: 474845414633800100, guid: 12f5e8248d72af14a896af03ca20651f, type: 3}
+    prefab: {fileID: 0}
     nombre: "Manto del N\xFAcleo Inestable"
     descripcion: "En su centro late un n\xFAcleo que absorbe parte del desgaste de
       canalizar demasiado."
@@ -15160,11 +15160,11 @@ MonoBehaviour:
         cantEspinasDanioPlano: 0
         cantEspinasDanioPorcentaje: 0
     habilidadAtaque: {fileID: 0}
-    habilidadExtra1: {fileID: 2662589334923686860, guid: 12f5e8248d72af14a896af03ca20651f, type: 3}
+    habilidadExtra1: {fileID: 0}
     habilidadExtra2: {fileID: 0}
     tags: []
-    activo: 1
-    excluirDeTiendas: 0
+    activo: 0
+    excluirDeTiendas: 1
   - listaTitulo: Armadura - Vestidura Purificadora de Credo
     id: ITEM_SCRIPTS_EQUIPO_ARMADURAS_ARMPUR03_VESTIDURAPURIFICADORACREDO
     prefab: {fileID: 554627427726029727, guid: d45bd7296a304befb47571d94b4853aa, type: 3}

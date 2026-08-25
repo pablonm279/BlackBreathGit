@@ -248,7 +248,7 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
       if (usarComoIndicadorRetrato)
       {
-        string descripcionHoraria = actividadRepresentada.desc;
+        string descripcionHoraria = actividadRepresentada.ObtenerDescripcion(personajeSeleccionado);
         if (TooltipStats.Instance != null)
         {
           TooltipStats.Instance.ShowTooltipRaw(descripcionHoraria, Input.mousePosition);
@@ -264,7 +264,8 @@ public class btnActividad : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         return;
       }
 
-      scActividades.textdesc.text = scActividades.FormatearDescripcionPanel(actividadRepresentada.desc);
+      scActividades.textdesc.text = scActividades.FormatearDescripcionPanel(
+         actividadRepresentada.ObtenerDescripcion(personajeSeleccionado));
    }
 
    private void RestaurarDescripcionSeleccionada()

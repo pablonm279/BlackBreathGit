@@ -146,6 +146,7 @@ public class Nodo : MonoBehaviour
   public bool yatiroConexiones = false;
   Nodo vieneDeNodo;
   bool esMisterioso = false; // Nodo no revelado visualmente
+  bool misteriosoPorFueraDeVision = false; // true solo si esMisterioso vino de AsegurarMisteriosoAdyacenteFueraDeVision (no de una exploracion fallida)
   bool preparandoTipoParaPresagios = false;
   bool reveladoPorZonaCartografiada = false;
   bool descubiertoPorMecanicaEspecial = false;
@@ -370,9 +371,9 @@ public class Nodo : MonoBehaviour
       int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
       string mensajeExcesoCarga = idioma switch
       {
-        TRADU.IdiomaIngles => "-The Caravan traveled overloaded. -10 Hope. Fatigue accumulated twice as fast.",
-        TRADU.IdiomaPortugues => "-A Caravana viajou sobrecarregada. -10 Esperança. A Fadiga acumulou duas vezes mais rápido.",
-        _ => "-La Caravana viajó con exceso de Carga. -10 Esperanza. La Fatiga se acumuló al doble."
+        TRADU.IdiomaIngles => "-The Caravan traveled overloaded. -10 Hope. Travel speed was reduced by 30%.",
+        TRADU.IdiomaPortugues => "-A Caravana viajou sobrecarregada. -10 Esperança. A velocidade de viagem foi reduzida em 30%.",
+        _ => "-La Caravana viajó con exceso de Carga. -10 Esperanza. La velocidad de viaje se redujo un 30%."
       };
       CampaignManager.Instance.EscribirLog(mensajeExcesoCarga);
     }
@@ -1619,6 +1620,7 @@ public class Nodo : MonoBehaviour
       {
         revelado = true;
         esMisterioso = true;
+        misteriosoPorFueraDeVision = false; // misterio forzado por presagio: no se revela solo por volver a estar en rango de vision
         AplicarVisualGuardado(12, true);
       }
       else
@@ -4512,6 +4514,27 @@ if (esLaLider)
     }
   }
 
+  // Contraparte de RevelarComoMisterioso(): cuando un nodo adyacente quedo marcado "?"
+  // solo por estar fuera del alcance de vision (no por una exploracion fallida ni un
+  // misterio forzado de tutorial/presagio), y ese alcance vuelve a cubrirlo -por ejemplo
+  // al mejorar los Catalejos-, se revela de verdad en vez de quedar misterioso para siempre.
+  public void RevelarPorRegresoAVision()
+  {
+    if (!esMisterioso || !misteriosoPorFueraDeVision)
+    {
+      return;
+    }
+
+    esMisterioso = false;
+    misteriosoPorFueraDeVision = false;
+    ActivarNodoVisual(tipoNodo, false, true);
+    NodoVisualRework.Asegurar(this)?.ReproducirAnimacionRevelado();
+    if (!visiblePorVision)
+    {
+      DesactivarTodosGraficosNodo();
+    }
+  }
+
   void MarcarComoMisteriosoPorExploracionFallida()
   {
     if (EsNodoFinalZona())
@@ -4527,6 +4550,7 @@ if (esLaLider)
 
     revelado = true;
     esMisterioso = true;
+    misteriosoPorFueraDeVision = false; // exploracion fallida: no se debe revelar solo por volver a estar en rango de vision
     numVisualActual = 12;
     AplicarVisualGuardado(numVisualActual, esMisterioso);
     SincronizarVFXPersistentes();
@@ -4548,6 +4572,7 @@ if (esLaLider)
     {
       revelado = true;
       esMisterioso = false;
+      misteriosoPorFueraDeVision = false;
       AplicarVisualGuardado(tipoNodo, false);
       return;
     }
@@ -4577,6 +4602,7 @@ if (esLaLider)
 
     revelado = true;
     esMisterioso = true;
+    misteriosoPorFueraDeVision = true;
     numVisualActual = 12;
     AplicarVisualGuardado(numVisualActual, esMisterioso);
     SincronizarVFXPersistentes();
@@ -5038,6 +5064,7 @@ if (esLaLider)
     revelandoPorExpedicionTutorial = false;
     revelado = true;
     esMisterioso = true;
+    misteriosoPorFueraDeVision = false; // misterio de tutorial: no se revela solo por volver a estar en rango de vision
     numVisualActual = 12;
     RefrescarVisualSegunRevelado();
   }
@@ -5315,6 +5342,7 @@ if (esLaLider)
     {
       num = 12;
       esMisterioso = true;
+      misteriosoPorFueraDeVision = false; // misterio forzado por presagio: no se revela solo por volver a estar en rango de vision
     }
     if (esAtajo) num = 13; // salida atajo
 
@@ -6552,8 +6580,14 @@ else
 
         followerS[i] = Mathf.MoveTowards(followerS[i], targetS, step);
 
+        // OJO: no sumar offsetYSubterraneo acá. El trail ya guarda la posicion del lider
+        // con SU offset de profundidad de ese momento ya aplicado (ver arriba, se agrega
+        // "leaderPos" con Y ya hundido), asi que el sample de cada seguidor ya trae
+        // embebida la profundidad correcta para SU propio progreso en el camino. Sumar
+        // el offset actual del lider encima duplicaba el hundimiento de los carros de
+        // atras mientras el lider estaba en la parte mas profunda del tunel, y los hacia
+        // "saltar" de golpe cuando el lider cruzaba el umbral de salida.
         SampleTrail(trailPos, trailRot, trailS, followerS[i], out var p, out var r);
-        p.y += offsetYSubterraneo;
         convoy[i].go.transform.position = p;
 
         if (convoy[i].rot != null)

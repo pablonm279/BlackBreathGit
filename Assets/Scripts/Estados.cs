@@ -102,7 +102,7 @@ public class Estados : MonoBehaviour
       unidad.estado_Condenado = 0;
       float danioEjecucion = Mathf.Max(unidad.HP_actual + 1f, unidad.mod_maxHP * 10f);
       CondenaDanioImpactoFx.Crear(unidad);
-      unidad.RecibirDanio(danioEjecucion, 10, false, null, 400);
+      unidad.RecibirDanioCondena(danioEjecucion, 400);
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" es ejecutado por la Condena.")));
       BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
       unidad.estado_CondenadoTurnosSeguidos = 0;
@@ -114,7 +114,7 @@ public class Estados : MonoBehaviour
     {
       float porcentajeAcumulado = 0.10f * unidad.estado_CondenadoTurnosSeguidos;
       CondenaDanioImpactoFx.Crear(unidad);
-      unidad.RecibirDanio(unidad.mod_maxHP * porcentajeAcumulado, 10, false, null,400);
+      unidad.RecibirDanioCondena(unidad.mod_maxHP * porcentajeAcumulado, 400);
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(unidad.uNombre + TRADU.i.Traducir(" es dañado por la Condena.")));
       BattleManager.Instance.scUIInfoChar.RefrescarSiVisible(unidad);
 
@@ -360,8 +360,8 @@ public class Estados : MonoBehaviour
 
 public class CondenaDanioImpactoFx : MonoBehaviour
 {
-  private const float Duracion = 0.48f;
-  private const int CantidadFragmentos = 5;
+  private const float Duracion = 0.7f;
+  private const int CantidadFragmentos = 8;
 
   private RectTransform root;
   private CanvasGroup canvasGroup;
@@ -433,7 +433,7 @@ public class CondenaDanioImpactoFx : MonoBehaviour
     posicionImpacto = new Vector2(0f, tamanoBase.y * 0.06f);
     root.anchoredPosition = imagenUnidad.anchoredPosition + posicionImpacto;
     root.localScale = Vector3.one;
-    root.sizeDelta = tamanoBase * 0.74f;
+    root.sizeDelta = tamanoBase * 1.05f;
 
     int targetSibling = Mathf.Min(padre.childCount - 1, imagenUnidad.GetSiblingIndex() + 1);
     root.SetSiblingIndex(targetSibling);
@@ -503,16 +503,16 @@ public class CondenaDanioImpactoFx : MonoBehaviour
       root.anchoredPosition = imagenUnidad.anchoredPosition + posicionImpacto;
     }
 
-    root.localScale = Vector3.one * Mathf.Lerp(0.86f, 1.08f, entrada);
+    root.localScale = Vector3.one * Mathf.Lerp(0.78f, 1.22f, entrada);
     root.localEulerAngles = new Vector3(0f, 0f, Mathf.Lerp(-12f, 18f, t));
-    canvasGroup.alpha = intensidad;
+    canvasGroup.alpha = Mathf.Clamp01(intensidad * 1.2f);
 
-    Configurar(auraExterior, Vector2.zero, tamanoBase * (0.42f + (0.38f * t)), 0f, new Color(0.24f, 0.05f, 0.44f, 0.34f * intensidad));
-    Configurar(auraInterior, Vector2.zero, tamanoBase * (0.24f + (0.18f * pulso)), 0f, new Color(0.74f, 0.28f, 0.96f, 0.42f * intensidad));
-    Configurar(anillo, Vector2.zero, tamanoBase * (0.18f + (0.34f * t)), -95f + (t * 150f), new Color(0.9f, 0.46f, 1f, 0.52f * intensidad * golpe));
-    Configurar(runaA, Vector2.zero, new Vector2(tamanoBase.x * 0.34f, tamanoBase.y * 0.06f), 45f - (t * 26f), new Color(0.92f, 0.66f, 1f, 0.54f * intensidad));
-    Configurar(runaB, Vector2.zero, new Vector2(tamanoBase.x * 0.34f, tamanoBase.y * 0.06f), -45f + (t * 26f), new Color(0.66f, 0.32f, 0.96f, 0.44f * intensidad));
-    Configurar(nucleo, Vector2.zero, tamanoBase * (0.11f + (0.05f * golpe)), 0f, new Color(1f, 0.84f, 1f, 0.62f * intensidad));
+    Configurar(auraExterior, Vector2.zero, tamanoBase * (0.56f + (0.54f * t)), 0f, new Color(0.34f, 0.03f, 0.62f, 0.48f * intensidad));
+    Configurar(auraInterior, Vector2.zero, tamanoBase * (0.3f + (0.24f * pulso)), 0f, new Color(0.8f, 0.26f, 1f, 0.68f * intensidad));
+    Configurar(anillo, Vector2.zero, tamanoBase * (0.22f + (0.46f * t)), -95f + (t * 150f), new Color(0.95f, 0.56f, 1f, 0.82f * intensidad * golpe));
+    Configurar(runaA, Vector2.zero, new Vector2(tamanoBase.x * 0.44f, tamanoBase.y * 0.075f), 45f - (t * 26f), new Color(0.96f, 0.7f, 1f, 0.74f * intensidad));
+    Configurar(runaB, Vector2.zero, new Vector2(tamanoBase.x * 0.44f, tamanoBase.y * 0.075f), -45f + (t * 26f), new Color(0.72f, 0.34f, 1f, 0.66f * intensidad));
+    Configurar(nucleo, Vector2.zero, tamanoBase * (0.14f + (0.08f * golpe)), 0f, new Color(1f, 0.88f, 1f, 0.88f * intensidad));
 
     for (int i = 0; i < fragmentos.Length; i++)
     {
@@ -523,8 +523,8 @@ public class CondenaDanioImpactoFx : MonoBehaviour
       posicion += new Vector2(0f, Mathf.Sin((t * 11f) + i) * tamanoBase.y * 0.02f);
       Vector2 tamano = new Vector2(tamanoBase.x * 0.14f * escalasFragmento[i] * Mathf.Lerp(1f, 0.56f, t), tamanoBase.y * 0.045f);
       Color color = i % 2 == 0
-        ? new Color(0.82f, 0.46f, 1f, 0.5f * intensidad * golpe)
-        : new Color(0.58f, 0.24f, 0.94f, 0.44f * intensidad * golpe);
+        ? new Color(0.86f, 0.46f, 1f, 0.72f * intensidad * golpe)
+        : new Color(0.62f, 0.2f, 1f, 0.66f * intensidad * golpe);
       Configurar(fragmentos[i], posicion, tamano, angulo + 90f, color);
     }
   }

@@ -115,7 +115,12 @@ public class MenuCaravana : MonoBehaviour
      [SerializeField] GameObject contenedorSequitos;
 
     public bool SeApretoESC()
-    { 
+    {
+        if (BloqueaCierreMenuPersonajesTutorialNuevo() && MenuPersonajesEstaAbierto())
+        {
+            return true;
+        }
+
         bool habiaalgoabierto = TieneMenuAbierto;
 
         if (MenuMejoras != null)
@@ -155,6 +160,11 @@ public class MenuCaravana : MonoBehaviour
 
     public void CerrarMenusExclusivos()
     {
+        if (BloqueaCierreMenuPersonajesTutorialNuevo() && MenuPersonajesEstaAbierto())
+        {
+            return;
+        }
+
         bool menuMejorasAbierto = MenuMejoras != null && MenuMejoras.activeInHierarchy;
         bool menuSequitosAbierto = MenuSequitos != null && MenuSequitos.activeInHierarchy;
         bool menuPersonajesAbierto = MenuPersonajes != null && MenuPersonajes.activeInHierarchy;
@@ -178,7 +188,8 @@ public class MenuCaravana : MonoBehaviour
 
         if (menuPersonajesAbierto)
         {
-            EmitirCierreMenuPersonajesTutorial(false);
+            // Los botones de cierre son una alternativa válida a la tecla C durante el tutorial.
+            EmitirCierreMenuPersonajesTutorial(true);
         }
     }
 
@@ -558,6 +569,11 @@ public class MenuCaravana : MonoBehaviour
 
     private void AbrirMenuMejoras(bool desdeHotkey)
     {
+        TutorialDirector tutorialNuevo = TutorialDirector.Instance;
+        bool tutorialNuevoActivo = tutorialNuevo != null && tutorialNuevo.IsRunning;
+        if (tutorialNuevoActivo
+            && tutorialNuevo.BlocksOptionalCampaignMenus
+            && !MenuMejorasEstaAbierto()) { return; }
          TutorialEvents.Emit("ui.abrirmejoras", gameObject);
         if (desdeHotkey && MenuMejorasEstaAbierto())
         {
@@ -566,9 +582,12 @@ public class MenuCaravana : MonoBehaviour
             return;
         }
 
-        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 15) { return; }
-        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 15)
-        { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
+        if (!tutorialNuevoActivo)
+        {
+            if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 15) { return; }
+            if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 15)
+            { CampaignManager.Instance.scTutorialManager.SiguientePaso(); }
+        }
 
         bool abrir = !MenuMejoras.activeInHierarchy;
         ActualizarMejoras();
@@ -604,6 +623,11 @@ public class MenuCaravana : MonoBehaviour
 
     private void AbrirMenuSequitos(bool desdeHotkey)
     {
+        TutorialDirector tutorialNuevo = TutorialDirector.Instance;
+        bool tutorialNuevoActivo = tutorialNuevo != null && tutorialNuevo.IsRunning;
+        if (tutorialNuevoActivo
+            && tutorialNuevo.BlocksOptionalCampaignMenus
+            && !MenuSequitosEstaAbierto()) { return; }
         TutorialEvents.Emit("ui.menusequitosab", gameObject);
         if (desdeHotkey && MenuSequitosEstaAbierto())
         {
@@ -612,11 +636,14 @@ public class MenuCaravana : MonoBehaviour
             return;
         }
 
-        if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 27) { return; }
-         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 27)
-        {            CampaignManager.Instance.scTutorialManager.SiguientePaso();        }
-         if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 29)
-        {            CampaignManager.Instance.scTutorialManager.SiguientePaso();        }
+        if (!tutorialNuevoActivo)
+        {
+            if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual < 27) { return; }
+             if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 27)
+            {            CampaignManager.Instance.scTutorialManager.SiguientePaso();        }
+             if (CampaignManager.Instance.scTutorialManager.tutorialActivo && CampaignManager.Instance.scTutorialManager.pasoActual == 29)
+            {            CampaignManager.Instance.scTutorialManager.SiguientePaso();        }
+        }
 
         bool abrir = !MenuSequitos.activeInHierarchy;
         CerrarMenusExclusivos();
@@ -647,14 +674,22 @@ public class MenuCaravana : MonoBehaviour
         AbrirMenuPersonajes(null, true, true, false);
     }
 
+    public void AbrirMenuPersonajesDesdeHotkey(Personaje personaje)
+    {
+        AbrirMenuPersonajes(personaje, false, true, false);
+    }
+
     public bool MenuPersonajesEstaAbierto()
     {
         return MenuPersonajes != null && MenuPersonajes.activeInHierarchy;
     }
     public void AbrirBitácora()
     {
-       ActualizarStatsViaje();
        bool abrir = MenuBitacora == null || !MenuBitacora.activeInHierarchy;
+       if (abrir
+           && TutorialDirector.Instance != null
+           && TutorialDirector.Instance.BlocksOptionalCampaignMenus) { return; }
+       ActualizarStatsViaje();
        CerrarMenusExclusivos();
        CampaignManager.Instance.ActivarLog(abrir ? 1 : 0);
     }
@@ -741,6 +776,11 @@ public class MenuCaravana : MonoBehaviour
             return;
         }
 
+        if (BloqueaCierreMenuPersonajesTutorialNuevo())
+        {
+            return;
+        }
+
         MenuPersonajes.SetActive(false);
         menuPersonajesAbiertoPorHover = false;
         personajeMenuPersonajesHover = null;
@@ -753,6 +793,11 @@ public class MenuCaravana : MonoBehaviour
         bool estabaAbiertoPorHover = menuPersonajesAbiertoPorHover;
         if (desdeHotkey && MenuPersonajesEstaAbierto())
         {
+            if (BloqueaCierreMenuPersonajesTutorialNuevo())
+            {
+                return;
+            }
+
             MenuPersonajes.SetActive(false);
             menuPersonajesAbiertoPorHover = false;
             personajeMenuPersonajesHover = null;
@@ -779,10 +824,20 @@ public class MenuCaravana : MonoBehaviour
 
         if (!alternarMenu && personajeInicial != null && MenuPersonajes.activeInHierarchy && scMenuPersonajes.pSel == personajeInicial && !estabaAbiertoPorHover)
         {
+            if (BloqueaCierreMenuPersonajesTutorialNuevo())
+            {
+                return;
+            }
+
             MenuPersonajes.SetActive(false);
             menuPersonajesAbiertoPorHover = false;
             personajeMenuPersonajesHover = null;
             EmitirCierreMenuPersonajesTutorial(desdeHotkey);
+            return;
+        }
+
+        if (alternarMenu && MenuPersonajesEstaAbierto() && BloqueaCierreMenuPersonajesTutorialNuevo())
+        {
             return;
         }
 
@@ -827,6 +882,12 @@ public class MenuCaravana : MonoBehaviour
         TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.CampaignCharacterMenuClosed, MenuPersonajes)
             .Add("menu", "personajes")
             .Add("closedByHotkey", desdeHotkey ? 1 : 0));
+    }
+
+    private static bool BloqueaCierreMenuPersonajesTutorialNuevo()
+    {
+        TutorialDirector tutorial = TutorialDirector.Instance;
+        return tutorial != null && tutorial.BlocksCharacterMenuClose;
     }
 
     private void EmitirCierreMenuMejorasTutorial(bool desdeHotkey)
@@ -1006,6 +1067,7 @@ public class MenuCaravana : MonoBehaviour
         return "Antorchas de Caravana:\n"
             + "De noche, si están prendidas, aumentan el rango de visión de la caravana por "
             + Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f) + ".\n"
+            + "Si están apagadas, la velocidad de viaje se reduce un 20%.\n"
             + "Además aumentan las chances de encontrar items tras una batalla.";
     }
 
@@ -1022,6 +1084,7 @@ public class MenuCaravana : MonoBehaviour
         return "Tochas da Caravana:\n"
             + "À noite, quando acesas, aumentam o Alcance de Visão da caravana em "
             + Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f) + ".\n"
+            + "Quando apagadas, a velocidade de viagem é reduzida em 20%.\n"
             + "Além disso, aumentam as chances de encontrar itens após uma batalha.";
     }
 

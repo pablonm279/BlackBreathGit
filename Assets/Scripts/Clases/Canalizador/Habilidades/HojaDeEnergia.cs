@@ -38,7 +38,7 @@ public class HojaDeEnergia : Habilidad
       targetEspecial = 3;
       if (NIVEL == 4) { targetEspecial = 4;}
 
-      bonusAtaque = -1;
+      bonusAtaque = 3;
       if(NIVEL > 2){bonusAtaque += 1;}
       XdDanio = 2;
       daniodX = 6; //2d6

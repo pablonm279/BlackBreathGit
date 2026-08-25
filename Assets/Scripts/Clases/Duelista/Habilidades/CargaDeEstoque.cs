@@ -258,6 +258,8 @@ public class CargaDeEstoque : Habilidad
 
     public override async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
     {
+        BattleManager.Instance?.OcultarPanelDescripcionHabilidad(this, true);
+
         if (BattleManager.Instance == null || scEstaUnidad == null || scEstaUnidad.CasillaPosicion == null)
         {
             CancelarSeleccion();

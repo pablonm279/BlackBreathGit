@@ -53,6 +53,11 @@ public class UIbotonesPasivas : MonoBehaviour
                 continue;
             }
 
+            if (habilidad is REPRESENTACIONEvasionMaestra)
+            {
+                continue;
+            }
+
           
            GameObject actionButtonTransform =  Instantiate(actionButtonPrefab, transform);
            BotonHabilidad habilidadBotonUI = actionButtonTransform.GetComponent<BotonHabilidad>();

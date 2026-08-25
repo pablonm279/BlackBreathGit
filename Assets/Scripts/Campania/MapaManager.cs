@@ -937,20 +937,36 @@ public class MapaManager : MonoBehaviour
 
   void AsegurarMisteriosoAdyacenteFueraDeVision(Nodo nodo, Vector3 centroVision, float radioVision)
   {
-       if (nodo == null
-           || nodo.revelado
-           || !EsNodoContiguoAlActual(nodo)
-           || PosicionDentroDeVision(nodo.transform.position, centroVision, radioVision))
+       if (nodo == null || !EsNodoContiguoAlActual(nodo))
        {
            return;
        }
 
-       if (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+       bool dentroDeVision = PosicionDentroDeVision(nodo.transform.position, centroVision, radioVision);
+
+       if (!nodo.revelado)
        {
+           if (dentroDeVision)
+           {
+               return;
+           }
+
+           if (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+           {
+               return;
+           }
+
+           nodo.RevelarComoMisterioso();
            return;
        }
 
-       nodo.RevelarComoMisterioso();
+       // El nodo ya estaba "revelado" como misterioso (solo por falta de rango de vision).
+       // Si ahora vuelve a estar dentro del alcance -p.ej. al mejorar los Catalejos-, se
+       // revela de verdad en vez de quedar con el icono de "?" para siempre.
+       if (dentroDeVision)
+       {
+           nodo.RevelarPorRegresoAVision();
+       }
   }
 
   void ActualizarHintsCaminos(Vector3 centroVision, float radioVision)

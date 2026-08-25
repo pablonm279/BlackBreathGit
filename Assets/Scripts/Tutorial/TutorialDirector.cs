@@ -3,6 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class TutorialDirector : MonoBehaviour
 {
+  private const string TutorialCampaniaVerticalSliceId = "vertical_slice_intro";
+  private const string PrimerPasoBloqueoMenus = "Intro";
+  private const string UltimoPasoBloqueoMenus = "Recursos1";
+  private const string PasoBloqueoCierreMenuPersonaje = "MenuPersonaje";
   private const int SaveVersionConEstadoTutorialNuevo = 16;
   private const string CompletedKeyPrefix = "TutorialNuevo_Completado_";
   private const string DefaultDefinitionPath = "Tutoriales/TutorialVerticalSlice";
@@ -32,6 +36,12 @@ public class TutorialDirector : MonoBehaviour
   public TutorialDefinition ActiveDefinition => activeDefinition;
   public TutorialStep CurrentStep => activeDefinition != null ? activeDefinition.GetStep(stepIndex) : null;
   public string CurrentStepId => CurrentStep != null ? CurrentStep.id : string.Empty;
+  public bool BlocksOptionalCampaignMenus => BloqueaMenusOpcionalesCampania();
+  public bool BlocksCharacterMenuClose => running
+    && !suspendedForLegacyCombatTutorial
+    && activeDefinition != null
+    && activeDefinition.tutorialId == TutorialCampaniaVerticalSliceId
+    && CurrentStepId == PasoBloqueoCierreMenuPersonaje;
 
   private struct PendingRestoreState
   {
@@ -290,6 +300,24 @@ public class TutorialDirector : MonoBehaviour
     }
 
     return !string.IsNullOrEmpty(step.targetId) && step.targetId == targetId;
+  }
+
+  private bool BloqueaMenusOpcionalesCampania()
+  {
+    if (!running
+        || suspendedForLegacyCombatTutorial
+        || activeDefinition == null
+        || activeDefinition.tutorialId != TutorialCampaniaVerticalSliceId)
+    {
+      return false;
+    }
+
+    int primerPaso = activeDefinition.GetStepIndex(PrimerPasoBloqueoMenus);
+    int ultimoPaso = activeDefinition.GetStepIndex(UltimoPasoBloqueoMenus);
+    return primerPaso >= 0
+      && ultimoPaso >= primerPaso
+      && stepIndex >= primerPaso
+      && stepIndex <= ultimoPaso;
   }
 
   private void OnTutorialEvent(TutorialEventPayload payload)

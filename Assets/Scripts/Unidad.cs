@@ -37,10 +37,164 @@ public class Unidad : MonoBehaviour
    public Casilla CasillaPosicion;
    public Casilla CasillaDeseadaMov;
 
+  [Tooltip("Ocupa una huella de 2x2. CasillaPosicion es la casilla delantera inferior de la huella.")]
+  public bool bGrande;
+  [Tooltip("Evita el cambio de color del sprite al recibir dano; conserva el resto del feedback de impacto.")]
+  public bool omitirFlashAnimacionRecibirDanio;
+  private readonly List<Casilla> casillasOcupadas = new List<Casilla>();
+  private readonly List<Casilla> casillasAntesDelMovimiento = new List<Casilla>();
+  private readonly List<Casilla> casillasRecienOcupadas = new List<Casilla>();
+
   public Casilla CasillaForzadoaMover;
   // Marca si hay un desplazamiento forzado en curso para evitar reordenarlo cada frame
   private bool movimientoForzadoPendiente;
   private bool forzarSiguienteMovimientoForzadoInmediato;
+
+  public List<Casilla> ObtenerCasillasHuella(Casilla casillaAncla = null)
+  {
+    Casilla ancla = casillaAncla != null ? casillaAncla : CasillaPosicion;
+    List<Casilla> resultado = new List<Casilla>();
+    if (ancla == null)
+    {
+      return resultado;
+    }
+
+    if (!bGrande)
+    {
+      resultado.Add(ancla);
+      return resultado;
+    }
+
+    LadoManager lado = ancla.ladoGO != null ? ancla.ladoGO.GetComponent<LadoManager>() : null;
+    if (lado == null)
+    {
+      return resultado;
+    }
+
+    for (int deltaX = 0; deltaX >= -1; deltaX--)
+    {
+      for (int deltaY = 0; deltaY <= 1; deltaY++)
+      {
+        Casilla casilla = lado.ObtenerCasillaPorIndex(ancla.posX + deltaX, ancla.posY + deltaY);
+        if (casilla == null)
+        {
+          resultado.Clear();
+          return resultado;
+        }
+        resultado.Add(casilla);
+      }
+    }
+
+    return resultado;
+  }
+
+  public bool PuedeOcuparCasilla(Casilla casillaAncla)
+  {
+    List<Casilla> huella = ObtenerCasillasHuella(casillaAncla);
+    int cantidadEsperada = bGrande ? 4 : 1;
+    if (huella.Count != cantidadEsperada)
+    {
+      return false;
+    }
+
+    foreach (Casilla casilla in huella)
+    {
+      if (casilla.Presente != null && casilla.Presente != gameObject)
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public bool EsUnaDeSusCasillas(Casilla casilla)
+  {
+    return casilla != null && casilla.Presente == gameObject;
+  }
+
+  public bool OcuparCasillas(Casilla casillaAncla)
+  {
+    if (!PuedeOcuparCasilla(casillaAncla))
+    {
+      return false;
+    }
+
+    List<Casilla> nuevaHuella = ObtenerCasillasHuella(casillaAncla);
+    List<Casilla> huellaAnterior = casillasAntesDelMovimiento.Count > 0
+      ? new List<Casilla>(casillasAntesDelMovimiento)
+      : new List<Casilla>(casillasOcupadas);
+
+    foreach (Casilla casilla in casillasOcupadas)
+    {
+      if (casilla != null && casilla.Presente == gameObject && !nuevaHuella.Contains(casilla))
+      {
+        casilla.Presente = null;
+      }
+    }
+
+    casillasOcupadas.Clear();
+    casillasOcupadas.AddRange(nuevaHuella);
+    casillasRecienOcupadas.Clear();
+    foreach (Casilla casilla in nuevaHuella)
+    {
+      casilla.Presente = gameObject;
+      if (!huellaAnterior.Contains(casilla))
+      {
+        casillasRecienOcupadas.Add(casilla);
+      }
+    }
+
+    casillasAntesDelMovimiento.Clear();
+    CasillaPosicion = casillaAncla;
+    return true;
+  }
+
+  public void LiberarCasillasOcupadas(bool conservarParaMovimiento = false)
+  {
+    List<Casilla> conocidas = new List<Casilla>(casillasOcupadas);
+    if (conocidas.Count == 0)
+    {
+      conocidas.AddRange(ObtenerCasillasHuella());
+    }
+
+    if (conservarParaMovimiento)
+    {
+      casillasAntesDelMovimiento.Clear();
+      casillasAntesDelMovimiento.AddRange(conocidas);
+    }
+
+    foreach (Casilla casilla in conocidas)
+    {
+      if (casilla != null && casilla.Presente == gameObject)
+      {
+        casilla.Presente = null;
+      }
+    }
+    casillasOcupadas.Clear();
+  }
+
+  public List<Casilla> ConsumirCasillasRecienOcupadas()
+  {
+    List<Casilla> resultado = new List<Casilla>(casillasRecienOcupadas);
+    casillasRecienOcupadas.Clear();
+    return resultado;
+  }
+
+  public Vector3 ObtenerPosicionVisual(Casilla casillaAncla)
+  {
+    List<Casilla> huella = ObtenerCasillasHuella(casillaAncla);
+    if (huella.Count == 0)
+    {
+      return casillaAncla != null ? casillaAncla.transform.position : transform.position;
+    }
+
+    Vector3 posicion = Vector3.zero;
+    foreach (Casilla casilla in huella)
+    {
+      posicion += casilla.transform.position;
+    }
+    return posicion / huella.Count;
+  }
   
 
    public Habilidad estaCargando; //la habilidad que está cargando el personaje para lanzar en un turno próximo
@@ -446,6 +600,40 @@ public class Unidad : MonoBehaviour
       : null;
   }
 
+  public void ActualizarVisibilidadBarraVida()
+  {
+    ObtenerUnidadCanvas()?.ActualizarVisibilidadBarraVida();
+  }
+
+  public void EstablecerMouseEncimaBarraVida(bool valor)
+  {
+    ObtenerUnidadCanvas()?.EstablecerMouseEncima(valor);
+  }
+
+  public void EstablecerObjetivoValidoBarraVida(bool valor)
+  {
+    ObtenerUnidadCanvas()?.EstablecerObjetivoValido(valor);
+  }
+
+  public void EstablecerObjetivoSeleccionadoBarraVida(bool valor)
+  {
+    ObtenerUnidadCanvas()?.EstablecerObjetivoSeleccionado(valor);
+  }
+
+  private void MostrarBarraVidaTemporalmente()
+  {
+    ObtenerUnidadCanvas()?.MostrarBarraVidaTemporalmente();
+  }
+
+  private UnidadCanvas ObtenerUnidadCanvas()
+  {
+    if (scUnidadCanvas == null)
+    {
+      scUnidadCanvas = GetComponentInChildren<UnidadCanvas>(true);
+    }
+    return scUnidadCanvas;
+  }
+
   public GameObject ObtenerImagenUnidadGO()
   {
     return uImage != null ? uImage.gameObject : null;
@@ -841,7 +1029,7 @@ public class Unidad : MonoBehaviour
       poseController.PlayDamagePose();
     }
 
-    if (animator != null)
+    if (animator != null && !omitirFlashAnimacionRecibirDanio)
     {
       animator.SetTrigger("Trigger_Recibedanio");
 
@@ -1018,6 +1206,7 @@ private void Update()
   {
     indicadorTurnoActivoMostrado = esUnidadActiva;
     transform.GetChild(1).gameObject.SetActive(esUnidadActiva);
+    ObtenerUnidadCanvas()?.EstablecerTurnoActivo(esUnidadActiva);
   }
 
   if (animator != null && unidadVoladora)
@@ -1508,6 +1697,18 @@ public bool movimientoEnCurso = false;
 
   void Start()
   {
+    if (bGrande && CasillaPosicion != null)
+    {
+      if (OcuparCasillas(CasillaPosicion))
+      {
+        transform.position = ObtenerPosicionVisual(CasillaPosicion);
+      }
+      else
+      {
+        UnityEngine.Debug.LogError("La unidad grande " + uNombre + " no tiene una huella 2x2 valida desde " + CasillaPosicion.name + ".");
+      }
+    }
+
     audioSource = GetComponent<AudioSource>();
     if (audioSource != null)
     {
@@ -1578,6 +1779,18 @@ public bool movimientoEnCurso = false;
     CasillaForzadoaMover = null;
     casillaOrigenEnMovimiento = null;
 
+    // La casilla de origen queda con Presente = null apenas arranca el movimiento (ver FixedUpdate).
+    // Si el movimiento se cancela antes de llegar a destino, hay que revincular la unidad a la
+    // casilla que sigue ocupando; si no, queda viva y visible pero fuera del roster/cola de turnos
+    // y sin poder ser targeteada, porque todo eso se deriva de Casilla.Presente.
+    if (CasillaPosicion != null)
+    {
+      if (OcuparCasillas(CasillaPosicion) && !EstaFueraDeCombate())
+      {
+        transform.position = ObtenerPosicionVisual(CasillaPosicion);
+      }
+    }
+
     if (poseController != null)
     {
       poseController.OnStopMove();
@@ -1592,7 +1805,7 @@ public bool movimientoEnCurso = false;
       return false;
     }
 
-    if (destino.Presente != null && destino.Presente != gameObject)
+    if (!PuedeOcuparCasilla(destino))
     {
       return false;
     }
@@ -1623,6 +1836,12 @@ public bool movimientoEnCurso = false;
     {
       if ((CasillaPosicion != CasillaDeseadaMov) && (scBattleManager.unidadActiva == this))
       {
+        if (!PuedeOcuparCasilla(CasillaDeseadaMov))
+        {
+          CancelarMovimientoPendiente();
+          return;
+        }
+
         if (!movimientoEnCurso)
         {
           if (poseController != null) { poseController.OnStartMove(); }
@@ -1631,20 +1850,18 @@ public bool movimientoEnCurso = false;
 
           // Guardar casilla origen y limpiar Presente una sola vez
           casillaOrigenEnMovimiento = CasillaPosicion;
-          if (casillaOrigenEnMovimiento != null)
-          {
-            casillaOrigenEnMovimiento.Presente = null;
-          }
+          LiberarCasillasOcupadas(true);
         }
         movimientoEnCurso = true;
         // Avanza sin sobrepasar la casilla para evitar oscilaciones alrededor del destino
-        Vector3 nuevaPosicion = Vector3.MoveTowards(transform.position, CasillaDeseadaMov.transform.position, velocidadMovimiento * Time.fixedDeltaTime);
+        Vector3 posicionDestino = ObtenerPosicionVisual(CasillaDeseadaMov);
+        Vector3 nuevaPosicion = Vector3.MoveTowards(transform.position, posicionDestino, velocidadMovimiento * Time.fixedDeltaTime);
 
         // Establece la nueva posición
         transform.position = nuevaPosicion;
 
         // Comprueba si el objeto ha llegado a la casilla deseada
-        if (Vector3.Distance(transform.position, CasillaDeseadaMov.transform.position) < 0.045f)
+        if (Vector3.Distance(transform.position, posicionDestino) < 0.045f)
         {
           Casilla destinoMovimiento = CasillaDeseadaMov;
           if (destinoMovimiento == null || EstaFueraDeCombate())
@@ -1669,6 +1886,7 @@ public bool movimientoEnCurso = false;
             CancelarMovimientoPendiente();
             return;
           }
+          scBattleManager?.ActualizarCasillasMelee();
           scBattleManager.CalcularCasillasAMovimiento();
           ChequearSeMovio();
           movimientoEnCurso = false;
@@ -1684,26 +1902,30 @@ public bool movimientoEnCurso = false;
       bool puedeMoverForzadoAhora = (scBattleManager.unidadActiva != this) || forzarSiguienteMovimientoForzadoInmediato;
       if ((CasillaPosicion != CasillaForzadoaMover) && puedeMoverForzadoAhora)
       {
+        if (!PuedeOcuparCasilla(CasillaForzadoaMover))
+        {
+          CancelarMovimientoPendiente();
+          return;
+        }
+
         movimientoForzadoPendiente = true;
         if (!movimientoEnCurso)
         {
           if (poseController != null) { poseController.OnStartMove(); }
           // Guardar casilla origen y limpiar Presente una sola vez
           casillaOrigenEnMovimiento = CasillaPosicion;
-          if (casillaOrigenEnMovimiento != null)
-          {
-            casillaOrigenEnMovimiento.Presente = null;
-          }
+          LiberarCasillasOcupadas(true);
         }
         movimientoEnCurso = true;
         // Avanza sin sobrepasar la casilla para evitar oscilaciones alrededor del destino
-        Vector3 nuevaPosicion = Vector3.MoveTowards(transform.position, CasillaForzadoaMover.transform.position, velocidadMovimiento * Time.fixedDeltaTime);
+        Vector3 posicionDestinoForzada = ObtenerPosicionVisual(CasillaForzadoaMover);
+        Vector3 nuevaPosicion = Vector3.MoveTowards(transform.position, posicionDestinoForzada, velocidadMovimiento * Time.fixedDeltaTime);
 
         // Establece la nueva posición
         transform.position = nuevaPosicion;
 
         // Comprueba si el objeto ha llegado a la casilla deseada
-        if (Vector3.Distance(transform.position, CasillaForzadoaMover.transform.position) < 0.035f)
+        if (Vector3.Distance(transform.position, posicionDestinoForzada) < 0.035f)
         {
           // Llegó a casilla forzada
           Casilla destinoMovimientoForzado = CasillaForzadoaMover;
@@ -1729,6 +1951,7 @@ public bool movimientoEnCurso = false;
             CancelarMovimientoPendiente();
             return;
           }
+          scBattleManager?.ActualizarCasillasMelee();
           scBattleManager.CalcularCasillasAMovimiento();
           ChequearSeMovio();
           CasillaForzadoaMover = null;
@@ -1744,8 +1967,10 @@ public bool movimientoEnCurso = false;
     }
     else if (movimientoForzadoPendiente)
     {
-      movimientoForzadoPendiente = false;
-      forzarSiguienteMovimientoForzadoInmediato = false;
+      // Antes solo apagaba estas dos banderas, dejando casillaOrigenEnMovimiento (y su
+      // Presente ya en null) colgado. Pasa por la limpieza completa para no dejar la
+      // unidad desincronizada de su casilla.
+      CancelarMovimientoPendiente();
     }
 
 
@@ -1790,8 +2015,7 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
         }
       }
 
-      cas.Presente = gameObject;
-      transform.position = cas.transform.position;
+      transform.position = ObtenerPosicionVisual(cas);
     }
 
     BattleManager.Instance.ActualizarCasillasMelee();
@@ -2904,6 +3128,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
   private int daniosPendientesSinBonusElemental;
   private int daniosPendientesSinFlashPantalla;
+  private int daniosPendientesCondena;
 
   public void RecibirDanioSinBonusElemental(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
   {
@@ -2917,8 +3142,31 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     RecibirDanio(danio, tipoDanio, esCritico, uCausante, delayEfectos, ignoraArmadura);
   }
 
+  public void RecibirDanioCondena(float danio, int delayEfectos = 0)
+  {
+    daniosPendientesCondena++;
+    RecibirDanio(danio, 10, false, null, delayEfectos);
+  }
+
+  private static string NombreCondenaTextoFlotante()
+  {
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    return idioma switch
+    {
+      TRADU.IdiomaIngles => "Condemnation",
+      TRADU.IdiomaPortugues => "Condenação",
+      _ => "Condena"
+    };
+  }
+
   public async virtual void RecibirDanio(float danio, int tipoDanio, bool esCritico, Unidad uCausante, int delayEfectos = 0, bool ignoraArmadura = false)
   {
+    bool esDanioCondena = daniosPendientesCondena > 0;
+    if (esDanioCondena)
+    {
+      daniosPendientesCondena--;
+    }
+
     bool omitirFlashPantalla = daniosPendientesSinFlashPantalla > 0;
     if (omitirFlashPantalla)
     {
@@ -2945,7 +3193,11 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     Unidad unidadRedirigida = ObtenerObjetivoRedirigidoSiCorresponde(uCausante, this);
     if (unidadRedirigida != null && unidadRedirigida != this)
     {
-      if (aplicarBonusElemental)
+      if (esDanioCondena)
+      {
+        unidadRedirigida.RecibirDanioCondena(danio);
+      }
+      else if (aplicarBonusElemental)
       {
         if (omitirFlashPantalla)
         {
@@ -3175,6 +3427,12 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       {
         absorbioPorArmadura = true;
       }
+
+      if (esDanioCondena)
+      {
+        colorDanio = new Color(0.72f, 0.24f, 1f, 1f);
+      }
+
       //----
       if (danioFinal > 0)
       {
@@ -3369,6 +3627,10 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       danioTotal = adminTraitVida != null ? adminTraitVida.AjustarDanioRecibidoPorTraits(this, danioTotal) : danioTotal;
       muereConDanio = HP_actual - danioTotal < 1;
       HP_actual -= danioTotal;
+      if (danioTotal > 0)
+      {
+        MostrarBarraVidaTemporalmente();
+      }
       RuntimeAnalytics.TrackCombatDamage(danioTotal, tipoDanio, esCritico, uCausante, this);
       RegistrarDanioCampania(uCausante, danioTotal);
       if (danioTotal > 0)
@@ -3428,7 +3690,9 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
             break;
         }
       }
-      string textoDanio = "-" + danioTotal + IconoDanioFlotante(tipoDanio);
+      string textoDanio = esDanioCondena
+        ? NombreCondenaTextoFlotante() + " -" + danioTotal
+        : "-" + danioTotal + IconoDanioFlotante(tipoDanio);
       if (!(danioFinal <= 0 && bonusTotal > 0))
       {
         textoDanio += bonusTexto;
@@ -4064,6 +4328,10 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       await BattleManager.DelayCombateAsync(150);
       HP_actual -= danioFinalInt;
+      if (danioFinalInt > 0)
+      {
+        MostrarBarraVidaTemporalmente();
+      }
       RuntimeAnalytics.TrackCombatDamage(danioFinalInt, tipoDanio, false, uCausante, this);
       RegistrarDanioCampania(uCausante, danioFinalInt);
       adminTraitVida?.ProcesarTraitPuertasDeLaMuerteSiCorresponde(this);
@@ -4849,6 +5117,10 @@ public void RecibirCuracion(float curacion, bool magica)
   float vidaAntes = HP_actual;
   HP_actual += (int)curaFinal;
  if(HP_actual > mod_maxHP){HP_actual = mod_maxHP; }
+  if (HP_actual > vidaAntes)
+  {
+    MostrarBarraVidaTemporalmente();
+  }
   RuntimeAnalytics.TrackCombatHealing(HP_actual - vidaAntes, this);
   GenerarTextoFlotante(TRADU.i.Traducir("Cura ")+(int)curaFinal, Color.green, FloatingTextContext.Heal);
   scBattleManager.EscribirLog(CombatLogFormatter.EventoCuracion(uNombre+TRADU.i.Traducir(" recibe <color=#11c66b>") +curaFinal+TRADU.i.Traducir("</color> de curación.")));
@@ -4957,10 +5229,7 @@ public void UnidadMuere()
      adminTraits?.RefrescarTraitsComposicionAliada();
    }
    
-   if (casillaMuerte != null && casillaMuerte.Presente == gameObject)
-   {
-     casillaMuerte.Presente = null;
-   }
+   LiberarCasillasOcupadas();
    Invoke("DesactivarGOconDelay", 1.4f); 
 
 
@@ -4973,6 +5242,11 @@ public void UnidadMuere()
     else
     {
           scBattleManager.EscribirLog(CombatLogFormatter.EventoMuerte($"{nombreUnidadLog}{TRADU.i.Traducir(" muere.")}"));
+    }
+
+    if (casillaMuerte != null && casillaMuerte.lado == 1)
+    {
+      scBattleManager.EnviarSiguienteRefuerzoEnemigoSiCampoVacio();
     }
 
 
@@ -5016,7 +5290,7 @@ public bool RetirarseDeBatallaPorMoral()
       lado.unidadesLado.Remove(this);
     }
 
-    casillaRetirada.Presente = null;
+    LiberarCasillasOcupadas();
   }
 
   CasillaPosicion = null;
@@ -5143,10 +5417,7 @@ void DesactivarGOconDelay()
     scBattleManager.RemoverUnidadDeOrdenTurno(this);
   }
 
-  if (CasillaPosicion != null && CasillaPosicion.Presente == gameObject)
-  {
-    CasillaPosicion.Presente = null;
-  }
+  LiberarCasillasOcupadas();
 
   if (BattleManager.Instance != null && BattleManager.Instance.scUIBarraOrdenTurno != null)
   {
@@ -5274,6 +5545,81 @@ public float ObtenerResistenciaA(int tipo)
     
 
     return res ;
+}
+
+public int CalcularDanioFinalPreview(float danio, int tipoDanio, Unidad uCausante, int penetracionHabilidad, bool usarMaximoBonusElemental)
+{
+  if (estado_invulnerable > 0 || danio <= 0f)
+  {
+    return 0;
+  }
+
+  float mitigacion = 0f;
+  if (tipoDanio >= 1 && tipoDanio <= 3)
+  {
+    int penetracionTotal = Mathf.Max(0, penetracionHabilidad)
+      + (uCausante != null ? Mathf.Max(0, uCausante.penetracionArmaduraPlano) : 0);
+    mitigacion = Mathf.Max(0f, ObtenerArmaduraActual() - penetracionTotal);
+  }
+  else if (tipoDanio >= 4 && tipoDanio <= 9)
+  {
+    mitigacion = ObtenerResistenciaA(tipoDanio - 3);
+  }
+  else if (tipoDanio == 11)
+  {
+    mitigacion = ObtenerResistenciaA(7);
+  }
+
+  float danioPrincipal = Mathf.Max(0f, danio - mitigacion);
+  if (esEtereo && tipoDanio < 4)
+  {
+    danioPrincipal *= 0.5f;
+  }
+  danioPrincipal = Mathf.Max(0f, danioPrincipal - barreraDeDanio);
+
+  int danioTotal = (int)danioPrincipal;
+  if (uCausante != null)
+  {
+    danioTotal += CalcularBonusElementalPreview(uCausante.bonusdam_acido, 7, usarMaximoBonusElemental);
+    danioTotal += CalcularBonusElementalPreview(uCausante.bonusdam_arcano, 8, usarMaximoBonusElemental);
+    danioTotal += CalcularBonusElementalPreview(uCausante.bonusdam_fuego, 4, usarMaximoBonusElemental);
+    danioTotal += CalcularBonusElementalPreview(uCausante.bonusdam_hielo, 5, usarMaximoBonusElemental);
+    danioTotal += CalcularBonusElementalPreview(uCausante.bonusdam_necro, 9, usarMaximoBonusElemental);
+    danioTotal += CalcularBonusElementalPreview(uCausante.bonusdam_rayo, 6, usarMaximoBonusElemental);
+    danioTotal += CalcularBonusElementalPreview(uCausante.bonusdam_divino, 11, usarMaximoBonusElemental);
+  }
+
+  AplicarMitigacionDefensivaAlDanioRecibido(tipoDanio, false, ref danioTotal, out _, out _);
+  CampaignManager campaignManager = CampaignManager.Instance;
+  AdministradorEscenas administrador = campaignManager != null ? campaignManager.scAdministradorEscenas : null;
+  return administrador != null ? administrador.AjustarDanioRecibidoPorTraits(this, danioTotal) : danioTotal;
+}
+
+private int CalcularBonusElementalPreview(float dadoMaximo, int tipoDanio, bool usarMaximo)
+{
+  if (dadoMaximo <= 0f)
+  {
+    return 0;
+  }
+
+  float tirada = usarMaximo ? dadoMaximo : 1f;
+  float resistencia = tipoDanio == 11 ? ObtenerResistenciaA(7) : ObtenerResistenciaA(tipoDanio - 3);
+  float resultado = Mathf.Max(0f, tirada - resistencia);
+  return (int)resultado;
+}
+
+public void MostrarPreviewDanio(int danioMinimo, int danioMaximo)
+{
+  if (scUnidadCanvas == null)
+  {
+    scUnidadCanvas = GetComponentInChildren<UnidadCanvas>(true);
+  }
+  scUnidadCanvas?.MostrarPreviewDanio(danioMinimo, danioMaximo);
+}
+
+public void LimpiarPreviewDanio()
+{
+  scUnidadCanvas?.LimpiarPreviewDanio();
 }
 
 
@@ -5417,6 +5763,11 @@ public void OnMouseEnter()
       return;
     }
 
+    if (scBattleManager == null || !scBattleManager.HoverUnidadesCentralizadoActivo)
+    {
+      EstablecerMouseEncimaBarraVida(true);
+    }
+
     if (!scBattleManager.HoverUnidadesCentralizadoActivo && !scBattleManager.SeleccionandoObjetivo)
     {
       TooltipBatalla.Instance?.HideTooltipSinAnim();
@@ -5466,6 +5817,11 @@ public void OnMouseOver()
 
 public void OnMouseExit() 
 {
+    if (scBattleManager == null || !scBattleManager.HoverUnidadesCentralizadoActivo)
+    {
+      EstablecerMouseEncimaBarraVida(false);
+    }
+
     if (EstaOcultoVisualmenteParaJugador())
     {
       return;
@@ -6263,7 +6619,7 @@ void AcomodarSortingLayer()
   public void TeletransportarACasilla(Casilla cas)
   {
 
-    CasillaPosicion.Presente = null; //En habilidades teletransporte importante sacarlo de la casilla origen
+    LiberarCasillasOcupadas(true); //En habilidades teletransporte importante liberar toda la huella origen
     CasillaForzadoaMover = null;
     movimientoForzadoPendiente = false;
     CasillaDeseadaMov = null;

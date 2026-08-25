@@ -79,9 +79,18 @@ public class FloatingTextBackground : MonoBehaviour
             backgroundImage = backgroundRect.GetComponent<Image>();
         }
 
+        backgroundImage.color = Color.clear;
         backgroundImage.sprite = GetSharedSprite(extendFromRight);
         backgroundImage.type = Image.Type.Simple;
         backgroundImage.raycastTarget = false;
+    }
+
+    private void OnDisable()
+    {
+        if (backgroundImage != null)
+        {
+            backgroundImage.enabled = false;
+        }
     }
 
     public void SetExternalAlpha(float value)
@@ -125,6 +134,7 @@ public class FloatingTextBackground : MonoBehaviour
         Color backgroundColor = Color.black;
         backgroundColor.a = alpha * targetText.color.a * externalAlpha;
         backgroundImage.color = backgroundColor;
+        backgroundImage.enabled = true;
     }
 
     private void OnDestroy()

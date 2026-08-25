@@ -45,11 +45,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffa8e0dcfeb5ed5429e72e7307fcf6a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  persistentItemId: 
   imItem: {fileID: 21300000, guid: 670e754138cde4243a30aafdfa641e6a, type: 3}
   sNombreItem: Mandoble Filonegro
   IDEfectoEspecial: 0
   IDClasesQuePuedenUsarEsteItem: 01000000
-  iPrecio: 100
+  iPrecio: 125
   itemDescripcion: 
   iRareza: 0
   nivelMejora: 1
@@ -184,8 +185,6 @@ MonoBehaviour:
   vfxCasteo: {fileID: 0}
   requiereRecurso: 0
   costoPM: 0
-  cooldownMax: 0
-  cooldownActual: 0
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   NIVEL: 0
@@ -202,6 +201,10 @@ MonoBehaviour:
   esMelee: 0
   bAfectaObstaculos: 0
   fuerzaPoseAtaque: 0
+  forzarPoseHabilidad: 0
+  omitirAnimacionDeUso: 0
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
   poneTrampas: 0
   poneObstaculo: 0
   esHostil: 0

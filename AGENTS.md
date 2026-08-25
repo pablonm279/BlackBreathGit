@@ -35,7 +35,7 @@
 ## Chequeos utiles
 
 - Resumen del proyecto: `powershell -ExecutionPolicy Bypass -File tools/project-summary.ps1`
-- Mojibake/encoding: `powershell -ExecutionPolicy Bypass -File tools/check-mojibake.ps1 -Root Assets`
+- Mojibake/encoding (solo al preparar o realizar un commit): `powershell -ExecutionPolicy Bypass -File tools/check-mojibake.ps1 -Root Assets`
 - Dependencias prohibidas en runtime: `powershell -ExecutionPolicy Bypass -File tools/check-runtime-deps.ps1`
 - Archivos modificados: `git status --short`
 - Buscar scripts: `rg --files Assets/Scripts`
@@ -44,6 +44,7 @@
 ## Git hooks y encoding
 
 - Hay un hook en `.githooks/pre-commit` que bloquea commits con UTF-8 invalido o mojibake.
+- El chequeo manual de mojibake/encoding queda suspendido durante tareas normales. Ejecutarlo unicamente al preparar o realizar un commit.
 - `.editorconfig` exige `charset = utf-8`, `insert_final_newline = true` y trim de whitespace para la mayoria de archivos.
 
 ## Convenciones practicas para automatizacion

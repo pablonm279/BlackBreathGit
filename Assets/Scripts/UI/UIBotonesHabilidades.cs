@@ -65,7 +65,7 @@ public class UIBotonesHabilidades : MonoBehaviour
                 continue;
             }
 
-            if(habilidad.GetType().Name.Contains("REPRESENTACION"))
+            if(habilidad.GetType().Name.Contains("REPRESENTACION") && !(habilidad is REPRESENTACIONEvasionMaestra))
             {
                 continue;
             }
@@ -170,7 +170,9 @@ public class UIBotonesHabilidades : MonoBehaviour
 
     bool EsHabilidadContextualDeCombate(Habilidad habilidad)
     {
-        return habilidad is DestruirObstaculo || habilidad is Escapar;
+        return habilidad is DestruirObstaculo
+            || habilidad is Escapar
+            || habilidad is REPRESENTACIONEvasionMaestra;
     }
 
     void CrearBotonHabilidad(Habilidad habilidad)
@@ -179,6 +181,12 @@ public class UIBotonesHabilidades : MonoBehaviour
         BotonHabilidad habilidadBotonUI = actionButtonTransform.GetComponent<BotonHabilidad>();
         habilidadBotonUI.HabilidadRepresentada = habilidad;
         habilidadBotonUI.UpdateCooldownMuestra();
+
+        if (habilidad is REPRESENTACIONEvasionMaestra evasionMaestra)
+        {
+            actionButtonTransform.AddComponent<DestelloBordeEvasionMaestra>()
+                .Inicializar(evasionMaestra);
+        }
 
         if (listaBotonesHabilidad != null)
         {

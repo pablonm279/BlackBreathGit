@@ -5,16 +5,19 @@ using UnityEngine;
 public class TrampaEnredaderaEspinosa : Trampa
 {
   
+  public GameObject VFXEstadoPrefab;
   
-  public void Inicializar()
+  public void Inicializar(GameObject vfxEstadoPrefab = null)
   {
      nombre = "Enredadera Espinoza";
      intDificultadVer = 0;   
      intUsos = 10;
      intDuracionTurnos = 5;
      esPersistente = true;
+     VFXEstadoPrefab = vfxEstadoPrefab;
 
      ActivarVFXModeloTrampa();
+     ArbolLamentosVFX.CrearBrote(GetComponent<Casilla>());
 
   }
  
@@ -23,6 +26,7 @@ public class TrampaEnredaderaEspinosa : Trampa
     
          int danio =UnityEngine.Random.Range(1,5)+2;
          objetivo.RecibirDanio(danio,2,false, null);
+         ArbolLamentosVFX.CrearImpacto(objetivo.gameObject, TipoVFXArbolLamentos.Crecimiento);
 
          if(objetivo.TiradaSalvacion(2, 14) && objetivo.estado_inmovil > -1 && objetivo.estado_inmovil < 1)
           {
@@ -36,6 +40,18 @@ public class TrampaEnredaderaEspinosa : Trampa
             buff.cantAPMax -= 1;
             buff.cantDefensa -= 2;
             buff.AplicarBuff(objetivo);
+
+            //Aplica VFX del estado
+            if (VFXEstadoPrefab != null)
+            {
+              GameObject goVFX = Instantiate(VFXEstadoPrefab, objetivo.transform);
+              goVFX.transform.localPosition = Vector3.zero;
+              goVFX.transform.localRotation = Quaternion.identity;
+              buff.goVFX = goVFX;
+
+              Canvas canvasObjeto = goVFX.GetComponentInChildren<Canvas>();
+              RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, objetivo.transform, 5);
+            }
 
             // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
             Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);

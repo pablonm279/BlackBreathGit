@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a17f408a0a834d15b4eb4a37d26f5b91, type: 3}
+  m_Name: CursorVisualConfig
+  m_EditorClassIdentifier: 
+  cursorNormal: {fileID: 2800000, guid: 667ffcfb980703f44920db4e6df39444, type: 3}
+  cursorInteractivo: {fileID: 2800000, guid: 053a0a6c528844c44b895e214cff40ff, type: 3}
+  cursorPresionado: {fileID: 2800000, guid: fc2acddf8dae3224fa8bd823c4a13410, type: 3}
+  cursorAlerta: {fileID: 2800000, guid: f89b8053e5b67664e9d91d389967e5c9, type: 3}
+  hotspotNormal: {x: 0, y: 0}
+  hotspotInteractivo: {x: 0, y: 0}
+  hotspotPresionado: {x: 0, y: 0}
+  hotspotAlerta: {x: 0, y: 0}
+  modoCursor: 0

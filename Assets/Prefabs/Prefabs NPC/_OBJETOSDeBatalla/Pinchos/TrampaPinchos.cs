@@ -22,7 +22,7 @@ public class TrampaPinchos : Trampa
   {
     
          int danio =UnityEngine.Random.Range(1,5)+2;
-         objetivo.RecibirDanio(danio,1,false, null);
+         objetivo.RecibirDanio(danio,1,false, null, 0, true);
 
           ReducirUsos();
   }

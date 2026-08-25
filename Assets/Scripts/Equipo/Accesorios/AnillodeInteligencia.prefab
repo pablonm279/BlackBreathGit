@@ -75,7 +75,7 @@ MonoBehaviour:
   habilidadExtra2: {fileID: 0}
   buffFuerza: 0
   buffAgi: 0
-  buffPoder: 2
+  buffPoder: 1
   buffIniciativa: 0
   buffApMax: 0
   buffValMax: 0
@@ -84,7 +84,7 @@ MonoBehaviour:
   buffDefensa: 0
   buffTSReflejo: 0
   buffTSFortaleza: 0
-  buffTSMental: 2
+  buffTSMental: 1
   buffResFuego: 0
   buffResRayo: 0
   buffResHielo: 0

@@ -194,7 +194,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
     if (Retrato == null) { return; }
     switch (index)
     {
-      case 1: Retrato.sprite = ResolverSprite(imArdiendo, "Imagenes/Estado_ardiendo"); AsignarTextoTooltip(TRADU.i.Traducir("Ardiendo: causa daño cada turno, se apaga con AP disponibles.")); break;
+      case 1: Retrato.sprite = ResolverSprite(imArdiendo, "Imagenes/Estado_ardiendo"); AsignarTextoTooltip(TRADU.i.Traducir("Ardiendo: causa daño cada turno según sus acumulaciones y pierde 1 acumulación al final del turno.")); break;
       case 2: Retrato.sprite = ResolverSprite(imAturdido, "Imagenes/Estado_aturdido"); AsignarTextoTooltip(TRADU.i.Traducir("Aturdido: no puede actuar.")); break;
       case 3: Retrato.sprite = ResolverSprite(imAcido, "Imagenes/Estado_acido"); AsignarTextoTooltip(TRADU.i.Traducir("Ácido: cada acumulación reduce en 1 la armadura.")); break;
       case 4: Retrato.sprite = ResolverSprite(imCongelado, "Imagenes/Estado_congelado"); AsignarTextoTooltip(TRADU.i.Traducir("Congelado: reduce PA disponibles y aumenta armadura.")); break;

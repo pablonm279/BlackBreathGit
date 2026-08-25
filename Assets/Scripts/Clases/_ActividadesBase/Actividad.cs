@@ -12,7 +12,7 @@ public abstract class Actividad : MonoBehaviour
    //4 - Caballero: Relatos de Batalla
    //5 - Caballero: Mantenimiento Armadura
    //6 - Caballero: Vigilar
-   //7 - Cazador: Caza Nocturna
+   //7 - Cazador: Caza
    //8 - Cazador: Preparar Flechas
    //9 - Cazador: Exploración
    //10 - Purificadora: Ritual de Limpieza
@@ -45,6 +45,11 @@ public abstract class Actividad : MonoBehaviour
 
 
    public string desc = "";
+
+   public virtual string ObtenerDescripcion(Personaje personaje = null)
+   {
+      return desc;
+   }
 
 
 

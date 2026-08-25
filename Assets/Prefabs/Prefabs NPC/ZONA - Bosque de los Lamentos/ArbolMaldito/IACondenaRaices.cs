@@ -13,11 +13,14 @@ public class IACondenaRaices : IAHabilidad
   const int TurnosCondena = 2;
   const int CantidadObjetivos = 2;
 
-  const float DuracionAnillo = 2.1f;
-  const float AnchoAnillo = 0.014f;
-  const int SegmentosAnillo = 56;
-  const float RadioAnillo = 0.22f;
-  const float AlturaAnillo = 0.28f;
+  const float DuracionAnillo = 3f;
+  const float AnchoAnillo = 0.00765f;
+  const int SegmentosAnillo = 72;
+  const float RadioAnillo = 0.221f;
+  const float AlturaAnillo = 0.238f;
+
+  [SerializeField] AudioClip sfxCondenaBosque;
+  [SerializeField, Range(0f, 1f)] float volumenSfxCondenaBosque = 1f;
 
   static Material materialAnillo;
 
@@ -58,6 +61,7 @@ public class IACondenaRaices : IAHabilidad
       return;
     }
 
+    ReproducirSfxCondenaBosque();
     scEstaUnidad.CambiarAPActual(-costoAP);
     PrepararInicioAnimacion(objetivos.Cast<object>().ToList(), null);
     scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
@@ -151,7 +155,17 @@ public class IACondenaRaices : IAHabilidad
       ? objetivo.puntoEntrante.position
       : objetivo.transform.position + Vector3.up * AlturaAnillo;
 
-    GameObject anilloGO = new GameObject("VFX_CondenaRaices");
+    LineRenderer anilloExterior = CrearAnilloEspectral("VFX_CondenaRaices_Exterior");
+    LineRenderer anilloInterior = CrearAnilloEspectral("VFX_CondenaRaices_Interior");
+    StartCoroutine(AnimarAnillo(anilloExterior, destino, RadioAnillo, 1f, new Color(0.61f, 0.28f, 0.9f)));
+    StartCoroutine(AnimarAnillo(anilloInterior, destino, RadioAnillo * 0.64f, -1.45f, new Color(0.78f, 0.32f, 1f)));
+    StartCoroutine(GenerarEsporas(destino, Vector3.right, Vector3.forward, Vector3.up));
+    StartCoroutine(GenerarApariciones(destino));
+  }
+
+  LineRenderer CrearAnilloEspectral(string nombreObjeto)
+  {
+    GameObject anilloGO = new GameObject(nombreObjeto);
     if (BattleManager.Instance != null)
     {
       anilloGO.transform.SetParent(BattleManager.Instance.transform, true);
@@ -168,45 +182,39 @@ public class IACondenaRaices : IAHabilidad
     anillo.receiveShadows = false;
     anillo.numCapVertices = 0;
     anillo.numCornerVertices = 4;
-
-    Vector3 normal = Vector3.up;
-    Vector3 binormal = Vector3.right;
-    Vector3 tangent = Vector3.forward;
-
-    Vector3[] puntos = new Vector3[SegmentosAnillo];
-    for (int i = 0; i < SegmentosAnillo; i++)
-    {
-      float angulo = (i / (float)SegmentosAnillo) * Mathf.PI * 2f;
-      float ruido = Mathf.Sin(angulo * 3.5f) * 0.055f + Mathf.PerlinNoise(angulo, Time.time * 0.35f) * 0.02f;
-      Vector3 offset = (Mathf.Cos(angulo) * binormal + Mathf.Sin(angulo) * tangent) * (RadioAnillo + ruido);
-      offset += normal * (Mathf.Sin(angulo * 2.5f) * 0.07f + AlturaAnillo);
-      puntos[i] = destino + offset;
-    }
-
     anillo.positionCount = SegmentosAnillo;
-    anillo.SetPositions(puntos);
-
-    anillo.startColor = new Color(0.12f, 0.95f, 0.48f, 0.85f);
-    anillo.endColor = new Color(0.18f, 0.35f, 0.12f, 0.18f);
-
-    StartCoroutine(DesvanecerAnillo(anillo));
-    StartCoroutine(GenerarEsporas(destino, binormal, tangent, normal));
+    return anillo;
   }
 
-  IEnumerator DesvanecerAnillo(LineRenderer anillo)
+  IEnumerator AnimarAnillo(LineRenderer anillo, Vector3 centro, float radio, float velocidadGiro, Color colorBase)
   {
     float tiempo = 0f;
+    Vector3[] puntos = new Vector3[SegmentosAnillo];
     while (tiempo < DuracionAnillo)
     {
       tiempo += Time.deltaTime;
       float factor = Mathf.Clamp01(tiempo / DuracionAnillo);
       if (anillo != null)
       {
-        Color cInicio = anillo.startColor;
-        Color cFin = anillo.endColor;
-        anillo.startColor = new Color(cInicio.r, cInicio.g, cInicio.b, Mathf.Lerp(0.85f, 0f, factor));
-        anillo.endColor = new Color(cFin.r, cFin.g, cFin.b, Mathf.Lerp(0.28f, 0f, factor));
-        anillo.widthMultiplier = Mathf.Lerp(AnchoAnillo, AnchoAnillo * 0.15f, factor);
+        float entrada = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(factor / 0.1f));
+        float salida = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((factor - 0.72f) / 0.28f));
+        float intensidad = entrada * salida;
+        float pulso = 0.84f + 0.16f * Mathf.Sin(tiempo * 9f);
+        float giro = tiempo * velocidadGiro;
+
+        for (int i = 0; i < SegmentosAnillo; i++)
+        {
+          float angulo = (i / (float)SegmentosAnillo) * Mathf.PI * 2f + giro;
+          float ruido = Mathf.Sin((angulo * 4f) + tiempo * 3f) * 0.02975f;
+          float radioVivo = radio + ruido;
+          Vector3 offset = new Vector3(Mathf.Cos(angulo) * radioVivo, Mathf.Sin((angulo * 3f) + tiempo * 4f) * 0.03825f + AlturaAnillo, Mathf.Sin(angulo) * radioVivo);
+          puntos[i] = centro + offset;
+        }
+
+        anillo.SetPositions(puntos);
+        anillo.startColor = new Color(colorBase.r, colorBase.g, colorBase.b, 0.68f * intensidad);
+        anillo.endColor = new Color(colorBase.r * 0.45f, colorBase.g * 0.45f, colorBase.b * 0.45f, 0.26f * intensidad);
+        anillo.widthMultiplier = AnchoAnillo * pulso * Mathf.Lerp(1.35f, 0.55f, factor);
       }
       yield return null;
     }
@@ -219,7 +227,7 @@ public class IACondenaRaices : IAHabilidad
 
   IEnumerator GenerarEsporas(Vector3 centro, Vector3 binormal, Vector3 tangent, Vector3 normal)
   {
-    int particulas = 7;
+    int particulas = 14;
     for (int i = 0; i < particulas; i++)
     {
       GameObject esporaGO = new GameObject("VFX_CondenaRaices_Espora");
@@ -227,28 +235,93 @@ public class IACondenaRaices : IAHabilidad
       espora.useWorldSpace = true;
       espora.alignment = LineAlignment.View;
       espora.material = ObtenerMaterial();
-      espora.widthMultiplier = 0.05f;
+      espora.widthMultiplier = 0.02125f;
       espora.positionCount = 3;
       espora.textureMode = LineTextureMode.Stretch;
       espora.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
       espora.receiveShadows = false;
       espora.numCapVertices = 2;
-      espora.startColor = new Color(0.42f, 1.2f, 0.7f, 0.8f);
-      espora.endColor = new Color(0.12f, 0.3f, 0.14f, 0f);
+      espora.startColor = new Color(0.72f, 0.3f, 0.95f, 0.62f);
+      espora.endColor = new Color(0.42f, 0.24f, 0.68f, 0f);
 
       float angulo = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
       Vector3 direccion = (Mathf.Cos(angulo) * binormal + Mathf.Sin(angulo) * tangent).normalized;
-      float alturaBase = AlturaAnillo + UnityEngine.Random.Range(0.02f, 0.16f);
+      float alturaBase = AlturaAnillo + UnityEngine.Random.Range(0.017f, 0.136f);
       Vector3 inicio = centro + direccion * (RadioAnillo * 0.45f) + normal * alturaBase;
-      Vector3 medio = inicio + direccion * UnityEngine.Random.Range(0.08f, 0.18f) + normal * UnityEngine.Random.Range(0.04f, 0.12f);
-      Vector3 fin = inicio + direccion * UnityEngine.Random.Range(0.12f, 0.25f) + normal * UnityEngine.Random.Range(-0.05f, 0.02f);
+      Vector3 medio = inicio + direccion * UnityEngine.Random.Range(0.068f, 0.153f) + normal * UnityEngine.Random.Range(0.034f, 0.102f);
+      Vector3 fin = inicio + direccion * UnityEngine.Random.Range(0.102f, 0.2125f) + normal * UnityEngine.Random.Range(-0.0425f, 0.017f);
 
       espora.SetPosition(0, inicio);
       espora.SetPosition(1, medio);
       espora.SetPosition(2, fin);
 
-      StartCoroutine(DesvanecerEspora(espora, UnityEngine.Random.Range(0.15f, 0.22f)));
-      yield return new WaitForSeconds(0.028f);
+      StartCoroutine(DesvanecerEspora(espora, UnityEngine.Random.Range(0.65f, 0.9f)));
+      yield return new WaitForSeconds(0.07f);
+    }
+  }
+
+  IEnumerator GenerarApariciones(Vector3 centro)
+  {
+    yield return new WaitForSeconds(0.18f);
+
+    const int cantidadApariciones = 6;
+    for (int i = 0; i < cantidadApariciones; i++)
+    {
+      float angulo = (i / (float)cantidadApariciones) * Mathf.PI * 2f + UnityEngine.Random.Range(-0.22f, 0.22f);
+      Vector3 origen = centro + new Vector3(Mathf.Cos(angulo), 0f, Mathf.Sin(angulo)) * UnityEngine.Random.Range(RadioAnillo * 0.25f, RadioAnillo * 0.85f);
+
+      GameObject aparicionGO = new GameObject("VFX_CondenaRaices_Aparicion");
+      LineRenderer aparicion = aparicionGO.AddComponent<LineRenderer>();
+      aparicion.useWorldSpace = true;
+      aparicion.alignment = LineAlignment.View;
+      aparicion.material = ObtenerMaterial();
+      aparicion.widthMultiplier = 0.0238f;
+      aparicion.positionCount = 6;
+      aparicion.textureMode = LineTextureMode.Stretch;
+      aparicion.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+      aparicion.receiveShadows = false;
+      aparicion.numCapVertices = 4;
+      aparicion.startColor = new Color(0.72f, 0.38f, 1f, 0f);
+      aparicion.endColor = new Color(0.12f, 1f, 0.5f, 0f);
+
+      StartCoroutine(AnimarAparicion(aparicion, origen, UnityEngine.Random.Range(1.05f, 1.35f), UnityEngine.Random.Range(0f, Mathf.PI * 2f)));
+      yield return new WaitForSeconds(0.19f);
+    }
+  }
+
+  IEnumerator AnimarAparicion(LineRenderer aparicion, Vector3 origen, float duracion, float fase)
+  {
+    float tiempo = 0f;
+    Vector3[] puntos = new Vector3[6];
+    while (tiempo < duracion)
+    {
+      tiempo += Time.deltaTime;
+      float factor = Mathf.Clamp01(tiempo / duracion);
+      float entrada = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(factor / 0.22f));
+      float salida = 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((factor - 0.58f) / 0.42f));
+      float intensidad = entrada * salida;
+
+      if (aparicion != null)
+      {
+        for (int i = 0; i < puntos.Length; i++)
+        {
+          float tramo = i / (float)(puntos.Length - 1);
+          float ondulacion = Mathf.Sin((tramo * 7f) + (tiempo * 8f) + fase) * (0.0153f + tramo * 0.02125f);
+          float profundidad = Mathf.Cos((tramo * 5f) + (tiempo * 6f) + fase) * 0.0153f;
+          puntos[i] = origen + new Vector3(ondulacion, AlturaAnillo + tramo * 0.408f + factor * 0.102f, profundidad);
+        }
+
+        aparicion.SetPositions(puntos);
+        aparicion.startColor = new Color(0.76f, 0.34f, 0.96f, 0.48f * intensidad);
+        aparicion.endColor = new Color(0.42f, 0.26f, 0.72f, 0.05f * intensidad);
+        aparicion.widthMultiplier = Mathf.Lerp(0.02975f, 0.00765f, factor) * intensidad;
+      }
+      yield return null;
+    }
+
+    if (aparicion != null)
+    {
+      Destroy(aparicion.gameObject);
     }
   }
 
@@ -265,7 +338,7 @@ public class IACondenaRaices : IAHabilidad
         Color fin = espora.endColor;
         espora.startColor = new Color(inicio.r, inicio.g, inicio.b, Mathf.Lerp(0.7f, 0f, factor));
         espora.endColor = new Color(fin.r, fin.g, fin.b, Mathf.Lerp(0.15f, 0f, factor));
-        espora.widthMultiplier = Mathf.Lerp(0.05f, 0f, factor);
+        espora.widthMultiplier = Mathf.Lerp(0.02125f, 0f, factor);
       }
       yield return null;
     }
@@ -291,16 +364,29 @@ public class IACondenaRaices : IAHabilidad
 
       if (materialAnillo.HasProperty("_TintColor"))
       {
-        materialAnillo.SetColor("_TintColor", new Color(0.18f, 0.8f, 0.4f, 0.8f));
+        materialAnillo.SetColor("_TintColor", new Color(0.65f, 0.3f, 0.9f, 0.72f));
       }
 
       if (materialAnillo.HasProperty("_EmissionColor"))
       {
         materialAnillo.EnableKeyword("_EMISSION");
-        materialAnillo.SetColor("_EmissionColor", new Color(0.1f, 0.45f, 0.28f) * 2.2f);
+        materialAnillo.SetColor("_EmissionColor", new Color(0.32f, 0.12f, 0.48f) * 1.8f);
       }
     }
 
     return materialAnillo;
+  }
+
+  void ReproducirSfxCondenaBosque()
+  {
+    if (sfxCondenaBosque == null)
+    {
+      return;
+    }
+
+    Vector3 posicion = scEstaUnidad != null && scEstaUnidad.puntoEntrante != null
+      ? scEstaUnidad.puntoEntrante.position
+      : transform.position;
+    AjustesAudio.ReproducirClipEnPunto(sfxCondenaBosque, posicion, Mathf.Clamp01(volumenSfxCondenaBosque));
   }
 }

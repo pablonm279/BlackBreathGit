@@ -377,6 +377,19 @@ public static class CatalogoEventosCampania
         DefinicionEventoAleatorioCampania.CrearZonal(IdsEventoCampania.CartaSinEnviar, "Carta sin Enviar", TipoOrigenEventoCampania.Descanso, TipoResultadoEventoCampania.Bueno, IdsZonaCampania.Nedukazal),
     };
 
+    // Uso exclusivo de debug: todos los IDs de evento registrados, en el orden en que se
+    // declararon arriba, sin filtrar por zona/origen/disponibilidad especial.
+    public static List<int> ObtenerTodosLosIdsParaDebug()
+    {
+        List<int> ids = new List<int>(definiciones.Count);
+        for (int i = 0; i < definiciones.Count; i++)
+        {
+            ids.Add(definiciones[i].Id);
+        }
+
+        return ids;
+    }
+
     public static bool TryObtenerEventoAleatorio(
         TipoOrigenEventoCampania origen,
         TipoResultadoEventoCampania resultado,
@@ -449,6 +462,12 @@ public static class CatalogoEventosCampania
 
             case IdsEventoCampania.MensajeDesdeSerria:
                 return !manager.HayMisionSalvamentoActivaEnMapa();
+
+            case IdsEventoCampania.DosMiradas:
+            case IdsEventoCampania.JuramentoDeLaEscolta:
+                // Requieren 2 Heroes distintos participando; con 1 o menos, ObtenerPersonajeAleatorio
+                // con exclusion se queda sin candidatos y tira excepcion.
+                return manager.ObtenerCantidadPersonajesDisponiblesParaEvento() >= 2;
 
             default:
                 return true;

@@ -45,6 +45,7 @@ public class LadoManager : MonoBehaviour
 
    public void ActualizarListaDeUnidadesEnLado()
    {
+        List<Unidad> unidadesAntesDelEscaneo = new List<Unidad>(unidadesLado);
         unidadesLado.Clear();
         foreach  (Transform hijos in transform)
         {
@@ -80,7 +81,10 @@ public class LadoManager : MonoBehaviour
                     continue;
                 }
 
-                unidadesLado.Add(unidadPresente);
+                if (!unidadesLado.Contains(unidadPresente))
+                {
+                    unidadesLado.Add(unidadPresente);
+                }
               
                 
               }
@@ -95,6 +99,28 @@ public class LadoManager : MonoBehaviour
             if (unidadEnterrada != null && !unidadesLado.Contains(unidadEnterrada))
             {
                 unidadesLado.Add(unidadEnterrada);
+            }
+        }
+
+        // Red de seguridad: si una unidad viva y activa que estaba en el lado en la ronda
+        // anterior no aparece en este escaneo (porque Casilla.Presente quedó desincronizado,
+        // por ejemplo tras un movimiento forzado interrumpido), se revincula en vez de
+        // perderla en silencio del roster/cola de turnos/targeteo.
+        foreach (Unidad unidad in unidadesAntesDelEscaneo)
+        {
+            if (unidad == null || unidad.HP_actual <= 0 || !unidad.gameObject.activeInHierarchy || unidadesLado.Contains(unidad))
+            {
+                continue;
+            }
+
+            Casilla casillaUnidad = unidad.CasillaPosicion;
+            if (casillaUnidad != null && casillaUnidad.Presente == null)
+            {
+                Debug.LogWarning("[LadoManager] " + unidad.uNombre + " se desincronizo de su casilla (" + casillaUnidad.name + "); se restaura para evitar que quede fantasma fuera de la cola de turnos.");
+                if (unidad.OcuparCasillas(casillaUnidad))
+                {
+                    unidadesLado.Add(unidad);
+                }
             }
         }
    }
@@ -136,23 +162,24 @@ private void BattleManager_OnRondaNueva(object sender, EventArgs empty)
 public bool ColocarEnCasilla(GameObject GO, int x, int y)
 {
   Casilla cas = ObtenerCasillaPorIndex(x, y);
+  Unidad unidad = GO != null ? GO.GetComponent<Unidad>() : null;
   if (cas == null)
   {
     print("Casilla no encontrada");
     return false;
   }
-  if (cas.Presente != null)
+  if ((cas.Presente != null && cas.Presente != GO) || (unidad != null && !unidad.PuedeOcuparCasilla(cas)))
   {
     print("Casilla Ocupada, no se puede colocar objeto");
     return false;
   }
 
-  GO.transform.position = cas.transform.position;
+  GO.transform.position = unidad != null ? unidad.ObtenerPosicionVisual(cas) : cas.transform.position;
   cas.NuevoObjetoPresenteEnCasilla(GO);
 
-  if (GO.GetComponent<Unidad>() != null)
+  if (unidad != null)
   {
-    GO.GetComponent<Unidad>().CasillaPosicion = cas;
+    unidad.CasillaPosicion = cas;
   }
   if (GO.GetComponent<Obstaculo>() != null)
   {

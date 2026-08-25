@@ -1108,6 +1108,8 @@ public class IAUnidad : MonoBehaviour
       }
 
       Casilla origen = scUnidad.CasillaPosicion;
+      scUnidad.LiberarCasillasOcupadas(true);
+      aliado.LiberarCasillasOcupadas(true);
       aliado.CasillaDeseadaMov = null;
       aliado.CasillaForzadoaMover = origen;
       scUnidad.CasillaDeseadaMov = casillaObjetivo;
@@ -1139,6 +1141,11 @@ public class IAUnidad : MonoBehaviour
 
       Unidad aliado = casillaObjetivo.Presente.GetComponent<Unidad>();
       if (aliado == null || aliado == scUnidad)
+      {
+         return null;
+      }
+
+      if (scUnidad.bGrande || aliado.bGrande)
       {
          return null;
       }
@@ -1388,6 +1395,10 @@ public class IAUnidad : MonoBehaviour
          try
          {
             HabilidadIAEnEjecucion = habilidad;
+            if (habilidad.esHostil)
+            {
+               BattleManager.Instance?.OcultarAmenazaMeleeIAPorEjecucion(scUnidad);
+            }
             habilidadTask = habilidad.ActivarHabilidad();
 
             if (habilidadTask == null)
@@ -1483,7 +1494,9 @@ public class IAUnidad : MonoBehaviour
          return;
       }
 
-      int maxEsperaMs = Mathf.Max(timings.HabilidadTimeoutMs, timings.DelayPostAccionMs) + timings.GraciaHabilidadMs + 1200;
+      // La secuencia melee incluye la pausa previa y el trayecto de vuelta. El margen
+      // anterior podia agotarse antes de que la unidad recuperara su posicion visual.
+      int maxEsperaMs = Mathf.Max(timings.HabilidadTimeoutMs, timings.DelayPostAccionMs) + timings.GraciaHabilidadMs + 3700;
       Task timeout = DelayIA(maxEsperaMs);
       Task terminado = await Task.WhenAny(visualTask, timeout);
 
@@ -1494,6 +1507,12 @@ public class IAUnidad : MonoBehaviour
       }
 
       await visualTask;
+
+      if (habilidad.esMelee)
+      {
+         // Evita que la siguiente habilidad arranque en el mismo frame del retorno.
+         await DelayIA(timings.DelayPostAccionMs);
+      }
    }
 
    async Task<bool> TerminarTurnoSeguro(bool agotarAP, AITurnTimings timings, string motivo = null)
@@ -1552,7 +1571,8 @@ public class IAUnidad : MonoBehaviour
 
    public async Task<bool> MoverACasilla(Casilla casillaObjetivo)
     {
-        if (casillaObjetivo == null || scUnidad.CasillaPosicion == null || !PuedeContinuarTurnoIA() || !PuedeVisitarCasillaEnTurno(casillaObjetivo))
+        if (casillaObjetivo == null || scUnidad.CasillaPosicion == null || !PuedeContinuarTurnoIA()
+          || !PuedeVisitarCasillaEnTurno(casillaObjetivo) || !scUnidad.PuedeOcuparCasilla(casillaObjetivo))
         {
             return false;
         }

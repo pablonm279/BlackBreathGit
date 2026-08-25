@@ -607,5 +607,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.87058824}
-  m_EffectDistance: {x: 0.38, y: -1}
+  m_EffectDistance: {x: -0.49, y: 2.39}
   m_UseGraphicAlpha: 1

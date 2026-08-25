@@ -83,6 +83,7 @@ public class CariciadelBosque : IAHabilidad
      
         Unidad objetivo = (Unidad)obj;
 
+        DriadaQuemadaVFX.CrearCuracion(objetivo);
         VFXAplicar(objetivo.gameObject);
 
         int cura = 5+UnityEngine.Random.Range(1,15);
@@ -102,10 +103,34 @@ public class CariciadelBosque : IAHabilidad
 
     GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
     vfx.transform.parent = objetivo.transform;
+
+    Color verdeSuave = new Color(0.48f, 0.72f, 0.24f, 0.88f);
+    foreach (UnityEngine.UI.Graphic grafico in vfx.GetComponentsInChildren<UnityEngine.UI.Graphic>(true))
+    {
+      grafico.color = verdeSuave;
+    }
+
+    HabilidadIconVFX animacionVfx = vfx.GetComponentInChildren<HabilidadIconVFX>(true);
+    if (animacionVfx != null)
+    {
+      Gradient gradienteCuracion = new Gradient();
+      gradienteCuracion.SetKeys(
+        new[]
+        {
+          new GradientColorKey(new Color(0.34f, 0.66f, 0.16f), 0f),
+          new GradientColorKey(new Color(0.76f, 0.82f, 0.28f), 1f)
+        },
+        new[] { new GradientAlphaKey(0.88f, 0f), new GradientAlphaKey(0.72f, 1f) });
+      animacionVfx.extraPulseGlow = false;
+      animacionVfx.colorOverTime = true;
+      animacionVfx.colorGradient = gradienteCuracion;
+      animacionVfx.sizeXMultiplier = 0.18f;
+      animacionVfx.sizeYMultiplier = 0.18f;
+    }
      
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
+   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 7);
 
     }
 public override List<object> ListaHayObjetivosAlAlcance()

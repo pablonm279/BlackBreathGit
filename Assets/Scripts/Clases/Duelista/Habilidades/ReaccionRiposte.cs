@@ -91,6 +91,11 @@ public class ReaccionRiposte : Reaccion
             return false;
         }
 
+        if (scEstaUnidad.bGrande || aliadoProtegido.bGrande)
+        {
+            return false;
+        }
+
         if (atacante.CasillaPosicion.lado == scEstaUnidad.CasillaPosicion.lado)
         {
             return false;

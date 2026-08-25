@@ -313,6 +313,7 @@ public class CorteHorizontal : Habilidad
     
    public override async Task Resolver(List<object> Objetivos, Casilla cas) //Esto esta hecho para que anuncie el uso de la habilidad en el Log
    {
+    BattleManager.Instance?.OcultarPanelDescripcionHabilidad(this, true);
     // El log de uso ahora está centralizado en Habilidad.Resolver
      VFXAplicarOrigen(Usuario.gameObject);
 

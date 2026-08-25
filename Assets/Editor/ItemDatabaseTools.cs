@@ -235,6 +235,114 @@ public static class ItemDatabaseTools
         EditorUtility.DisplayDialog("Item Database", msg, "OK");
     }
 
+    [MenuItem(MenuRoot + "Normalize Prices And Repair Catalog")]
+    public static void NormalizePricesAndRepairCatalog()
+    {
+        ItemDatabase database = AssetDatabase.LoadAssetAtPath<ItemDatabase>(DatabaseAssetPath);
+        if (database == null || database.items == null)
+        {
+            Debug.LogError("[Items] No se pudo normalizar: falta el ItemDatabase.");
+            return;
+        }
+
+        int pricesAdjusted = 0;
+        int metadataRepaired = 0;
+        int missingPrefabsDisabled = 0;
+
+        foreach (ItemDatabaseEntry entry in database.items)
+        {
+            if (entry == null)
+            {
+                continue;
+            }
+
+            if (entry.prefab == null)
+            {
+                // No se elimina la ficha: conserva sus datos para una futura restauracion del prefab,
+                // pero queda fuera de cualquier listado de tienda o recompensa.
+                if (entry.activo || !entry.excluirDeTiendas)
+                {
+                    entry.activo = false;
+                    entry.excluirDeTiendas = true;
+                    missingPrefabsDisabled++;
+                }
+
+                continue;
+            }
+
+            // El prefab es la fuente que usa la tienda al instanciar el item. Repara metadatos viejos
+            // sin rebajar un nivel de mejora valido del contenido.
+            if (entry.rareza != entry.prefab.iRareza)
+            {
+                entry.rareza = entry.prefab.iRareza;
+                metadataRepaired++;
+            }
+
+            if (entry.nivelMejora != entry.prefab.nivelMejora)
+            {
+                entry.nivelMejora = entry.prefab.nivelMejora;
+                metadataRepaired++;
+            }
+
+            int floor = GetPriceFloor(entry.categoria, entry.rareza, entry.nivelMejora);
+            if (entry.precio < floor)
+            {
+                entry.precio = floor;
+                pricesAdjusted++;
+            }
+
+            if (entry.prefab.iPrecio != entry.precio)
+            {
+                entry.prefab.iPrecio = entry.precio;
+                EditorUtility.SetDirty(entry.prefab);
+                metadataRepaired++;
+            }
+        }
+
+        EditorUtility.SetDirty(database);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        Debug.Log(
+            $"[Items] Normalizacion completada. Precios corregidos: {pricesAdjusted}. "
+            + $"Metadatos/prefabs sincronizados: {metadataRepaired}. "
+            + $"Entradas sin prefab desactivadas: {missingPrefabsDisabled}.");
+    }
+
+    private static int GetPriceFloor(string categoria, int rareza, int nivelMejora)
+    {
+        int[] floorsByRarity;
+        int[] floorsByUpgrade;
+
+        switch (categoria)
+        {
+            case "Arma":
+                // La progresion historica del equipo es 45 / 125 / 235 / 470.
+                // Rareza y mejora no se suman: representan el mismo escalon base de poder.
+                floorsByRarity = new[] { 45, 125, 235, 470, 650, 900 };
+                floorsByUpgrade = new[] { 0, 125, 235, 470, 650, 900 };
+                break;
+            case "Armadura":
+                floorsByRarity = new[] { 45, 135, 230, 310, 500, 750 };
+                floorsByUpgrade = new[] { 0, 135, 230, 310, 500, 750 };
+                break;
+            case "Accesorio":
+                floorsByRarity = new[] { 130, 225, 420, 700, 980, 1250 };
+                floorsByUpgrade = new[] { 0, 0, 0, 0, 0, 0 };
+                break;
+            case "Consumible":
+                floorsByRarity = new[] { 45, 85, 165, 260, 380, 520 };
+                floorsByUpgrade = new[] { 0, 0, 0, 0, 0, 0 };
+                break;
+            default:
+                return 0;
+        }
+
+        int rarityFloor = floorsByRarity[Mathf.Clamp(rareza, 0, floorsByRarity.Length - 1)];
+        int upgradeFloor = floorsByUpgrade[Mathf.Clamp(nivelMejora, 0, floorsByUpgrade.Length - 1)];
+        return Mathf.Max(rarityFloor, upgradeFloor);
+    }
+
     [MenuItem(MenuRoot + "Open Item Database")]
     public static void OpenItemDatabase()
     {

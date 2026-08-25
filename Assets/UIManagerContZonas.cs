@@ -403,9 +403,9 @@ public static class ClimaZonaCatalog
             case ClimaSol:
                 return LocalizarTooltip(
                     idioma,
-                    "Soleado: +5 Esperanza.",
-                    "Sunny: +5 Hope.",
-                    "Ensolarado: +5 Esperança.");
+                    "Despejado: +10% Rango de Visión de día.",
+                    "Clear: +10% Vision Range during the day.",
+                    "Céu limpo: +10% Alcance de Visão durante o dia.");
             case ClimaCalor:
                 return LocalizarTooltip(
                     idioma,
@@ -498,7 +498,7 @@ public static class ClimaZonaCatalog
     {
         switch (tipoClima)
         {
-            case ClimaSol: return "Sol";
+            case ClimaSol: return "Despejado";
             case ClimaCalor: return "Calor";
             case ClimaLluvia: return "Lluvia";
             case ClimaNieve: return "Nieve";

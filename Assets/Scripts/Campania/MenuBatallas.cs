@@ -1601,7 +1601,7 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
  {
     if (encuentroGeneradoActual == null || encuentroGeneradoActual.units == null)
     {
-       return 0;
+       return ObtenerPoderEnemigoFallbackPorFase();
     }
 
     int poderTotal = 0;
@@ -1624,7 +1624,14 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
        }
     }
 
-    return poderTotal;
+    return poderTotal > 0 ? poderTotal : ObtenerPoderEnemigoFallbackPorFase();
+ }
+
+ int ObtenerPoderEnemigoFallbackPorFase()
+ {
+    AtributosZona atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+    int fase = atributosZona != null ? Mathf.Max(1, atributosZona.FASE) : 1;
+    return 8 + ((fase - 1) * 3);
  }
 
  string FormatearTextoPoderAliado(int poder)
@@ -2722,6 +2729,8 @@ public void EfectosDeBatallaEnCampaña(int resultado)
     scBtnItem.imageMuestraItem.sprite = item.imItem;
     scBtnItem.itemRepresentado = item;
     scBtnItem.scMenuPersonajes = menuPersonajes;
+    scBtnItem.mostrarComparacionAlPasarMouse = false;
+    scBtnItem.escalaTooltipHabilidad = 0.9f;
     scBtnItem.SetOscurecido(false);
  }
 

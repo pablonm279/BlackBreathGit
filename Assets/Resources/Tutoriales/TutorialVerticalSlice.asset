@@ -720,9 +720,9 @@ MonoBehaviour:
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 455, y: 190}
     showPointer: 1
-    showHighlight: 1
+    showHighlight: 0
     pointerDirection: 3
-    pointerOffset: {x: -6, y: -340}
+    pointerOffset: {x: -7, y: 25}
     pointerScale: 0.75
     highlightScale: 1.5
     highlightScaleXY: {x: 4.1, y: 0.78}

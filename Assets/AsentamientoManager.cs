@@ -600,6 +600,7 @@ public class AsentamientoManager : MonoBehaviour
         AsegurarUi();
         BanterBattleUI.CancelarCampania(true);
         OcultarInterfazCampaniaParaTransicion();
+        OcultarContenidoPrincipal();
 
         if (canvasGroup != null)
         {

@@ -79,7 +79,315 @@ public abstract class Habilidad : MonoBehaviour
   protected const string ColorDescripcionMecanica = "#c8c8c8";
   protected const string ColorDescripcionCostos = "#44d3ec";
   protected const string ObjetivoMeleeUnitarioIngles = "1 target or obstacle in melee range";
-  private const string TooltipPifiaId = "combate_pifia";
+
+  private const string ColorNumeroNeutro = "#e0b567";
+  private const string ColorNumeroBeneficio = "#9fcf7a";
+  private const string ColorNumeroPerjuicio = "#e0987a";
+  private const string ColorConceptoJuego = "#b9c6cc";
+  private const string ColorAtributoFuerza = "#d9822b";
+  private const string ColorAtributoAgilidad = "#7fa35a";
+  private const string ColorAtributoPoder = "#2aa6c8";
+  private const string ColorSalvacionMental = "#c9a8e0";
+  private const string ColorSalvacionFortaleza = "#e0c090";
+  private const string ColorSalvacionReflejos = "#a3e0c2";
+  private const string ColorPuntosAccion = "#c2387a";
+
+  private static readonly string[] PalabrasClaveBeneficio =
+  {
+    "restaura", "restauran", "restore", "restores", "cura", "curan", "heal", "heals",
+    "recupera", "recuperan", "recover", "recovers", "otorga", "otorgan", "concede", "conceden",
+    "grant", "grants", "gana", "ganan", "gain", "gains", "regenera", "regeneran", "regenerate", "regenerates",
+    "concedem", "ganha", "ganham"
+  };
+
+  private static readonly string[] PalabrasClavePerjuicio =
+  {
+    "sufre", "sufren", "suffer", "suffers", "pierde", "pierden", "lose", "loses",
+    "daño", "daños", "damage", "dano", "danos", "sofre", "sofrem", "perde", "perdem"
+  };
+
+  // Orden: frases de varias palabras antes que sus palabras sueltas, para que la alternancia del
+  // regex combinado consuma la frase completa como un solo match (evita doble coloreado anidado,
+  // por ejemplo "Armor" dentro de "Armor Penetration").
+  // NombreGrupo es el nombre del grupo del regex (debe ser un identificador valido, sin guiones).
+  // IdTermino es el id canonico que se busca en CatalogoTerminosJuego (coincide con TerminoDescripcionId).
+  private static readonly (string NombreGrupo, string Patron, string IdTermino, string ColorPorDefecto)[] TerminosColoreadosDescripcion =
+  {
+    ("armorPen", @"\bArmor Penetration\b|\bPenetraci[oó]n de Armadura\b|\bPenetra[cç][aã]o de Armadura\b", "armor-penetration", ColorConceptoJuego),
+    ("trueDamage", @"\bTrue damage\b|\bDa[nñ]o Verdadero\b|\bDano Verdadeiro\b", "true-damage", ColorConceptoJuego),
+    ("criticalHit", @"\bCritical Hit\b|\bGolpe Cr[ií]tico\b", "critical-hit", ColorConceptoJuego),
+    ("fumble", @"\bFumble\b|\bPifia\b|\bFalha [Cc]r[ií]tica\b", "fumble", ColorConceptoJuego),
+    ("strength", @"\bStrength\b|\bFuerza\b|\bForça\b", "strength", ColorAtributoFuerza),
+    ("agility", @"\bAgility\b|\bAgilidad\b|\bAgilidade\b", "agility", ColorAtributoAgilidad),
+    ("power", @"\bPower\b|\bPoder\b", "power", ColorAtributoPoder),
+    ("salvacionMental", @"\bMental\b", "mental-save", ColorSalvacionMental),
+    ("salvacionFortaleza", @"\bFortitude\b|\bFortaleza\b", "fortitude-save", ColorSalvacionFortaleza),
+    ("salvacionReflejos", @"\bReflex\b|\bReflejos\b|\bReflexos\b", "reflex-save", ColorSalvacionReflejos),
+    ("valour", @"\bValour\b|\bValent[ií]a\b", "valour", ColorConceptoJuego),
+    ("defense", @"\bDefense\b|\bDefensa\b|\bDefesa\b", "defense", ColorConceptoJuego),
+    ("attack", @"\bAttack\b|\bAtaque\b", "attack", ColorConceptoJuego),
+    ("ap", @"\bAP\b", "ap", ColorPuntosAccion),
+    ("barrier", @"\bBarrier\b|\bBarrera\b", "barrier", ColorConceptoJuego),
+    ("fervor", @"\bFervor\b", "fervor", ColorConceptoJuego),
+    ("evasion", @"\bEvasion\b|\bEvasi[oó]n\b|\bEvas[aã]o\b", "evasion", ColorConceptoJuego),
+    ("weakness", @"\bWeakness\b|\bDebilidad\b|\bFraqueza\b", "weakness", ColorConceptoJuego),
+    ("debuff", @"\bDebuff\b", "debuff", ColorConceptoJuego),
+    ("armor", @"\bArmor\b|\bArmadura\b", "armor", ColorConceptoJuego),
+    ("reaction", @"\bReaction\b|\bReacci[oó]n\b|\bRea[cç][aã]o\b", "reaction", ColorConceptoJuego),
+    ("impulse", @"\bImpulse\b|\bImpulso\b", "impulse", ColorConceptoJuego),
+    ("divine", @"\bDivine\b|\bDivino\b|\bDivina\b", "divine-damage", "#e8cf7a"),
+    ("fire", @"\bFire\b|\bFuego\b|\bFogo\b", "fire-damage", "#e0987a"),
+    ("cold", @"\bCold\b|\bFr[ií]o\b|\bFria\b", "cold-damage", "#8ecbe0"),
+    ("lightning", @"\bLightning\b|\bRayo\b|\bRel[aâ]mpago\b", "lightning-damage", "#e0d67a"),
+    ("acid", @"\bAcid\b|\b[AÁ]cido\b|\b[AÁ]cida\b", "acid-damage", "#a8d67a"),
+    ("arcane", @"\bArcane\b|\bArcano\b|\bArcana\b", "arcane-damage", "#b98ee0"),
+    ("slashing", @"\bSlashing\b|\bCortante\b", "slashing-damage", ColorConceptoJuego),
+    ("piercing", @"\bPiercing\b|\bPerforante\b", "piercing-damage", ColorConceptoJuego),
+    ("bludgeoning", @"\bBludgeoning\b|\bContundente\b", "bludgeoning-damage", ColorConceptoJuego),
+    ("poison", @"\bPoison\b|\bVeneno\b", "poison", "#a8d67a"),
+  };
+
+  private static readonly Regex RegexTerminosCombinado = new Regex(
+    string.Join("|", Array.ConvertAll(TerminosColoreadosDescripcion, t => $"(?<{t.NombreGrupo}>{t.Patron})")),
+    RegexOptions.Compiled);
+
+  private static readonly Dictionary<string, (string IdTermino, string ColorPorDefecto)> DefinicionPorNombreGrupo = BuildDefinicionPorNombreGrupo();
+
+  private static Dictionary<string, (string IdTermino, string ColorPorDefecto)> BuildDefinicionPorNombreGrupo()
+  {
+    var mapa = new Dictionary<string, (string, string)>();
+    foreach ((string nombreGrupo, string _, string idTermino, string colorPorDefecto) in TerminosColoreadosDescripcion)
+    {
+      mapa[nombreGrupo] = (idTermino, colorPorDefecto);
+    }
+
+    return mapa;
+  }
+
+  private static string ObtenerColorTermino(string idTermino, string colorPorDefecto)
+  {
+    CatalogoTerminosJuego catalogo = CatalogoTerminosJuego.Instancia;
+    TerminoJuegoDefinicion termino = catalogo != null ? catalogo.ObtenerPorId(idTermino) : null;
+    return termino != null && !string.IsNullOrEmpty(termino.colorHex) ? termino.colorHex : colorPorDefecto;
+  }
+
+  private static readonly Regex RegexNumeroDescripcion = new Regex(
+    @"(?<![\w.#])[+-]?\d+-\d+|(?<![\w.#])[+-]?\d+%|(?<![\w.#])[+-]?\d+(?!\w)",
+    RegexOptions.Compiled);
+
+  // Notacion de dados (ej: 1d20, 2d6). Se procesa aparte del resto de los numeros para
+  // poder darle a "1d20" un hover propio (Ataques/Salvaciones) y a las demas combinaciones
+  // una descripcion generica armada en el momento (ver TerminoHoverDetector.GenerarDescripcionDado).
+  private static readonly Regex RegexDadoDescripcion = new Regex(@"(?<![\w.#])(\d+)d(\d+)\b", RegexOptions.Compiled);
+
+  private static readonly Regex RegexClausulaDescripcion = new Regex(@"[^.;]+[.;]?", RegexOptions.Compiled);
+
+  private static readonly Regex RegexEtiquetaTmp = new Regex(@"<[^>]*>", RegexOptions.Compiled);
+
+  // Aplica una transformación solo al texto visible, dejando intactas las etiquetas TMP
+  // (<color=...>, <sprite ...>, <link=...>, etc.) para no corromper su sintaxis.
+  private static string TransformarTextoVisible(string valor, Func<string, string> transformador)
+  {
+    if (string.IsNullOrEmpty(valor))
+    {
+      return valor;
+    }
+
+    var resultado = new System.Text.StringBuilder();
+    int posicion = 0;
+    foreach (Match etiqueta in RegexEtiquetaTmp.Matches(valor))
+    {
+      if (etiqueta.Index > posicion)
+      {
+        resultado.Append(transformador(valor.Substring(posicion, etiqueta.Index - posicion)));
+      }
+
+      resultado.Append(etiqueta.Value);
+      posicion = etiqueta.Index + etiqueta.Length;
+    }
+
+    if (posicion < valor.Length)
+    {
+      resultado.Append(transformador(valor.Substring(posicion)));
+    }
+
+    return resultado.ToString();
+  }
+
+  // Variante para resaltadores que crean links: conserva intacto el contenido de
+  // cualquier <link> ya presente y asi evita anidarlos.
+  private static string TransformarTextoVisibleFueraDeLinks(string valor, Func<string, string> transformador)
+  {
+    var resultado = new System.Text.StringBuilder();
+    int posicion = 0;
+    int profundidadLink = 0;
+    foreach (Match etiqueta in RegexEtiquetaTmp.Matches(valor))
+    {
+      if (etiqueta.Index > posicion)
+      {
+        string segmento = valor.Substring(posicion, etiqueta.Index - posicion);
+        resultado.Append(profundidadLink == 0 ? transformador(segmento) : segmento);
+      }
+
+      string textoEtiqueta = etiqueta.Value;
+      if (textoEtiqueta.StartsWith("</link", StringComparison.OrdinalIgnoreCase))
+      {
+        profundidadLink = Math.Max(0, profundidadLink - 1);
+      }
+
+      resultado.Append(textoEtiqueta);
+      if (textoEtiqueta.StartsWith("<link", StringComparison.OrdinalIgnoreCase))
+      {
+        profundidadLink++;
+      }
+
+      posicion = etiqueta.Index + etiqueta.Length;
+    }
+
+    if (posicion < valor.Length)
+    {
+      string segmento = valor.Substring(posicion);
+      resultado.Append(profundidadLink == 0 ? transformador(segmento) : segmento);
+    }
+
+    return resultado.ToString();
+  }
+
+  // Busca el primer ':' que esté en texto visible, ignorando los que aparezcan dentro de
+  // atributos de etiquetas TMP (por ejemplo el de <link="skill-term:armor-penetration">).
+  private static int IndiceDePrimerDosPuntosVisible(string valor)
+  {
+    bool dentroDeEtiqueta = false;
+    for (int i = 0; i < valor.Length; i++)
+    {
+      char c = valor[i];
+      if (c == '<')
+      {
+        dentroDeEtiqueta = true;
+      }
+      else if (c == '>')
+      {
+        dentroDeEtiqueta = false;
+      }
+      else if (!dentroDeEtiqueta && c == ':')
+      {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
+  private static string EliminarPrefijoRedundante(string etiqueta, string valor)
+  {
+    if (string.IsNullOrEmpty(valor) || string.IsNullOrEmpty(etiqueta))
+    {
+      return valor;
+    }
+
+    int indiceDosPuntos = IndiceDePrimerDosPuntosVisible(valor);
+    if (indiceDosPuntos <= 0)
+    {
+      return valor;
+    }
+
+    string prefijoCrudo = valor.Substring(0, indiceDosPuntos);
+    string prefijoVisible = RegexEtiquetaTmp.Replace(prefijoCrudo, string.Empty).Trim();
+    if (prefijoVisible.Length == 0 || prefijoVisible.Length > etiqueta.Length + 20)
+    {
+      return valor;
+    }
+
+    if (prefijoVisible.IndexOf(etiqueta, StringComparison.OrdinalIgnoreCase) < 0)
+    {
+      return valor;
+    }
+
+    return valor.Substring(indiceDosPuntos + 1).TrimStart();
+  }
+
+  private static string ResaltarTerminosDescripcion(string valor)
+  {
+    if (string.IsNullOrEmpty(valor))
+    {
+      return valor;
+    }
+
+    // Los terminos creados con TerminoDescripcion ya traen su propio <link>. Evitar
+    // insertar otro dentro: TMP no resuelve correctamente links anidados y puede
+    // asociar el hover al termino anterior.
+    return TransformarTextoVisibleFueraDeLinks(valor, segmento => RegexTerminosCombinado.Replace(segmento, m =>
+    {
+      foreach (Group grupo in m.Groups)
+      {
+        if (grupo.Success && DefinicionPorNombreGrupo.TryGetValue(grupo.Name, out (string IdTermino, string ColorPorDefecto) definicion))
+        {
+          string color = ObtenerColorTermino(definicion.IdTermino, definicion.ColorPorDefecto);
+          // Se envuelve tambien en un <link="skill-term:id"> para que TerminoHoverDetector
+          // pueda mostrar la definicion del termino al pasar el mouse (ver TerminoHoverPopup).
+          return $"<link=\"skill-term:{definicion.IdTermino}\"><color={color}>{m.Value}</color></link>";
+        }
+      }
+
+      return m.Value;
+    }));
+  }
+
+  private static string ResaltarNumerosDescripcion(string valor)
+  {
+    if (string.IsNullOrEmpty(valor))
+    {
+      return valor;
+    }
+
+    return TransformarTextoVisible(valor, segmento =>
+    {
+      var resultado = new System.Text.StringBuilder();
+      foreach (Match clausula in RegexClausulaDescripcion.Matches(segmento))
+      {
+        string texto = clausula.Value;
+        string textoMinuscula = texto.ToLowerInvariant();
+        string colorNumero = ColorNumeroNeutro;
+        if (Array.Exists(PalabrasClaveBeneficio, palabra => textoMinuscula.Contains(palabra)))
+        {
+          colorNumero = ColorNumeroBeneficio;
+        }
+        else if (Array.Exists(PalabrasClavePerjuicio, palabra => textoMinuscula.Contains(palabra)))
+        {
+          colorNumero = ColorNumeroPerjuicio;
+        }
+
+        resultado.Append(RegexNumeroDescripcion.Replace(texto, m => $"<color={colorNumero}>{m.Value}</color>"));
+      }
+
+      return resultado.ToString();
+    });
+  }
+
+  private static string ResaltarDados(string valor)
+  {
+    if (string.IsNullOrEmpty(valor))
+    {
+      return valor;
+    }
+
+    return TransformarTextoVisible(valor, segmento => RegexDadoDescripcion.Replace(segmento, m =>
+    {
+      string cantidad = m.Groups[1].Value;
+      string caras = m.Groups[2].Value;
+      string idTermino = cantidad == "1" && caras == "20" ? "d20-roll" : $"dice:{cantidad}:{caras}";
+      return $"<link=\"skill-term:{idTermino}\"><color={ColorNumeroNeutro}>{m.Value}</color></link>";
+    }));
+  }
+
+  private static string ResaltarValorDescripcion(string etiqueta, string valor)
+  {
+    string valorLimpio = EliminarPrefijoRedundante(etiqueta, valor);
+    valorLimpio = ResaltarTerminosDescripcion(valorLimpio);
+    valorLimpio = ResaltarDados(valorLimpio);
+    valorLimpio = ResaltarNumerosDescripcion(valorLimpio);
+    return valorLimpio;
+  }
 
   public virtual void ActualizarPreviewCasilla(Casilla casilla)
   {
@@ -87,6 +395,104 @@ public abstract class Habilidad : MonoBehaviour
 
   public virtual void LimpiarPreviewCasilla()
   {
+  }
+
+  private readonly HashSet<Unidad> unidadesPreviewDanio = new HashSet<Unidad>();
+  private bool rangoPreviewBaseCacheValido;
+  private float danioBasePreviewMinimo;
+  private float danioBasePreviewMaximo;
+  private int tipoDanioPreview;
+
+  private bool TryObtenerRangoDanioPreview(Unidad objetivo, out int danioMinimo, out int danioMaximo)
+  {
+    danioMinimo = 0;
+    danioMaximo = 0;
+
+    if (!esHostil || scEstaUnidad == null)
+    {
+      return false;
+    }
+
+    if (!rangoPreviewBaseCacheValido)
+    {
+      if (!TryObtenerCampoEntero("XdDanio", out int cantidadDados)
+        || !TryObtenerCampoEntero("daniodX", out int carasDado)
+        || !TryObtenerCampoEntero("tipoDanio", out int tipoDanio)
+        || cantidadDados <= 0
+        || carasDado <= 0
+        || tipoDanio <= 0)
+      {
+        return false;
+      }
+
+      ActualizarDescripcion();
+      int baseMinimo = cantidadDados;
+      int baseMaximo = cantidadDados * carasDado;
+      string descripcionVisible = Regex.Replace(txtDescripcion ?? string.Empty, "<[^>]+>", string.Empty);
+      Match rango = Regex.Match(descripcionVisible, @"(?<!\d)(-?\d+)\s*[-\u2013]\s*(-?\d+)(?!\d)");
+      if (rango.Success
+        && int.TryParse(rango.Groups[1].Value, out int rangoMinimo)
+        && int.TryParse(rango.Groups[2].Value, out int rangoMaximo))
+      {
+        baseMinimo = rangoMinimo;
+        baseMaximo = rangoMaximo;
+
+        int finClausula = descripcionVisible.IndexOfAny(new[] { '.', '\n' }, rango.Index + rango.Length);
+        if (finClausula < 0) { finClausula = descripcionVisible.Length; }
+        string clausulaDanio = descripcionVisible.Substring(
+          rango.Index + rango.Length,
+          Mathf.Min(finClausula - rango.Index - rango.Length, 180));
+        Match atributo = Regex.Match(clausulaDanio, @"\((-?\d+)\)");
+        if (tipoPorcentaje > 0 && atributo.Success && int.TryParse(atributo.Groups[1].Value, out int valorAtributo))
+        {
+          baseMinimo += valorAtributo;
+          baseMaximo += valorAtributo;
+        }
+      }
+
+      float multiplicadorDanio = Mathf.Max(0f, 100f + scEstaUnidad.mod_DanioPorcentaje) / 100f;
+      danioBasePreviewMinimo = baseMinimo * multiplicadorDanio;
+      danioBasePreviewMaximo = baseMaximo * multiplicadorDanio;
+      tipoDanioPreview = tipoDanio;
+      rangoPreviewBaseCacheValido = true;
+    }
+
+    danioMinimo = objetivo.CalcularDanioFinalPreview(danioBasePreviewMinimo, tipoDanioPreview, scEstaUnidad, penetracionArmadura, false);
+    danioMaximo = objetivo.CalcularDanioFinalPreview(danioBasePreviewMaximo, tipoDanioPreview, scEstaUnidad, penetracionArmadura, true);
+
+    if (objetivo.estado_Escudado > 0)
+    {
+      danioMinimo = 0;
+    }
+
+    if (danioMaximo < danioMinimo)
+    {
+      (danioMinimo, danioMaximo) = (danioMaximo, danioMinimo);
+    }
+
+    return danioMaximo > 0;
+  }
+
+  private bool TryObtenerCampoEntero(string nombreCampo, out int valor)
+  {
+    Type tipoActual = GetType();
+    while (tipoActual != null && tipoActual != typeof(MonoBehaviour))
+    {
+      FieldInfo campo = tipoActual.GetField(nombreCampo, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+      if (campo != null)
+      {
+        object contenido = campo.GetValue(this);
+        if (contenido is int entero)
+        {
+          valor = entero;
+          return true;
+        }
+      }
+      tipoActual = tipoActual.BaseType;
+    }
+
+    valor = 0;
+    return false;
   }
 
   protected struct StatsDescripcionUI
@@ -123,6 +529,7 @@ public abstract class Habilidad : MonoBehaviour
     public const string Defensa = "defense";
     public const string Valentia = "valour";
     public const string Pasiva = "passive";
+    public const string Intrinseca = "intrinsic";
     public const string Debilidad = "weakness";
     public const string TrampaProtectora = "ward-trap";
     public const string Debuff = "debuff";
@@ -148,6 +555,7 @@ public abstract class Habilidad : MonoBehaviour
     public const string DanioArcano = "arcane-damage";
     public const string Invulnerable = "invulnerable";
     public const string Curacion = "healing";
+    public const string CuracionMagica = "magical-healing";
     public const string Veneno = "poison";
     public const string Reaccion = "reaction";
     public const string MarcaSiguesTu = "you-are-next-mark";
@@ -365,7 +773,8 @@ public abstract class Habilidad : MonoBehaviour
         }
 
         string separadorEtiqueta = linea.Etiqueta.EndsWith(":") || linea.Etiqueta.EndsWith(":</color>") ? string.Empty : ":";
-        descripcion += $"<color=#44d3ec><b>{linea.Etiqueta}{separadorEtiqueta}</b></color> <color=#ffffff>{linea.Valor}</color>";
+        string valorResaltado = ResaltarValorDescripcion(linea.Etiqueta, linea.Valor);
+        descripcion += $"<color=#44d3ec><b>{linea.Etiqueta}{separadorEtiqueta}</b></color> <color=#ffffff>{valorResaltado}</color>";
       }
     }
 
@@ -417,7 +826,8 @@ public abstract class Habilidad : MonoBehaviour
         }
 
         string separadorEtiqueta = linea.Etiqueta.EndsWith(":") || linea.Etiqueta.EndsWith(":</color>") ? string.Empty : ":";
-        descripcion += $"<color=#44d3ec><b>{linea.Etiqueta}{separadorEtiqueta}</b></color> <color=#ffffff>{linea.Valor}</color>";
+        string valorResaltado = ResaltarValorDescripcion(linea.Etiqueta, linea.Valor);
+        descripcion += $"<color=#44d3ec><b>{linea.Etiqueta}{separadorEtiqueta}</b></color> <color=#ffffff>{valorResaltado}</color>";
       }
     }
 
@@ -519,8 +929,9 @@ public abstract class Habilidad : MonoBehaviour
   {
     StatsDescripcionUI stats = new StatsDescripcionUI();
 
-    // En combate usar valores vivos con buffs/debuffs.
-    if (!EsEscenaCampaña() && scEstaUnidad != null)
+    // Una habilidad asociada a una unidad usa siempre sus valores vivos, incluso si el
+    // combate se muestra dentro de la escena de campaña.
+    if (scEstaUnidad != null)
     {
       stats.Fuerza = Mathf.RoundToInt(scEstaUnidad.mod_CarFuerza);
       stats.Agilidad = Mathf.RoundToInt(scEstaUnidad.mod_CarAgilidad);
@@ -694,6 +1105,14 @@ public abstract class Habilidad : MonoBehaviour
   // Método abstracto para activar la habilidad.
   public virtual async Task Resolver(List<object> Objetivos, Casilla casillaOrigenTrampas = null)
   {
+    BattleManager.Instance?.OcultarPanelDescripcionHabilidad(this, true);
+
+    if (Objetivos != null)
+    {
+      HashSet<object> objetivosUnicos = new HashSet<object>();
+      Objetivos.RemoveAll(objetivo => objetivo == null || !objetivosUnicos.Add(objetivo));
+    }
+
     if (BattleManager.Instance != null)
     {
       if (!BattleManager.Instance.TryFiltrarObjetivosHostilesPorProvocacion(scEstaUnidad, esHostil, Objetivos, out List<object> objetivosFiltradosProvocacion))
@@ -1070,6 +1489,10 @@ public abstract class Habilidad : MonoBehaviour
     float umbralCritico = 19 - modificadorDadoCritico - bonusCriticoRecibido;
     string textoResultado;
     CombatLogFormatter.CombatOutcome outcome;
+    bool ocultarBonificacionesBallestaTutorial = this is TiroBallestaDeMano
+      && BattleManager.Instance.scTutorialCombate != null
+      && BattleManager.Instance.scTutorialCombate.tutorialCombateActivo
+      && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() == 4;
 
     if (BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
     {
@@ -1079,10 +1502,8 @@ public abstract class Habilidad : MonoBehaviour
 
     if (iDadoSolo <= umbralPifia)//Pifia
     {
-      if (personajeTraits != null)
-      {
-        TutorialTooltipManager.TryShow(TooltipPifiaId);
-      }
+      // Tooltip emergente de pifia desactivado (quedaba desactualizado respecto al
+      // comportamiento actual: resta 1 PA pero ya no termina el turno).
 
       Unidad unidadTextoPifia = unidadAtacada != null ? unidadAtacada : scEstaUnidad;
       unidadTextoPifia?.GenerarTextoFlotante(TRADU.i.Traducir("<b>Pifia</b>"), Color.red, FloatingTextContext.Miss);
@@ -1117,7 +1538,9 @@ public abstract class Habilidad : MonoBehaviour
           CombatLogFormatter.CombatOutcome.Pifia,
           umbralPifia,
           Mathf.RoundToInt(umbralCritico),
-          deltaClima));
+          deltaClima,
+          null,
+          ocultarBonificacionesBallestaTutorial));
       if (BattleManager.Instance != null && BattleManager.Instance.HabilidadActiva != null && BattleManager.Instance.HabilidadActiva.esMelee)
       {
         AjustesAudio.ReproducirClipEnPunto(BattleManager.Instance.contenedorPrefabs.sonidoErrar, transform.position);
@@ -1151,7 +1574,8 @@ public abstract class Habilidad : MonoBehaviour
           umbralPifia,
           Mathf.RoundToInt(umbralCritico),
           deltaClima,
-          TRADU.i.Traducir("Impacto crítico")));
+          TRADU.i.Traducir("Impacto crítico"),
+          ocultarBonificacionesBallestaTutorial));
       unidadAtacada?.NotificarAtaqueRecibido();
       BanterBattleDirector.NotificarResultadoAtaque(scEstaUnidad, unidadAtacada, 3);
       ArrowFlight.NotificarResultadoAtaque(scEstaUnidad, objetivoProyectil, 3);
@@ -1199,7 +1623,9 @@ public abstract class Habilidad : MonoBehaviour
         outcome,
         umbralPifia,
         Mathf.RoundToInt(umbralCritico),
-        deltaClima));
+        deltaClima,
+        null,
+        ocultarBonificacionesBallestaTutorial));
 
 
     if (resultado < 2 && BattleManager.Instance.HabilidadActiva.esMelee)
@@ -1268,10 +1694,12 @@ public abstract class Habilidad : MonoBehaviour
   /// </summary>
   public void LimpiarMarcasUnidadesPosibles()
   {
-    if (unidadesMarcadasPrevisualizacion.Count == 0)
+    foreach (Unidad unidad in unidadesPreviewDanio)
     {
-      return;
+      unidad?.LimpiarPreviewDanio();
     }
+    unidadesPreviewDanio.Clear();
+    rangoPreviewBaseCacheValido = false;
 
     foreach (Unidad unidad in unidadesMarcadasPrevisualizacion)
     {
@@ -1310,6 +1738,13 @@ public abstract class Habilidad : MonoBehaviour
       string textoProbabilidad = prob.HasValue ? ObtenerTextoProbabilidadSobreObjetivo(unidad, prob.Value) : null;
       unidad.MostrarProbabilidad(prob, textoProbabilidad);
 
+      if (!unidadesPreviewDanio.Contains(unidad)
+        && TryObtenerRangoDanioPreview(unidad, out int danioMinimo, out int danioMaximo))
+      {
+        unidad.MostrarPreviewDanio(danioMinimo, danioMaximo);
+        unidadesPreviewDanio.Add(unidad);
+      }
+
       nuevas.Add(unidad);
     }
 
@@ -1324,6 +1759,8 @@ public abstract class Habilidad : MonoBehaviour
       if (!nuevas.Contains(unidadMarcada))
       {
         unidadMarcada?.OcultarProbabilidad();
+        unidadMarcada?.LimpiarPreviewDanio();
+        unidadesPreviewDanio.Remove(unidadMarcada);
         paraRemover.Add(unidadMarcada);
       }
     }

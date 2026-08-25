@@ -8,7 +8,7 @@ public class Actividad_Exploracion: Actividad
     {
       IDActividad = 9; //
 
-      desc = TRADU.i.Traducir("<color=#0cca74><b>Exploración: </b></color><color=#d3d3d3><i>El personaje explora los destinos posibles adelante de la caravana.</color></i>\\n\\nTiene 40% chances de revelar Nodos futuros al viajar a un Nodo nuevo. -5% Chances de Nodo Misterioso. +5% Chances de Atajo Subterráneo\\nSi se da un combate, lo arranca Fatigado.");
+      desc = TRADU.i.Traducir("<color=#0cca74><b>Exploración: </b></color><color=#d3d3d3><i>El personaje explora los destinos posibles adelante de la caravana.</color></i>\\n\\n+10% Exploración pasiva y Rango de Visión de día.\\nSi se da un combate, lo arranca Fatigado.");
 
     }
 }

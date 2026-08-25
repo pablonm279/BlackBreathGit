@@ -417,6 +417,11 @@ public class SequitoMercaderes : MonoBehaviour
             return false;
         }
 
+        if (!EsItemPermitidoParaFaseActual(item))
+        {
+            return false;
+        }
+
         if (item is Arma || item is Armadura)
         {
             return item.iRareza >= RarezaMinRecompensa;
@@ -467,6 +472,17 @@ public class SequitoMercaderes : MonoBehaviour
         }
 
         return Mathf.Max(1, CampaignManager.Instance.scAtributosZona.FASE);
+    }
+
+    private bool EsItemPermitidoParaFaseActual(Item item)
+    {
+        if (item == null || ObtenerFaseActualMapa() != 1)
+        {
+            return item != null;
+        }
+
+        // La primera fase no entrega picos de poder que pertenecen al progreso avanzado.
+        return item.iRareza < 4 && item.nivelMejora < 3;
     }
 
     bool TienePersonajedeLaClasedelItem(Item item)
@@ -521,6 +537,7 @@ public class SequitoMercaderes : MonoBehaviour
             GameObject btnItem = Instantiate(prefabBtnItemVendido, listaItemsVenta);
             btnItemEnVenta scBtnItem = btnItem.GetComponent<btnItemEnVenta>();
 
+            scBtnItem.ConfigurarSequito(this);
             scBtnItem.imageMuestraItem.sprite = goItem.GetComponent<Item>().imItem;
             scBtnItem.itemRepresentado = goItem.GetComponent<Item>();
             scBtnItem.ConfigurarPin(Pin, EsItemPineado(goItem.GetComponent<Item>()));
@@ -833,6 +850,11 @@ public class SequitoMercaderes : MonoBehaviour
     bool EsItemValidoParaRecompensa(Item item)
     {
         if (item == null || EsItemInicialDeClase(item))
+        {
+            return false;
+        }
+
+        if (!EsItemPermitidoParaFaseActual(item))
         {
             return false;
         }

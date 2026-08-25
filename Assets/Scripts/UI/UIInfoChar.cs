@@ -110,7 +110,13 @@ public class UIInfoChar : MonoBehaviour
       return;
     }
 
+    Unidad unidadFijadaAnterior = unidadFijadaInterna;
     unidadFijadaInterna = unidadFijadaInterna == unidad ? null : unidad;
+    if (unidadFijadaAnterior != unidadFijadaInterna)
+    {
+      unidadFijadaAnterior?.EstablecerObjetivoSeleccionadoBarraVida(false);
+      unidadFijadaInterna?.EstablecerObjetivoSeleccionadoBarraVida(true);
+    }
     hayUnidadSeleccionadaParaInfo = unidadFijadaInterna != null;
 
     if (!hayUnidadSeleccionadaParaInfo)
@@ -123,6 +129,7 @@ public class UIInfoChar : MonoBehaviour
 
   public void Desfijar()
   {
+    unidadFijadaInterna?.EstablecerObjetivoSeleccionadoBarraVida(false);
     unidadFijadaInterna = null;
     hayUnidadSeleccionadaParaInfo = false;
     mostrardesc = false;
@@ -497,6 +504,7 @@ public class UIInfoChar : MonoBehaviour
 
     if (!EstaUnidadValidaParaInfo(unidadFijadaInterna))
     {
+      unidadFijadaInterna?.EstablecerObjetivoSeleccionadoBarraVida(false);
       unidadFijadaInterna = null;
     }
   }
@@ -788,7 +796,11 @@ public class UIInfoChar : MonoBehaviour
       return;
     }
 
-    if (esEnemigo)
+    bool moverEnemigoALaIzquierda = esEnemigo
+      && BattleManager.Instance != null
+      && BattleManager.Instance.PanelDescripcionHabilidadDerechoVisible;
+
+    if (esEnemigo && !moverEnemigoALaIzquierda)
     {
       rectTransformPanel.anchorMin = posicionDefaultAnchorMin;
       rectTransformPanel.anchorMax = posicionDefaultAnchorMax;

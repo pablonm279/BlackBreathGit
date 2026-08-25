@@ -373,18 +373,16 @@ public class MusicManager : MonoBehaviour
             pasivo.Play();
 
             float crossFade = (usarAliento || playlistCambio) ? fadeCorto : fadeLargo;
-            float fadeSalida = Mathf.Max(0.05f, (usarAliento || playlistCambio) ? fadeCorto * 0.8f : fadeLargo * 0.8f);
             yield return StartCoroutine(CrossFade(pasivo, volumenBase, crossFade));
             SwapFuentes();
             usandoListaAlientoNegro = usarAliento;
 
-            // Esperar el tema menos los fades ya consumidos, para no dejar huecos silenciosos.
-            float restante = Mathf.Max(0f, clip.length - crossFade - fadeSalida);
-            float t = 0f;
+            // Esperar a que la fuente termine realmente. Los clips en streaming pueden
+            // empezar después que el contador de tiempo, y medir por clip.length los cortaba.
+            AudioSource temaEnCurso = activo;
             bool forzarCambio = false;
-            while (t < restante)
+            while (temaEnCurso != null && (pausado || temaEnCurso.isPlaying))
             {
-                if (!pausado) t += Time.unscaledDeltaTime;
                 bool deseaAlientoNegro = modoActual == ModoMusica.Campania && DebeUsarMusicaAlientoNegro();
                 if (deseaAlientoNegro != usarAliento)
                 {
@@ -400,8 +398,6 @@ public class MusicManager : MonoBehaviour
                 yield return StartCoroutine(FadeOut(activo, salida));
                 continue;
             }
-
-            yield return StartCoroutine(FadeOut(activo, fadeSalida));
             }
         }
         finally

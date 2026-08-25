@@ -123,10 +123,7 @@ public class BattleIntroController : MonoBehaviour
     battleManager.bOcupado = true;
     battleManager.PrepararUIParaIntroBatalla();
     PrepararTextoComienzaBatalla();
-    if (tipoEmboscada != 2)
-    {
-      MostrarVinetaIntro();
-    }
+    MostrarVinetaIntro();
 
     List<Unidad> enemigos = FiltrarUnidades(enemigosEnOrden);
     List<Unidad> heroes = FiltrarUnidades(heroesEnOrden);
@@ -904,7 +901,7 @@ public class BattleIntroController : MonoBehaviour
       panelRect.sizeDelta = new Vector2(540f, 76f);
 
       Image fondo = panelDespliegueManual.GetComponent<Image>();
-      fondo.color = new Color(0f, 0f, 0f, 0.68f);
+      fondo.color = new Color(0f, 0f, 0f, 0.78f);
       fondo.raycastTarget = false;
 
       GameObject goEtiqueta = new GameObject(
@@ -988,7 +985,7 @@ public class BattleIntroController : MonoBehaviour
       panelRect.sizeDelta = new Vector2(780f, 66f);
 
       Image fondo = panelMensajeEmboscada.GetComponent<Image>();
-      fondo.color = new Color(0f, 0f, 0f, 0.62f);
+      fondo.color = new Color(0f, 0f, 0f, 0.76f);
       fondo.raycastTarget = false;
 
       GameObject goTexto = new GameObject(

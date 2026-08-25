@@ -819,6 +819,10 @@ public class MenuPersonajes : MonoBehaviour
       Destroy(buttonTransform.gameObject);
     }
 
+    List<Habilidad> habilidadesIntrinsecas = new List<Habilidad>();
+    List<Habilidad> habilidadesArma = new List<Habilidad>();
+    List<Habilidad> habilidadesNormales = new List<Habilidad>();
+
     foreach (Habilidad habilidad in pSel.gameObject.GetComponents<Habilidad>())
     {
       //Habilidades que no se muestran
@@ -831,40 +835,122 @@ public class MenuPersonajes : MonoBehaviour
         continue;
       }
 
-      habilidad.ActualizarDescripcion();
-
-      GameObject actionButtonTransform = Instantiate(actionButtonPrefab, listaHab);
-      BotonHabilidad habilidadBotonUI = actionButtonTransform.GetComponent<BotonHabilidad>();
-      habilidadBotonUI.HabilidadRepresentada = habilidad;
-      Transform subirNivel = BuscarHijoDirectoPorNombre(actionButtonTransform.transform, "-SubirNivel");
-
-      if (subirNivel != null && pSel.NivelPuntoHabilidad > 0 && habilidadBotonUI.HabilidadRepresentada.NIVEL < 4 && habilidadBotonUI.HabilidadRepresentada.NIVEL > 0)
+      if (EsHabilidadIntrinsecaCampania(habilidad))
       {
-        subirNivel.gameObject.SetActive(true);
-
-        bool mostrarEspecializacion = habilidadBotonUI.HabilidadRepresentada.NIVEL == 3;
-        if (subirNivel.childCount > 0)
-        {
-          subirNivel.GetChild(0).gameObject.SetActive(!mostrarEspecializacion);
-        }
-        if (subirNivel.childCount > 1)
-        {
-          subirNivel.GetChild(1).gameObject.SetActive(mostrarEspecializacion);
-        }
+        habilidadesIntrinsecas.Add(habilidad);
       }
-      else if (subirNivel != null)
+      else if (EsHabilidadDeArmaEquipada(habilidad))
       {
-        subirNivel.gameObject.SetActive(false);
+        habilidadesArma.Add(habilidad);
       }
-      actionButtonTransform.GetComponent<BotonHabilidad>().scMenuPersonajes = this;
-
-
-
-
-
+      else
+      {
+        habilidadesNormales.Add(habilidad);
+      }
     }
 
+    foreach (Habilidad habilidad in habilidadesIntrinsecas)
+    {
+      CrearBotonHabilidadPersonaje(habilidad, 0.9f);
+    }
 
+    foreach (Habilidad habilidad in habilidadesArma)
+    {
+      CrearBotonHabilidadPersonaje(habilidad, 0.9f);
+    }
+
+    foreach (Habilidad habilidad in habilidadesNormales)
+    {
+      CrearBotonHabilidadPersonaje(habilidad, 1f);
+    }
+  }
+
+  private void CrearBotonHabilidadPersonaje(Habilidad habilidad, float escala)
+  {
+    if (habilidad == null)
+    {
+      return;
+    }
+
+    habilidad.ActualizarDescripcion();
+
+    GameObject actionButtonTransform = Instantiate(actionButtonPrefab, listaHab);
+    actionButtonTransform.transform.localScale *= escala;
+    BotonHabilidad habilidadBotonUI = actionButtonTransform.GetComponent<BotonHabilidad>();
+    habilidadBotonUI.HabilidadRepresentada = habilidad;
+    Transform subirNivel = BuscarHijoDirectoPorNombre(actionButtonTransform.transform, "-SubirNivel");
+
+    if (subirNivel != null && pSel.NivelPuntoHabilidad > 0 && habilidadBotonUI.HabilidadRepresentada.NIVEL < 4 && habilidadBotonUI.HabilidadRepresentada.NIVEL > 0)
+    {
+      subirNivel.gameObject.SetActive(true);
+
+      bool mostrarEspecializacion = habilidadBotonUI.HabilidadRepresentada.NIVEL == 3;
+      if (subirNivel.childCount > 0)
+      {
+        subirNivel.GetChild(0).gameObject.SetActive(!mostrarEspecializacion);
+      }
+      if (subirNivel.childCount > 1)
+      {
+        subirNivel.GetChild(1).gameObject.SetActive(mostrarEspecializacion);
+      }
+    }
+    else if (subirNivel != null)
+    {
+      subirNivel.gameObject.SetActive(false);
+    }
+    actionButtonTransform.GetComponent<BotonHabilidad>().scMenuPersonajes = this;
+  }
+
+  private bool EsHabilidadIntrinsecaCampania(Habilidad habilidad)
+  {
+    if (habilidad == null)
+    {
+      return false;
+    }
+
+    if (habilidad.NIVEL < 0)
+    {
+      return true;
+    }
+
+    if (pSel == null)
+    {
+      return false;
+    }
+
+    switch (pSel.IDClase)
+    {
+      case 1:
+        return habilidad is REPRESENTACIONCorajeInquebrantable;
+      case 2:
+        return habilidad is REPRESENTACIONPasoCauteloso
+          || habilidad is ImprovisarFlechas
+          || habilidad is CorteDaga;
+      case 3:
+        return habilidad is REPRESENTACIONAlmaEndeble
+          || habilidad is REPRESENTACIONFervorConjunto;
+      case 4:
+        return habilidad is REPRESENTACIONSueldo
+          || habilidad is REPRESENTACIONSigiloso
+          || habilidad is TiroBallestaDeMano;
+      case 5:
+        return habilidad is REPRESENTACIONSobrecarga
+          || habilidad is AcumularEnergia
+          || habilidad is DescargaArcana;
+      case 6:
+        return habilidad is REPRESENTACIONPasoLigero
+          || habilidad is REPRESENTACIONPosturaDemandante;
+      default:
+        return false;
+    }
+  }
+
+  private bool EsHabilidadDeArmaEquipada(Habilidad habilidad)
+  {
+    return habilidad != null
+      && pSel != null
+      && pSel.itemArma != null
+      && habilidad.agregaDesdeArmaUI == pSel.itemArma;
   }
 
   public TextMeshProUGUI itemDesc;

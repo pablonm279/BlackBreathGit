@@ -1,0 +1,517 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8e99d774b844cc4944e620bc7f24b5f, type: 3}
+  m_Name: CatalogoTerminosJuego
+  m_EditorClassIdentifier:
+  terminos:
+  - id: strength
+    colorHex: '#d9822b'
+    descripcionEs: El Atributo <b>Fuerza</b> del personaje que realiza la habilidad
+      seleccionada.
+    descripcionEn: 'The <b>Strength</b> Attribute of the character using the selected
+      ability.'
+    descripcionPt: 'O Atributo <b>Força</b> do personagem que usa a habilidade selecionada.'
+  - id: agility
+    colorHex: '#7fa35a'
+    descripcionEs: El Atributo <b>Agilidad</b> del personaje que realiza la habilidad
+      seleccionada.
+    descripcionEn: 'The <b>Agility</b> Attribute of the character using the selected
+      ability.'
+    descripcionPt: 'O Atributo <b>Agilidade</b> do personagem que usa a habilidade
+      selecionada.'
+  - id: power
+    colorHex: '#2aa6c8'
+    descripcionEs: El Atributo <b>Poder</b> del personaje que realiza la habilidad
+      seleccionada.
+    descripcionEn: 'The <b>Power</b> Attribute of the character using the selected
+      ability.'
+    descripcionPt: 'O Atributo <b>Poder</b> do personagem que usa a habilidade selecionada.'
+  - id: mental-save
+    colorHex: '#c9a8e0'
+    descripcionEs: Atributo que determina la capacidad de la unidad de resistir efectos
+      <b>Mentales</b>.
+    descripcionEn: 'Attribute that determines the unit''s ability to resist <b>Mental</b>
+      effects.'
+    descripcionPt: 'Atributo que determina a capacidade da unidade de resistir a
+      efeitos <b>Mentais</b>.'
+  - id: fortitude-save
+    colorHex: '#e0c090'
+    descripcionEs: 'Atributo que determina la capacidad de la unidad de resistir
+      efectos <b>Físicos</b>.'
+    descripcionEn: 'Attribute that determines the unit''s ability to resist <b>Physical</b>
+      effects.'
+    descripcionPt: 'Atributo que determina a capacidade da unidade de resistir a
+      efeitos <b>Físicos</b>.'
+  - id: reflex-save
+    colorHex: '#a3e0c2'
+    descripcionEs: 'Atributo que determina la capacidad de la unidad de reaccionar
+      rápido.'
+    descripcionEn: 'Attribute that determines the unit''s ability to react quickly.'
+    descripcionPt: 'Atributo que determina a capacidade da unidade de reagir rapidamente.'
+  - id: divine-damage
+    colorHex: '#e8cf7a'
+    descripcionEs: 'Daño divino, al causar golpe crítico puede aplicar <b>Condenado</b>
+      en el enemigo.'
+    descripcionEn: 'Divine damage; on a critical hit it can apply <b>Condemned</b>
+      to the enemy.'
+    descripcionPt: 'Dano divino; ao causar golpe crítico pode aplicar <b>Condenado</b>
+      no inimigo.'
+  - id: fire-damage
+    colorHex: '#e0987a'
+    descripcionEs: 'Daño fuego, al causar golpe crítico puede aplicar <b>Ardiendo</b>
+      en el enemigo. '
+    descripcionEn: 'Fire damage; on a critical hit it can apply <b>Burning</b> to
+      the enemy.'
+    descripcionPt: 'Dano de fogo; ao causar golpe crítico pode aplicar <b>Ardendo</b>
+      no inimigo.'
+  - id: cold-damage
+    colorHex: '#8ecbe0'
+    descripcionEs: 'Daño frío, al causar golpe crítico puede aplicar <b>Congelado</b>
+      en el enemigo.'
+    descripcionEn: 'Cold damage; on a critical hit it can apply <b>Frozen</b> to
+      the enemy.'
+    descripcionPt: 'Dano de frio; ao causar golpe crítico pode aplicar <b>Congelado</b>
+      no inimigo.'
+  - id: lightning-damage
+    colorHex: '#e0d67a'
+    descripcionEs: 'Daño rayo, al causar golpe crítico puede aplicar <b>Aturdido</b>
+      en el enemigo.'
+    descripcionEn: 'Lightning damage; on a critical hit it can apply <b>Stunned</b>
+      to the enemy.'
+    descripcionPt: 'Dano de raio; ao causar golpe crítico pode aplicar <b>Atordoado</b>
+      no inimigo.'
+  - id: acid-damage
+    colorHex: '#a8d67a'
+    descripcionEs: 'Daño ácido, al causar golpe crítico puede agregar acumulaciones
+      de <b>Ácido</b> que reducen la armadura del objetivo.'
+    descripcionEn: 'Acid damage; on a critical hit it can add <b>Acid</b> stacks
+      that reduce the target''s armor.'
+    descripcionPt: 'Dano ácido; ao causar golpe crítico pode adicionar acúmulos
+      de <b>Ácido</b> que reduzem a armadura do alvo.'
+  - id: arcane-damage
+    colorHex: '#b98ee0'
+    descripcionEs: 'Daño arcano, al causar golpe crítico puede agregar acumulaciones
+      de <b>Resistencias reducidas</b> en el objetivo.'
+    descripcionEn: 'Arcane damage; on a critical hit it can add <b>Reduced Resistances</b>
+      stacks to the target.'
+    descripcionPt: 'Dano arcano; ao causar golpe crítico pode adicionar acúmulos
+      de <b>Resistências Reduzidas</b> no alvo.'
+  - id: slashing-damage
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Daño cortante, al causar golpe crítico puede agregar acumulaciones
+      de <b>Sangrado</b> en el objetivo.'
+    descripcionEn: 'Slashing damage; on a critical hit it can add <b>Bleed</b> stacks
+      to the target.'
+    descripcionPt: 'Dano cortante; ao causar golpe crítico pode adicionar acúmulos
+      de <b>Sangramento</b> no alvo.'
+  - id: piercing-damage
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Daño perforante, al causar golpe crítico ignora la Armadura
+      del enemigo.'
+    descripcionEn: 'Piercing damage; on a critical hit it ignores the enemy''s Armor.'
+    descripcionPt: 'Dano perfurante; ao causar golpe crítico ignora a Armadura do
+      inimigo.'
+  - id: bludgeoning-damage
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Daño contundente, al causar golpe crítico puede reducir
+      los PA del objetivo.'
+    descripcionEn: 'Bludgeoning damage; on a critical hit it can reduce the target''s
+      AP.'
+    descripcionPt: 'Dano contundente; ao causar golpe crítico pode reduzir o AP
+      do alvo.'
+  - id: true-damage
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Daño verdadero. ignora armadura y resistencias.'
+    descripcionEn: 'True damage. Ignores armor and resistances.'
+    descripcionPt: 'Dano verdadeiro. Ignora armadura e resistências.'
+  - id: poison
+    colorHex: '#a8d67a'
+    descripcionEs: 'Veneno, cada turno inflige daño según sus acumulaciones. El objetivo
+      puede curarse por completo con una Salvación de Fortaleza, o empeorar si falla.'
+    descripcionEn: 'Poison; each turn it deals damage based on its stacks. The target
+      can fully cure it with a Fortitude Save, or make it worse if they fail.'
+    descripcionPt: 'Veneno; a cada turno inflige dano de acordo com seus acúmulos.
+      O alvo pode se curar completamente com uma Salvação de Fortitude, ou piorar
+      se falhar.'
+  - id: armor-penetration
+    colorHex: '#b9c6cc'
+    descripcionEs: Al golpear, ignora hasta X puntos de Armadura del objetivo.
+    descripcionEn: 'On hit, ignores up to X points of the target''s Armor.'
+    descripcionPt: 'Ao acertar, ignora até X pontos de Armadura do alvo.'
+  - id: critical-hit
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Un Golpe crítico garantiza el impacto en el objetivo, aumenta
+      su daño y según el tipo de daño, puede tener efectos adicionales.'
+    descripcionEn: 'A Critical Hit guarantees the attack lands on the target, increases
+      its damage, and depending on the damage type, may have additional effects.'
+    descripcionPt: 'Um Golpe Crítico garante o impacto no alvo, aumenta seu dano
+      e, dependendo do tipo de dano, pode ter efeitos adicionais.'
+  - id: d20-roll
+    colorHex: '#e0b567'
+    descripcionEs: 'Tirada de dado que se usa en Ataques y Salvaciones; un resultado
+      natural muy bajo puede ser Pifia, y uno muy alto puede ser Golpe Crítico.'
+    descripcionEn: 'd20 roll used for Attack Rolls and Saving Throws; a very low
+      natural result can be a Fumble, and a very high one can be a Critical Hit.'
+    descripcionPt: 'Rolagem de d20 usada em Tiradas de Ataque e Salvações; um resultado
+      natural muito baixo pode ser Falha Crítica, e um muito alto pode ser Golpe
+      Crítico.'
+  - id: fumble
+    colorHex: '#b9c6cc'
+    descripcionEs: Chances de fallo crítico del ataque, además reduce 1 PA.
+    descripcionEn: 'Chance of a critical failure on the attack, which also costs
+      1 extra AP.'
+    descripcionPt: 'Chance de falha crítica no ataque, que também custa 1 AP extra.'
+  - id: valour
+    colorHex: '#b9c6cc'
+    descripcionEs: 'El Valor determina distintos beneficios/penalizaciones que los
+      personajes obtendrán en batalla a medida que su valor cambia.'
+    descripcionEn: 'Valour determines various benefits/penalties that characters
+      will get in battle as their Valour changes.'
+    descripcionPt: 'A Valentia determina diversos benefícios/penalidades que os
+      personagens obtêm em batalha conforme seu valor muda.'
+  - id: defense
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Valor que debe superar el ataque enemigo para impactar. Cada
+      ataque recibido en un turno, la reduce hasta el próximo turno.'
+    descripcionEn: 'Value the enemy''s attack must beat to land a hit. Each attack
+      received in a turn reduces it until the next turn.'
+    descripcionPt: 'Valor que o ataque inimigo precisa superar para acertar. Cada
+      ataque recebido em um turno a reduz até o próximo turno.'
+  - id: attack
+    colorHex: '#b9c6cc'
+    descripcionEs: Valor que se suma a la Tirada de Ataque (1d20), si supera la Defensa
+      enemiga se produce un impacto.
+    descripcionEn: 'Value added to the Attack Roll (1d20); if it beats the enemy''s
+      Defense, a hit occurs.'
+    descripcionPt: 'Valor somado à Tirada de Ataque (1d20); se superar a Defesa
+      inimiga, ocorre um acerto.'
+  - id: ap
+    colorHex: '#c2387a'
+    descripcionEs: 'Puntos de Acción. Se recargan al máximo al empezar el turno
+      propio y se gastan según el costo de cada habilidad/movimientos.'
+    descripcionEn: 'Action Points. They recharge to full at the start of your own
+      turn and are spent according to the cost of each ability/movement.'
+    descripcionPt: 'Pontos de Ação. Recarregam ao máximo no início do próprio turno
+      e são gastos de acordo com o custo de cada habilidade/movimento.'
+  - id: barrier
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Absorbe daño entrante antes que la vida, punto por punto,
+      hasta agotarse.'
+    descripcionEn: 'Absorbs incoming damage before health, point for point, until
+      depleted.'
+    descripcionPt: 'Absorve o dano recebido antes da vida, ponto a ponto, até se
+      esgotar.'
+  - id: fervor
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Recurso de la Purificadora. Cada punto otorga Barrera y bono
+      de daño Divino.'
+    descripcionEn: 'Purifier resource. Each point grants Barrier and a Divine damage
+      bonus.'
+    descripcionPt: 'Recurso da Purificadora. Cada ponto concede Barreira e bônus
+      de dano Divino.'
+  - id: evasion
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Cada acumulación otorga Defensa. Se pierde por completo apenas
+      la unidad recibe daño.'
+    descripcionEn: 'Each stack grants Defense. It is lost completely as soon as
+      the unit takes damage.'
+    descripcionPt: 'Cada acúmulo concede Defesa. É perdido por completo assim que
+      a unidade sofre dano.'
+  - id: weakness
+    colorHex: '#b9c6cc'
+    descripcionEs:
+    descripcionEn:
+    descripcionPt:
+  - id: debuff
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Efectos negativos varios aplicado sobre una unidad. '
+    descripcionEn: 'Various negative effects applied to a unit.'
+    descripcionPt: 'Vários efeitos negativos aplicados a uma unidade.'
+  - id: armor
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Reduce el daño físico plano recibido. Se desgasta con cada
+      golpe físico sufrido.'
+    descripcionEn: 'Reduces flat physical damage taken. It wears down with each
+      physical hit received.'
+    descripcionPt: 'Reduz o dano físico plano recebido. Se desgasta a cada golpe
+      físico sofrido.'
+  - id: reaction
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Efecto que se dispara solo, en respuesta a un evento de combate:
+      fallar un ataque, recibir daño, morir, dañar a un enemigo, etc.'
+    descripcionEn: 'An effect that triggers on its own, in response to a combat
+      event: missing an attack, taking damage, dying, damaging an enemy, etc.'
+    descripcionPt: 'Um efeito que se dispara sozinho, em resposta a um evento de
+      combate: errar um ataque, sofrer dano, morrer, causar dano a um inimigo, etc.'
+  - id: impulse
+    colorHex: '#b9c6cc'
+    descripcionEs: 'Cada acumulación abarata en 1 PA el costo del próximo movimiento
+      o intercambio de casilla.'
+    descripcionEn: 'Each stack reduces the AP cost of the next movement or tile
+      swap by 1.'
+    descripcionPt: 'Cada acúmulo reduz em 1 o custo em AP do próximo movimento ou
+      troca de casa.'
+  - id: reactive-mark
+    colorHex:
+    descripcionEs: 'Marca que vigila una acción concreta del objetivo marcado
+      y dispara un efecto automático cuando ocurre.'
+    descripcionEn: 'A mark that watches for a specific action from the marked target
+      and triggers an automatic effect when it happens.'
+    descripcionPt: 'Uma marca que vigia uma ação específica do alvo marcado e dispara
+      um efeito automático quando ela ocorre.'
+  - id: burning
+    colorHex:
+    descripcionEs: 'Cada turno inflige daño de Fuego según sus acumulaciones,
+      que luego bajan en 1. Se elimina al recibir daño de Frío.'
+    descripcionEn: 'Each turn it deals Fire damage based on its stacks, which then
+      decrease by 1. It is removed upon taking Cold damage.'
+    descripcionPt: 'A cada turno inflige dano de Fogo de acordo com seus acúmulos,
+      que depois diminuem em 1. É removido ao receber dano de Frio.'
+  - id: ward-trap
+    colorHex:
+    descripcionEs: Trampa colocada en el tablero que, al ser pisada por un aliado,
+      otorga un efecto protector.
+    descripcionEn: 'A trap placed on the battlefield that grants a protective effect
+      when stepped on by an ally.'
+    descripcionPt: 'Uma armadilha colocada no tabuleiro que concede um efeito protetor
+      ao ser pisada por um aliado.'
+  - id: passive
+    colorHex:
+    descripcionEs: Habilidad siempre activa, sin necesidad de usarla manualmente.
+    descripcionEn: 'An ability that is always active, with no need to use it manually.'
+    descripcionPt: 'Uma habilidade sempre ativa, sem necessidade de uso manual.'
+  - id: intrinsic
+    colorHex: '#8f8f8f'
+    descripcionEs: Habilidades iniciales garantizadas para todos los personajes de
+      esta clase.
+    descripcionEn: 'Guaranteed starting abilities for every character of this class.'
+    descripcionPt: 'Habilidades iniciais garantidas para todos os personagens desta
+      classe.'
+  - id: affliction
+    colorHex:
+    descripcionEs: 'Categoría que agrupa efectos negativos de daño sostenido
+      en el tiempo, como Sangrado, Veneno o Ardiendo.'
+    descripcionEn: 'A category that groups negative damage-over-time effects, such
+      as Bleed, Poison, or Burning.'
+    descripcionPt: 'Categoria que agrupa efeitos negativos de dano ao longo do
+      tempo, como Sangramento, Veneno ou Ardendo.'
+  - id: black-breath
+    colorHex:
+    descripcionEs: 'Amenaza de la campaña que persigue a la caravana. Cuanto más
+      cerca esté, mayor pérdida de Esperanza y civiles, y menor probabilidad
+      de ciertos eventos favorables.'
+    descripcionEn: 'A campaign-level threat that pursues the caravan. The closer
+      it gets, the greater the loss of Hope and civilians, and the lower the chance
+      of certain favorable events.'
+    descripcionPt: 'Uma ameaça da campanha que persegue a caravana. Quanto mais
+      perto ela está, maior a perda de Esperança e civis, e menor a chance de certos
+      eventos favoráveis.'
+  - id: divine-echo
+    colorHex:
+    descripcionEs: 'Trampa amistosa de la Purificadora: cura y da Valentía al
+      aliado que la pisa, o inflige daño Divino que ignora armadura al enemigo
+      que la pisa.'
+    descripcionEn: 'The Purifier''s friendly trap: heals and grants Valour to the
+      ally who steps on it, or deals Divine damage that ignores armor to the enemy
+      who steps on it.'
+    descripcionPt: 'Armadilha amigável da Purificadora: cura e concede Valentia
+      ao aliado que a pisa, ou causa dano Divino que ignora armadura ao inimigo
+      que a pisa.'
+  - id: arrow
+    colorHex:
+    descripcionEs: Recurso del Explorador. Cada disparo con arco consume una unidad;
+      sin flechas, esas habilidades no se pueden usar.
+    descripcionEn: 'Ranger resource. Each bow shot consumes one; without arrows,
+      those abilities can''t be used.'
+    descripcionPt: 'Recurso do Explorador. Cada disparo com arco consome uma unidade;
+      sem flechas, essas habilidades não podem ser usadas.'
+  - id: hidden
+    colorHex:
+    descripcionEs: 'Vuelve a la unidad inalcanzable para habilidades hostiles y la
+      oculta del bando rival. Se pierde al recibir daño o, en su forma más
+      débil, también al atacar.'
+    descripcionEn: 'Makes the unit unreachable by hostile abilities and hides it
+      from the enemy side. It is lost upon taking damage or, in its weaker form,
+      also upon attacking.'
+    descripcionPt: 'Torna a unidade inalcançável por habilidades hostis e a oculta
+      do lado inimigo. É perdido ao sofrer dano ou, em sua forma mais fraca, também
+      ao atacar.'
+  - id: prey-mark
+    colorHex:
+    descripcionEs: 'El Explorador marca a un enemigo por varios turnos: gana bonos
+      de ataque y crítico contra él, a costa de penalización contra otros
+      objetivos.'
+    descripcionEn: 'The Ranger marks an enemy for several turns: gains attack and
+      critical bonuses against it, at the cost of a penalty against other targets.'
+    descripcionPt: 'O Explorador marca um inimigo por vários turnos: ganha bônus
+      de ataque e crítico contra ele, ao custo de uma penalidade contra outros
+      alvos.'
+  - id: slowed
+    colorHex:
+    descripcionEs: 'Debuff temporal: reduce el AP máximo, la Salvación de Reflejos,
+      la Defensa y el Ataque del objetivo.'
+    descripcionEn: 'Temporary debuff: reduces the target''s max AP, Reflex Save,
+      Defense, and Attack.'
+    descripcionPt: 'Debuff temporário: reduz o AP máximo, a Salvação de Reflexos,
+      a Defesa e o Ataque do alvo.'
+  - id: bleed
+    colorHex:
+    descripcionEs: 'Cada turno reduce la vida máxima del objetivo según sus
+      acumulaciones, que luego bajan en 1. También bloquea parte de la curación
+      recibida.'
+    descripcionEn: 'Each turn it reduces the target''s max HP based on its stacks,
+      which then decrease by 1. It also blocks part of the healing received.'
+    descripcionPt: 'A cada turno reduz o HP máximo do alvo de acordo com seus
+      acúmulos, que depois diminuem em 1. Também bloqueia parte da cura recebida.'
+  - id: terrified
+    colorHex:
+    descripcionEs: 'Debuff temporal: reduce el Ataque, el AP máximo y la Salvación
+      Mental del objetivo.'
+    descripcionEn: 'Temporary debuff: reduces the target''s Attack, max AP, and
+      Mental Save.'
+    descripcionPt: 'Debuff temporário: reduz o Ataque, o AP máximo e a Salvação
+      Mental do alvo.'
+  - id: invulnerable
+    colorHex:
+    descripcionEs: 'Mientras dura, la unidad no recibe ningún daño.'
+    descripcionEn: 'While it lasts, the unit takes no damage at all.'
+    descripcionPt: 'Enquanto durar, a unidade não recebe nenhum dano.'
+  - id: healing
+    colorHex:
+    descripcionEs: 'Restaura vida. El Sangrado bloquea parte de la curación recibida,
+      y abusar de la curación mágica reduce su efectividad.'
+    descripcionEn: 'Restores health. Bleed blocks part of the healing received,
+      and overusing magical healing reduces its effectiveness.'
+    descripcionPt: 'Restaura vida. O Sangramento bloqueia parte da cura recebida,
+      e abusar da cura mágica reduz sua eficácia.'
+  - id: magical-healing
+    colorHex:
+    descripcionEs: 'La curación mágica genera residuos de tejido, que progresivamente
+      reduce la eficiencia de la curación mágica posterior en el mismo combate.'
+    descripcionEn: 'Magical healing generates residual tissue, progressively reducing
+      the effectiveness of subsequent magical healing in the same combat.'
+    descripcionPt: 'A cura mágica gera resíduos de tecido, reduzindo progressivamente
+      a eficácia das curas mágicas posteriores no mesmo combate.'
+  - id: you-are-next-mark
+    colorHex:
+    descripcionEs: 'Marca del Caballero: mientras dure, sus próximos ataques contra
+      ese objetivo ganan un fuerte bono de ataque y daño, y se consume al usarse.'
+    descripcionEn: 'The Knight''s mark: while it lasts, their next attacks against
+      that target get a strong attack and damage bonus, and it is consumed when
+      used.'
+    descripcionPt: 'Marca do Cavaleiro: enquanto durar, seus próximos ataques contra
+      esse alvo ganham um forte bônus de ataque e dano, e é consumida ao ser usada.'
+  - id: provoked
+    colorHex:
+    descripcionEs: 'Fuerza a la unidad provocada a dirigir sus habilidades hostiles
+      únicamente contra quien la provocó.'
+    descripcionEn: 'Forces the provoked unit to direct its hostile abilities only
+      at whoever provoked it.'
+    descripcionPt: 'Força a unidade provocada a direcionar suas habilidades hostis
+      apenas contra quem a provocou.'
+  - id: sore
+    colorHex:
+    descripcionEs: 'Debuff del Duelista: reduce el daño causado y el Ataque del
+      objetivo.'
+    descripcionEn: 'Duelist debuff: reduces the target''s damage dealt and Attack.'
+    descripcionPt: 'Debuff do Duelista: reduz o dano causado e o Ataque do alvo.'
+  - id: staggering
+    colorHex:
+    descripcionEs: 'Debuff: reduce el AP máximo y la Defensa del objetivo.'
+    descripcionEn: 'Debuff: reduces the target''s max AP and Defense.'
+    descripcionPt: 'Debuff: reduz o AP máximo e a Defesa do alvo.'
+  - id: exposed-vulnerability
+    colorHex:
+    descripcionEs: 'Buff acumulable del Duelista: reduce el umbral de crítico
+      necesario contra ese objetivo y aumenta el daño crítico que recibe.'
+    descripcionEn: 'Stackable Duelist buff: reduces the critical threshold needed
+      against that target and increases the critical damage it takes.'
+    descripcionPt: 'Buff acumulável do Duelista: reduz o limiar de crítico necessário
+      contra esse alvo e aumenta o dano crítico que ele recebe.'
+  - id: dancing
+    colorHex:
+    descripcionEs: 'Buff del Duelista que se obtiene al matar a un enemigo en el
+      propio turno: aumenta el Ataque y el daño causado, para encadenar bajas.'
+    descripcionEn: 'Duelist buff gained upon killing an enemy on their own turn:
+      increases Attack and damage dealt, to chain kills together.'
+    descripcionPt: 'Buff do Duelista obtido ao matar um inimigo no próprio turno:
+      aumenta o Ataque e o dano causado, para encadear abates.'
+  - id: arcane-resistance
+    colorHex:
+    descripcionEs: 'Reduce de forma plana el daño Arcano recibido.'
+    descripcionEn: 'Flatly reduces Arcane damage taken.'
+    descripcionPt: 'Reduz de forma direta o dano Arcano recebido.'
+  - id: energy-tier
+    colorHex:
+    descripcionEs: 'Nivel de energía acumulada del Canalizador. Cada nivel otorga
+      más daño, rango de crítico y AP máximo.'
+    descripcionEn: 'The Channeler''s accumulated energy level. Each tier grants
+      more damage, critical range, and max AP.'
+    descripcionPt: 'Nível de energia acumulada do Canalizador. Cada nível concede
+      mais dano, alcance de crítico e AP máximo.'
+  - id: energy-residue
+    colorHex:
+    descripcionEs: 'Trampa amistosa que deja el Canalizador al conectar un crítico.
+      Cura y potencia al aliado que la pisa, o daña al enemigo que la pisa.'
+    descripcionEn: 'A friendly trap left behind by the Channeler upon landing a
+      critical hit. Heals and empowers the ally who steps on it, or damages the
+      enemy who steps on it.'
+    descripcionPt: 'Armadilha amigável deixada pelo Canalizador ao acertar um crítico.
+      Cura e fortalece o aliado que a pisa, ou causa dano ao inimigo que a pisa.'
+  - id: gathering
+    colorHex:
+    descripcionEs: 'Estado de canalización: al empezar su turno, el Canalizador
+      sube un nivel de Energía, salvo que reciba daño y falle una Salvación
+      Mental.'
+    descripcionEn: 'Channeling state: at the start of their turn, the Channeler
+      advances one Energy tier, unless they take damage and fail a Mental Save.'
+    descripcionPt: 'Estado de canalização: no início do seu turno, o Canalizador
+      avança um nível de Energia, a menos que sofra dano e falhe em uma Salvação
+      Mental.'
+  - id: stunned
+    colorHex:
+    descripcionEs: 'Pone los Puntos de Acción del objetivo en 0, haciéndole
+      perder el turno, y reduce su Defensa mientras dura.'
+    descripcionEn: 'Sets the target''s Action Points to 0, making them lose their
+      turn, and reduces their Defense while it lasts.'
+    descripcionPt: 'Zera os Pontos de Ação do alvo, fazendo-o perder o turno, e
+      reduz sua Defesa enquanto durar.'
+  - id: resistances
+    colorHex:
+    descripcionEs: 'Conjunto de valores (Fuego, Hielo, Rayo, Ácido, Arcano, Necrótico,
+      Divino) que reducen de forma plana el daño de su tipo correspondiente.'
+    descripcionEn: 'The set of values (Fire, Cold, Lightning, Acid, Arcane, Necrotic,
+      Divine) that flatly reduce damage of their corresponding type.'
+    descripcionPt: 'Conjunto de valores (Fogo, Frio, Raio, Ácido, Arcano, Necrótico,
+      Divino) que reduzem de forma direta o dano do tipo correspondente.'
+  - id: arcane-manifestation
+    colorHex:
+    descripcionEs: 'Habilidad del Canalizador que exige cierto nivel de Energía:
+      coloca un obstáculo en el tablero y otorga bonos propios crecientes según
+      el nivel.'
+    descripcionEn: 'A Channeler ability that requires a certain Energy tier: places
+      an obstacle on the battlefield and grants its own growing bonuses depending
+      on the ability''s level.'
+    descripcionPt: 'Habilidade do Canalizador que exige um certo nível de Energia:
+      coloca um obstáculo no tabuleiro e concede bônus próprios crescentes de acordo
+      com o nível.'
+  - id: arcane-siphon
+    colorHex:
+    descripcionEs: 'Habilidad hostil del Canalizador: si el objetivo falla una Salvación
+      Mental, sufre daño Arcano recurrente cada turno, potenciado por los Residuos
+      Energéticos en el campo.'
+    descripcionEn: 'A hostile Channeler ability: if the target fails a Mental Save,
+      it suffers recurring Arcane damage each turn, boosted by the Energy Residues
+      on the field.'
+    descripcionPt: 'Habilidade hostil do Canalizador: se o alvo falhar em uma Salvação
+      Mental, sofre dano Arcano recorrente a cada turno, potencializado pelos Resíduos
+      Energéticos em campo.'

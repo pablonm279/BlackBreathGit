@@ -51,6 +51,15 @@ public class UnidadCanvas : MonoBehaviour
     private Slider barraVidaSlider;
     private Image barraVidaFillImage;
     private Image barraVidaSangradoFill;
+    private Image barraVidaPreviewDanioFill;
+    private Image barraVidaPreviewDanioMinimoFill;
+    private Coroutine barraVidaPreviewDanioCoroutine;
+    [SerializeField] private Color barraVidaPreviewDanioColor = new Color(1f, 0.42f, 0.08f, 0.82f);
+    [SerializeField] private Color barraVidaPreviewDanioMinimoColor = new Color(0.16f, 0.008f, 0.005f, 0.96f);
+    [SerializeField] private float barraVidaPreviewDanioVelocidadPulso = 6f;
+    private Image indicadorMuerteGarantizada;
+    private Coroutine indicadorMuerteGarantizadaCoroutine;
+    [SerializeField] private float indicadorMuerteGarantizadaVelocidadPulso = 4.5f;
     private Color barraVidaFillColorBase = Color.white;
     private bool barraVidaFillColorBaseInicializado;
     private TMP_FontAsset fuenteTextoProbabilidad;
@@ -80,6 +89,17 @@ public class UnidadCanvas : MonoBehaviour
     private bool ultimoEstadoTurnoPasado;
     private bool estadoTurnoPasadoInicializado;
     private int ultimaFilaEscala = int.MinValue;
+    [Header("Visibilidad barra de vida")]
+    [SerializeField] private float duracionVisibilidadTemporal = 1.5f;
+    private readonly List<Graphic> graficosBarraVida = new List<Graphic>();
+    private readonly List<bool> estadosBaseGraficosBarraVida = new List<bool>();
+    private bool mouseEncima;
+    private bool objetivoValido;
+    private bool objetivoSeleccionado;
+    private bool turnoActivo;
+    private bool mostrarTemporalmente;
+    private bool? barraVidaVisible;
+    private Coroutine visibilidadTemporalCoroutine;
     private readonly List<Buff> buffsFirmaBuffer = new List<Buff>();
     private readonly List<Reaccion> reaccionesFirmaBuffer = new List<Reaccion>();
     private readonly List<Marca> marcasFirmaBuffer = new List<Marca>();
@@ -100,6 +120,8 @@ public class UnidadCanvas : MonoBehaviour
             escalaBase = barraVida.localScale;   // guardás la escala original
         }
         PrepararBarraDanio();
+        PrepararGraficosBarraVida();
+        ActualizarVisibilidadBarraVida();
         fasePulsoTextoProbabilidad = Random.Range(0f, Mathf.PI * 2f);
     }
 
@@ -177,6 +199,7 @@ public class UnidadCanvas : MonoBehaviour
             ActualizarBarraDanio(unidad);
             ultimoRatioVidaVisual = ratioVida;
             ultimoMaxHPPerdidoPorSangrado = unidad.maxHPPerdidoPorSangrado;
+            ActualizarVisibilidadBarraVida();
         }
 
         BattleManager battleManager = BattleManager.Instance;
@@ -493,6 +516,298 @@ public class UnidadCanvas : MonoBehaviour
         rt.anchorMax = anchorMax;
         rt.offsetMin = barraVidaFillRect.offsetMin;
         rt.offsetMax = barraVidaFillRect.offsetMax;
+    }
+
+    private void PrepararGraficosBarraVida()
+    {
+        graficosBarraVida.Clear();
+        estadosBaseGraficosBarraVida.Clear();
+        if (barraVida == null) { return; }
+
+        Transform estados = contenedorCasillasEstados != null ? contenedorCasillasEstados.transform : null;
+        Graphic[] graficos = barraVida.GetComponentsInChildren<Graphic>(true);
+        foreach (Graphic grafico in graficos)
+        {
+            if (grafico == null || (estados != null && grafico.transform.IsChildOf(estados)))
+            {
+                continue;
+            }
+
+            graficosBarraVida.Add(grafico);
+            estadosBaseGraficosBarraVida.Add(grafico.enabled);
+        }
+    }
+
+    public void EstablecerMouseEncima(bool valor)
+    {
+        if (mouseEncima == valor) { return; }
+        mouseEncima = valor;
+        ActualizarVisibilidadBarraVida();
+    }
+
+    public void EstablecerObjetivoValido(bool valor)
+    {
+        if (objetivoValido == valor) { return; }
+        objetivoValido = valor;
+        ActualizarVisibilidadBarraVida();
+    }
+
+    public void EstablecerObjetivoSeleccionado(bool valor)
+    {
+        if (objetivoSeleccionado == valor) { return; }
+        objetivoSeleccionado = valor;
+        ActualizarVisibilidadBarraVida();
+    }
+
+    public void EstablecerTurnoActivo(bool valor)
+    {
+        if (turnoActivo == valor) { return; }
+        turnoActivo = valor;
+        ActualizarVisibilidadBarraVida();
+    }
+
+    public void MostrarBarraVidaTemporalmente()
+    {
+        if (visibilidadTemporalCoroutine != null)
+        {
+            StopCoroutine(visibilidadTemporalCoroutine);
+        }
+
+        mostrarTemporalmente = true;
+        ActualizarVisibilidadBarraVida();
+        visibilidadTemporalCoroutine = StartCoroutine(OcultarBarraVidaTrasDelay());
+    }
+
+    private IEnumerator OcultarBarraVidaTrasDelay()
+    {
+        yield return new WaitForSecondsRealtime(duracionVisibilidadTemporal);
+        mostrarTemporalmente = false;
+        visibilidadTemporalCoroutine = null;
+        ActualizarVisibilidadBarraVida();
+    }
+
+    public void ActualizarVisibilidadBarraVida()
+    {
+        if (unidadCacheada == null)
+        {
+            unidadCacheada = GetComponentInParent<Unidad>();
+        }
+
+        if (unidadCacheada == null || barraVida == null) { return; }
+
+        bool vidaBaja = unidadCacheada.mod_maxHP > 0f
+            && unidadCacheada.HP_actual < unidadCacheada.mod_maxHP * 0.5f;
+        bool siempreVisible = unidadCacheada.TieneTag("Jefe");
+        bool mostrar = turnoActivo
+            || mouseEncima
+            || objetivoValido
+            || objetivoSeleccionado
+            || mostrarTemporalmente
+            || vidaBaja
+            || siempreVisible;
+
+        if (barraVidaVisible == mostrar) { return; }
+        barraVidaVisible = mostrar;
+
+        for (int i = 0; i < graficosBarraVida.Count; i++)
+        {
+            Graphic grafico = graficosBarraVida[i];
+            if (grafico != null)
+            {
+                grafico.enabled = mostrar && estadosBaseGraficosBarraVida[i];
+            }
+        }
+    }
+
+    public void MostrarPreviewDanio(int danioMinimo, int danioMaximo)
+    {
+        if (unidadCacheada == null) { unidadCacheada = GetComponentInParent<Unidad>(); }
+        if (unidadCacheada == null || danioMaximo <= 0) { LimpiarPreviewDanio(); return; }
+        if (barraVidaFillRect == null) { PrepararBarraDanio(); }
+        if (barraVidaFillRect == null) { return; }
+
+        if (barraVidaPreviewDanioFill == null)
+        {
+            GameObject go = new GameObject("PreviewDamageFill", typeof(RectTransform), typeof(Image));
+            RectTransform rt = go.GetComponent<RectTransform>();
+            rt.SetParent(barraVidaFillRect.parent, false);
+            rt.pivot = barraVidaFillRect.pivot;
+            rt.localScale = Vector3.one;
+
+            Image fillBase = ObtenerImagenFillBarraVida();
+            Image img = go.GetComponent<Image>();
+            if (fillBase != null)
+            {
+                img.sprite = fillBase.sprite;
+                img.type = fillBase.type;
+                img.fillMethod = fillBase.fillMethod;
+                img.fillOrigin = fillBase.fillOrigin;
+                img.fillClockwise = fillBase.fillClockwise;
+                img.preserveAspect = fillBase.preserveAspect;
+                img.material = fillBase.material;
+            }
+            img.raycastTarget = false;
+            barraVidaPreviewDanioFill = img;
+            rt.SetSiblingIndex(barraVidaFillRect.GetSiblingIndex() + 1);
+        }
+
+        if (barraVidaPreviewDanioMinimoFill == null)
+        {
+            GameObject go = new GameObject("PreviewMinimumDamageFill", typeof(RectTransform), typeof(Image));
+            RectTransform rt = go.GetComponent<RectTransform>();
+            rt.SetParent(barraVidaFillRect.parent, false);
+            rt.pivot = barraVidaFillRect.pivot;
+            rt.localScale = Vector3.one;
+
+            Image fillBase = ObtenerImagenFillBarraVida();
+            Image img = go.GetComponent<Image>();
+            if (fillBase != null)
+            {
+                img.sprite = fillBase.sprite;
+                img.type = fillBase.type;
+                img.fillMethod = fillBase.fillMethod;
+                img.fillOrigin = fillBase.fillOrigin;
+                img.fillClockwise = fillBase.fillClockwise;
+                img.preserveAspect = fillBase.preserveAspect;
+                img.material = fillBase.material;
+            }
+            img.color = barraVidaPreviewDanioMinimoColor;
+            img.raycastTarget = false;
+            barraVidaPreviewDanioMinimoFill = img;
+            rt.SetSiblingIndex(barraVidaFillRect.GetSiblingIndex() + 2);
+        }
+
+        float maxHPVisual = Mathf.Max(0f, unidadCacheada.mod_maxHP) + Mathf.Max(0f, unidadCacheada.maxHPPerdidoPorSangrado);
+        if (maxHPVisual <= 0f) { LimpiarPreviewDanio(); return; }
+        float ratioActual = Mathf.Clamp01(unidadCacheada.HP_actual / maxHPVisual);
+        float ratioTrasMinimo = Mathf.Clamp01((unidadCacheada.HP_actual - danioMinimo) / maxHPVisual);
+        float ratioTrasMaximo = Mathf.Clamp01((unidadCacheada.HP_actual - danioMaximo) / maxHPVisual);
+        RectTransform previewRect = barraVidaPreviewDanioFill.rectTransform;
+        previewRect.anchorMin = new Vector2(ratioTrasMaximo, barraVidaFillRect.anchorMin.y);
+        previewRect.anchorMax = new Vector2(ratioTrasMinimo, barraVidaFillRect.anchorMax.y);
+        previewRect.offsetMin = barraVidaFillRect.offsetMin;
+        previewRect.offsetMax = barraVidaFillRect.offsetMax;
+        barraVidaPreviewDanioFill.gameObject.SetActive(ratioTrasMinimo > ratioTrasMaximo + 0.0001f);
+
+        RectTransform minimoRect = barraVidaPreviewDanioMinimoFill.rectTransform;
+        minimoRect.anchorMin = new Vector2(ratioTrasMinimo, barraVidaFillRect.anchorMin.y);
+        minimoRect.anchorMax = new Vector2(ratioActual, barraVidaFillRect.anchorMax.y);
+        minimoRect.offsetMin = barraVidaFillRect.offsetMin;
+        minimoRect.offsetMax = barraVidaFillRect.offsetMax;
+        barraVidaPreviewDanioMinimoFill.color = barraVidaPreviewDanioMinimoColor;
+        barraVidaPreviewDanioMinimoFill.gameObject.SetActive(ratioActual > ratioTrasMinimo + 0.0001f);
+
+        ActualizarIndicadorMuerteGarantizada(unidadCacheada.HP_actual - danioMinimo < 1f);
+
+        if (barraVidaPreviewDanioCoroutine != null) { StopCoroutine(barraVidaPreviewDanioCoroutine); }
+        if (barraVidaPreviewDanioFill.gameObject.activeSelf)
+        {
+            barraVidaPreviewDanioCoroutine = StartCoroutine(PulsarPreviewDanio());
+        }
+    }
+
+    public void LimpiarPreviewDanio()
+    {
+        if (barraVidaPreviewDanioCoroutine != null)
+        {
+            StopCoroutine(barraVidaPreviewDanioCoroutine);
+            barraVidaPreviewDanioCoroutine = null;
+        }
+        if (barraVidaPreviewDanioFill != null)
+        {
+            barraVidaPreviewDanioFill.gameObject.SetActive(false);
+        }
+        if (barraVidaPreviewDanioMinimoFill != null)
+        {
+            barraVidaPreviewDanioMinimoFill.gameObject.SetActive(false);
+        }
+        OcultarIndicadorMuerteGarantizada();
+    }
+
+    private IEnumerator PulsarPreviewDanio()
+    {
+        while (barraVidaPreviewDanioFill != null && barraVidaPreviewDanioFill.gameObject.activeSelf)
+        {
+            float pulso = Mathf.Sin(Time.unscaledTime * barraVidaPreviewDanioVelocidadPulso) * 0.5f + 0.5f;
+            Color color = barraVidaPreviewDanioColor;
+            color.a *= Mathf.Lerp(0.28f, 1f, pulso);
+            barraVidaPreviewDanioFill.color = color;
+            yield return null;
+        }
+        barraVidaPreviewDanioCoroutine = null;
+    }
+
+    private void ActualizarIndicadorMuerteGarantizada(bool mostrar)
+    {
+        if (!mostrar)
+        {
+            OcultarIndicadorMuerteGarantizada();
+            return;
+        }
+
+        if (indicadorMuerteGarantizada == null)
+        {
+            Sprite calavera = Resources.Load<Sprite>("Imagenes/Calavera");
+            if (calavera == null || barraVida == null) { return; }
+
+            GameObject go = new GameObject("GuaranteedKillIndicator", typeof(RectTransform), typeof(Image));
+            RectTransform rt = go.GetComponent<RectTransform>();
+            rt.SetParent(barraVida, false);
+            rt.anchorMin = new Vector2(1f, 0.5f);
+            rt.anchorMax = new Vector2(1f, 0.5f);
+            rt.pivot = new Vector2(0f, 0.5f);
+            float lado = Mathf.Max(2.4f, barraVida.rect.height * 0.46f);
+            rt.sizeDelta = new Vector2(lado, lado);
+            rt.anchoredPosition = new Vector2(Mathf.Max(7f, lado * 0.8f), 0f);
+
+            indicadorMuerteGarantizada = go.GetComponent<Image>();
+            indicadorMuerteGarantizada.sprite = calavera;
+            indicadorMuerteGarantizada.preserveAspect = true;
+            indicadorMuerteGarantizada.raycastTarget = false;
+            indicadorMuerteGarantizada.SetNativeSize();
+            rt.sizeDelta = new Vector2(lado, lado);
+            rt.SetAsLastSibling();
+        }
+
+        RectTransform indicadorRect = indicadorMuerteGarantizada.rectTransform;
+        Vector3 escalaBarra = barraVida.lossyScale;
+        float compensacionHorizontal = Mathf.Abs(escalaBarra.x) > 0.0001f
+            ? Mathf.Abs(escalaBarra.y / escalaBarra.x)
+            : 1f;
+        indicadorRect.localScale = new Vector3(compensacionHorizontal, 1f, 1f);
+
+        indicadorMuerteGarantizada.gameObject.SetActive(true);
+        if (indicadorMuerteGarantizadaCoroutine != null)
+        {
+            StopCoroutine(indicadorMuerteGarantizadaCoroutine);
+        }
+        indicadorMuerteGarantizadaCoroutine = StartCoroutine(PulsarIndicadorMuerteGarantizada());
+    }
+
+    private void OcultarIndicadorMuerteGarantizada()
+    {
+        if (indicadorMuerteGarantizadaCoroutine != null)
+        {
+            StopCoroutine(indicadorMuerteGarantizadaCoroutine);
+            indicadorMuerteGarantizadaCoroutine = null;
+        }
+        if (indicadorMuerteGarantizada != null)
+        {
+            indicadorMuerteGarantizada.gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator PulsarIndicadorMuerteGarantizada()
+    {
+        Color colorClaro = new Color(0.82f, 0.82f, 0.82f, 1f);
+        Color colorOscuro = new Color(0.015f, 0.015f, 0.015f, 0.96f);
+        while (indicadorMuerteGarantizada != null && indicadorMuerteGarantizada.gameObject.activeSelf)
+        {
+            float pulso = Mathf.Sin(Time.unscaledTime * indicadorMuerteGarantizadaVelocidadPulso) * 0.5f + 0.5f;
+            indicadorMuerteGarantizada.color = Color.Lerp(colorClaro, colorOscuro, pulso);
+            yield return null;
+        }
+        indicadorMuerteGarantizadaCoroutine = null;
     }
 
 

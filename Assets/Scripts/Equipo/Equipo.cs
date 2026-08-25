@@ -211,13 +211,20 @@ public class Equipo : MonoBehaviour
       return true;
     }
 
+    contenedorInventario = goInventario.transform.Find("ContInventario (1)");
+    if (contenedorInventario != null)
+    {
+      listaItems = contenedorInventario;
+      return true;
+    }
+
     if (goInventario.name == "Inventario")
     {
       listaItems = goInventario.transform;
       return true;
     }
 
-    return listaItems != null;
+    return listaItems != null && listaItems != goInventario.transform;
   }
 
   private void ActualizarTextoDisponibles(int tipo)

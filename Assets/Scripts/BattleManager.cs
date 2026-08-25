@@ -32,6 +32,13 @@ public class BattleManager : MonoBehaviour
   private GameObject fantasmaPreviewHoverHostil;
   private Image imagenFantasmaPreviewHoverHostil;
   private Canvas canvasFantasmaPreviewHoverHostil;
+  private readonly Dictionary<Casilla, EstadoVisualCasillaPreview> estadosAmenazaMeleeIA = new Dictionary<Casilla, EstadoVisualCasillaPreview>();
+  private readonly Dictionary<Renderer, MaterialPropertyBlock> propiedadesVisualesAmenazaMeleeIA = new Dictionary<Renderer, MaterialPropertyBlock>();
+  private readonly Dictionary<GameObject, bool> estadosVisualesMovimientoAmenazaMeleeIA = new Dictionary<GameObject, bool>();
+  private readonly Dictionary<Transform, EstadoTransformAmenazaMeleeIA> transformsFlechasAmenazaMeleeIA = new Dictionary<Transform, EstadoTransformAmenazaMeleeIA>();
+  private Unidad unidadAmenazaMeleeIA;
+  private Casilla origenAmenazaMeleeIA;
+  private Unidad unidadAmenazaMeleeIASuprimida;
 
   [Header("Ajustes visuales de batalla")]
   [SerializeField] public float TAMANIO_UNIDADES = 1f;
@@ -79,8 +86,18 @@ public class BattleManager : MonoBehaviour
   private bool vistaTacticaActiva;
   public bool VistaTacticaActiva => vistaTacticaActiva;
 
-  public List<Unidad> lUnidadesPosiblesHabilidadActiva = new List<Unidad>();
+  private List<Unidad> _lUnidadesPosiblesHabilidadActiva = new List<Unidad>();
+  public List<Unidad> lUnidadesPosiblesHabilidadActiva
+  {
+    get => _lUnidadesPosiblesHabilidadActiva;
+    set
+    {
+      _lUnidadesPosiblesHabilidadActiva = value ?? new List<Unidad>();
+      ActualizarVisibilidadBarrasVidaObjetivos();
+    }
+  }
   public List<Obstaculo> lObstaculosPosiblesHabilidadActiva = new List<Obstaculo>();
+  private readonly HashSet<Unidad> unidadesObjetivoValidoBarraVida = new HashSet<Unidad>();
   private readonly HashSet<Unidad> unidadesConFadeHoverObjetivoHabilidad = new HashSet<Unidad>();
   private readonly HashSet<Unidad> unidadesConFadeAliadoDebajoUnidadActivaFrontal = new HashSet<Unidad>();
   public event EventHandler OnRondaNueva;
@@ -155,6 +172,16 @@ public class BattleManager : MonoBehaviour
   private Coroutine fadeUISuperiorIntroRoutine;
   private const float DuracionFadeUISuperiorIntro = 0.22f;
 
+  public GameObject panelhabizquierda;
+  public GameObject panelhabderecha;
+  private Habilidad habilidadPanelDescripcionFijada;
+  private GameObject panelDescripcionHabilidadVisible;
+  private readonly Dictionary<GameObject, float> margenVerticalPanelDescripcion = new Dictionary<GameObject, float>();
+  public bool PanelDescripcionHabilidadIzquierdoVisible =>
+    panelhabizquierda != null && panelhabizquierda.activeInHierarchy;
+  public bool PanelDescripcionHabilidadDerechoVisible =>
+    panelhabderecha != null && panelhabderecha.activeInHierarchy;
+
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
   private static void ResetearEstadoEstaticoCombate()
   {
@@ -171,6 +198,12 @@ public class BattleManager : MonoBehaviour
     public bool capaNegraActiva;
     public bool meshRendererActivo;
     public bool marcaMeleeAtraviesaActiva;
+  }
+
+  private struct EstadoTransformAmenazaMeleeIA
+  {
+    public Quaternion rotacionLocal;
+    public Vector3 escalaLocal;
   }
 
   private void OnValidate()
@@ -444,6 +477,8 @@ public class BattleManager : MonoBehaviour
   private void Start()
   {
     ConfigurarMicroAnimacionesUI();
+    OcultarPanelDescripcionHabilidadInmediato(panelhabizquierda);
+    OcultarPanelDescripcionHabilidadInmediato(panelhabderecha);
 
     ArmarListadeCasillastotales();
     var handicapDificultad = GetComponent<Sistema.HandicapDificultad>();
@@ -676,8 +711,142 @@ public class BattleManager : MonoBehaviour
       anim.SetFollowMouse(false, Vector2.zero);
     }
   }
+
+  public bool TryMostrarPanelDescripcionHabilidad(Habilidad habilidad, bool fijar)
+  {
+    if (habilidad == null)
+    {
+      return false;
+    }
+
+    if (habilidadPanelDescripcionFijada != null && habilidadPanelDescripcionFijada != habilidad && !fijar)
+    {
+      return true;
+    }
+
+    GameObject panel = fijar && habilidad.esHostil ? panelhabderecha : panelhabizquierda;
+    if (panel == null)
+    {
+      return false;
+    }
+
+    TextMeshProUGUI texto = panel.GetComponentInChildren<TextMeshProUGUI>(true);
+    if (texto == null)
+    {
+      return false;
+    }
+
+    habilidad.ActualizarDescripcion();
+
+    TMP_SpriteAsset spriteAsset = SpriteAssetCombate;
+    if (spriteAsset != null)
+    {
+      TextoIconosCombate.NormalizarSpriteAsset(spriteAsset);
+      texto.spriteAsset = spriteAsset;
+    }
+
+    texto.richText = true;
+    texto.text = BotonHabilidad.ConstruirDescripcionFormateada(habilidad, spriteAsset);
+    TerminoHoverDetector.AsegurarEn(texto);
+    AjustarAlturaPanelDescripcionHabilidad(panel, texto);
+
+    GameObject otroPanel = panel == panelhabderecha ? panelhabizquierda : panelhabderecha;
+    if (otroPanel != null && otroPanel != panel)
+    {
+      OcultarPanelDescripcionHabilidadInmediato(otroPanel);
+    }
+
+    panelDescripcionHabilidadVisible = panel;
+    panel.SetActive(true);
+    scUIInfoChar?.RefrescarSegunEstadoActual();
+
+    if (panel == panelhabizquierda)
+    {
+      BanterBattleUI.CancelarPorPanelHabilidad();
+    }
+
+    if (fijar)
+    {
+      habilidadPanelDescripcionFijada = habilidad;
+    }
+
+    return true;
+  }
+
+  public void OcultarPanelDescripcionHabilidad(Habilidad habilidad, bool liberarFijada)
+  {
+    if (habilidadPanelDescripcionFijada != null)
+    {
+      if (!liberarFijada || habilidadPanelDescripcionFijada != habilidad)
+      {
+        return;
+      }
+
+      habilidadPanelDescripcionFijada = null;
+    }
+
+    OcultarPanelDescripcionHabilidadInmediato(panelDescripcionHabilidadVisible);
+    panelDescripcionHabilidadVisible = null;
+  }
+
+  private void OcultarPanelDescripcionHabilidadInmediato(GameObject panel)
+  {
+    if (panel != null)
+    {
+      panel.SetActive(false);
+      scUIInfoChar?.RefrescarSegunEstadoActual();
+    }
+  }
+
+  private void AjustarAlturaPanelDescripcionHabilidad(GameObject panel, TextMeshProUGUI texto)
+  {
+    RectTransform panelRect = panel != null ? panel.GetComponent<RectTransform>() : null;
+    RectTransform textoRect = texto != null ? texto.rectTransform : null;
+    if (panelRect == null || textoRect == null)
+    {
+      return;
+    }
+
+    if (!margenVerticalPanelDescripcion.TryGetValue(panel, out float margenVertical))
+    {
+      bool textoEstiradoVerticalmente = !Mathf.Approximately(textoRect.anchorMin.y, textoRect.anchorMax.y);
+      margenVertical = textoEstiradoVerticalmente
+        ? Mathf.Max(0f, textoRect.offsetMin.y - textoRect.offsetMax.y)
+        : 36f;
+      margenVerticalPanelDescripcion.Add(panel, margenVertical);
+    }
+
+    float anchoTexto = Mathf.Max(1f, textoRect.rect.width);
+    float alturaTexto = texto.GetPreferredValues(texto.text, anchoTexto, Mathf.Infinity).y;
+    const float alturaMinima = 120f;
+    float alturaObjetivo = Mathf.Max(alturaMinima, alturaTexto + margenVertical);
+
+    Canvas canvasRaiz = panel.GetComponentInParent<Canvas>();
+    RectTransform canvasRect = canvasRaiz != null ? canvasRaiz.rootCanvas.transform as RectTransform : null;
+    if (canvasRect != null)
+    {
+      alturaObjetivo = Mathf.Min(alturaObjetivo, canvasRect.rect.height - 20f);
+    }
+
+    if (Mathf.Approximately(textoRect.anchorMin.y, textoRect.anchorMax.y))
+    {
+      AjustarAlturaManteniendoBordeSuperior(textoRect, alturaTexto);
+    }
+
+    AjustarAlturaManteniendoBordeSuperior(panelRect, alturaObjetivo);
+  }
+
+  private static void AjustarAlturaManteniendoBordeSuperior(RectTransform rect, float altura)
+  {
+    float diferenciaAltura = altura - rect.rect.height;
+    rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, altura);
+    rect.anchoredPosition -= Vector2.up * (diferenciaAltura * (1f - rect.pivot.y));
+  }
   public void ArrancarTurno() //Arranca el turno de la unidad activa
   {
+    LimpiarPreviewAmenazaMeleeIA();
+    unidadAmenazaMeleeIASuprimida = null;
+
     if (unidadActiva != null)
     {
       RuntimeAnalytics.RecordBattleTurn(RondaNro);
@@ -1176,6 +1345,41 @@ public class BattleManager : MonoBehaviour
     ActualizarRefuerzosUI();
 
   }
+
+  public bool EnviarSiguienteRefuerzoEnemigoSiCampoVacio()
+  {
+    if (ladoA == null || enemigosRefuerzos == null || enemigosRefuerzos.Count < 1)
+    {
+      return false;
+    }
+
+    ladoA.ActualizarListaDeUnidadesEnLado();
+    if (ladoA.unidadesLado.Count > 0)
+    {
+      return false;
+    }
+
+    int indiceRefuerzo = enemigosRefuerzos.FindIndex(refuerzo => refuerzo != null);
+    if (indiceRefuerzo < 0)
+    {
+      ActualizarRefuerzosUI();
+      return false;
+    }
+
+    GameObject refuerzo = enemigosRefuerzos[indiceRefuerzo];
+    if (!MandarRefuerzoEnemigo(refuerzo))
+    {
+      return false;
+    }
+
+    enemigosRefuerzos.RemoveAt(indiceRefuerzo);
+    rondaMinimaRefuerzoEnemigo.Remove(refuerzo);
+    ladoA.ActualizarListaDeUnidadesEnLado();
+    ActualizarRefuerzosUI();
+    ActualizarCasillasMelee();
+    return true;
+  }
+
   void AdministrarRefuerzosAliados()
   {
 
@@ -1219,40 +1423,20 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
-    if (ladoA.c1x3.Presente == null)
+    Casilla[] entradasEnemigas = unidadRefuerzo.bGrande
+      ? new[] { ladoA.c2x3, ladoA.c2x2, ladoA.c2x4, ladoA.c2x1 }
+      : new[] { ladoA.c1x3, ladoA.c1x2, ladoA.c1x4, ladoA.c1x5, ladoA.c1x1 };
+    foreach (Casilla casillaEntrada in entradasEnemigas)
     {
+      if (casillaEntrada == null || !unidadRefuerzo.PuedeOcuparCasilla(casillaEntrada))
+      {
+        continue;
+      }
       enemigo.SetActive(true);
-      ladoA.c1x3.PonerObjetoEnCasillaAnimado(enemigo, 2);
+      casillaEntrada.PonerObjetoEnCasillaAnimado(enemigo, 2);
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
-    }
-    else if (ladoA.c1x2.Presente == null)
-    {
-      enemigo.SetActive(true);
-      ladoA.c1x2.PonerObjetoEnCasillaAnimado(enemigo, 2);
-      unidadRefuerzo.EstablecerAPActualA(0);
-      seColoco = true;
-    }
-    else if (ladoA.c1x4.Presente == null)
-    {
-      enemigo.SetActive(true);
-      ladoA.c1x4.PonerObjetoEnCasillaAnimado(enemigo, 2);
-      unidadRefuerzo.EstablecerAPActualA(0);
-      seColoco = true;
-    }
-    else if (ladoA.c1x5.Presente == null)
-    {
-      enemigo.SetActive(true);
-      ladoA.c1x5.PonerObjetoEnCasillaAnimado(enemigo, 2);
-      unidadRefuerzo.EstablecerAPActualA(0);
-      seColoco = true;
-    }
-    else if (ladoA.c1x1.Presente == null)
-    {
-      enemigo.SetActive(true);
-      ladoA.c1x1.PonerObjetoEnCasillaAnimado(enemigo, 2);
-      unidadRefuerzo.EstablecerAPActualA(0);
-      seColoco = true;
+      break;
     }
 
     if (!seColoco)
@@ -1283,11 +1467,13 @@ public class BattleManager : MonoBehaviour
 
     List<Casilla> casillasSinTrampa = new List<Casilla>();
     List<Casilla> casillasConTrampa = new List<Casilla>();
-    Casilla[] casillasRetaguardiaAliada = { ladoB.c1x1, ladoB.c1x2, ladoB.c1x3, ladoB.c1x4, ladoB.c1x5 };
+    Casilla[] casillasRetaguardiaAliada = unidadRefuerzo.bGrande
+      ? new[] { ladoB.c2x1, ladoB.c2x2, ladoB.c2x3, ladoB.c2x4 }
+      : new[] { ladoB.c1x1, ladoB.c1x2, ladoB.c1x3, ladoB.c1x4, ladoB.c1x5 };
 
     foreach (Casilla casilla in casillasRetaguardiaAliada)
     {
-      if (casilla == null || casilla.Presente != null)
+      if (casilla == null || !unidadRefuerzo.PuedeOcuparCasilla(casilla))
       {
         continue;
       }
@@ -1769,7 +1955,11 @@ public class BattleManager : MonoBehaviour
   {
     lCasillasMovimiento.Clear();
 
-    lCasillasMovimiento = unidadActiva.CasillaPosicion.ObtenerCasillasAlrededorParaMovimiento();
+    lCasillasMovimiento = unidadActiva.CasillaPosicion.ObtenerCasillasAlrededorParaMovimiento()
+      .Where(casilla => casilla != null
+        && ((casilla.Presente != null && casilla.Presente != unidadActiva.gameObject && !unidadActiva.bGrande)
+          || unidadActiva.PuedeOcuparCasilla(casilla)))
+      .ToList();
 
 
     return lCasillasMovimiento;
@@ -1792,6 +1982,7 @@ public class BattleManager : MonoBehaviour
     lUnidadesTotal.Clear();
     lUnidadesTotal.AddRange(ladoA.GetComponent<LadoManager>().unidadesLado);
     lUnidadesTotal.AddRange(ladoB.GetComponent<LadoManager>().unidadesLado);
+    lUnidadesTotal = lUnidadesTotal.Distinct().ToList();
     AplicarTamanioUnidadesEnBatalla();
     NotificarCambioValourGlobal();
   }
@@ -2319,6 +2510,7 @@ public class BattleManager : MonoBehaviour
   }
   public void LimpiarCapasCasillas()
   {
+    LimpiarPreviewAmenazaMeleeIA();
     LimpiarPreviewHoverHostil();
 
     foreach (Casilla cas in lCasillasTotal)
@@ -2330,6 +2522,7 @@ public class BattleManager : MonoBehaviour
 
   public void LimpiarSeleccionHabilidadActual()
   {
+    OcultarPanelDescripcionHabilidad(_habilidadActiva, true);
     LiberarPoseTurnoActivoMarcadaPorSeleccion();
     unidadMarcadaHoverObjetivoHabilidad?.Marcar(0);
     unidadMarcadaHoverObjetivoHabilidad = null;
@@ -2346,7 +2539,17 @@ public class BattleManager : MonoBehaviour
     ActualizarTextoSeleccionObjetivo();
   }
 
-  public bool SeleccionandoObjetivo;
+  private bool seleccionandoObjetivo;
+  public bool SeleccionandoObjetivo
+  {
+    get => seleccionandoObjetivo;
+    set
+    {
+      if (seleccionandoObjetivo == value) { return; }
+      seleccionandoObjetivo = value;
+      ActualizarVisibilidadBarrasVidaObjetivos();
+    }
+  }
   private Habilidad _habilidadActiva;
   public Habilidad HabilidadActiva
   {
@@ -2362,9 +2565,54 @@ public class BattleManager : MonoBehaviour
       LimpiarPreviewHoverHostil();
       _habilidadActiva?.LimpiarPreviewCasilla();
       _habilidadActiva?.LimpiarMarcasUnidadesPosibles();
+      if (value == null)
+      {
+        OcultarPanelDescripcionHabilidad(_habilidadActiva, true);
+      }
       _habilidadActiva = value;
+      ActualizarVisibilidadBarrasVidaObjetivos();
       ActualizarVisibilidadIndicadorEsfuerzo();
     }
+  }
+
+  public void ActualizarVisibilidadBarrasVidaObjetivos()
+  {
+    HashSet<Unidad> nuevosObjetivos = new HashSet<Unidad>();
+    if (SeleccionandoObjetivo && HabilidadActiva != null)
+    {
+      IEnumerable<Unidad> unidadesValidas = PreviewHoverHostilActivo()
+        ? unidadesPosiblesPreviewHoverHostil
+        : lUnidadesPosiblesHabilidadActiva;
+      if (unidadesValidas != null)
+      {
+        foreach (Unidad unidad in unidadesValidas)
+        {
+          if (unidad != null)
+          {
+            nuevosObjetivos.Add(unidad);
+          }
+        }
+      }
+    }
+
+    foreach (Unidad unidad in unidadesObjetivoValidoBarraVida)
+    {
+      if (unidad != null && !nuevosObjetivos.Contains(unidad))
+      {
+        unidad.EstablecerObjetivoValidoBarraVida(false);
+      }
+    }
+
+    foreach (Unidad unidad in nuevosObjetivos)
+    {
+      if (!unidadesObjetivoValidoBarraVida.Contains(unidad))
+      {
+        unidad.EstablecerObjetivoValidoBarraVida(true);
+      }
+    }
+
+    unidadesObjetivoValidoBarraVida.Clear();
+    unidadesObjetivoValidoBarraVida.UnionWith(nuevosObjetivos);
   }
 
   public bool EsUnidadObjetivoVisualHabilidadActiva(Unidad unidad)
@@ -2611,23 +2859,37 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
-    Casilla casillaAtacante = atacante.CasillaPosicion;
-    if (casillaAtacante.posX != 3)
+    if (casillaObjetivo.lado == atacante.CasillaPosicion.lado)
     {
       return false;
     }
 
-    if (casillaObjetivo.lado == casillaAtacante.lado)
-    {
-      return false;
-    }
+    Unidad unidadObjetivo = casillaObjetivo.Presente != null
+      ? casillaObjetivo.Presente.GetComponent<Unidad>()
+      : null;
+    List<Casilla> casillasAtacante = atacante.ObtenerCasillasHuella();
+    List<Casilla> casillasObjetivo = unidadObjetivo != null
+      ? unidadObjetivo.ObtenerCasillasHuella()
+      : new List<Casilla> { casillaObjetivo };
 
-    if (casillaObjetivo.posX != 3)
+    foreach (Casilla casillaAtacante in casillasAtacante)
     {
-      return false;
-    }
+      if (casillaAtacante == null || casillaAtacante.posX != 3)
+      {
+        continue;
+      }
 
-    return Mathf.Abs(casillaObjetivo.posY - casillaAtacante.posY) <= 1;
+      foreach (Casilla casillaObjetivoHuella in casillasObjetivo)
+      {
+        if (casillaObjetivoHuella != null
+          && casillaObjetivoHuella.posX == 3
+          && Mathf.Abs(casillaObjetivoHuella.posY - casillaAtacante.posY) <= 1)
+        {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   public bool TryFiltrarObjetivosMeleePorInmovilizacion(Unidad atacante, bool habilidadEsMelee, List<object> objetivosOriginales, out List<object> objetivosFiltrados)
@@ -2708,10 +2970,12 @@ public class BattleManager : MonoBehaviour
   private void Update()
   {
     bool tutorialActivo = scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
+    bool esPrimerCombateTutorial = ObtenerAdministradorEscenasActual()?.EsPrimerCombateTutorialEnCurso == true;
+    bool hotkeysBatallaBloqueados = tutorialActivo || esPrimerCombateTutorial;
 
     if (EntradaBatallaBloqueadaPorUI)
     {
-      if (!tutorialActivo && Input.GetKeyDown(KeyCode.Escape) && CerrarOpcionesSiEstanAbiertasEnCombate())
+      if (!hotkeysBatallaBloqueados && Input.GetKeyDown(KeyCode.Escape) && CerrarOpcionesSiEstanAbiertasEnCombate())
       {
         return;
       }
@@ -2727,12 +2991,12 @@ public class BattleManager : MonoBehaviour
     ActualizarFadeHoverObjetivoHabilidadPorMouse();
     ActualizarFadeAliadoDebajoUnidadActivaFrontal();
 
-    if (!tutorialActivo && Input.GetKeyDown(teclaDebugBajoMouse))
+    if (!hotkeysBatallaBloqueados && Input.GetKeyDown(teclaDebugBajoMouse))
     {
       DebugObjetosBajoMouse();
     }
 
-    if (!tutorialActivo && Input.GetKeyDown(KeyCode.Tab))
+    if (!hotkeysBatallaBloqueados && Input.GetKeyDown(KeyCode.Tab))
     {
       ActivarVistaTactica(!vistaTacticaActiva);
     }
@@ -2748,7 +3012,7 @@ public class BattleManager : MonoBehaviour
 
     if (Input.GetKeyDown(KeyCode.Space))
     {
-      if (unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null && tutorialActivo == false)
+      if (unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null && !hotkeysBatallaBloqueados)
       {
         if (TryConfirmarHabilidadAutoObjetivo())
         {
@@ -2760,7 +3024,7 @@ public class BattleManager : MonoBehaviour
       }
     }
 
-    if (Input.GetKeyDown(KeyCode.Escape) && tutorialActivo)
+    if (Input.GetKeyDown(KeyCode.Escape) && hotkeysBatallaBloqueados)
     {
       return;
     }
@@ -2783,15 +3047,18 @@ public class BattleManager : MonoBehaviour
       AbrirOpcionesDesdeCombate();
     }
 
-    if (!tutorialActivo && Input.GetKeyDown(KeyCode.I))
+    if (!hotkeysBatallaBloqueados && Input.GetKeyDown(KeyCode.I))
     {
       scUIInfoChar.BotonInfoenemigos();
     }
-    if (!tutorialActivo && Input.GetKeyDown(KeyCode.F))
+    if (!hotkeysBatallaBloqueados && Input.GetKeyDown(KeyCode.F))
     {
       ActivarModoRapido(!modoRapidoActivado);
     }
-    ManejarHotkeysHabilidadesJugador(tutorialActivo);
+    if (!esPrimerCombateTutorial)
+    {
+      ManejarHotkeysHabilidadesJugador(tutorialActivo);
+    }
 
     if (unidadActiva != null && scUIBotonesHab != null && unidadActiva.GetComponent<IAUnidad>() == null)
     {
@@ -2882,6 +3149,49 @@ public class BattleManager : MonoBehaviour
       redirigiendoClickUnidadCentralizado = false;
     }
 
+    return true;
+  }
+
+  public bool TryRedirigirClickCasillaAUnidadGrande(Casilla casillaQueRecibioClick)
+  {
+    if (!redirigiendoClickUnidadCentralizado
+      && frameUltimoClickUnidadCentralizado == Time.frameCount)
+    {
+      return true;
+    }
+
+    if (casillaQueRecibioClick == null
+      || redirigiendoClickUnidadCentralizado
+      || TutorialCombateActivo()
+      || vistaTacticaActiva
+      || !SeleccionandoObjetivo
+      || HabilidadActiva == null
+      || HabilidadActivaSeleccionaCasilla()
+      || bOcupado)
+    {
+      return false;
+    }
+
+    Unidad unidadObjetivo = casillaQueRecibioClick.Presente != null
+      ? casillaQueRecibioClick.Presente.GetComponent<Unidad>()
+      : null;
+    if (unidadObjetivo == null
+      || !unidadObjetivo.bGrande
+      || !EsUnidadObjetivoVisualHabilidadActiva(unidadObjetivo))
+    {
+      return false;
+    }
+
+    frameUltimoClickUnidadCentralizado = Time.frameCount;
+    redirigiendoClickUnidadCentralizado = true;
+    try
+    {
+      unidadObjetivo.OnMouseDown();
+    }
+    finally
+    {
+      redirigiendoClickUnidadCentralizado = false;
+    }
     return true;
   }
 
@@ -3081,12 +3391,14 @@ public class BattleManager : MonoBehaviour
     {
       if (unidadHoverBajoMouse != null)
       {
+        unidadHoverBajoMouse.EstablecerMouseEncimaBarraVida(false);
         infoChar?.LimpiarHover(unidadHoverBajoMouse);
       }
 
       unidadHoverBajoMouse = nuevaUnidadHover;
       if (unidadHoverBajoMouse != null)
       {
+        unidadHoverBajoMouse.EstablecerMouseEncimaBarraVida(true);
         if (!SeleccionandoObjetivo)
         {
           TooltipBatalla.Instance?.HideTooltipSinAnim();
@@ -3113,7 +3425,20 @@ public class BattleManager : MonoBehaviour
         return null;
       }
 
-      return ObtenerUnidadBajoMouse(true, MargenHoverUnidadPixeles);
+      Unidad unidadBajoMouse = ObtenerUnidadBajoMouse(true, MargenHoverUnidadPixeles);
+      if (unidadBajoMouse != null)
+      {
+        return unidadBajoMouse;
+      }
+
+      Casilla casillaBajoMouse = ObtenerCasillaBajoMouse();
+      Unidad unidadGrande = casillaBajoMouse?.Presente?.GetComponent<Unidad>();
+      return unidadGrande != null
+        && !HabilidadActivaSeleccionaCasilla()
+        && unidadGrande.bGrande
+        && EsUnidadObjetivoVisualHabilidadActiva(unidadGrande)
+          ? unidadGrande
+          : null;
     }
 
     bool turnoJugador = unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null;
@@ -3346,6 +3671,7 @@ public class BattleManager : MonoBehaviour
   {
     if (EntradaBatallaBloqueadaPorUI)
     {
+      LimpiarPreviewAmenazaMeleeIA();
       LimpiarInteraccionCampoPorUI();
       return;
     }
@@ -3358,6 +3684,7 @@ public class BattleManager : MonoBehaviour
 
     ActualizarTextoSeleccionObjetivo();
     ActualizarHoverUnidadBajoMouse();
+    ActualizarPreviewAmenazaMeleeIA();
   }
 
   public bool EntradaBatallaBloqueadaPorUI
@@ -3369,6 +3696,7 @@ public class BattleManager : MonoBehaviour
         : ObtenerAdministradorEscenasActual();
 
       return IntroBatallaActiva
+        || (scTutorialCombate != null && scTutorialCombate.EsPasoSeleccionBallesta())
         || (administradorEscenas != null
           && ((administradorEscenas.MenuOpciones != null && administradorEscenas.MenuOpciones.activeInHierarchy)
             || administradorEscenas.HandbookBatallaAbierto));
@@ -3389,6 +3717,7 @@ public class BattleManager : MonoBehaviour
 
     if (unidadHoverBajoMouse != null)
     {
+      unidadHoverBajoMouse.EstablecerMouseEncimaBarraVida(false);
       scUIInfoChar?.LimpiarHover(unidadHoverBajoMouse);
       unidadHoverBajoMouse = null;
     }
@@ -3735,7 +4064,12 @@ public class BattleManager : MonoBehaviour
 
     if (lUnidadesPosiblesHabilidadActiva != null)
     {
+      int cantidadAnterior = lUnidadesPosiblesHabilidadActiva.Count;
       lUnidadesPosiblesHabilidadActiva.RemoveAll(unidadObjetivo => unidadObjetivo != provocador);
+      if (cantidadAnterior != lUnidadesPosiblesHabilidadActiva.Count)
+      {
+        ActualizarVisibilidadBarrasVidaObjetivos();
+      }
     }
 
     if (lObstaculosPosiblesHabilidadActiva != null)
@@ -3763,7 +4097,12 @@ public class BattleManager : MonoBehaviour
 
     if (lUnidadesPosiblesHabilidadActiva != null)
     {
+      int cantidadAnterior = lUnidadesPosiblesHabilidadActiva.Count;
       lUnidadesPosiblesHabilidadActiva.RemoveAll(unidadObjetivo => !EsObjetivoMeleeAdyacentePermitido(unidadActiva, unidadObjetivo));
+      if (cantidadAnterior != lUnidadesPosiblesHabilidadActiva.Count)
+      {
+        ActualizarVisibilidadBarrasVidaObjetivos();
+      }
     }
 
     if (lObstaculosPosiblesHabilidadActiva != null)
@@ -3936,7 +4275,13 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
-    if (lUnidadesPosiblesHabilidadActiva == null || lUnidadesPosiblesHabilidadActiva.Count != 1)
+    if (lUnidadesPosiblesHabilidadActiva == null)
+    {
+      return false;
+    }
+
+    lUnidadesPosiblesHabilidadActiva = lUnidadesPosiblesHabilidadActiva.Distinct().ToList();
+    if (lUnidadesPosiblesHabilidadActiva.Count != 1)
     {
       return false;
     }
@@ -6342,6 +6687,7 @@ public class BattleManager : MonoBehaviour
     HashSet<Casilla> casillasNegras;
     HashSet<Casilla> casillasRojas = CalcularCasillasRangoHostilDesde(origenPreview, alcanceBase, ancho, HabilidadActiva.esMelee, out casillasNegras);
     ActualizarUnidadesPosiblesPreviewHoverHostil(casillasRojas);
+    ActualizarVisibilidadBarrasVidaObjetivos();
 
     foreach (Casilla casillaNegra in casillasNegras)
     {
@@ -6406,6 +6752,7 @@ public class BattleManager : MonoBehaviour
     HashSet<Casilla> casillasRojas = CalcularCasillasRangoHostilDesde(origenPreview, 1, 1, true, out casillasNegras);
     unidadesPosiblesPreviewHoverHostil.Clear();
     obstaculosPosiblesPreviewHoverHostil.Clear();
+    ActualizarVisibilidadBarrasVidaObjetivos();
 
     foreach (Casilla casillaNegra in casillasNegras)
     {
@@ -6443,6 +6790,7 @@ public class BattleManager : MonoBehaviour
       obstaculosPosiblesPreviewHoverHostil.Clear();
       previewHoverMeleeGenericoActivo = false;
       OcultarFantasmaPreviewHoverHostil();
+      ActualizarVisibilidadBarrasVidaObjetivos();
       return;
     }
 
@@ -6458,8 +6806,358 @@ public class BattleManager : MonoBehaviour
     casillaOrigenPreviewHoverHostil = null;
     previewHoverMeleeGenericoActivo = false;
     OcultarFantasmaPreviewHoverHostil();
+    ActualizarVisibilidadBarrasVidaObjetivos();
     SincronizarMarcasHabilidadActiva();
     ActualizarTextoSeleccionObjetivo();
+  }
+
+  private void ActualizarPreviewAmenazaMeleeIA()
+  {
+    Unidad unidadPreview = ObtenerUnidadAmenazaMeleeIAObjetivo();
+    Casilla origenPreview = unidadPreview != null ? unidadPreview.CasillaPosicion : null;
+    if (unidadPreview == unidadAmenazaMeleeIA && origenPreview == origenAmenazaMeleeIA)
+    {
+      if (estadosVisualesMovimientoAmenazaMeleeIA.Count > 0)
+      {
+        OcultarVisualesMovimientoDuranteAmenazaMeleeIA();
+      }
+      return;
+    }
+
+    LimpiarPreviewAmenazaMeleeIA();
+    if (unidadPreview == null || origenPreview == null || lCasillasTotal == null)
+    {
+      return;
+    }
+
+    HashSet<Casilla> casillasRojasMelee = new HashSet<Casilla>();
+    HashSet<Casilla> casillasRojasRango = new HashSet<Casilla>();
+    HashSet<Casilla> casillasNegras = new HashSet<Casilla>();
+    IAUnidad iaUnidadPreview = unidadPreview.GetComponent<IAUnidad>();
+    bool esTurnoJugador = unidadActiva.GetComponent<IAUnidad>() == null;
+    bool mostrarRangoEnHover = esTurnoJugador && iaUnidadPreview != null;
+    foreach (IAHabilidad habilidad in unidadPreview.GetComponents<IAHabilidad>())
+    {
+      if (habilidad == null || !habilidad.enabled || !habilidad.esHostil)
+      {
+        continue;
+      }
+
+      bool incluirMelee = habilidad.esMelee && habilidad.hActualCooldown <= 0;
+      bool incluirRango = mostrarRangoEnHover && !habilidad.esMelee && !(habilidad is DestruirObstaculo);
+      if (!incluirMelee && !incluirRango)
+      {
+        continue;
+      }
+
+      HashSet<Casilla> negrasHabilidad;
+      HashSet<Casilla> rojasHabilidad = CalcularCasillasRangoHostilDesde(
+        origenPreview,
+        Mathf.Max(0, habilidad.hAlcance),
+        Mathf.Max(0, habilidad.hAncho),
+        incluirMelee,
+        out negrasHabilidad,
+        unidadPreview);
+      if (incluirMelee)
+      {
+        if (HayObjetivoValidoMeleeEnCasillas(unidadPreview, habilidad, rojasHabilidad))
+        {
+          casillasRojasMelee.UnionWith(rojasHabilidad);
+          casillasNegras.UnionWith(negrasHabilidad);
+        }
+      }
+      else
+      {
+        casillasRojasRango.UnionWith(rojasHabilidad);
+      }
+    }
+
+    bool mostrarMelee = casillasRojasMelee.Count > 0;
+    HashSet<Casilla> casillasRojas = mostrarMelee ? casillasRojasMelee : casillasRojasRango;
+    if (!mostrarMelee)
+    {
+      casillasNegras.Clear();
+    }
+
+    unidadAmenazaMeleeIA = unidadPreview;
+    origenAmenazaMeleeIA = origenPreview;
+    if (casillasRojas.Count == 0 && casillasNegras.Count == 0)
+    {
+      return;
+    }
+
+    OcultarVisualesMovimientoDuranteAmenazaMeleeIA();
+    casillasNegras.ExceptWith(casillasRojas);
+
+    foreach (Casilla casilla in casillasNegras)
+    {
+      GuardarEstadoAmenazaMeleeIA(casilla);
+      casilla.ActivarCapaColorNegro();
+      AtenuarRenderersAmenazaMeleeIA(casilla.MarcaMeleeAtraviesa);
+      ConfigurarFlechaAmenazaMeleeIA(casilla.MarcaMeleeAtraviesa);
+    }
+
+    foreach (Casilla casilla in casillasRojas)
+    {
+      GuardarEstadoAmenazaMeleeIA(casilla);
+      casilla.ActivarCapaColorRojo();
+      GameObject capaRoja = casilla.transform.childCount > 1
+        ? casilla.transform.GetChild(1).gameObject
+        : null;
+      bool esSoloRango = casillasRojasRango.Contains(casilla) && !casillasRojasMelee.Contains(casilla);
+      AtenuarRenderersAmenazaMeleeIA(capaRoja, esSoloRango);
+    }
+  }
+
+  private bool HayObjetivoValidoMeleeEnCasillas(Unidad atacante, IAHabilidad habilidad, IEnumerable<Casilla> casillas)
+  {
+    if (atacante == null || habilidad == null || casillas == null || atacante.CasillaPosicion == null)
+    {
+      return false;
+    }
+
+    IAUnidad iaAtacante = atacante.GetComponent<IAUnidad>();
+    Unidad provocador = atacante.ObtenerProvocadorVigente();
+    foreach (Casilla casilla in casillas)
+    {
+      if (casilla == null || casilla.Presente == null)
+      {
+        continue;
+      }
+
+      Unidad objetivo = casilla.Presente.GetComponent<Unidad>();
+      if (objetivo != null)
+      {
+        bool esEnemigo = objetivo.CasillaPosicion != null
+          && objetivo.CasillaPosicion.lado != atacante.CasillaPosicion.lado;
+        bool puedeVerlo = objetivo.ObtenerEstaEscondido() <= 0
+          || (iaAtacante != null && iaAtacante.bPuedeVerEscondidos);
+        if (esEnemigo && objetivo.HP_actual > 0f && puedeVerlo && (provocador == null || objetivo == provocador))
+        {
+          return true;
+        }
+
+        continue;
+      }
+
+      if (provocador == null && habilidad.afectaObstaculos && casilla.Presente.GetComponent<Obstaculo>() != null)
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private Unidad ObtenerUnidadAmenazaMeleeIAObjetivo()
+  {
+    if (unidadActiva == null || SeleccionandoObjetivo || HabilidadActiva != null || vistaTacticaActiva)
+    {
+      return null;
+    }
+
+    IAUnidad iaActiva = unidadActiva.GetComponent<IAUnidad>();
+    if (iaActiva != null)
+    {
+      return unidadActiva != unidadAmenazaMeleeIASuprimida
+        && unidadActiva.CasillaPosicion != null
+        && unidadActiva.CasillaPosicion.lado == 1
+          ? unidadActiva
+          : null;
+    }
+
+    Unidad unidadHover = EsIAEnemigaDeUnidadActiva(unidadHoverBajoMouse) ? unidadHoverBajoMouse : null;
+    if (unidadHover != null)
+    {
+      return unidadHover;
+    }
+
+    Unidad unidadFijada = scUIInfoChar != null ? scUIInfoChar.unidadFijadaActual : null;
+    return EsIAEnemigaDeUnidadActiva(unidadFijada) ? unidadFijada : null;
+  }
+
+  private bool EsIAEnemigaDeUnidadActiva(Unidad unidad)
+  {
+    return unidad != null
+      && unidad.GetComponent<IAUnidad>() != null
+      && unidad.CasillaPosicion != null
+      && unidadActiva != null
+      && unidadActiva.CasillaPosicion != null
+      && unidad.CasillaPosicion.lado != unidadActiva.CasillaPosicion.lado;
+  }
+
+  private void GuardarEstadoAmenazaMeleeIA(Casilla casilla)
+  {
+    if (casilla == null || estadosAmenazaMeleeIA.ContainsKey(casilla))
+    {
+      return;
+    }
+
+    MeshRenderer meshRenderer = casilla.GetComponent<MeshRenderer>();
+    estadosAmenazaMeleeIA.Add(casilla, new EstadoVisualCasillaPreview
+    {
+      capaAzulActiva = ObtenerCapaCasillaActiva(casilla, 0),
+      capaRojaActiva = ObtenerCapaCasillaActiva(casilla, 1),
+      capaNegraActiva = ObtenerCapaCasillaActiva(casilla, 2),
+      meshRendererActivo = meshRenderer == null || meshRenderer.enabled,
+      marcaMeleeAtraviesaActiva = casilla.MarcaMeleeAtraviesa != null && casilla.MarcaMeleeAtraviesa.activeSelf
+    });
+  }
+
+  private void AtenuarRenderersAmenazaMeleeIA(GameObject visual, bool esPreviewRango = false)
+  {
+    if (visual == null)
+    {
+      return;
+    }
+
+    foreach (Renderer rendererVisual in visual.GetComponentsInChildren<Renderer>(true))
+    {
+      if (rendererVisual == null || propiedadesVisualesAmenazaMeleeIA.ContainsKey(rendererVisual))
+      {
+        continue;
+      }
+
+      MaterialPropertyBlock propiedadesOriginales = new MaterialPropertyBlock();
+      rendererVisual.GetPropertyBlock(propiedadesOriginales);
+      propiedadesVisualesAmenazaMeleeIA.Add(rendererVisual, propiedadesOriginales);
+
+      Material material = rendererVisual.sharedMaterial;
+      if (material == null)
+      {
+        continue;
+      }
+
+      string propiedadColor = material.HasProperty("_BaseColor") ? "_BaseColor" : "_Color";
+      if (!material.HasProperty(propiedadColor))
+      {
+        continue;
+      }
+
+      Color colorBase = material.GetColor(propiedadColor);
+      float intensidadColor = esPreviewRango ? 0.18f : 0.28f;
+      float intensidadAlpha = esPreviewRango ? 0.35f : 0.5f;
+      MaterialPropertyBlock propiedadesAtenuadas = new MaterialPropertyBlock();
+      rendererVisual.GetPropertyBlock(propiedadesAtenuadas);
+      propiedadesAtenuadas.SetColor(propiedadColor, new Color(
+        colorBase.r * intensidadColor,
+        colorBase.g * intensidadColor,
+        colorBase.b * intensidadColor,
+        colorBase.a * intensidadAlpha));
+      rendererVisual.SetPropertyBlock(propiedadesAtenuadas);
+    }
+  }
+
+  private void OcultarVisualesMovimientoDuranteAmenazaMeleeIA()
+  {
+    if (lCasillasTotal == null)
+    {
+      return;
+    }
+
+    foreach (Casilla casilla in lCasillasTotal)
+    {
+      if (casilla == null)
+      {
+        continue;
+      }
+
+      OcultarVisualMovimientoAmenazaMeleeIA(casilla.Mover);
+      OcultarVisualMovimientoAmenazaMeleeIA(casilla.MoverCostoso);
+      OcultarVisualMovimientoAmenazaMeleeIA(casilla.Desplazable);
+      OcultarVisualMovimientoAmenazaMeleeIA(casilla.MarcaMelee);
+    }
+  }
+
+  private void OcultarVisualMovimientoAmenazaMeleeIA(GameObject visual)
+  {
+    if (visual == null)
+    {
+      return;
+    }
+
+    if (!estadosVisualesMovimientoAmenazaMeleeIA.ContainsKey(visual))
+    {
+      estadosVisualesMovimientoAmenazaMeleeIA.Add(visual, visual.activeSelf);
+    }
+
+    if (visual.activeSelf)
+    {
+      visual.SetActive(false);
+    }
+  }
+
+  private void ConfigurarFlechaAmenazaMeleeIA(GameObject flecha)
+  {
+    if (flecha == null)
+    {
+      return;
+    }
+
+    Transform transformFlecha = flecha.transform;
+    if (!transformsFlechasAmenazaMeleeIA.TryGetValue(transformFlecha, out EstadoTransformAmenazaMeleeIA estadoOriginal))
+    {
+      estadoOriginal = new EstadoTransformAmenazaMeleeIA
+      {
+        rotacionLocal = transformFlecha.localRotation,
+        escalaLocal = transformFlecha.localScale
+      };
+      transformsFlechasAmenazaMeleeIA.Add(transformFlecha, estadoOriginal);
+    }
+
+    transformFlecha.localRotation = estadoOriginal.rotacionLocal * Quaternion.Euler(0f, 180f, 0f);
+    transformFlecha.localScale = estadoOriginal.escalaLocal * 0.78f;
+  }
+
+  public void OcultarAmenazaMeleeIAPorEjecucion(Unidad unidad)
+  {
+    if (unidad == null)
+    {
+      return;
+    }
+
+    unidadAmenazaMeleeIASuprimida = unidad;
+    LimpiarPreviewAmenazaMeleeIA();
+  }
+
+  public void LimpiarPreviewAmenazaMeleeIA()
+  {
+    foreach (KeyValuePair<Transform, EstadoTransformAmenazaMeleeIA> par in transformsFlechasAmenazaMeleeIA)
+    {
+      if (par.Key != null)
+      {
+        par.Key.localRotation = par.Value.rotacionLocal;
+        par.Key.localScale = par.Value.escalaLocal;
+      }
+    }
+
+    transformsFlechasAmenazaMeleeIA.Clear();
+    foreach (KeyValuePair<Renderer, MaterialPropertyBlock> par in propiedadesVisualesAmenazaMeleeIA)
+    {
+      if (par.Key != null)
+      {
+        par.Key.SetPropertyBlock(par.Value);
+      }
+    }
+
+    propiedadesVisualesAmenazaMeleeIA.Clear();
+    foreach (KeyValuePair<GameObject, bool> par in estadosVisualesMovimientoAmenazaMeleeIA)
+    {
+      if (par.Key != null)
+      {
+        par.Key.SetActive(par.Value);
+      }
+    }
+
+    estadosVisualesMovimientoAmenazaMeleeIA.Clear();
+    foreach (KeyValuePair<Casilla, EstadoVisualCasillaPreview> par in estadosAmenazaMeleeIA)
+    {
+      RestaurarEstadoVisualCasillaPreview(par.Key, par.Value);
+    }
+
+    estadosAmenazaMeleeIA.Clear();
+    unidadAmenazaMeleeIA = null;
+    origenAmenazaMeleeIA = null;
   }
 
   private bool PreviewHoverHostilActivo()
@@ -6787,7 +7485,7 @@ public class BattleManager : MonoBehaviour
     return casillasRojas;
   }
 
-  private HashSet<Casilla> CalcularCasillasRangoHostilDesde(Casilla origen, int alcanceBase, int ancho, bool esMelee, out HashSet<Casilla> casillasNegras)
+  private HashSet<Casilla> CalcularCasillasRangoHostilDesde(Casilla origen, int alcanceBase, int ancho, bool esMelee, out HashSet<Casilla> casillasNegras, Unidad atacantePreview = null)
   {
     casillasNegras = new HashSet<Casilla>();
     HashSet<Casilla> casillasRojas = new HashSet<Casilla>();
@@ -6799,9 +7497,10 @@ public class BattleManager : MonoBehaviour
     int alcanceFinal = alcanceBase;
     if (esMelee)
     {
+      Unidad atacante = atacantePreview != null ? atacantePreview : unidadActiva;
       if (origen.posX == 3)
       {
-        alcanceFinal += CalcularAumentoRangoMeleePreviewSinPintar(origen, casillasNegras);
+        alcanceFinal += CalcularAumentoRangoMeleePreviewSinPintar(origen, casillasNegras, atacante);
       }
 
       if (TieneObstaculoOUnidadAdelanteMeleePreview(origen) != 0)
@@ -6822,7 +7521,7 @@ public class BattleManager : MonoBehaviour
     return casillasRojas;
   }
 
-  private int CalcularAumentoRangoMeleePreviewSinPintar(Casilla origenPreview, HashSet<Casilla> casillasNegras)
+  private int CalcularAumentoRangoMeleePreviewSinPintar(Casilla origenPreview, HashSet<Casilla> casillasNegras, Unidad atacante)
   {
     LadoManager ladoOpuesto = origenPreview != null && origenPreview.ladoOpuesto != null
       ? origenPreview.ladoOpuesto.GetComponent<LadoManager>()
@@ -6862,7 +7561,7 @@ public class BattleManager : MonoBehaviour
 
     foreach (Casilla casilla in casillasAdyacentesyFrenteColumna1)
     {
-      if (casilla.BloqueaAvanceMeleeDesdeFila(posYorigen, unidadActiva))
+      if (casilla.BloqueaAvanceMeleeDesdeFila(posYorigen, atacante))
       {
         return 0;
       }
@@ -6875,7 +7574,7 @@ public class BattleManager : MonoBehaviour
 
     foreach (Casilla casilla in casillasAdyacentesyFrenteColumna2)
     {
-      if (casilla.BloqueaAvanceMeleeDesdeFila(posYorigen, unidadActiva))
+      if (casilla.BloqueaAvanceMeleeDesdeFila(posYorigen, atacante))
       {
         return 1;
       }

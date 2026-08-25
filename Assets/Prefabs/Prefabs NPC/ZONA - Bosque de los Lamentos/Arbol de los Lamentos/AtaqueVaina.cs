@@ -15,6 +15,7 @@ public class AtaqueVaina : IAHabilidad
     [SerializeField] private int XdDanio;
     [SerializeField] private int daniodX;
     [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
+    [SerializeField] private AudioClip sonidoAtaqueVaina;
 
 
     
@@ -60,6 +61,9 @@ public class AtaqueVaina : IAHabilidad
       scEstaUnidad.ReproducirAnimacionAtaque();
 
       Objetivo = EstablecerObjetivoPrioritario();
+      AjustesAudio.ReproducirClipEnPunto(sonidoAtaqueVaina, scEstaUnidad.transform.position, 0.9f);
+      ArbolLamentosVFX.CrearCasteo(scEstaUnidad, TipoVFXArbolLamentos.Vaina);
+      ArbolLamentosVFX.CrearLatigazo(scEstaUnidad, Objetivo);
                 PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
           
@@ -75,10 +79,36 @@ public class AtaqueVaina : IAHabilidad
 
     GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
     vfx.transform.parent = objetivo.transform;
+
+    Color colorVaina = new Color(0.18f, 0.055f, 0.012f, 1f);
+    foreach (UnityEngine.UI.Graphic grafico in vfx.GetComponentsInChildren<UnityEngine.UI.Graphic>(true))
+    {
+      grafico.color = colorVaina;
+    }
+
+    HabilidadIconVFX animacionVfx = vfx.GetComponentInChildren<HabilidadIconVFX>(true);
+    if (animacionVfx != null)
+    {
+      Gradient gradienteVaina = new Gradient();
+      gradienteVaina.SetKeys(
+        new[] { new GradientColorKey(colorVaina, 0f), new GradientColorKey(colorVaina, 1f) },
+        new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 1f) });
+      animacionVfx.extraPulseGlow = false;
+      animacionVfx.colorOverTime = true;
+      animacionVfx.colorGradient = gradienteVaina;
+      animacionVfx.extraAlphaCurve = false;
+      animacionVfx.sizeOverTime = true;
+      animacionVfx.sizeXCurve = AnimationCurve.Constant(0f, 1f, 1f);
+      animacionVfx.sizeXMultiplier = 0.28f;
+      animacionVfx.sizeYMultiplier = 0f;
+      animacionVfx.playSfx = false;
+    }
      
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
+   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);
+   RenderOrderHelper.ForzarProyectilAlFrente(vfx);
+   ArbolLamentosVFX.CrearImpacto(objetivo, TipoVFXArbolLamentos.Vaina);
 
     }
       public override void AplicarEfectosHabilidad(object obj)
@@ -156,6 +186,7 @@ public class AtaqueVaina : IAHabilidad
            danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
            
            objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
+           VFXAplicar(objetivo.gameObject);
      }
      
     }

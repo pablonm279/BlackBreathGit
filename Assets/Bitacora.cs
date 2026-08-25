@@ -451,6 +451,7 @@ public abstract class Bitacora : MonoBehaviour
             }
         }
 
+        DescartarEntradasPreviasAlPrimerDia();
         AsegurarDiaActualConSnapshotSiFalta(diaActual, esperanza, oro, materiales, suministros);
     }
 
@@ -499,6 +500,10 @@ public abstract class Bitacora : MonoBehaviour
         }
 
         bool estabaAnclado = ancladoALaUltimaPagina || paginaVisible <= 0;
+        if (ultimoDiaRegistrado == 0)
+        {
+            entradasCampania.Clear();
+        }
         AgregarEntradaCampaniaInterna(ConstruirEncabezadoDia(dia));
         AgregarEntradaCampaniaInterna(ConstruirEntradaRecursos(esperanza, oro, materiales, suministros));
         ultimoDiaRegistrado = dia;
@@ -559,6 +564,25 @@ public abstract class Bitacora : MonoBehaviour
         }
 
         entradasCampania.Add(mensaje);
+    }
+
+    private void DescartarEntradasPreviasAlPrimerDia()
+    {
+        for (int i = 0; i < entradasCampania.Count; i++)
+        {
+            string entrada = entradasCampania[i];
+            if (entrada.StartsWith("---------------- ", StringComparison.Ordinal)
+                && (entrada.EndsWith("Día 1", StringComparison.Ordinal)
+                    || entrada.EndsWith("Dia 1", StringComparison.Ordinal)
+                    || entrada.EndsWith("Day 1", StringComparison.Ordinal)))
+            {
+                if (i > 0)
+                {
+                    entradasCampania.RemoveRange(0, i);
+                }
+                return;
+            }
+        }
     }
 
     protected int NormalizarPaginaVisible(int totalPaginas)

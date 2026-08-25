@@ -337,7 +337,8 @@ public class Actividades : MonoBehaviour
         spriteSeleccionado = btn.actImage != null ? btn.actImage.sprite : ObtenerSpriteActividad(btn.actividadRepresentada.IDActividad);
         if (textdesc != null)
         {
-          textdesc.text = FormatearDescripcionPanel(btn.actividadRepresentada.desc);
+          textdesc.text = FormatearDescripcionPanel(
+            btn.actividadRepresentada.ObtenerDescripcion(scMenuPersonajes.pSel));
         }
       }
       else

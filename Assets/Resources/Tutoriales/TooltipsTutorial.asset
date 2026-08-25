@@ -332,19 +332,19 @@ MonoBehaviour:
     side: 0
     panelOffset: {x: 0, y: 0}
     textoEs: "Tu Personaje ha <b>Pifiado</b>.\nEsto ocurre cuando en su tirada de
-      ataque saca un 1 (5% chances).\nAl Pifiar, perder\xE1 los <b>PA</b> restantes
-      y terminar\xE1 su turno. Los Enemigos tambi\xE9n Pifian."
+      ataque saca un 1 (5% chances).\nAl Pifiar, pierde 1 <b>PA</b> ese turno, pero
+      su turno no termina. Los Enemigos tambi\xE9n Pifian."
     textoEn: 'Your Character has <b>Fumbled</b>.
 
       This happens when their attack
       roll is a 1 (5% chance).
 
-      When they Fumble, they lose their remaining
-      <b>AP</b> and their turn ends. Enemies can Fumble too.'
+      When they Fumble, they lose 1
+      <b>AP</b> that turn, but their turn does not end. Enemies can Fumble too.'
     textoPt: "Seu Personagem teve uma <b>Falha Cr\xEDtica</b>.\nIsso ocorre quando
       a rolagem de ataque dele tira 1 (5% de chance).\nAo ter uma Falha Cr\xEDtica,
-      ele perde os <b>PA</b> restantes e encerra o turno. Os Inimigos tamb\xE9m podem
-      ter Falha Cr\xEDtica."
+      ele perde 1 <b>PA</b> nesse turno, mas o turno n\xE3o termina. Os Inimigos
+      tamb\xE9m podem ter Falha Cr\xEDtica."
     showPointer: 0
     pointerOffset: {x: 0, y: 0}
     pointerDirection: 0

@@ -72,6 +72,7 @@ public class Enmendar : Habilidad
       {
         string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Power ({poderActual})");
         string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"your Fervor ({fervorActual})");
+        string curacionMagica = TerminoDescripcion(TerminoDescripcionId.CuracionMagica, "magical healing");
         string proximaMejora = null;
         if (DebeMostrarProximaMejoraDescripcion())
         {
@@ -86,7 +87,7 @@ public class Enmendar : Habilidad
           new[]
           {
             LineaDescripcion("Target", "1 ally"),
-            LineaDescripcion("Effect", $"Restores 4-18{bonusPlanoTexto} + {poder} + {fervor} HP as magical healing."),
+            LineaDescripcion("Effect", $"Restores 4-18{bonusPlanoTexto} + {poder} + {fervor} HP as {curacionMagica}."),
             LineaDescripcion("Cost", consumeFervor ? "1 Fervor" : "None")
           },
           proximaMejora);
@@ -97,6 +98,7 @@ public class Enmendar : Habilidad
       {
         string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
         string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"Fervor atual ({fervorActual})");
+        string curacionMagica = TerminoDescripcion(TerminoDescripcionId.CuracionMagica, "cura mágica");
         string proximaMejora = null;
         if (DebeMostrarProximaMejoraDescripcion())
         {
@@ -111,7 +113,7 @@ public class Enmendar : Habilidad
           new[]
           {
             LineaDescripcion("Alvo", "1 aliado"),
-            LineaDescripcion("Efeito", $"Restaura 4-18{bonusPlanoTexto} + {poder} + {fervor} HP como cura mágica."),
+            LineaDescripcion("Efeito", $"Restaura 4-18{bonusPlanoTexto} + {poder} + {fervor} HP como {curacionMagica}."),
             LineaDescripcion("Custo", consumeFervor ? "1 Fervor" : "Nenhum")
           },
           proximaMejora);
@@ -121,6 +123,7 @@ public class Enmendar : Habilidad
       {
         string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");
         string fervor = TerminoDescripcion(TerminoDescripcionId.Fervor, $"Fervor actual ({fervorActual})");
+        string curacionMagica = TerminoDescripcion(TerminoDescripcionId.CuracionMagica, "curación mágica");
         string proximaMejora = null;
         if (DebeMostrarProximaMejoraDescripcion())
         {
@@ -135,7 +138,7 @@ public class Enmendar : Habilidad
           new[]
           {
             LineaDescripcion("Objetivo", "1 aliado"),
-            LineaDescripcion("Efecto", $"Restaura 4-18{bonusPlanoTexto} + {poder} + {fervor} HP como curación mágica."),
+            LineaDescripcion("Efecto", $"Restaura 4-18{bonusPlanoTexto} + {poder} + {fervor} HP como {curacionMagica}."),
             LineaDescripcion("Costo", consumeFervor ? "1 Fervor" : "Ninguno")
           },
           proximaMejora);

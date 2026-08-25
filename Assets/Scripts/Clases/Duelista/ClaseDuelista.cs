@@ -171,6 +171,7 @@ public class ClaseDuelista : Unidad
         base.ComienzoBatallaClase();
         ResetearPasoLigero();
         ResetearPosturaDemandante();
+        GetComponent<REPRESENTACIONEvasionMaestra>()?.ReiniciarEstadoCombate();
         ResetearEvasionMaestra();
         SincronizarEnGardeSegunBuffActual();
     }
@@ -405,12 +406,17 @@ public class ClaseDuelista : Unidad
 
     private int ObtenerNivelEvasionMaestra()
     {
+        REPRESENTACIONEvasionMaestra representacion = GetComponent<REPRESENTACIONEvasionMaestra>();
+        if (representacion != null && !representacion.ActivaEnCombate)
+        {
+            return 0;
+        }
+
         if (PASIVA_EvasionMaestra > 0)
         {
             return PASIVA_EvasionMaestra;
         }
 
-        REPRESENTACIONEvasionMaestra representacion = GetComponent<REPRESENTACIONEvasionMaestra>();
         return representacion != null ? representacion.NIVEL : 0;
     }
 

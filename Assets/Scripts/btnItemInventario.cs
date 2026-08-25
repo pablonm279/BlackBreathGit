@@ -8,6 +8,8 @@ public class btnItemInventario : MonoBehaviour
 {
     
     public Item itemRepresentado;
+    public bool mostrarComparacionAlPasarMouse = true;
+    public float escalaTooltipHabilidad = 0.8f;
 
     public Image imageMuestraItem;
     [SerializeField] private Color colorItemNormal = Color.white;
@@ -92,7 +94,9 @@ public class btnItemInventario : MonoBehaviour
     {
       Vector3 pos = Input.mousePosition;
       string total = ItemTooltipFormatter.ConstruirTooltip(itemRepresentado, true);
-      Item itemEquipado = scMenuPersonajes.ObtenerItemEquipadoQueReemplazaria(itemRepresentado);
+      Item itemEquipado = mostrarComparacionAlPasarMouse
+        ? scMenuPersonajes.ObtenerItemEquipadoQueReemplazaria(itemRepresentado)
+        : null;
       if (itemEquipado != null)
       {
         string totalEquipado = ItemTooltipFormatter.ConstruirTooltip(itemEquipado, true, "(Equipped)");
@@ -100,7 +104,7 @@ public class btnItemInventario : MonoBehaviour
       }
       else
       {
-        TooltipItems.Instance.ShowTooltip(total, pos, itemRepresentado);
+        TooltipItems.Instance.ShowTooltip(total, pos, itemRepresentado, escalaTooltipHabilidad);
       }
 
         }

@@ -88,6 +88,10 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] float intensidadWarpRelieve = 1.1f;
     [SerializeField] float distanciaMuestreoNormal = 0.32f;
 
+    const string NombreContenedorLlamas = "LlamasContainer";
+    const string PrefijoObjetoLlama = "Llama_BosqueArdiente";
+    const float OffsetLlamasSobreSuelo = 0.02f;
+
     [Header("Elevacion - Bosque Ardiente")]
     [SerializeField] bool usarElevacionTerrenoSurBosque = true;
     [SerializeField] float alturaElevacionTerrenoSurBosque = 0.7f;
@@ -477,6 +481,39 @@ public class MapDecorator : MonoBehaviour
         AplicarRelieveAPlano(planeMesh, runtimePlaneMesh, basePlaneVertices, planeCollider);
         AplicarRelieveAPlano(planeMeshExtension, runtimePlaneMeshExtension, basePlaneExtensionVertices, planeColliderExtension);
         LimpiarParedVisualPrecipicioTerrenoSur();
+        AjustarLlamasBosqueAlRelieve(zonaId);
+    }
+
+    void AjustarLlamasBosqueAlRelieve(int zonaId)
+    {
+        if (zonaId != 1
+            || string.IsNullOrEmpty(NombreContenedorLlamas)
+            || string.IsNullOrEmpty(PrefijoObjetoLlama))
+            return;
+
+        Transform contenedor = BuscarTransformEscena(NombreContenedorLlamas);
+        if (contenedor == null)
+            return;
+
+        Transform[] gruposLlamas = contenedor.GetComponentsInChildren<Transform>(true);
+        for (int i = 0; i < gruposLlamas.Length; i++)
+        {
+            Transform grupoLlamas = gruposLlamas[i];
+            if (grupoLlamas == null
+                || !grupoLlamas.name.StartsWith(PrefijoObjetoLlama, System.StringComparison.Ordinal))
+                continue;
+
+            for (int j = 0; j < grupoLlamas.childCount; j++)
+            {
+                Transform llama = grupoLlamas.GetChild(j);
+                if (TrySampleSurface(llama.position, out Vector3 superficie, out _, OffsetLlamasSobreSuelo))
+                {
+                    Vector3 posicion = llama.position;
+                    posicion.y = superficie.y;
+                    llama.position = posicion;
+                }
+            }
+        }
     }
 
     public int GetReliefSeed()

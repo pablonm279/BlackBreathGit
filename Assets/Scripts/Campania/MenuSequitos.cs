@@ -23,6 +23,7 @@ public class MenuSequitos : MonoBehaviour
    public List<int> lstSequitos = new List<int>();
 
    readonly Dictionary<int, Sequito> secuenciasActivasPorId = new Dictionary<int, Sequito>();
+   Sequito contenidoActivo;
 
    public Transform ObtenerPlaceholderContenido()
    {
@@ -42,6 +43,7 @@ public class MenuSequitos : MonoBehaviour
       }
 
       secuenciasActivasPorId[sequito.ID] = sequito;
+      sequito.PrepararContenido(placeholderContenido);
    }
 
    public void DesregistrarInstancia(Sequito sequito)
@@ -55,6 +57,29 @@ public class MenuSequitos : MonoBehaviour
       {
          secuenciasActivasPorId.Remove(sequito.ID);
       }
+
+      if (contenidoActivo == sequito)
+      {
+         contenidoActivo = null;
+      }
+   }
+
+   public void MostrarContenido(Sequito sequito)
+   {
+      if (sequito == null)
+      {
+         return;
+      }
+
+      RegistrarInstancia(sequito);
+
+      if (contenidoActivo != null && contenidoActivo != sequito)
+      {
+         contenidoActivo.OcultarContenido();
+      }
+
+      contenidoActivo = sequito;
+      contenidoActivo.MostrarContenido();
    }
 
    public void OcultarContenidosInstancias()
@@ -66,6 +91,8 @@ public class MenuSequitos : MonoBehaviour
             sequito.OcultarContenido();
          }
       }
+
+      contenidoActivo = null;
    }
 
    public void MostrarContenidoSequitoTutorial(string stepId)
@@ -86,6 +113,7 @@ public class MenuSequitos : MonoBehaviour
       Sequito sequito = ObtenerInstanciaSequito(idSequito);
       if (sequito != null)
       {
+         OcultarContenidosInstancias();
          sequito.clickRepresentar();
       }
    }
@@ -114,6 +142,8 @@ public class MenuSequitos : MonoBehaviour
 
    public void LimpiarInstanciasParaCarga()
    {
+      OcultarContenidosInstancias();
+
       List<Sequito> instancias = new List<Sequito>(secuenciasActivasPorId.Values);
       foreach (Sequito sequito in instancias)
       {
@@ -124,6 +154,7 @@ public class MenuSequitos : MonoBehaviour
       }
 
       secuenciasActivasPorId.Clear();
+      contenidoActivo = null;
       lstSequitos.Clear();
    }
 

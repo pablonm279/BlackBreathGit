@@ -23,6 +23,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private const string PrefGraficosIndex = "graficos_index";
   private const int CalidadGraficaBaja = 0;
   private const string EscenaMenuPrincipal = "ES-MenuPrincipal";
+  private const float InfluenciaBrilloMenuPrincipal = 0.30f;
   private const float BlackBreathParticleReductionPerQualityLevel = 0.15f;
   private const float CampaignParticleReductionPerQualityLevel = 0.25f;
   private const float CampaignBlackBreathReductionPerQualityLevel = 0.30f;
@@ -636,6 +637,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   {
     string sceneName = scene.name.ToLowerInvariant();
     bool isMenu = sceneName.Contains("menu");
+    bool isMainMenu = IsMainMenuScene(scene);
     bool isCampaign = sceneName.Contains("camp");
     bool isBattle = sceneName.Contains("batalla");
     if (!isMenu && !isCampaign && !isBattle) { return; }
@@ -643,12 +645,18 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     bool postFxEnabled = PrefBool(PrefPostFx, defaultPostFxEnabled);
     bool bloomEnabled = PrefBool(PrefBloom, defaultBloomEnabled);
     bool dofEnabled = PrefBool(PrefDoF, defaultDoFEnabled);
-    const float brightnessIncrease = 0.10f;
+    float brightnessIncrease = isMainMenu ? 0.02f : 0.10f;
     float brightness = Mathf.Clamp01(PrefFloat(PrefBrightness, defaultBrightness) + brightnessIncrease);
     float sceneBrightnessExposureRange = brightnessExposureRange;
-    if (isMenu || isCampaign)
+    if (isMainMenu)
     {
-      // Give options brightness a bit more headroom in front-end scenes without affecting battles.
+      // El fondo del menú ya tiene una exposición base: el slider debe corregirlo
+      // sin quemar luces y detalles de la ilustración.
+      sceneBrightnessExposureRange *= InfluenciaBrilloMenuPrincipal;
+    }
+    else if (isCampaign)
+    {
+      // La campaña conserva el margen extra de brillo de las escenas front-end.
       sceneBrightnessExposureRange += 0.24f;
     }
     float brightnessExposureOffset = (Mathf.Clamp01(brightness) - 0.5f) * 2f * sceneBrightnessExposureRange;

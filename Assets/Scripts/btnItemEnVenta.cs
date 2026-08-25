@@ -28,9 +28,17 @@ public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler, IPointerDownH
     void Start()
     {
        txtItemVentaDescripcion = transform.parent.parent.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>();
-       scSequitoMercaderes = transform.parent.parent.parent.parent.gameObject.GetComponent<SequitoMercaderes>();
+       if (scSequitoMercaderes == null)
+       {
+         scSequitoMercaderes = GetComponentInParent<SequitoMercaderes>(true);
+       }
        AsegurarReferenciaPin();
        ActualizarPinVisual();
+    }
+
+    public void ConfigurarSequito(SequitoMercaderes sequitoMercaderes)
+    {
+      scSequitoMercaderes = sequitoMercaderes;
     }
 
     public void ConfigurarPin(Sprite pin, bool pineado)
@@ -150,17 +158,24 @@ public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler, IPointerDownH
           
 
          txtItemVentaDescripcion.text = ItemTooltipFormatter.ConstruirTooltip(itemRepresentado, true) + precio;
+         TooltipItems.Instance?.MostrarTooltipsHabilidadesFlotantesSobre(txtItemVentaDescripcion.rectTransform, itemRepresentado);
          
         }
         if(n == 0)
         {
                      
           txtItemVentaDescripcion.text = "";
+          TooltipItems.Instance?.OcultarTooltipsHabilidadesFlotantes();
 
             
 
         }
        
+    }
+
+    private void OnDisable()
+    {
+      TooltipItems.Instance?.OcultarTooltipsHabilidadesFlotantes();
     }
 
 

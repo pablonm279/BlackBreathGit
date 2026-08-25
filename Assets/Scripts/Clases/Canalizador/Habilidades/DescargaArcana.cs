@@ -257,32 +257,12 @@ public class DescargaArcana : Habilidad
 
     protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
-        if (objetivos == null || objetivos.Count == 0)
-        {
-            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
-        }
-
-        List<Task> impactos = new List<Task>();
-        foreach (var objetivo in objetivos)
-        {
-            var impacto = CrearProyectil(objetivo);
-            if (impacto != null)
-            {
-                impactos.Add(impacto);
-            }
-        }
-
-        if (impactos.Count == 0)
-        {
-            return base.EsperarPreImpactoAsync(objetivos, casillaOrigenTrampas);
-        }
-
-        return Task.WhenAll(impactos);
+        return BattleManager.DelayCombateAsync(180);
     }
 
     protected override Task EsperarPostImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)
     {
-        return Task.CompletedTask;
+        return BattleManager.DelayCombateAsync(320 + ObtenerNivelEnergia() * 25);
     }
 
     public override void AplicarEfectosHabilidad(object obj, int tirada, Casilla casillaOrigenTrampas = null)
@@ -298,6 +278,9 @@ public class DescargaArcana : Habilidad
        
 
        int resultadoTirada = TiradaAtaque(tirada, defensaObjetivo, scEstaUnidad.mod_CarPoder, bonusAtaque, criticoRango, objetivo, 0); 
+       int energia = ObtenerNivelEnergia();
+       Vector3 puntoImpacto = DescargaArcanaRayoFx.ObtenerPuntoDestino(objetivo.gameObject);
+       DescargaArcanaRayoFx.Crear(scEstaUnidad, objetivo.gameObject, energia, resultadoTirada <= 0);
             
      
        if(resultadoTirada == -1)
@@ -322,7 +305,7 @@ public class DescargaArcana : Habilidad
 
          danio -= danio/2; //Reduce 50% por roce
 
-         DescargaArcanaImpactoFx.Crear(objetivo);
+         DescargaArcanaImpactoFx.Crear(objetivo, puntoImpacto);
          objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
 
@@ -334,7 +317,7 @@ public class DescargaArcana : Habilidad
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+1+scEstaUnidad.mod_CarPoder;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje);
 
-         DescargaArcanaImpactoFx.Crear(objetivo);
+         DescargaArcanaImpactoFx.Crear(objetivo, puntoImpacto);
          objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
 
        }
@@ -345,7 +328,7 @@ public class DescargaArcana : Habilidad
          float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+1+scEstaUnidad.mod_CarPoder;
          danio = danio/100*(100+scEstaUnidad.mod_DanioPorcentaje+danioMarca);
       
-         DescargaArcanaImpactoFx.Crear(objetivo);
+         DescargaArcanaImpactoFx.Crear(objetivo, puntoImpacto);
          objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
        }
      
@@ -355,6 +338,8 @@ public class DescargaArcana : Habilidad
      {
        Obstaculo objetivo = (Obstaculo)obj;
        //---
+
+       DescargaArcanaRayoFx.Crear(scEstaUnidad, objetivo.gameObject, ObtenerNivelEnergia(), false);
 
 
        float danio = TiradaDeDados.TirarDados(XdDanio,daniodX)+1+scEstaUnidad.mod_CarPoder;
@@ -453,6 +438,12 @@ public class DescargaArcana : Habilidad
         }
     }
 
+    private int ObtenerNivelEnergia()
+    {
+        ClaseCanalizador canalizador = scEstaUnidad as ClaseCanalizador;
+        return canalizador != null ? Mathf.Clamp(canalizador.ObtenerEnergia(), 0, 3) : 0;
+    }
+
     void VFXAplicar(GameObject objetivo)
     {
        //GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation); 
@@ -545,6 +536,495 @@ public class DescargaArcana : Habilidad
 }
 
 
+public sealed class DescargaArcanaRayoFx : MonoBehaviour
+{
+  private const float DuracionBase = 0.28f;
+  private const int Segmentos = 15;
+  private const int OrdenRayo = 5000;
+
+  private Vector3 origen;
+  private Vector3 destino;
+  private int energia;
+  private float tiempo;
+  private float proximaVariacion;
+  private LineRenderer nucleo;
+  private LineRenderer halo;
+  private LineRenderer[] rayosSecundarios;
+  private LineRenderer[] ramificaciones;
+  private Vector3[] puntosPrincipales;
+
+  private static Material materialRayo;
+  private static Material materialParticulas;
+  private static Texture2D texturaParticula;
+  private static AudioClip sonidoDescarga;
+
+  public static void Crear(Unidad usuario, GameObject objetivo, int nivelEnergia, bool fallo)
+  {
+    if (usuario == null || objetivo == null)
+    {
+      return;
+    }
+
+    Vector3 puntoOrigen = usuario.puntoSaliente != null
+      ? usuario.puntoSaliente.position
+      : usuario.transform.position + Vector3.up * 0.25f;
+    Vector3 puntoDestino = ObtenerPuntoDestino(objetivo);
+    if (fallo)
+    {
+      puntoDestino = DesviarCercaDelObjetivo(puntoOrigen, puntoDestino);
+    }
+
+    GameObject go = new GameObject("VFX_DescargaArcana_Rayo");
+    if (BattleManager.Instance != null)
+    {
+      go.transform.SetParent(BattleManager.Instance.transform, true);
+    }
+
+    DescargaArcanaRayoFx fx = go.AddComponent<DescargaArcanaRayoFx>();
+    fx.Inicializar(puntoOrigen, puntoDestino, Mathf.Clamp(nivelEnergia, 0, 3));
+
+    if (sonidoDescarga == null)
+    {
+      sonidoDescarga = Resources.Load<AudioClip>("Sonidos/Efectos/Descargaarcana");
+    }
+    if (sonidoDescarga != null)
+    {
+      AjustesAudio.ReproducirClipEnPunto(sonidoDescarga, puntoOrigen, 0.72f);
+    }
+  }
+
+  private void Inicializar(Vector3 puntoOrigen, Vector3 puntoDestino, int nivelEnergia)
+  {
+    origen = puntoOrigen;
+    destino = puntoDestino;
+    energia = nivelEnergia;
+    puntosPrincipales = new Vector3[Segmentos];
+
+    nucleo = CrearLinea(
+      "Nucleo",
+      0.011f + energia * 0.0015f,
+      OrdenRayo + 1,
+      new Color(0.76f, 0.98f, 1.35f, 1f),
+      new Color(0.18f, 0.58f, 1.25f, 0.92f));
+    halo = CrearLinea(
+      "Halo",
+      0.025f + energia * 0.0025f,
+      OrdenRayo,
+      new Color(0.16f, 0.62f, 1.25f, 0.24f),
+      new Color(0.08f, 0.24f, 1.05f, 0.08f));
+
+    rayosSecundarios = new LineRenderer[energia + 1];
+    for (int i = 0; i < rayosSecundarios.Length; i++)
+    {
+      rayosSecundarios[i] = CrearLinea(
+        "RayoSecundario_" + i,
+        0.0048f + energia * 0.00045f,
+        OrdenRayo + 1,
+        new Color(0.48f, 0.88f, 1.30f, 0.66f),
+        new Color(0.10f, 0.36f, 1.15f, 0.28f));
+    }
+
+    ramificaciones = new LineRenderer[energia * 2 + 1];
+    for (int i = 0; i < ramificaciones.Length; i++)
+    {
+      ramificaciones[i] = CrearLinea(
+        "Ramificacion_" + i,
+        0.0075f + energia * 0.0011f,
+        OrdenRayo + 1,
+        new Color(0.50f, 0.90f, 1.35f, 0.92f),
+        new Color(0.08f, 0.34f, 1.10f, 0.14f));
+      ramificaciones[i].widthCurve = new AnimationCurve(
+        new Keyframe(0f, 0.82f),
+        new Keyframe(0.18f, 1f),
+        new Keyframe(0.72f, 0.68f),
+        new Keyframe(1f, 0.28f));
+    }
+
+    Redibujar();
+    CrearEfectoOrigen();
+    CrearMicroparticulas();
+  }
+
+  private void Update()
+  {
+    tiempo += Time.deltaTime;
+    float duracion = DuracionBase + energia * 0.025f;
+    if (tiempo >= duracion)
+    {
+      Destroy(gameObject);
+      return;
+    }
+
+    if (tiempo >= proximaVariacion)
+    {
+      Redibujar();
+      proximaVariacion = tiempo + 0.028f;
+    }
+
+    float alpha = 1f - Mathf.InverseLerp(duracion * 0.58f, duracion, tiempo);
+    float brilloEnergia = 1f + energia * 0.14f;
+    nucleo.startColor = new Color(0.76f, 0.98f, 1.35f, alpha * brilloEnergia);
+    nucleo.endColor = new Color(0.18f, 0.58f, 1.25f, alpha * 0.92f * brilloEnergia);
+    halo.startColor = new Color(0.16f, 0.62f, 1.25f, alpha * (0.22f + energia * 0.025f));
+    halo.endColor = new Color(0.08f, 0.24f, 1.05f, alpha * 0.07f);
+
+    for (int i = 0; i < rayosSecundarios.Length; i++)
+    {
+      LineRenderer secundario = rayosSecundarios[i];
+      secundario.startColor = new Color(0.48f, 0.88f, 1.30f, alpha * (0.56f + energia * 0.05f));
+      secundario.endColor = new Color(0.10f, 0.36f, 1.15f, alpha * 0.24f);
+    }
+
+    for (int i = 0; i < ramificaciones.Length; i++)
+    {
+      LineRenderer rama = ramificaciones[i];
+      rama.startColor = new Color(0.50f, 0.90f, 1.35f, alpha * (0.84f + energia * 0.05f));
+      rama.endColor = new Color(0.08f, 0.34f, 1.10f, alpha * 0.12f);
+    }
+  }
+
+  private void Redibujar()
+  {
+    Vector3 direccion = destino - origen;
+    Vector3 normal = Vector3.Cross(direccion.normalized, Vector3.up);
+    if (normal.sqrMagnitude < 0.001f)
+    {
+      normal = Vector3.Cross(direccion.normalized, Vector3.right);
+    }
+    normal.Normalize();
+    Vector3 binormal = Vector3.Cross(direccion.normalized, normal).normalized;
+    float desvio = 0.022f + energia * 0.006f;
+
+    for (int i = 0; i < puntosPrincipales.Length; i++)
+    {
+      float t = i / (float)(puntosPrincipales.Length - 1);
+      Vector3 punto = Vector3.Lerp(origen, destino, t);
+      float intensidad = Mathf.Sin(t * Mathf.PI) * desvio;
+      punto += normal * UnityEngine.Random.Range(-intensidad, intensidad);
+      punto += binormal * UnityEngine.Random.Range(-intensidad, intensidad) * 0.38f;
+      puntosPrincipales[i] = punto;
+    }
+
+    nucleo.SetPositions(puntosPrincipales);
+    halo.SetPositions(puntosPrincipales);
+
+    for (int i = 0; i < rayosSecundarios.Length; i++)
+    {
+      DibujarRayoSecundario(rayosSecundarios[i], i, normal, binormal);
+    }
+
+    for (int i = 0; i < ramificaciones.Length; i++)
+    {
+      DibujarRamificacion(ramificaciones[i], i, normal, binormal);
+    }
+  }
+
+  private void DibujarRayoSecundario(LineRenderer linea, int indice, Vector3 normal, Vector3 binormal)
+  {
+    Vector3[] puntos = new Vector3[Segmentos];
+    float signo = indice % 2 == 0 ? 1f : -1f;
+    float separacion = 0.017f + (indice / 2) * 0.011f;
+
+    for (int i = 0; i < puntos.Length; i++)
+    {
+      float t = i / (float)(puntos.Length - 1);
+      float envolvente = Mathf.Sin(t * Mathf.PI);
+      Vector3 punto = puntosPrincipales[i];
+      punto += binormal * signo * separacion * envolvente;
+      punto += normal * UnityEngine.Random.Range(-0.018f, 0.018f) * envolvente;
+      punto += binormal * UnityEngine.Random.Range(-0.013f, 0.013f) * envolvente;
+      puntos[i] = punto;
+    }
+
+    linea.positionCount = puntos.Length;
+    linea.SetPositions(puntos);
+  }
+
+  private void CrearEfectoOrigen()
+  {
+    GameObject esferaGo = new GameObject("EsferaOrigen");
+    esferaGo.transform.SetParent(transform, false);
+    ParticleSystem esfera = esferaGo.AddComponent<ParticleSystem>();
+    esfera.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+    ParticleSystem.MainModule mainEsfera = esfera.main;
+    mainEsfera.duration = 0.5f;
+    mainEsfera.loop = false;
+    mainEsfera.startSpeed = 0f;
+    mainEsfera.simulationSpace = ParticleSystemSimulationSpace.World;
+    mainEsfera.maxParticles = 1;
+
+    ParticleSystem.EmissionModule emisionEsfera = esfera.emission;
+    emisionEsfera.enabled = false;
+
+    ParticleSystemRenderer rendererEsfera = esferaGo.GetComponent<ParticleSystemRenderer>();
+    rendererEsfera.renderMode = ParticleSystemRenderMode.Billboard;
+    rendererEsfera.alignment = ParticleSystemRenderSpace.View;
+    rendererEsfera.material = ObtenerMaterialParticulas();
+    rendererEsfera.sortingOrder = OrdenRayo + 2;
+    rendererEsfera.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+    rendererEsfera.receiveShadows = false;
+
+    ParticleSystem.EmitParams esferaParams = new ParticleSystem.EmitParams
+    {
+      position = origen,
+      velocity = Vector3.zero,
+      startLifetime = DuracionBase + energia * 0.025f,
+      startSize = 0.030f + energia * 0.0025f,
+      startColor = new Color(0.42f, 0.88f, 1f, 0.58f + energia * 0.04f)
+    };
+    esfera.Emit(esferaParams, 1);
+    esfera.Play();
+
+    GameObject chispasGo = new GameObject("ChispasOrigen");
+    chispasGo.transform.SetParent(transform, false);
+    ParticleSystem chispas = chispasGo.AddComponent<ParticleSystem>();
+    chispas.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+    ParticleSystem.MainModule mainChispas = chispas.main;
+    mainChispas.duration = 0.5f;
+    mainChispas.loop = false;
+    mainChispas.startSpeed = 0f;
+    mainChispas.simulationSpace = ParticleSystemSimulationSpace.World;
+    mainChispas.maxParticles = 24;
+
+    ParticleSystem.EmissionModule emisionChispas = chispas.emission;
+    emisionChispas.enabled = false;
+
+    ParticleSystemRenderer rendererChispas = chispasGo.GetComponent<ParticleSystemRenderer>();
+    rendererChispas.renderMode = ParticleSystemRenderMode.Billboard;
+    rendererChispas.alignment = ParticleSystemRenderSpace.View;
+    rendererChispas.material = ObtenerMaterialParticulas();
+    rendererChispas.sortingOrder = OrdenRayo + 3;
+    rendererChispas.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+    rendererChispas.receiveShadows = false;
+
+    int cantidadChispas = 7 + energia * 2;
+    for (int i = 0; i < cantidadChispas; i++)
+    {
+      ParticleSystem.EmitParams chispaParams = new ParticleSystem.EmitParams
+      {
+        position = origen + UnityEngine.Random.insideUnitSphere * 0.009f,
+        velocity = UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(0.035f, 0.10f),
+        startLifetime = UnityEngine.Random.Range(0.11f, 0.24f),
+        startSize = UnityEngine.Random.Range(0.002f, 0.0055f),
+        startColor = Color.Lerp(
+          new Color(0.78f, 1f, 1f, 0.86f),
+          new Color(0.16f, 0.48f, 1f, 0.68f),
+          UnityEngine.Random.value)
+      };
+      chispas.Emit(chispaParams, 1);
+    }
+    chispas.Play();
+  }
+
+  private void DibujarRamificacion(LineRenderer linea, int indice, Vector3 normal, Vector3 binormal)
+  {
+    const int puntosRama = 4;
+    Vector3[] puntos = new Vector3[puntosRama];
+    int indiceInicio = 3 + (indice * 5 + energia) % (Segmentos - 6);
+    Vector3 inicio = puntosPrincipales[indiceInicio];
+    float signo = indice % 2 == 0 ? 1f : -1f;
+    float longitud = 0.10f + energia * 0.035f + UnityEngine.Random.Range(0f, 0.04f);
+    Vector3 direccionRama = (binormal * signo + normal * UnityEngine.Random.Range(-0.48f, 0.48f)).normalized;
+
+    for (int i = 0; i < puntosRama; i++)
+    {
+      float t = i / (float)(puntosRama - 1);
+      Vector3 punto = inicio + direccionRama * longitud * t;
+      if (i > 0)
+      {
+        punto += normal * UnityEngine.Random.Range(-0.025f, 0.025f) * t;
+        punto += binormal * UnityEngine.Random.Range(-0.021f, 0.021f) * t;
+      }
+      puntos[i] = punto;
+    }
+
+    linea.positionCount = puntos.Length;
+    linea.SetPositions(puntos);
+  }
+
+  private LineRenderer CrearLinea(string nombre, float ancho, int orden, Color inicio, Color fin)
+  {
+    GameObject go = new GameObject(nombre);
+    go.transform.SetParent(transform, false);
+    LineRenderer linea = go.AddComponent<LineRenderer>();
+    linea.useWorldSpace = true;
+    linea.alignment = LineAlignment.View;
+    linea.material = ObtenerMaterialRayo();
+    linea.widthMultiplier = ancho;
+    linea.widthCurve = new AnimationCurve(
+      new Keyframe(0f, 0.72f),
+      new Keyframe(0.12f, 1f),
+      new Keyframe(0.76f, 0.72f),
+      new Keyframe(1f, 0.12f));
+    linea.positionCount = Segmentos;
+    linea.textureMode = LineTextureMode.Stretch;
+    linea.numCapVertices = 3;
+    linea.numCornerVertices = 2;
+    linea.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+    linea.receiveShadows = false;
+    linea.sortingOrder = orden;
+    linea.startColor = inicio;
+    linea.endColor = fin;
+    return linea;
+  }
+
+  private void CrearMicroparticulas()
+  {
+    GameObject go = new GameObject("Microparticulas");
+    go.transform.SetParent(transform, false);
+    ParticleSystem particulas = go.AddComponent<ParticleSystem>();
+    particulas.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+    ParticleSystem.MainModule main = particulas.main;
+    main.duration = 0.5f;
+    main.loop = false;
+    main.startLifetime = new ParticleSystem.MinMaxCurve(0.10f, 0.28f);
+    main.startSpeed = 0f;
+    main.startSize = new ParticleSystem.MinMaxCurve(0.0025f, 0.007f);
+    main.simulationSpace = ParticleSystemSimulationSpace.World;
+    main.maxParticles = 96;
+
+    ParticleSystem.EmissionModule emision = particulas.emission;
+    emision.enabled = false;
+
+    ParticleSystemRenderer renderer = go.GetComponent<ParticleSystemRenderer>();
+    renderer.renderMode = ParticleSystemRenderMode.Billboard;
+    renderer.alignment = ParticleSystemRenderSpace.View;
+    renderer.material = ObtenerMaterialParticulas();
+    renderer.sortingOrder = OrdenRayo + 2;
+    renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+    renderer.receiveShadows = false;
+
+    int cantidad = 18 + energia * 11;
+    for (int i = 0; i < cantidad; i++)
+    {
+      float t = UnityEngine.Random.Range(0.06f, 1f);
+      Vector3 posicion = Vector3.Lerp(origen, destino, t) + UnityEngine.Random.insideUnitSphere * 0.018f;
+      ParticleSystem.EmitParams parametros = new ParticleSystem.EmitParams
+      {
+        position = posicion,
+        velocity = UnityEngine.Random.insideUnitSphere * UnityEngine.Random.Range(0.025f, 0.095f),
+        startLifetime = UnityEngine.Random.Range(0.10f, 0.28f),
+        startSize = UnityEngine.Random.Range(0.0025f, 0.007f),
+        startColor = Color.Lerp(
+          new Color(0.62f, 0.96f, 1f, 0.9f),
+          new Color(0.16f, 0.42f, 1f, 0.72f),
+          UnityEngine.Random.value)
+      };
+      particulas.Emit(parametros, 1);
+    }
+
+    particulas.Play();
+  }
+
+  public static Vector3 ObtenerPuntoDestino(GameObject objetivo)
+  {
+    Unidad unidad = objetivo.GetComponent<Unidad>();
+    if (unidad != null)
+    {
+      return unidad.puntoEntrante != null ? unidad.puntoEntrante.position : unidad.transform.position + Vector3.up * 0.20f;
+    }
+
+    Obstaculo obstaculo = objetivo.GetComponent<Obstaculo>();
+    if (obstaculo != null)
+    {
+      return obstaculo.puntoEntrante != null ? obstaculo.puntoEntrante.position : obstaculo.transform.position;
+    }
+
+    return objetivo.transform.position;
+  }
+
+  private static Vector3 DesviarCercaDelObjetivo(Vector3 puntoOrigen, Vector3 puntoObjetivo)
+  {
+    Vector3 direccion = puntoObjetivo - puntoOrigen;
+    Vector3 lateral = Vector3.Cross(direccion.normalized, Vector3.up);
+    if (lateral.sqrMagnitude < 0.001f)
+    {
+      lateral = Vector3.right;
+    }
+    lateral.Normalize();
+
+    float lado = UnityEngine.Random.value < 0.5f ? -1f : 1f;
+    return puntoObjetivo
+      + Vector3.up * lado * UnityEngine.Random.Range(0.16f, 0.24f)
+      + lateral * UnityEngine.Random.Range(-0.045f, 0.045f);
+  }
+
+  private static Material ObtenerMaterialRayo()
+  {
+    if (materialRayo == null)
+    {
+      Shader shader = Shader.Find("Legacy Shaders/Particles/Additive");
+      if (shader == null)
+      {
+        shader = Shader.Find("Sprites/Default");
+      }
+      materialRayo = new Material(shader)
+      {
+        name = "Mat_DescargaArcana_RayoRuntime",
+        hideFlags = HideFlags.HideAndDontSave,
+        mainTexture = Texture2D.whiteTexture
+      };
+    }
+    return materialRayo;
+  }
+
+  private static Material ObtenerMaterialParticulas()
+  {
+    if (materialParticulas == null)
+    {
+      Shader shader = Shader.Find("Legacy Shaders/Particles/Additive");
+      if (shader == null)
+      {
+        shader = Shader.Find("Sprites/Default");
+      }
+      materialParticulas = new Material(shader)
+      {
+        name = "Mat_DescargaArcana_MicroParticulasRuntime",
+        hideFlags = HideFlags.HideAndDontSave,
+        mainTexture = ObtenerTexturaParticula()
+      };
+    }
+    return materialParticulas;
+  }
+
+  private static Texture2D ObtenerTexturaParticula()
+  {
+    if (texturaParticula != null)
+    {
+      return texturaParticula;
+    }
+
+    const int tamano = 16;
+    texturaParticula = new Texture2D(tamano, tamano, TextureFormat.ARGB32, false)
+    {
+      name = "Tex_DescargaArcana_MicroParticulaRuntime",
+      hideFlags = HideFlags.HideAndDontSave,
+      filterMode = FilterMode.Bilinear,
+      wrapMode = TextureWrapMode.Clamp
+    };
+
+    Color[] pixeles = new Color[tamano * tamano];
+    float centro = (tamano - 1) * 0.5f;
+    for (int y = 0; y < tamano; y++)
+    {
+      for (int x = 0; x < tamano; x++)
+      {
+        float dx = (x - centro) / centro;
+        float dy = (y - centro) / centro;
+        float alpha = Mathf.Pow(Mathf.Clamp01(1f - Mathf.Sqrt(dx * dx + dy * dy)), 2.4f);
+        pixeles[y * tamano + x] = new Color(1f, 1f, 1f, alpha);
+      }
+    }
+    texturaParticula.SetPixels(pixeles);
+    texturaParticula.Apply(false, true);
+    return texturaParticula;
+  }
+}
+
+
 public class DescargaArcanaImpactoFx : MonoBehaviour
 {
   private const float Duracion = 0.36f;
@@ -572,6 +1052,14 @@ public class DescargaArcanaImpactoFx : MonoBehaviour
 
   public static void Crear(Unidad unidad)
   {
+    if (unidad != null)
+    {
+      Crear(unidad, DescargaArcanaRayoFx.ObtenerPuntoDestino(unidad.gameObject));
+    }
+  }
+
+  public static void Crear(Unidad unidad, Vector3 puntoImpactoMundo)
+  {
     if (unidad == null || unidad.uImage == null)
     {
       return;
@@ -583,15 +1071,25 @@ public class DescargaArcanaImpactoFx : MonoBehaviour
       return;
     }
 
+    Canvas canvas = unidad.uImage.GetComponentInParent<Canvas>(true);
+    Camera camaraMundo = Camera.main;
+    Camera camaraCanvas = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay
+      ? canvas.worldCamera != null ? canvas.worldCamera : camaraMundo
+      : null;
+    Vector2 puntoPantalla = RectTransformUtility.WorldToScreenPoint(camaraMundo, puntoImpactoMundo);
+    if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(padre, puntoPantalla, camaraCanvas, out Vector2 puntoImpactoLocal))
+    {
+      return;
+    }
+
     GameObject go = new GameObject("DescargaArcanaImpactoFx", typeof(RectTransform), typeof(CanvasGroup), typeof(DescargaArcanaImpactoFx));
     DescargaArcanaImpactoFx fx = go.GetComponent<DescargaArcanaImpactoFx>();
-    fx.Inicializar(padre, imagen);
+    fx.Inicializar(padre, imagen, puntoImpactoLocal);
 
-    Canvas canvas = unidad.uImage.GetComponentInParent<Canvas>(true);
     RenderOrderHelper.OrdenarCanvasEncima(canvas, unidad.transform, 10);
   }
 
-  private void Inicializar(RectTransform padre, RectTransform imagen)
+  private void Inicializar(RectTransform padre, RectTransform imagen, Vector2 puntoImpactoLocal)
   {
     root = GetComponent<RectTransform>();
     canvasGroup = GetComponent<CanvasGroup>();
@@ -610,11 +1108,11 @@ public class DescargaArcanaImpactoFx : MonoBehaviour
       tamanoBase = new Vector2(36f, 42f);
     }
 
-    posicionImpacto = new Vector2(0f, tamanoBase.y * 0.08f);
+    posicionImpacto = puntoImpactoLocal;
     root.anchorMin = new Vector2(0.5f, 0.5f);
     root.anchorMax = new Vector2(0.5f, 0.5f);
     root.pivot = new Vector2(0.5f, 0.5f);
-    root.anchoredPosition = imagenUnidad.anchoredPosition + posicionImpacto;
+    root.localPosition = new Vector3(posicionImpacto.x, posicionImpacto.y, 0f);
     root.localScale = imagenUnidad.localScale;
     root.sizeDelta = tamanoBase * 0.82f;
 
@@ -678,7 +1176,7 @@ public class DescargaArcanaImpactoFx : MonoBehaviour
     float escalaPulso = Mathf.Lerp(0.42f, 1.08f, Mathf.SmoothStep(0f, 1f, t));
 
     canvasGroup.alpha = intensidad;
-    root.anchoredPosition = imagenUnidad != null ? imagenUnidad.anchoredPosition + posicionImpacto : root.anchoredPosition;
+    root.localPosition = new Vector3(posicionImpacto.x, posicionImpacto.y, 0f);
     root.localEulerAngles = new Vector3(0f, 0f, Mathf.Sin(Time.time * 45f) * 2.2f * golpe);
 
     Configurar(halo, Vector2.zero, tamanoBase * (0.62f * escalaPulso), 0f, new Color(0.38f, 0.78f, 1f, 0.22f * intensidad));

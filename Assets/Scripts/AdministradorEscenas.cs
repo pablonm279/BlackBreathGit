@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 public class AdministradorEscenas : MonoBehaviour
 {
   private const float DuracionFadeReveladoBatalla = 0.35f;
+  private const float BonusDanioCriticoAcechadorTutorial = 18f;
+  private const float BonusRangoCriticoAcechadorTutorial = 20f;
   private static bool mantenerFaderNegroEnProximaCargaCampania;
 
   public GameObject EscenaCampaign;
@@ -731,6 +733,8 @@ public class AdministradorEscenas : MonoBehaviour
       return;
     }
 
+    RetirarBonusCriticoAcechadorTutorialSiCorresponde();
+
     Personaje[] personajes = { Personaje1, Personaje2, Personaje3, Personaje4 };
     Unidad[] unidades = { unidadPers1, unidadPers2, unidadPers3, unidadPers4 };
     for (int i = 0; i < personajes.Length; i++)
@@ -759,6 +763,18 @@ public class AdministradorEscenas : MonoBehaviour
         AplicarBuffSiNoExiste(unidad, "Cansado", false, -1, cantAtaque: -1f, cantDanioPorcentaje: -10f);
       }
     }
+  }
+
+  void RetirarBonusCriticoAcechadorTutorialSiCorresponde()
+  {
+    if (BattleManager.Instance.RondaNro < 2 || acechadorConBonusCriticoTutorial == null)
+    {
+      return;
+    }
+
+    acechadorConBonusCriticoTutorial.mod_CriticoDañoBonus -= BonusDanioCriticoAcechadorTutorial;
+    acechadorConBonusCriticoTutorial.mod_CriticoRangoDado -= BonusRangoCriticoAcechadorTutorial;
+    acechadorConBonusCriticoTutorial = null;
   }
 
   public bool DebeBloquearIntercambioPorIndividualista(Unidad unidadActiva, Unidad unidadObjetivo, out Unidad unidadTexto)
@@ -1288,7 +1304,9 @@ public class AdministradorEscenas : MonoBehaviour
   public GameObject VFXAlientoGrande;
   EncounterDefinition encuentroGeneradoActual;
   int ultimoIDEncuentro;
+  public bool EsPrimerCombateTutorialEnCurso => ultimoIDEncuentro == 700;
   int tipoEmboscadaActual = 0;
+  private Unidad acechadorConBonusCriticoTutorial;
   private bool filtrandoUnicosEnComposicionInicial;
   private readonly HashSet<int> filasAliadasInicialesReservadas = new HashSet<int>();
   private readonly List<int> filasAliadasInicialesSeleccionadas = new List<int>();
@@ -1370,6 +1388,7 @@ public class AdministradorEscenas : MonoBehaviour
       return;
     }
     ultimoIDEncuentro = IDEncuentro;
+    acechadorConBonusCriticoTutorial = null;
     encuentroGeneradoActual = encuentro;
     tipoEmboscadaActual = esEmboscada;
     ResetearEstadoTraitsCombateParticipantes();
@@ -1512,8 +1531,9 @@ public class AdministradorEscenas : MonoBehaviour
         explorador.mod_iniciativa += 20; explorador.iniciativa_actual += 20;
         explorador.mod_Ataque += 11;
         explorador.mod_DanioPorcentaje += 51;
-        explorador.mod_CriticoDañoBonus += 18;
-        explorador.mod_CriticoRangoDado += 20;
+        explorador.mod_CriticoDañoBonus += BonusDanioCriticoAcechadorTutorial;
+        explorador.mod_CriticoRangoDado += BonusRangoCriticoAcechadorTutorial;
+        acechadorConBonusCriticoTutorial = explorador;
         ColocarEnCasillaEspecifica(1, explorador.gameObject, 2, 2); // x1,y3 para la primera pelea del tutorial
       }
     }
@@ -4295,10 +4315,11 @@ public class AdministradorEscenas : MonoBehaviour
       IAUnidad iaUnidad = GO.GetComponent<IAUnidad>();
       if (iaUnidad != null)
       {
+        Unidad unidadGrande = GO.GetComponent<Unidad>();
         requiereRetaguardiaInicial = iaUnidad.siempreEnRetaguardiaInicial;
-        columnasPreferidas = requiereRetaguardiaInicial
-          ? new List<int> { 1 }
-          : iaUnidad.esRango ? new List<int> { 1 } : new List<int> { 2, 3 };
+        columnasPreferidas = unidadGrande != null && unidadGrande.bGrande
+          ? (requiereRetaguardiaInicial || iaUnidad.esRango ? new List<int> { 2 } : new List<int> { 2, 3 })
+          : (requiereRetaguardiaInicial ? new List<int> { 1 } : iaUnidad.esRango ? new List<int> { 1 } : new List<int> { 2, 3 });
       }
     }
 
@@ -4328,6 +4349,12 @@ public class AdministradorEscenas : MonoBehaviour
     else
     {
       lado = BattleManager.Instance.ladoA; //Enemigos
+    }
+
+    Unidad unidadAColocar = GO != null ? GO.GetComponent<Unidad>() : null;
+    if (unidadAColocar != null && unidadAColocar.bGrande)
+    {
+      columna = Mathf.Max(2, columna);
     }
 
     List<int> filasCandidatas = new List<int>();
@@ -4524,9 +4551,16 @@ public class AdministradorEscenas : MonoBehaviour
     else { lado = BattleManager.Instance.ladoA; } //Enemigos
 
     IAUnidad iaUnidad = GO != null ? GO.GetComponent<IAUnidad>() : null;
-    if (iLado != 1 && iaUnidad != null && iaUnidad.siempreEnRetaguardiaInicial && X != 1)
+    Unidad unidad = GO != null ? GO.GetComponent<Unidad>() : null;
+    if (unidad != null && unidad.bGrande)
     {
-      ColocarEnCasillaAleatoriaEnColumna(iLado, 1, GO);
+      X = Mathf.Max(2, X);
+      Y = Mathf.Min(4, Y);
+    }
+    int columnaRetaguardia = unidad != null && unidad.bGrande ? 2 : 1;
+    if (iLado != 1 && iaUnidad != null && iaUnidad.siempreEnRetaguardiaInicial && X != columnaRetaguardia)
+    {
+      ColocarEnCasillaAleatoriaEnColumna(iLado, columnaRetaguardia, GO);
       return;
     }
 

@@ -44,7 +44,7 @@ public abstract class IAHabilidad : MonoBehaviour
   private readonly object secuenciaVisualLock = new object();
   private bool poseJugadorAtacadoPorIAEnCurso = false;
   private const int PausaPostAproximacionMs = 150;
-  private const int PausaAntesVolverMs = 1700;
+  private const int PausaAntesVolverMs = 1400;
   private const int PausaEntreMeleesEncadenadosMs = 250;
   private const float VentanaAnimacionDuplicada = 1.1f;
   private float inicioSecuenciaVisual = -999f;

@@ -6,6 +6,9 @@ public class DestruirObstaculo : Habilidad
 {
   private readonly List<Obstaculo> obstaculosDisponibles = new List<Obstaculo>();
 
+  protected override bool UsaTimingMeleeCentralizado => esMelee && !omitirAnimacionDeUso;
+  protected override bool UsaPoseAtaqueMeleeSostenida => esMelee && !omitirAnimacionDeUso;
+
   public override void Awake()
   {
     nombre = "Destruir Obstaculo";
@@ -16,9 +19,10 @@ public class DestruirObstaculo : Habilidad
     enArea = 0;
     esforzable = 1;
     esCargable = false;
-    esMelee = false;
+    esMelee = true;
     esHostil = false;
     bAfectaObstaculos = true;
+    fuerzaPoseAtaque = true;
     Usuario = gameObject;
     scEstaUnidad = GetComponent<Unidad>();
     ActualizarDescripcion();

@@ -148,6 +148,7 @@ public class BanterBattleUI : MonoBehaviour
     {
         if (!BantersHabilitados
             || instanciaBatalla == null
+            || PanelHabilidadIzquierdoAbierto()
             || string.IsNullOrWhiteSpace(texto))
         {
             return false;
@@ -173,6 +174,7 @@ public class BanterBattleUI : MonoBehaviour
         }
         if (!BantersHabilitados
             || instanciaBatalla == null
+            || PanelHabilidadIzquierdoAbierto()
             || unidad == null
             || string.IsNullOrWhiteSpace(texto))
         {
@@ -302,6 +304,11 @@ public class BanterBattleUI : MonoBehaviour
     public static void CancelarCampania(bool interrumpirActuales = false)
     {
         instanciaCampania?.CancelarSolicitudes(interrumpirActuales);
+    }
+
+    public static void CancelarPorPanelHabilidad()
+    {
+        instanciaBatalla?.CancelarSolicitudes(true);
     }
 
     public static void InvalidarHablante(Unidad unidad)
@@ -520,6 +527,12 @@ public class BanterBattleUI : MonoBehaviour
     {
         while (cola.Count > 0)
         {
+            if (tipoSistema == TipoSistema.Batalla && PanelHabilidadIzquierdoAbierto())
+            {
+                yield return null;
+                continue;
+            }
+
             float silencioRestante = silencioHasta - Time.unscaledTime;
             if (silencioRestante > 0f)
             {
@@ -932,6 +945,12 @@ public class BanterBattleUI : MonoBehaviour
             Mathf.Max(duracionMinima, duracionBase, duracionLectura),
             duracionMinima,
             duracionMaxima);
+    }
+
+    private static bool PanelHabilidadIzquierdoAbierto()
+    {
+        return BattleManager.Instance != null
+            && BattleManager.Instance.PanelDescripcionHabilidadIzquierdoVisible;
     }
 
     private static float EaseOutBack(float t, float intensidad)

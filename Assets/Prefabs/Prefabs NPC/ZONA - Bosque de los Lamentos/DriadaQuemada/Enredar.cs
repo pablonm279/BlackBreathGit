@@ -82,6 +82,7 @@ public class Enredar : IAHabilidad
 
      
         Unidad objetivo = (Unidad)obj;
+        DriadaQuemadaVFX.CrearEnredar(objetivo);
      
          if(objetivo.TiradaSalvacion(2, 12) && objetivo.estado_inmovil > -1 && objetivo.estado_inmovil < 1)
           {

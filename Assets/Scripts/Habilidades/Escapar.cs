@@ -79,6 +79,7 @@ public class Escapar : Habilidad
     battleManager.SeleccionandoObjetivo = true;
     battleManager.lUnidadesPosiblesHabilidadActiva.Clear();
     battleManager.lUnidadesPosiblesHabilidadActiva.Add(scEstaUnidad);
+    battleManager.ActualizarVisibilidadBarrasVidaObjetivos();
     battleManager.lObstaculosPosiblesHabilidadActiva.Clear();
     SincronizarMarcasUnidadesPosibles();
   }

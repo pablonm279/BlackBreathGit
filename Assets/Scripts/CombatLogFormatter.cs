@@ -46,7 +46,8 @@ public static class CombatLogFormatter
     int umbralPifia,
     int umbralCritico,
     float deltaSituacional = 0f,
-    string notaExtra = null)
+    string notaExtra = null,
+    bool mostrarNatural20SinModificadores = false)
   {
     float total = tiradaFinal + modAtributo + modHabilidad + modAtaque;
 
@@ -68,28 +69,35 @@ public static class CombatLogFormatter
       sb.Append(objetivoTx);
     }
 
-    sb.Append(" | d20: ").Append(FormatearNumero(tiradaFinal));
+    sb.Append(" | d20: ").Append(FormatearNumero(mostrarNatural20SinModificadores ? 20f : tiradaFinal));
 
-    float deltaClima = tiradaFinal - tiradaBase;
-    if (Mathf.Abs(deltaClima) > 0.01f)
+    if (!mostrarNatural20SinModificadores)
     {
-      sb.Append(" (").Append(FormatearNumeroConSigno(deltaClima)).Append(' ').Append(T("clima")).Append(')');
+      float deltaClima = tiradaFinal - tiradaBase;
+      if (Mathf.Abs(deltaClima) > 0.01f)
+      {
+        sb.Append(" (").Append(FormatearNumeroConSigno(deltaClima)).Append(' ').Append(T("clima")).Append(')');
+      }
+
+      if (Mathf.Abs(deltaSituacional) > 0.01f)
+      {
+        sb.Append(" (").Append(FormatearNumeroConSigno(deltaSituacional)).Append(' ').Append(T("situacional")).Append(')');
+      }
+
+      sb.Append(" | ").Append(T("mods")).Append(": ")
+        .Append(FormatearNumeroConSigno(modAtributo)).Append(' ').Append(T("atr")).Append(' ')
+        .Append(FormatearNumeroConSigno(modHabilidad)).Append(' ').Append(T("hab")).Append(' ')
+        .Append(FormatearNumeroConSigno(modAtaque)).Append(' ').Append(T("atq")).Append(' ');
+
+      sb.Append("| = ").Append(FormatearNumero(total));
     }
 
-    if (Mathf.Abs(deltaSituacional) > 0.01f)
+    sb.Append(" | ").Append(T("vs")).Append(' ').Append(T("DEF")).Append(' ').Append(FormatearNumero(defensaObjetivo));
+    if (!mostrarNatural20SinModificadores)
     {
-      sb.Append(" (").Append(FormatearNumeroConSigno(deltaSituacional)).Append(' ').Append(T("situacional")).Append(')');
+      sb.Append(" | ").Append(T("crit")).Append(" >= ").Append(umbralCritico);
     }
-
-    sb.Append(" | ").Append(T("mods")).Append(": ")
-      .Append(FormatearNumeroConSigno(modAtributo)).Append(' ').Append(T("atr")).Append(' ')
-      .Append(FormatearNumeroConSigno(modHabilidad)).Append(' ').Append(T("hab")).Append(' ')
-      .Append(FormatearNumeroConSigno(modAtaque)).Append(' ').Append(T("atq")).Append(' ');
-
-    sb.Append("| = ").Append(FormatearNumero(total))
-      .Append(' ').Append(T("vs")).Append(' ').Append(T("DEF")).Append(' ').Append(FormatearNumero(defensaObjetivo))
-      .Append(" | ").Append(T("crit")).Append(" >= ").Append(umbralCritico)
-      .Append(" -> ").Append(ResaltarResultado(textoResultado, outcome));
+    sb.Append(" -> ").Append(ResaltarResultado(textoResultado, outcome));
 
     if (!string.IsNullOrWhiteSpace(notaExtra))
     {

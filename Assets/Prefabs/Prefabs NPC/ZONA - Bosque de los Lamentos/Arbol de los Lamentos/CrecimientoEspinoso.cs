@@ -51,6 +51,7 @@ public class CrecimientoEspinoso : IAHabilidad
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
      
       scEstaUnidad.ReproducirAnimacionAtaque();
+      ArbolLamentosVFX.CrearCasteo(scEstaUnidad, TipoVFXArbolLamentos.Crecimiento);
 
      
     
@@ -77,13 +78,13 @@ public class CrecimientoEspinoso : IAHabilidad
         if(ladoPC.c1x1.GetComponent<TrampaEnredaderaEspinosa>() == null)
         { 
           TrampaEnredaderaEspinosa tr1 = ladoPC.c1x1.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-          tr1.Inicializar();
+          tr1.Inicializar(VFXEstadoPrefab);
           tr1.AsignarCreador(scEstaUnidad);
           TrampaEnredaderaEspinosa tr2 = ladoPC.c2x1.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-          tr2.Inicializar();
+          tr2.Inicializar(VFXEstadoPrefab);
           tr2.AsignarCreador(scEstaUnidad);
           TrampaEnredaderaEspinosa tr3 = ladoPC.c3x1.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-          tr3.Inicializar();
+          tr3.Inicializar(VFXEstadoPrefab);
           tr3.AsignarCreador(scEstaUnidad);
         }
         else{ filaAfectada--;}
@@ -93,13 +94,13 @@ public class CrecimientoEspinoso : IAHabilidad
         if(ladoPC.c1x2.GetComponent<TrampaEnredaderaEspinosa>() == null)
         {
           TrampaEnredaderaEspinosa tr1 = ladoPC.c1x2.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-          tr1.Inicializar();
+          tr1.Inicializar(VFXEstadoPrefab);
           tr1.AsignarCreador(scEstaUnidad);
           TrampaEnredaderaEspinosa tr2 = ladoPC.c2x2.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-          tr2.Inicializar();
+          tr2.Inicializar(VFXEstadoPrefab);
           tr2.AsignarCreador(scEstaUnidad);
           TrampaEnredaderaEspinosa tr3 = ladoPC.c3x2.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-          tr3.Inicializar();
+          tr3.Inicializar(VFXEstadoPrefab);
           tr3.AsignarCreador(scEstaUnidad);
         }else{ filaAfectada++;}
         }
@@ -108,13 +109,13 @@ public class CrecimientoEspinoso : IAHabilidad
           if(ladoPC.c1x3.GetComponent<TrampaEnredaderaEspinosa>() == null)
           {
             TrampaEnredaderaEspinosa tr1 = ladoPC.c1x3.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-            tr1.Inicializar();
+            tr1.Inicializar(VFXEstadoPrefab);
             tr1.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr2 = ladoPC.c2x3.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-            tr2.Inicializar();
+            tr2.Inicializar(VFXEstadoPrefab);
             tr2.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr3 = ladoPC.c3x3.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-            tr3.Inicializar();
+            tr3.Inicializar(VFXEstadoPrefab);
             tr3.AsignarCreador(scEstaUnidad);
           }else{ filaAfectada++;}
         }
@@ -123,13 +124,13 @@ public class CrecimientoEspinoso : IAHabilidad
           if(ladoPC.c1x4.GetComponent<TrampaEnredaderaEspinosa>() == null)
           {
             TrampaEnredaderaEspinosa tr1 = ladoPC.c1x4.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-            tr1.Inicializar();
+            tr1.Inicializar(VFXEstadoPrefab);
             tr1.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr2 = ladoPC.c2x4.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-            tr2.Inicializar();
+            tr2.Inicializar(VFXEstadoPrefab);
             tr2.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr3 = ladoPC.c3x4.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-            tr3.Inicializar();
+            tr3.Inicializar(VFXEstadoPrefab);
             tr3.AsignarCreador(scEstaUnidad);
           }else{ filaAfectada++;}
         }
@@ -138,13 +139,13 @@ public class CrecimientoEspinoso : IAHabilidad
           if(ladoPC.c1x5.GetComponent<TrampaEnredaderaEspinosa>() == null)
           {
             TrampaEnredaderaEspinosa tr1 = ladoPC.c1x5.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-            tr1.Inicializar();
+            tr1.Inicializar(VFXEstadoPrefab);
             tr1.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr2 = ladoPC.c2x5.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-            tr2.Inicializar();
+            tr2.Inicializar(VFXEstadoPrefab);
             tr2.AsignarCreador(scEstaUnidad);
             TrampaEnredaderaEspinosa tr3 = ladoPC.c3x5.gameObject.AddComponent<TrampaEnredaderaEspinosa>();
-            tr3.Inicializar();
+            tr3.Inicializar(VFXEstadoPrefab);
             tr3.AsignarCreador(scEstaUnidad);
           }
         }
