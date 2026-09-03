@@ -60,6 +60,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -81,9 +84,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &2114367936182774578
 GameObject:
@@ -145,6 +150,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -166,9 +174,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &4277565345341772785
 GameObject:
@@ -546,6 +556,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -567,9 +580,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6052390167993862677
 GameObject:
@@ -639,10 +654,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CasillaPosicion: {fileID: 0}
   CasillaDeseadaMov: {fileID: 0}
+  bGrande: 0
+  omitirFlashAnimacionRecibirDanio: 0
   CasillaForzadoaMover: {fileID: 0}
   estaCargando: {fileID: 0}
   valorCargando: 0
-  uRetrato: {fileID: 21300000, guid: 176c99a94ed27254ebb0f97612afeb4a, type: 3}
+  uRetrato: {fileID: 21300000, guid: fe908ce0d5cd0d14fa205d085340e81e, type: 3}
   uImage: {fileID: 6232689095815502372}
   uNombre: Desertor
   tags:
@@ -868,13 +885,20 @@ MonoBehaviour:
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
   barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaSangradoColor: {r: 0.28, g: 0.015, b: 0.015, a: 1}
   barraVidaRatioInicioRojo: 0.2
   barraVidaOscurecerTurnoPasado: 0.72
+  barraVidaPreviewDanioColor: {r: 1, g: 0.42, b: 0.08, a: 0.82}
+  barraVidaPreviewDanioMinimoColor: {r: 0.16, g: 0.008, b: 0.005, a: 0.96}
+  barraVidaPreviewDanioVelocidadPulso: 6
+  indicadorMuerteGarantizadaVelocidadPulso: 4.5
   rotuloHabilidadOffset: {x: 0, y: 2.1}
   rotuloHabilidadPadding: {x: 0.34, y: 0.16}
   rotuloHabilidadDuracion: 3
   rotuloHabilidadFondo: {r: 0.09, g: 0.012, b: 0.012, a: 0.82}
   rotuloHabilidadBorde: {r: 0.35, g: 0.07, b: 0.06, a: 0.72}
+  duracionVisibilidadTemporal: 1.5
+  duracionMovimientoEstados: 0.12
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 7361325147000958092}
 --- !u!114 &4271658784378029447
@@ -895,8 +919,6 @@ MonoBehaviour:
   vfxCasteo: {fileID: 0}
   requiereRecurso: 0
   costoPM: 0
-  cooldownMax: 0
-  cooldownActual: 0
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   NIVEL: 0
@@ -1119,8 +1141,8 @@ RectTransform:
   m_GameObject: {fileID: 6675945245544070442}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9811418, y: 1.3437338, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.0953467, y: 1.5001444, z: 1.1164}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1307032904713455823}
   - {fileID: 4316960633161352111}
@@ -1128,7 +1150,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.167, y: -12.401}
+  m_AnchoredPosition: {x: -0.1, y: -11.95}
   m_SizeDelta: {x: 22.41, y: 22.772}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3583555842226505725
@@ -1161,7 +1183,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 77a614cddab1f7c4e957a155d4a7639c, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

@@ -105,7 +105,7 @@ MonoBehaviour:
   playOnEnable: 1
   playOnClick: 0
   startDelay: 0
-  duration: 0.3
+  duration: 0.25
   curve:
     serializedVersion: 2
     m_Curve:
@@ -136,8 +136,8 @@ MonoBehaviour:
   forceFilledForWipe: 1
   extraPulseGlow: 1
   glowColor: {r: 1, g: 0, b: 0, a: 1}
-  glowIntensity: 0.96
-  glowScaleMax: 1.214
+  glowIntensity: 1
+  glowScaleMax: 1.317
   extraShake: 0
   shakeAmplitude: 6.58
   shakeFrequency: 1.1

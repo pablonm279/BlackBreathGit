@@ -8,7 +8,7 @@ public class Actividad_ColaborarConLosCuranderos: Actividad
     {
       IDActividad = 12; //
 
-      desc =  TRADU.i.Traducir("<color=#0cca74><b>Colaborar con los Curanderos: </b></color><color=#d3d3d3><i>Ayuda al <b>Séquito de Curanderos</b> en sus tareas, aumentando su eficacia.</color></i>\\n\\nSuma +5% al multiplicador global de curación, tanto al descansar como al realizar otras actividades.");
+      desc = "<color=#0cca74><b>Colaborar con los Curanderos: </b></color><color=#d3d3d3><i>Ayuda al <b>Séquito de Curanderos</b> en sus tareas, aumentando su eficacia.</color></i>\\n\\nSuma +5% al multiplicador global de curación, tanto al descansar como al realizar otras actividades.";
 
     }
 }

@@ -78,8 +78,7 @@ public class SiguesTu : Habilidad
         {
           LineaDescripcion("Target", "1 enemy"),
           LineaDescripcion("Effect", $"Marks the target (3 turns)."),
-          LineaDescripcion(objetivoMarcado, $"Vertical Cut and Cleave gain +5 {ataque}, +{bonusDanioMarca} damage{(bonusCritMarca > 0 ? $", +{bonusCritMarcaPorcentaje}% {critico}" : string.Empty)}.", 1),
-          LineaDescripcion("Mark use", "Consumed on the first Vertical Cut or Cleave attempt.", 1)
+          LineaDescripcion(objetivoMarcado, $"The Knight's next attack against the target gains +5 {ataque}, +{bonusDanioMarca} damage{(bonusCritMarca > 0 ? $", +{bonusCritMarcaPorcentaje}% {critico}" : string.Empty)}.", 1)
         };
         if (sinSalvacion)
         {
@@ -116,8 +115,7 @@ public class SiguesTu : Habilidad
         {
           LineaDescripcion("Alvo", "1 inimigo"),
           LineaDescripcion("Efeito", "Marca o alvo (3 turnos)."),
-          LineaDescripcion(alvoMarcado, $"Corte Vertical e Partir recebem +5 {ataque}, +{bonusDanioMarca} de dano{(bonusCritMarca > 0 ? $", +{bonusCritMarcaPorcentaje}% de {critico}" : string.Empty)}.", 1),
-          LineaDescripcion("Uso da marca", "É consumida na primeira tentativa de Corte Vertical ou Partir.", 1)
+          LineaDescripcion(alvoMarcado, $"O próximo ataque do Cavaleiro contra o alvo recebe +5 {ataque}, +{bonusDanioMarca} de dano{(bonusCritMarca > 0 ? $", +{bonusCritMarcaPorcentaje}% de {critico}" : string.Empty)}.", 1)
         };
         if (sinSalvacion) { lineas.Add(LineaDescripcion("Efeito negativo", $"-2 {ataque} ({durDebuff} turnos); sem salvaguarda.")); }
         else { lineas.Add(LineaDescripcion("Salvaguarda inimiga", $"{mental} vs CD {dcSalvacion}")); lineas.Add(LineaDescripcion("Falha", $"Amedrontado: -2 {ataque} ({durDebuff} turnos).", 1)); }
@@ -141,8 +139,7 @@ public class SiguesTu : Habilidad
         {
           LineaDescripcion("Objetivo", "1 enemigo"),
           LineaDescripcion("Efecto", "Marca al objetivo (3 turnos)."),
-          LineaDescripcion(objetivoMarcado, $"Corte Vertical y Partir obtienen +5 {ataque}, +{bonusDanioMarca} de daño{(bonusCritMarca > 0 ? $", +{bonusCritMarcaPorcentaje}% de {critico}" : string.Empty)}.", 1),
-          LineaDescripcion("Uso de la marca", "Se consume en el primer intento de Corte Vertical o Partir.", 1)
+          LineaDescripcion(objetivoMarcado, $"El siguiente ataque del Caballero contra el objetivo obtiene +5 {ataque}, +{bonusDanioMarca} de daño{(bonusCritMarca > 0 ? $", +{bonusCritMarcaPorcentaje}% de {critico}" : string.Empty)}.", 1)
         };
         if (sinSalvacion) { lineas.Add(LineaDescripcion("Penalización", $"-2 {ataque} ({durDebuff} turnos); sin salvación.")); }
         else { lineas.Add(LineaDescripcion("Salvación enemiga", $"{mental} vs CD {dcSalvacion}")); lineas.Add(LineaDescripcion("Salvación fallida", $"Asustado: -2 {ataque} ({durDebuff} turnos).", 1)); }

@@ -49,6 +49,7 @@ public class MenuDescanso : MonoBehaviour
   private bool descansoEnCurso;
   private bool forzarEventoBroteTutorialEnDescanso;
   private bool hoversTareasCivilesConfigurados;
+  private GameObject botonPedirAyuda;
   private readonly Dictionary<GameObject, Vector3> escalaOriginalBotonesTareasCiviles = new Dictionary<GameObject, Vector3>();
 
   float valor = 0;
@@ -56,6 +57,37 @@ public class MenuDescanso : MonoBehaviour
   void Awake()
   {
     ConfigurarHoversTareasCiviles();
+    ActualizarVisibilidadBotonPedirAyuda();
+  }
+
+  void OnEnable()
+  {
+    ActualizarVisibilidadBotonPedirAyuda();
+  }
+
+  private void ActualizarVisibilidadBotonPedirAyuda()
+  {
+    if (botonPedirAyuda == null)
+    {
+      Transform contenedor = transform.Find("Misiones");
+      botonPedirAyuda = contenedor != null ? contenedor.gameObject : null;
+    }
+
+    bool enTutorial = CampaignManager.Instance != null
+      && CampaignManager.Instance.DebeUsarConfiguracionTutorial();
+    if (botonPedirAyuda != null)
+    {
+      botonPedirAyuda.SetActive(!enTutorial);
+    }
+
+    if (enTutorial && goMenuMisiones != null)
+    {
+      goMenuMisiones.SetActive(false);
+    }
+    if (enTutorial && toggleMenuMisiones != null)
+    {
+      toggleMenuMisiones.SetIsOnWithoutNotify(false);
+    }
   }
 
   private void ConfigurarHoversTareasCiviles()
@@ -296,8 +328,8 @@ public class MenuDescanso : MonoBehaviour
 
       tareaCivilDescripcion.text = TRADU.i.Traducir("<b><u>Feria</b></u>\n\n");
       tareaCivilDescripcion.text += TRADU.i.Traducir("Los civiles organizan una feria con juegos y celebraciones.\n\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• +10 a 15 Esperanza</color>\n");
-      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• Consumo de Suministros +20%</color>\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#d8a205>• +10-15 Esperanza</color>\n");
+      tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#bb280d>• Consumo de Suministros +20%</color>\n");
       tareaCivilDescripcion.text += TRADU.i.Traducir("<color=#bb280d>• Riesgo de Emboscada +10%</color>\n\n");
 
       chancesAtaqueACaravana = 30 + CampaignManager.Instance.scAtributosZona.modChanceEmboscada;
@@ -618,6 +650,7 @@ public class MenuDescanso : MonoBehaviour
     float multiplicadorAliento = esClaro ? 0.5f : 1f;
     int tiradaEmboscadaDescanso = UnityEngine.Random.Range(1, 101);
     emboscadaProgramada = !enTutorial
+      && !campaignManager.DebugIgnorarCombatesActivo
       && !toggleMenuMisiones.isOn
       && nodoDescanso != null
       && nodoDescanso.tipoNodo != TipoNodoAsentamiento
@@ -654,7 +687,7 @@ public class MenuDescanso : MonoBehaviour
     BanterCampaignDirector.NotificarDescansoIniciado();
     CampaignManager.Instance.scAdministradorEscenas.PlayFadeInOut(1.2f, Mathf.Max(4f, duracionDescansoHoras - 1.2f));
     await TranscurrirHorasDescanso(horasHastaEmboscada, multiplicadorAliento, multiplicadorCuracion, true);
-    if (emboscadaProgramada)
+    if (emboscadaProgramada && !campaignManager.DebugIgnorarCombatesActivo)
     {
       float horasRestantesTrasEmboscada = Mathf.Max(0f, duracionDescansoHoras - horasHastaEmboscada);
       campaignManager.MarcarEmboscadaDescansoConsumida(campaignManager.ObtenerHoraActual());
@@ -1315,6 +1348,15 @@ public class MenuDescanso : MonoBehaviour
   public Toggle toggleMenuMisiones;
   public void AbrirMenuMisiones()
   {
+    if (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+    {
+      if (goMenuMisiones != null)
+      {
+        goMenuMisiones.SetActive(false);
+      }
+      return;
+    }
+
     goMenuMisiones.SetActive(!goMenuMisiones.activeInHierarchy);
     int misionesDisponibles = MetaprogresionManager.Instance.MisionesSalvamento;
     txtCantidadMisionesdisp.text = TRADU.i.Traducir("Misiones Disponibles: ") + misionesDisponibles;

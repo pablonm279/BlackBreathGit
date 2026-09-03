@@ -235,7 +235,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.42, y: -16.23}
+  m_AnchoredPosition: {x: 0.21, y: -16.23}
   m_SizeDelta: {x: 20.99, y: 19.157}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1678664685221969079
@@ -268,7 +268,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 369ea993cf9aa274183b4daaceea9084, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -665,6 +665,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CasillaPosicion: {fileID: 0}
   CasillaDeseadaMov: {fileID: 0}
+  bGrande: 0
+  omitirFlashAnimacionRecibirDanio: 0
   CasillaForzadoaMover: {fileID: 0}
   estaCargando: {fileID: 0}
   valorCargando: 0
@@ -912,11 +914,17 @@ MonoBehaviour:
   barraVidaSangradoColor: {r: 0.28, g: 0.015, b: 0.015, a: 1}
   barraVidaRatioInicioRojo: 0.2
   barraVidaOscurecerTurnoPasado: 0.72
+  barraVidaPreviewDanioColor: {r: 1, g: 0.42, b: 0.08, a: 0.82}
+  barraVidaPreviewDanioMinimoColor: {r: 0.16, g: 0.008, b: 0.005, a: 0.96}
+  barraVidaPreviewDanioVelocidadPulso: 6
+  indicadorMuerteGarantizadaVelocidadPulso: 4.5
   rotuloHabilidadOffset: {x: 0, y: 2.1}
   rotuloHabilidadPadding: {x: 0.34, y: 0.16}
   rotuloHabilidadDuracion: 3
   rotuloHabilidadFondo: {r: 0.09, g: 0.012, b: 0.012, a: 0.82}
   rotuloHabilidadBorde: {r: 0.35, g: 0.07, b: 0.06, a: 0.72}
+  duracionVisibilidadTemporal: 1.5
+  duracionMovimientoEstados: 0.12
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 6776581547506739470}
 --- !u!114 &266884403653698581

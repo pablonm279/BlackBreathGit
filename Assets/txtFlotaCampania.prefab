@@ -106,6 +106,7 @@ MonoBehaviour:
   m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 3
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -151,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a31d3ac91f917984b871f7571057cb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayautodestruir: 10
+  delayautodestruir: 12
 --- !u!114 &2248740014077557214
 MonoBehaviour:
   m_ObjectHideFlags: 0

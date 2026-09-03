@@ -207,6 +207,7 @@ public class MenuController : MonoBehaviour
 
     private void IniciarNuevaPartida()
     {
+        RuntimeAnalytics.SetDemoPath("standard");
         RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game");
         RuntimeAnalytics.TrackProgressionStart("campaign", "new_game");
         MarcarTutorialComoCompletado();
@@ -219,6 +220,7 @@ public class MenuController : MonoBehaviour
         PrePartidaManager.LimpiarZonaInicialPendiente();
         PrePartidaManager.LimpiarClaseLiderPendiente();
         PrePartidaManager.LimpiarPresagiosInicialesPendientes();
+        RuntimeAnalytics.SetDemoPath("tutorial");
         RuntimeAnalytics.TrackDesign("ui", "main_menu", "new_game_tutorial");
         RuntimeAnalytics.TrackProgressionStart("tutorial", "campaign", "intro");
         ReiniciarTutorial();
@@ -235,6 +237,7 @@ public class MenuController : MonoBehaviour
             return;
         }
 
+        RuntimeAnalytics.SetDemoPath("continue");
         RuntimeAnalytics.TrackDesign("ui", "main_menu", "continue_game");
         StartCoroutine(CargarJuego());
     }

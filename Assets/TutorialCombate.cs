@@ -6,7 +6,10 @@ using UnityEngine.UI;
 public class TutorialCombate : MonoBehaviour
 {
     private const string PasoSeleccionBallesta = "Paso3 - Accion 1";
+    private const string PasoAtaqueBallesta = "Paso4 - Accion 2";
+    private const string PasoMovimiento = "Paso6 - Accion 4";
     private const string PasoSeleccionDistraer = "Paso7 - Accion 5";
+    private const string PasoNuevaRonda = "Paso8 - Vacío";
 
     [SerializeField] private TutorialManager tutorialManager;
     [SerializeField] private GameObject[] pasosCombate;
@@ -189,10 +192,37 @@ public class TutorialCombate : MonoBehaviour
 
     public bool EsPasoSeleccionBallesta()
     {
-        return tutorialCombateActivo
-            && IndicePasoValido(pasoActual)
-            && pasosCombate[pasoActual] != null
-            && pasosCombate[pasoActual].name == PasoSeleccionBallesta;
+        return EsPasoActual(PasoSeleccionBallesta);
+    }
+
+    public bool EsPasoAtaqueBallesta()
+    {
+        return EsPasoActual(PasoAtaqueBallesta);
+    }
+
+    public bool EsPasoMovimiento()
+    {
+        return EsPasoActual(PasoMovimiento);
+    }
+
+    public bool EstaAntesDelPasoMovimiento()
+    {
+        return EstaAntesDelPaso(PasoMovimiento);
+    }
+
+    public bool EstaAntesDelPasoAtaqueBallesta()
+    {
+        return EstaAntesDelPaso(PasoAtaqueBallesta);
+    }
+
+    public bool EsPasoFinTurno()
+    {
+        return EsPasoActual(PasoSeleccionDistraer);
+    }
+
+    public bool EsPasoNuevaRonda()
+    {
+        return EsPasoActual(PasoNuevaRonda);
     }
 
     public bool PermiteHabilidadEnPasoActual(Habilidad habilidad)
@@ -202,10 +232,24 @@ public class TutorialCombate : MonoBehaviour
 
     private bool EsPasoSeleccionDistraer()
     {
+        return EsPasoActual(PasoSeleccionDistraer);
+    }
+
+    private bool EsPasoActual(string nombrePaso)
+    {
         return tutorialCombateActivo
             && IndicePasoValido(pasoActual)
             && pasosCombate[pasoActual] != null
-            && pasosCombate[pasoActual].name == PasoSeleccionDistraer;
+            && pasosCombate[pasoActual].name == nombrePaso;
+    }
+
+    private bool EstaAntesDelPaso(string nombrePaso)
+    {
+        int indicePaso = ObtenerIndicePasoPorNombre(nombrePaso);
+        return tutorialCombateActivo
+            && IndicePasoValido(pasoActual)
+            && indicePaso >= 0
+            && pasoActual < indicePaso;
     }
 
     private bool TienePasosCombate()

@@ -588,7 +588,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 3
       scalar: 6
-      minScalar: 4
+      minScalar: 5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -1798,7 +1798,7 @@ ParticleSystem:
         m_RotationOrder: 4
     separateAxes: 0
   ColorModule:
-    enabled: 0
+    enabled: 1
     gradient:
       serializedVersion: 2
       minMaxState: 1
@@ -1809,9 +1809,9 @@ ParticleSystem:
         key0: {r: 1, g: 1, b: 1, a: 0.36078432}
         key1: {r: 1, g: 1, b: 1, a: 0.17254902}
         key2: {r: 0, g: 0, b: 0, a: 0.19607843}
-        key3: {r: 0, g: 0, b: 0, a: 0.078431375}
-        key4: {r: 0, g: 0, b: 0, a: 0.039215688}
-        key5: {r: 0, g: 0, b: 0, a: 0.02745098}
+        key3: {r: 0, g: 0, b: 0, a: 0.050980393}
+        key4: {r: 0, g: 0, b: 0, a: 0}
+        key5: {r: 0, g: 0, b: 0, a: 0}
         key6: {r: 0, g: 0, b: 0, a: 0}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0

@@ -241,7 +241,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private void ApplySyncAndFrameRatePrefs(Scene scene)
   {
     bool vsyncEnabled = PrefBool(PrefVsync, defaultVsyncEnabled);
-    QualitySettings.vSyncCount = vsyncEnabled ? 1 : 0;
+    QualitySettings.vSyncCount = LinuxDeckRuntime.ResolverVSyncCount(vsyncEnabled);
 
     int fpsLimit = PrefInt(PrefFpsLimit, defaultFpsLimit);
     Application.targetFrameRate = ResolveTargetFrameRate(vsyncEnabled, fpsLimit, scene);

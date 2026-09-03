@@ -12,7 +12,7 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
   const int CantidadExploradores = 5;
   const int OrdenCanvas = 7800;
   static readonly Vector2 ResolucionReferencia = new Vector2(1920f, 1080f);
-  static readonly Color ColorExploracion = new Color(0.32f, 0.48f, 0.47f, 1f);
+  static readonly Color ColorExploracion = new Color(0.56f, 0.82f, 0.77f, 1f);
   static readonly Color ColorExito = new Color(0.34f, 0.52f, 0.40f, 1f);
   static readonly Color ColorCritico = new Color(0.62f, 0.51f, 0.32f, 1f);
   static readonly Color ColorFallo = new Color(0.48f, 0.28f, 0.29f, 1f);
@@ -126,10 +126,10 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
     GameObject reticulaGo = new GameObject("ReticulaDestino", typeof(RectTransform));
     reticulaGo.transform.SetParent(transform, false);
     reticula = reticulaGo.GetComponent<RectTransform>();
-    reticula.sizeDelta = new Vector2(84f, 84f);
+    reticula.sizeDelta = new Vector2(94f, 94f);
 
-    anilloExterior = CrearAnillo("AnilloExterior", reticula, 36f, 0.9f, 56);
-    anilloInterior = CrearAnillo("AnilloInterior", reticula, 24f, 0.7f, 40);
+    anilloExterior = CrearAnillo("AnilloExterior", reticula, 41f, 1.35f, 56);
+    anilloInterior = CrearAnillo("AnilloInterior", reticula, 27.5f, 1.05f, 40);
 
     for (int i = 0; i < 8; i++)
     {
@@ -157,13 +157,13 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
       GameObject go = new GameObject("Explorador" + (i + 1), typeof(RectTransform));
       go.transform.SetParent(transform, false);
       RectTransform rect = go.GetComponent<RectTransform>();
-      rect.sizeDelta = new Vector2(11.4f, 11.4f);
+      rect.sizeDelta = new Vector2(14f, 14f);
 
-      Image halo = CrearImagen("Halo", rect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(10.45f, 10.45f), new Color(ColorExploracion.r * 0.62f, ColorExploracion.g * 0.62f, ColorExploracion.b * 0.62f, 0.045f));
+      Image halo = CrearImagen("Halo", rect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(13.5f, 13.5f), new Color(ColorExploracion.r * 0.88f, ColorExploracion.g * 0.88f, ColorExploracion.b * 0.88f, 0.15f));
       halo.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
 
-      Color colorScout = new Color(ColorExploracion.r * 0.62f, ColorExploracion.g * 0.62f, ColorExploracion.b * 0.62f, 1f);
-      Image cuerpo = CrearImagen("Cuerpo", rect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(4.75f, 4.75f), ConAlpha(colorScout, 0.62f));
+      Color colorScout = new Color(ColorExploracion.r * 0.80f, ColorExploracion.g * 0.80f, ColorExploracion.b * 0.80f, 1f);
+      Image cuerpo = CrearImagen("Cuerpo", rect, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(6f, 6f), ConAlpha(colorScout, 0.86f));
       cuerpo.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
 
       marcadores.Add(new MarcadorExplorador { rect = rect, cuerpo = cuerpo, halo = halo });
@@ -182,14 +182,14 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
       canvasGroup.alpha = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(p / 0.1f));
       tinte.color = new Color(0.015f, 0.025f, 0.026f, 0.025f + Mathf.Sin(p * Mathf.PI) * 0.025f);
       ruta.Progreso = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.04f, 0.57f, p));
-      ruta.color = ConAlpha(ColorExploracion, 0.10f + 0.07f * Mathf.Sin(Mathf.Clamp01(p / 0.62f) * Mathf.PI));
+      ruta.color = ConAlpha(ColorExploracion, 0.20f + 0.12f * Mathf.Sin(Mathf.Clamp01(p / 0.62f) * Mathf.PI));
 
       float aparicionReticula = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.34f, 0.58f, p));
       float pulso = 1f + Mathf.Sin(tiempo * 2.9f) * 0.025f;
       reticula.localScale = Vector3.one * aparicionReticula * pulso;
       reticula.localRotation = Quaternion.Euler(0f, 0f, Mathf.Sin(tiempo * 0.4f) * 3f);
       barrido.localRotation = Quaternion.Euler(0f, 0f, -55f - p * 410f);
-      AplicarColorReticula(ColorExploracion, 0.14f + aparicionReticula * 0.18f);
+      AplicarColorReticula(ColorExploracion, 0.20f + aparicionReticula * 0.28f);
 
       for (int i = 0; i < marcadores.Count; i++)
       {
@@ -207,7 +207,7 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
           posicion = Vector2.Lerp(posicion, posicionBusqueda, Mathf.SmoothStep(0f, 1f, busqueda));
         }
 
-        AplicarMarcador(marcadores[i], posicion, ColorExploracion, Mathf.Clamp01(avance * 1.25f) * 0.62f, 1f + Mathf.Sin(tiempo * 2.3f + i) * 0.025f);
+        AplicarMarcador(marcadores[i], posicion, ColorExploracion, Mathf.Clamp01(avance * 1.25f) * 0.86f, 1f + Mathf.Sin(tiempo * 2.3f + i) * 0.045f);
       }
 
       yield return null;
@@ -387,11 +387,11 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
 
   static void AplicarMarcador(MarcadorExplorador marcador, Vector2 posicion, Color color, float alpha, float escala)
   {
-    Color colorScout = new Color(color.r * 0.62f, color.g * 0.62f, color.b * 0.62f, color.a);
+    Color colorScout = new Color(color.r * 0.80f, color.g * 0.80f, color.b * 0.80f, color.a);
     marcador.rect.anchoredPosition = posicion;
     marcador.rect.localScale = Vector3.one * escala;
     marcador.cuerpo.color = ConAlpha(colorScout, alpha);
-    marcador.halo.color = ConAlpha(colorScout, alpha * 0.06f);
+    marcador.halo.color = ConAlpha(colorScout, alpha * 0.14f);
   }
 
   ScoutExplorationRingGraphic CrearAnillo(string nombre, Transform padre, float radio, float grosor, int segmentos)
@@ -498,7 +498,7 @@ public sealed class ScoutExplorationRouteGraphic : MaskableGraphic
 
     float distanciaVisible = distanciaTotal * progreso;
     float acumulada = 0f;
-    const float semigrosor = 0.7f;
+    const float semigrosor = 1.2f;
 
     for (int i = 1; i < puntos.Count; i++)
     {

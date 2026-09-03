@@ -255,6 +255,7 @@ public class CorteIncapacitante : Habilidad
   }
 
   int damExtra;
+  int danioCriticoMaestria;
       Casilla Origen;
     public override void Activar()
     {
@@ -293,8 +294,8 @@ public class CorteIncapacitante : Habilidad
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Crítico, -1 AP.</i>\n\n";
+      danioCriticoMaestria = 10;
+      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Crítico, +10% Daño Crítico.</i>\n\n";
 
 
     }
@@ -303,8 +304,8 @@ public class CorteIncapacitante : Habilidad
       bonusAtaque = 1;
       damExtra += 4;
       criticoRangoHab = 2;
-      costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +10% Crítico.</i>\n\n";
+      danioCriticoMaestria = 10;
+      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +10% Crítico, +10% Daño Crítico.</i>\n\n";
 
     }
     else if (NivelMaestria == 5)
@@ -312,8 +313,8 @@ public class CorteIncapacitante : Habilidad
       bonusAtaque = 2;
       damExtra += 4;
       criticoRangoHab = 1;
-      costoAP -= 1; //costo AP -1
-      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 Daño +5% Critico.</i>\n\n";
+      danioCriticoMaestria = 10;
+      txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: Remueve Cooldown, +2 Ataque +4 Daño +5% Critico, +10% Daño Crítico.</i>\n\n";
 
     }
 
@@ -385,7 +386,7 @@ public class CorteIncapacitante : Habilidad
         print("Crítico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + 3 + damExtra + scEstaUnidad.mod_CarFuerza + danioMarca;
-        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + danioCriticoMaestria);
         VFXAplicar(objetivo.gameObject);
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 

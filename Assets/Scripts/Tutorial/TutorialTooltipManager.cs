@@ -9,6 +9,7 @@ public class TutorialTooltipManager : MonoBehaviour
 {
   private const string DefaultCatalogPath = "Tutoriales/TooltipsTutorial";
   private const int CooldownDias = 3;
+  private const string TooltipEsforzarId = "combate_esforzar";
 
   public static TutorialTooltipManager Instance { get; private set; }
   public bool EstaMostrandoTooltip { get { return mostrando; } }
@@ -289,7 +290,7 @@ public class TutorialTooltipManager : MonoBehaviour
       return false;
     }
 
-    if (HayTutorialActivo())
+    if (HayTutorialActivo() && definition.id != TooltipEsforzarId)
     {
       return false;
     }

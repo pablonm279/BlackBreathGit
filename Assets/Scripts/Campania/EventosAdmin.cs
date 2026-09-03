@@ -977,9 +977,9 @@ public class EventosAdmin : MonoBehaviour
                 "oferece uma bolsa de moedas como voto de confiança.\n\n",
                 idiomaVoto);
             txtDescripcion.text += SeleccionarTextoLocal(
-                "<color=#a0e812>Rechazar el Oro: Alta Moral por 96 h y +55 Experiencia.</color>\n\n",
-                "<color=#a0e812>Refuse the Gold: High Morale for 96 h and +55 Experience.</color>\n\n",
-                "<color=#a0e812>Recusar o Ouro: Moral Alta por 96 h e +55 de Experiência.</color>\n\n",
+                "<color=#a0e812>Rechazar el Oro: Alta Moral por 4 días y +55 Experiencia.</color>\n\n",
+                "<color=#a0e812>Refuse the Gold: High Morale for 4 days and +55 Experience.</color>\n\n",
+                "<color=#a0e812>Recusar o Ouro: Moral Alta por 4 dias e +55 de Experiência.</color>\n\n",
                 idiomaVoto);
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#a0e812>Aceptar el Oro: +120-160 Oro.</color>\n\n",
@@ -1994,7 +1994,7 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text += TRADU.i.Traducir("Es un excelente lugar para descansar y recuperar fuerzas.\n\n\n\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro acumulará solo 4 h durante un descanso de 8 h.\n-+10% curación recibida.\n-El evento será positivo.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro avanzará menos.\n-+10% curación recibida.\n-El evento será positivo.</b></color>");
 
             botonA.SetActive(false);
 

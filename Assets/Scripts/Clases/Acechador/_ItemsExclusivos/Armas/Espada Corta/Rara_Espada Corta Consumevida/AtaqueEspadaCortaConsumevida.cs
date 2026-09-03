@@ -79,6 +79,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
    }
 
    int damExtra;
+   int danioCriticoMaestria;
      public override void ActualizarDescripcion()
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
@@ -195,11 +196,11 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       bonusAtaque = 1;
       damExtra += 2;
       criticoRangoHab = 1;
-      costoAP -= 1; //costo AP -1
+      danioCriticoMaestria = 10;
       if (TRADU.i.nIdioma == 3)
-      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +5% Critico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +5% Critico, +10% Dano Critico.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Critico, -1 AP.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +2 Daño +5% Critico, +10% Daño Crítico.</i>\n\n"; }
 
 
     }
@@ -208,11 +209,11 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       bonusAtaque = 1;
       damExtra += 4;
       criticoRangoHab = 2;
-      costoAP -= 1; //costo AP -1
+      danioCriticoMaestria = 10;
       if (TRADU.i.nIdioma == 3)
-      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +4 Dano +10% Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +4 Dano +10% Critico, +10% Dano Critico.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +10% Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +1 Ataque +4 Daño +10% Critico, +10% Daño Crítico.</i>\n\n"; }
 
     }
     else if (NivelMaestria == 5)
@@ -220,11 +221,11 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
       bonusAtaque = 2;
       damExtra += 4;
       criticoRangoHab = 1;
-      costoAP -= 1; //costo AP -1
+      danioCriticoMaestria = 10;
       if (TRADU.i.nIdioma == 3)
-      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +2 Ataque +4 Dano +5% Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +2 Ataque +4 Dano +5% Critico, +10% Dano Critico.</i>\n\n"; }
       else
-      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +2 Ataque +4 Daño +5% Critico.</i>\n\n"; }
+      { txtDescripcion += "\n\n<i>Maestría con Espada Corta agrega: +2 Ataque +4 Daño +5% Critico, +10% Daño Crítico.</i>\n\n"; }
 
     }
       ActualizarDescripcion();
@@ -292,7 +293,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
         print("Critico");
 
         float danio = TiradaDeDados.TirarDados(XdDanio, daniodX) + 2 + damExtra + scEstaUnidad.mod_CarFuerza + danioMarca;
-        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
+        danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje + danioCriticoMaestria);
 
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
         AplicarBuffConsumevida(); //Aplica el efecto de consumir vida al objetivo, si corresponde.

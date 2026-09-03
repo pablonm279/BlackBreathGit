@@ -7,8 +7,10 @@ using TMPro;
 public class UnidadCanvas : MonoBehaviour
 {
     private const string RutaFuenteTextoFlotanteDanio = "Fuentes/SpectralSC/TextoFlotanteDaño";
-    private const float EscalaTextoProbabilidad = 0.82f;
-    private const float OffsetYTextoProbabilidad = 8.5f;
+    private const float EscalaTextoProbabilidad = 0.68f;
+    private const float OffsetYTextoProbabilidad = 5.8f;
+    private static readonly Vector2 PaddingFondoTextoProbabilidad = new Vector2(0.8f, 0.35f);
+    private static readonly Color ColorFondoTextoProbabilidad = new Color(0.015f, 0.02f, 0.025f, 0.72f);
     private const float AmplitudPulsoTextoProbabilidad = 0.035f;
     private const float VelocidadPulsoTextoProbabilidad = 3.1f;
     private const float AlphaMinPulsoTextoProbabilidad = 0.9f;
@@ -76,6 +78,7 @@ public class UnidadCanvas : MonoBehaviour
     private CanvasGroup canvasGroupRotuloHabilidadIA;
     private Coroutine rotuloHabilidadCoroutine;
     private Outline outlineTextoProbabilidad;
+    private Image fondoTextoProbabilidad;
     private Vector3 escalaBaseTextoProbabilidad = Vector3.one;
     private float fasePulsoTextoProbabilidad;
     private Unidad unidadCacheada;
@@ -89,8 +92,10 @@ public class UnidadCanvas : MonoBehaviour
     private bool ultimoEstadoTurnoPasado;
     private bool estadoTurnoPasadoInicializado;
     private int ultimaFilaEscala = int.MinValue;
+    private const float DuracionMinimaVisibilidadTemporal = 4f;
     [Header("Visibilidad barra de vida")]
-    [SerializeField] private float duracionVisibilidadTemporal = 1.5f;
+    [SerializeField] private float duracionVisibilidadTemporal = DuracionMinimaVisibilidadTemporal;
+    [SerializeField] private float duracionMovimientoEstados = 0.12f;
     private readonly List<Graphic> graficosBarraVida = new List<Graphic>();
     private readonly List<bool> estadosBaseGraficosBarraVida = new List<bool>();
     private bool mouseEncima;
@@ -100,6 +105,14 @@ public class UnidadCanvas : MonoBehaviour
     private bool mostrarTemporalmente;
     private bool? barraVidaVisible;
     private Coroutine visibilidadTemporalCoroutine;
+    private RectTransform rectTransformEstados;
+    private Vector2 posicionEstadosConBarra;
+    private Vector2 posicionEstadosSinBarra;
+    private bool posicionesEstadosInicializadas;
+    private Coroutine movimientoEstadosCoroutine;
+    private readonly HashSet<UIEstadoCuadro> estadosConPuntero = new HashSet<UIEstadoCuadro>();
+    private bool posicionEstadosPendiente;
+    private bool mostrarBarraEstadosPendiente;
     private readonly List<Buff> buffsFirmaBuffer = new List<Buff>();
     private readonly List<Reaccion> reaccionesFirmaBuffer = new List<Reaccion>();
     private readonly List<Marca> marcasFirmaBuffer = new List<Marca>();
@@ -121,6 +134,7 @@ public class UnidadCanvas : MonoBehaviour
         }
         PrepararBarraDanio();
         PrepararGraficosBarraVida();
+        PrepararPosicionesEstados();
         ActualizarVisibilidadBarraVida();
         fasePulsoTextoProbabilidad = Random.Range(0f, Mathf.PI * 2f);
     }
@@ -538,6 +552,95 @@ public class UnidadCanvas : MonoBehaviour
         }
     }
 
+    private void PrepararPosicionesEstados()
+    {
+        if (posicionesEstadosInicializadas || contenedorCasillasEstados == null || barraVida == null)
+        {
+            return;
+        }
+
+        rectTransformEstados = contenedorCasillasEstados.GetComponent<RectTransform>();
+        if (rectTransformEstados == null || rectTransformEstados.parent == null) { return; }
+
+        posicionEstadosConBarra = rectTransformEstados.anchoredPosition;
+        Vector3 posicionBarraEnPadre = rectTransformEstados.parent.InverseTransformPoint(barraVida.position);
+        float desplazamientoY = posicionBarraEnPadre.y - rectTransformEstados.localPosition.y;
+        posicionEstadosSinBarra = posicionEstadosConBarra + Vector2.up * desplazamientoY;
+        posicionesEstadosInicializadas = true;
+    }
+
+    private void ActualizarPosicionEstados(bool mostrarBarra, bool inmediato)
+    {
+        PrepararPosicionesEstados();
+        if (!posicionesEstadosInicializadas || rectTransformEstados == null) { return; }
+
+        Vector2 posicionObjetivo = mostrarBarra ? posicionEstadosConBarra : posicionEstadosSinBarra;
+        estadosConPuntero.RemoveWhere(estado => estado == null);
+        if (!inmediato && estadosConPuntero.Count > 0)
+        {
+            mostrarBarraEstadosPendiente = mostrarBarra;
+            posicionEstadosPendiente = true;
+            return;
+        }
+
+        if (movimientoEstadosCoroutine != null)
+        {
+            StopCoroutine(movimientoEstadosCoroutine);
+            movimientoEstadosCoroutine = null;
+        }
+
+        if (inmediato || duracionMovimientoEstados <= 0f || !isActiveAndEnabled)
+        {
+            rectTransformEstados.anchoredPosition = posicionObjetivo;
+            return;
+        }
+
+        movimientoEstadosCoroutine = StartCoroutine(MoverEstados(posicionObjetivo));
+    }
+
+    public void EstablecerPunteroSobreEstado(UIEstadoCuadro estado, bool encima)
+    {
+        if (estado == null) { return; }
+
+        if (encima)
+        {
+            estadosConPuntero.Add(estado);
+            if (movimientoEstadosCoroutine != null)
+            {
+                StopCoroutine(movimientoEstadosCoroutine);
+                movimientoEstadosCoroutine = null;
+                mostrarBarraEstadosPendiente = barraVidaVisible == true;
+                posicionEstadosPendiente = true;
+            }
+            return;
+        }
+
+        estadosConPuntero.Remove(estado);
+        estadosConPuntero.RemoveWhere(icono => icono == null);
+        if (estadosConPuntero.Count == 0 && posicionEstadosPendiente)
+        {
+            posicionEstadosPendiente = false;
+            ActualizarPosicionEstados(mostrarBarraEstadosPendiente, false);
+        }
+    }
+
+    private IEnumerator MoverEstados(Vector2 posicionObjetivo)
+    {
+        Vector2 posicionInicial = rectTransformEstados.anchoredPosition;
+        float tiempo = 0f;
+        while (tiempo < duracionMovimientoEstados)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(tiempo / duracionMovimientoEstados);
+            t = t * t * (3f - 2f * t);
+            rectTransformEstados.anchoredPosition = Vector2.LerpUnclamped(posicionInicial, posicionObjetivo, t);
+            yield return null;
+        }
+
+        rectTransformEstados.anchoredPosition = posicionObjetivo;
+        movimientoEstadosCoroutine = null;
+    }
+
     public void EstablecerMouseEncima(bool valor)
     {
         if (mouseEncima == valor) { return; }
@@ -580,7 +683,7 @@ public class UnidadCanvas : MonoBehaviour
 
     private IEnumerator OcultarBarraVidaTrasDelay()
     {
-        yield return new WaitForSecondsRealtime(duracionVisibilidadTemporal);
+        yield return new WaitForSecondsRealtime(Mathf.Max(DuracionMinimaVisibilidadTemporal, duracionVisibilidadTemporal));
         mostrarTemporalmente = false;
         visibilidadTemporalCoroutine = null;
         ActualizarVisibilidadBarraVida();
@@ -607,7 +710,9 @@ public class UnidadCanvas : MonoBehaviour
             || siempreVisible;
 
         if (barraVidaVisible == mostrar) { return; }
+        bool primeraEvaluacion = !barraVidaVisible.HasValue;
         barraVidaVisible = mostrar;
+        ActualizarPosicionEstados(mostrar, primeraEvaluacion);
 
         for (int i = 0; i < graficosBarraVida.Count; i++)
         {
@@ -817,6 +922,8 @@ public class UnidadCanvas : MonoBehaviour
 
     void OnEnable()
     {
+        barraVidaVisible = null;
+        movimientoEstadosCoroutine = null;
         firmaEstadosUI = int.MinValue;
         ultimaArmaduraMostrada = float.NaN;
         ultimaVidaMostrada = int.MinValue;
@@ -1038,6 +1145,7 @@ public class UnidadCanvas : MonoBehaviour
         if (txtProbabilidad != null)
         {
             txtProbabilidad.gameObject.SetActive(false);
+            ActualizarFondoTextoProbabilidad();
         }
     }
 
@@ -1054,6 +1162,8 @@ public class UnidadCanvas : MonoBehaviour
         {
             rectTransform.anchoredPosition = new Vector2(0f, OffsetYTextoProbabilidad);
         }
+
+        ConfigurarFondoTextoProbabilidad(texto);
 
         escalaBaseTextoProbabilidad = Vector3.one;
         texto.transform.localScale = escalaBaseTextoProbabilidad;
@@ -1098,6 +1208,61 @@ public class UnidadCanvas : MonoBehaviour
         }
     }
 
+    private void ConfigurarFondoTextoProbabilidad(TextMeshProUGUI texto)
+    {
+        RectTransform textoRect = texto != null ? texto.rectTransform : null;
+        if (textoRect == null || textoRect.parent == null)
+        {
+            return;
+        }
+
+        if (fondoTextoProbabilidad == null)
+        {
+            GameObject fondo = new GameObject("FondoProbabilidad", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            fondo.transform.SetParent(textoRect.parent, false);
+            fondoTextoProbabilidad = fondo.GetComponent<Image>();
+        }
+
+        fondoTextoProbabilidad.raycastTarget = false;
+        fondoTextoProbabilidad.color = ColorFondoTextoProbabilidad;
+
+        RectTransform fondoRect = fondoTextoProbabilidad.rectTransform;
+        fondoRect.anchorMin = textoRect.anchorMin;
+        fondoRect.anchorMax = textoRect.anchorMax;
+        fondoRect.pivot = textoRect.pivot;
+        fondoRect.anchoredPosition = textoRect.anchoredPosition;
+        fondoRect.localRotation = textoRect.localRotation;
+        int indiceTexto = textoRect.GetSiblingIndex();
+        int indiceFondo = fondoRect.GetSiblingIndex();
+        fondoRect.SetSiblingIndex(indiceFondo < indiceTexto ? indiceTexto - 1 : indiceTexto);
+        ActualizarFondoTextoProbabilidad();
+    }
+
+    private void ActualizarFondoTextoProbabilidad()
+    {
+        if (txtProbabilidad == null || fondoTextoProbabilidad == null)
+        {
+            return;
+        }
+
+        bool mostrar = txtProbabilidad.gameObject.activeInHierarchy;
+        if (fondoTextoProbabilidad.gameObject.activeSelf != mostrar)
+        {
+            fondoTextoProbabilidad.gameObject.SetActive(mostrar);
+        }
+        if (!mostrar)
+        {
+            return;
+        }
+
+        RectTransform textoRect = txtProbabilidad.rectTransform;
+        RectTransform fondoRect = fondoTextoProbabilidad.rectTransform;
+        Vector2 medidaTexto = txtProbabilidad.GetPreferredValues(txtProbabilidad.text);
+        fondoRect.anchoredPosition = textoRect.anchoredPosition;
+        fondoRect.sizeDelta = medidaTexto + PaddingFondoTextoProbabilidad;
+        fondoRect.localScale = textoRect.localScale;
+    }
+
     private void ActualizarPulsoTextoProbabilidad()
     {
         if (txtProbabilidad == null)
@@ -1108,6 +1273,7 @@ public class UnidadCanvas : MonoBehaviour
         if (!txtProbabilidad.gameObject.activeSelf)
         {
             txtProbabilidad.transform.localScale = escalaBaseTextoProbabilidad;
+            ActualizarFondoTextoProbabilidad();
             return;
         }
 
@@ -1125,6 +1291,8 @@ public class UnidadCanvas : MonoBehaviour
             glow.a = Mathf.Lerp(AlphaGlowTextoProbabilidad * 0.7f, AlphaGlowTextoProbabilidad, pulso);
             outlineTextoProbabilidad.effectColor = glow;
         }
+
+        ActualizarFondoTextoProbabilidad();
     }
 
     public void MostrarRotuloHabilidadIA(string texto, Color color, float duracion = -1f)

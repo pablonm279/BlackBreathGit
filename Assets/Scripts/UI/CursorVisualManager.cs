@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class CursorVisualManager : MonoBehaviour
 {
   private const string RutaConfiguracion = "CursorVisualConfig";
+  private const string RutaConfiguracionSteamDeck = "CursorVisualConfigSteamDeck";
 
   private static CursorVisualManager instancia;
   private static readonly HashSet<Object> OrigenesAlerta = new HashSet<Object>();
@@ -18,6 +19,13 @@ public class CursorVisualManager : MonoBehaviour
   private Vector2 hotspotAplicado;
   private CursorMode modoAplicado;
   private bool cursorAplicado;
+  private bool estadoInteractuableCacheInicializado;
+  private bool estadoInteractuableCache;
+  private Vector3 ultimaPosicionPuntero;
+  private float proximaRevisionInteractuable;
+  private Camera camaraPrincipal;
+
+  private const float IntervaloRevisionInteractuableSteamDeck = 0.1f;
 
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
   private static void CrearAntesDeCargarEscena()
@@ -66,10 +74,26 @@ public class CursorVisualManager : MonoBehaviour
 
     instancia = this;
     DontDestroyOnLoad(gameObject);
-    configuracion = Resources.Load<CursorVisualConfig>(RutaConfiguracion);
+    bool esSteamDeck = PlataformaRuntime.EsSteamDeck;
+    string rutaConfiguracion = esSteamDeck
+      ? RutaConfiguracionSteamDeck
+      : RutaConfiguracion;
+    configuracion = Resources.Load<CursorVisualConfig>(rutaConfiguracion);
+    bool configuracionSteamDeckActiva = esSteamDeck && configuracion != null;
+    if (configuracion == null && esSteamDeck)
+    {
+      Debug.LogWarning(
+        $"[CursorVisualManager] No se encontro Resources/{rutaConfiguracion}.asset; se usara el cursor predeterminado.");
+      configuracion = Resources.Load<CursorVisualConfig>(RutaConfiguracion);
+    }
+
     if (configuracion == null)
     {
       Debug.LogWarning($"[CursorVisualManager] No se encontro Resources/{RutaConfiguracion}.asset.");
+    }
+    else if (configuracionSteamDeckActiva)
+    {
+      Debug.Log("[CursorVisualManager] Cursor de alto contraste activado para Steam Deck.");
     }
   }
 
@@ -97,9 +121,29 @@ public class CursorVisualManager : MonoBehaviour
       return EstadoCursorVisual.Presionado;
     }
 
-    return HayInteractuableBajoCursor()
+    return HayInteractuableBajoCursorConCacheSteamDeck()
       ? EstadoCursorVisual.Interactivo
       : EstadoCursorVisual.Normal;
+  }
+
+  private bool HayInteractuableBajoCursorConCacheSteamDeck()
+  {
+    if (!PlataformaRuntime.EsSteamDeck)
+    {
+      return HayInteractuableBajoCursor();
+    }
+
+    Vector3 posicionPuntero = Input.mousePosition;
+    bool punteroSeMovio = !estadoInteractuableCacheInicializado || posicionPuntero != ultimaPosicionPuntero;
+    if (punteroSeMovio || Time.unscaledTime >= proximaRevisionInteractuable)
+    {
+      ultimaPosicionPuntero = posicionPuntero;
+      estadoInteractuableCache = HayInteractuableBajoCursor();
+      estadoInteractuableCacheInicializado = true;
+      proximaRevisionInteractuable = Time.unscaledTime + IntervaloRevisionInteractuableSteamDeck;
+    }
+
+    return estadoInteractuableCache;
   }
 
   private bool HayInteractuableBajoCursor()
@@ -114,13 +158,17 @@ public class CursorVisualManager : MonoBehaviour
       return false;
     }
 
-    Camera camara = Camera.main;
-    if (camara == null)
+    if (camaraPrincipal == null || !camaraPrincipal.isActiveAndEnabled)
+    {
+      camaraPrincipal = Camera.main;
+    }
+
+    if (camaraPrincipal == null)
     {
       return false;
     }
 
-    Ray rayo = camara.ScreenPointToRay(Input.mousePosition);
+    Ray rayo = camaraPrincipal.ScreenPointToRay(Input.mousePosition);
     if (Physics.Raycast(rayo, out RaycastHit hit3D, Mathf.Infinity, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide))
     {
       return EsInteractuableMundo(hit3D.transform);

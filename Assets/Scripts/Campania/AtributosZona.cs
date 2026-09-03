@@ -724,19 +724,49 @@ public class AtributosZona : MonoBehaviour
    {
       bool mostrarDescripciones = !restaurandoDesdeSave;
 
+      AplicarDescripcionZonaVisible(false, false, false);
+      if (!mostrarDescripciones)
+      {
+         return;
+      }
+
+      CampaignManager campaignManager = CampaignManager.Instance;
+      if (campaignManager != null && campaignManager.DebeUsarConfiguracionTutorial())
+      {
+         return;
+      }
+
+      if (campaignManager != null && campaignManager.IntroCampaniaActivaOPendiente)
+      {
+         int zonaEsperada = mostrarBosque ? 1 : mostrarPaso ? 2 : mostrarNedukazal ? 3 : 0;
+         campaignManager.EjecutarTrasIntroCampania(() =>
+         {
+            if (this != null && ID == zonaEsperada)
+            {
+               AplicarDescripcionZonaVisible(mostrarBosque, mostrarPaso, mostrarNedukazal);
+            }
+         });
+         return;
+      }
+
+      AplicarDescripcionZonaVisible(mostrarBosque, mostrarPaso, mostrarNedukazal);
+   }
+
+   void AplicarDescripcionZonaVisible(bool mostrarBosque, bool mostrarPaso, bool mostrarNedukazal)
+   {
       if (BosqueArdiente_Descripcion != null)
       {
-         BosqueArdiente_Descripcion.SetActive(mostrarDescripciones && mostrarBosque);
+         BosqueArdiente_Descripcion.SetActive(mostrarBosque);
       }
 
       if (Pasovientohelado_Descripcion != null)
       {
-         Pasovientohelado_Descripcion.SetActive(mostrarDescripciones && mostrarPaso);
+         Pasovientohelado_Descripcion.SetActive(mostrarPaso);
       }
 
       if (Nedukazal_Descripcion != null)
       {
-         Nedukazal_Descripcion.SetActive(mostrarDescripciones && mostrarNedukazal);
+         Nedukazal_Descripcion.SetActive(mostrarNedukazal);
       }
    }
 
@@ -911,11 +941,11 @@ public class AtributosZona : MonoBehaviour
          kOverride: 20);
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Llama,
-         cantidad: 13,
+         cantidad: 14,
          sector: 2,
          distCaminoOverride: 0.74f,
           distNodoOverride: 0.80f,
-          rOverride: 6.0f,
+          rOverride: 5.8f,
           kOverride: 20);
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_LlamaEspectral,
@@ -1449,7 +1479,9 @@ public class AtributosZona : MonoBehaviour
          yield break;
       }
 
-      if (CampaignManager.Instance != null && CampaignManager.Instance.IntroCampaniaActivaOPendiente)
+      if (CampaignManager.Instance != null
+         && CampaignManager.Instance.IntroCampaniaActivaOPendiente
+         && !CampaignManager.Instance.LoreCampaniaActivo)
       {
          yield break;
       }

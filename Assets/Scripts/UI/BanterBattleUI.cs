@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class BanterBattleUI : MonoBehaviour
+public class BanterBattleUI : MonoBehaviour, IPointerEnterHandler
 {
     private const string PrefBantersHabilitados = "gameplay_banters_enabled";
 
@@ -24,11 +25,15 @@ public class BanterBattleUI : MonoBehaviour
         public string texto;
         public float duracion;
         public int prioridad;
+        [System.NonSerialized]
+        public float creadaEn;
     }
 
     private static BanterBattleUI instanciaBatalla;
     private static BanterBattleUI instanciaCampania;
     private readonly List<SolicitudBanter> cola = new List<SolicitudBanter>();
+    private readonly Dictionary<UnityEngine.Object, float> ultimoInicioPorHablante =
+        new Dictionary<UnityEngine.Object, float>();
     private readonly Dictionary<Image, Color> coloresOriginalesFlash =
         new Dictionary<Image, Color>();
     private RectTransform panel;
@@ -39,9 +44,13 @@ public class BanterBattleUI : MonoBehaviour
     private float pitchAudioBase = 1f;
     private Color colorTextoBase = Color.white;
     private Coroutine procesarColaRoutine;
+    private Coroutine mostrarRoutine;
+    private readonly Dictionary<Image, Color> coloresOriginalesHover =
+        new Dictionary<Image, Color>();
     private Vector2 posicionVisible;
     private Vector2 posicionOculta;
     private string textoActual;
+    private UnityEngine.Object hablanteActual;
     private BanterBattleUI segundaVista;
     private bool ocupada;
     private bool sistemaCerrado;
@@ -363,6 +372,11 @@ public class BanterBattleUI : MonoBehaviour
         canvasPropio.overrideSorting = true;
         canvasPropio.sortingOrder = sortingOrder;
 
+        if (GetComponent<GraphicRaycaster>() == null)
+        {
+            gameObject.AddComponent<GraphicRaycaster>();
+        }
+
         canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup == null)
         {
@@ -375,7 +389,7 @@ public class BanterBattleUI : MonoBehaviour
         Graphic[] graficos = GetComponentsInChildren<Graphic>(true);
         for (int i = 0; i < graficos.Length; i++)
         {
-            graficos[i].raycastTarget = false;
+            graficos[i].raycastTarget = true;
         }
 
         bool apareceDesdeDerecha = false;
@@ -442,6 +456,24 @@ public class BanterBattleUI : MonoBehaviour
             return;
         }
 
+        UnityEngine.Object claveHablante = hablante != null
+            ? hablante
+            : personajeCampania;
+        if (claveHablante != null)
+        {
+            if (HablanteVisible(claveHablante) || HablanteEnCooldown(claveHablante))
+            {
+                return;
+            }
+
+            int prioridadPendiente = PrioridadPendienteDeHablante(claveHablante);
+            if (prioridadPendiente > prioridad)
+            {
+                return;
+            }
+            cola.RemoveAll(item => ClaveHablante(item) == claveHablante);
+        }
+
         SolicitudBanter solicitud = new SolicitudBanter
         {
             hablante = hablante,
@@ -451,7 +483,8 @@ public class BanterBattleUI : MonoBehaviour
             retrato = retrato,
             texto = texto,
             duracion = Mathf.Clamp(duracion, 1.2f, 6f),
-            prioridad = prioridad
+            prioridad = prioridad,
+            creadaEn = Time.unscaledTime
         };
 
         if (prioridad >= 2)
@@ -495,7 +528,8 @@ public class BanterBattleUI : MonoBehaviour
             retrato = personaje != null ? personaje.spRetrato : null,
             texto = texto != null ? texto.Trim() : string.Empty,
             duracion = CalcularDuracionCampania(texto, duracion),
-            prioridad = prioridad
+            prioridad = prioridad,
+            creadaEn = Time.unscaledTime
         };
     }
 
@@ -508,7 +542,9 @@ public class BanterBattleUI : MonoBehaviour
 
         ocupada = true;
         textoActual = solicitud.texto;
-        StartCoroutine(MostrarYLiberar(solicitud));
+        hablanteActual = ClaveHablante(solicitud);
+        RegistrarInicioHablante(solicitud);
+        mostrarRoutine = StartCoroutine(MostrarYLiberar(solicitud));
     }
 
     private bool ContieneTextoEnCola(string texto)
@@ -523,10 +559,76 @@ public class BanterBattleUI : MonoBehaviour
         return false;
     }
 
+    private int PrioridadPendienteDeHablante(UnityEngine.Object claveHablante)
+    {
+        int prioridad = -1;
+        for (int i = 0; i < cola.Count; i++)
+        {
+            if (ClaveHablante(cola[i]) == claveHablante)
+            {
+                prioridad = Mathf.Max(prioridad, cola[i].prioridad);
+            }
+        }
+        return prioridad;
+    }
+
+    private bool HablanteVisible(UnityEngine.Object claveHablante)
+    {
+        return hablanteActual == claveHablante
+            || (segundaVista != null && segundaVista.hablanteActual == claveHablante);
+    }
+
+    private bool HablanteEnCooldown(UnityEngine.Object claveHablante)
+    {
+        if (!ultimoInicioPorHablante.TryGetValue(claveHablante, out float ultimoInicio))
+        {
+            return false;
+        }
+
+        float cooldown = tipoSistema == TipoSistema.Campania ? 10f : 5f;
+        return Time.unscaledTime - ultimoInicio < cooldown;
+    }
+
+    private void RegistrarInicioHablante(SolicitudBanter solicitud)
+    {
+        UnityEngine.Object claveHablante = ClaveHablante(solicitud);
+        BanterBattleUI principal = tipoSistema == TipoSistema.Campania
+            ? instanciaCampania
+            : instanciaBatalla;
+        if (claveHablante != null && principal != null)
+        {
+            principal.ultimoInicioPorHablante[claveHablante] = Time.unscaledTime;
+        }
+    }
+
+    private static UnityEngine.Object ClaveHablante(SolicitudBanter solicitud)
+    {
+        if (solicitud == null)
+        {
+            return null;
+        }
+        return solicitud.hablante != null
+            ? solicitud.hablante
+            : solicitud.personajeCampania;
+    }
+
+    private bool SolicitudCaducada(SolicitudBanter solicitud)
+    {
+        float permanenciaMaxima = tipoSistema == TipoSistema.Campania ? 4f : 2.5f;
+        return solicitud == null
+            || Time.unscaledTime - solicitud.creadaEn > permanenciaMaxima;
+    }
+
     private IEnumerator ProcesarCola()
     {
         while (cola.Count > 0)
         {
+            cola.RemoveAll(item => !EsSolicitudValida(item) || SolicitudCaducada(item));
+            if (cola.Count == 0)
+            {
+                break;
+            }
+
             if (tipoSistema == TipoSistema.Batalla && PanelHabilidadIzquierdoAbierto())
             {
                 yield return null;
@@ -573,14 +675,20 @@ public class BanterBattleUI : MonoBehaviour
 
             SolicitudBanter solicitud = cola[0];
             cola.RemoveAt(0);
-            if (!EsSolicitudValida(solicitud))
+            UnityEngine.Object claveHablante = ClaveHablante(solicitud);
+            if (!EsSolicitudValida(solicitud)
+                || SolicitudCaducada(solicitud)
+                || (claveHablante != null
+                    && (HablanteVisible(claveHablante) || HablanteEnCooldown(claveHablante))))
             {
                 continue;
             }
 
             vistaLibre.ocupada = true;
             vistaLibre.textoActual = solicitud.texto;
-            vistaLibre.StartCoroutine(vistaLibre.MostrarYLiberar(solicitud));
+            vistaLibre.hablanteActual = claveHablante;
+            vistaLibre.RegistrarInicioHablante(solicitud);
+            vistaLibre.mostrarRoutine = vistaLibre.StartCoroutine(vistaLibre.MostrarYLiberar(solicitud));
             ultimoInicioBanter = Time.unscaledTime;
             bantersConsecutivos++;
             if (tipoSistema == TipoSistema.Campania)
@@ -605,7 +713,9 @@ public class BanterBattleUI : MonoBehaviour
     private IEnumerator MostrarYLiberar(SolicitudBanter solicitud)
     {
         yield return Mostrar(solicitud);
+        mostrarRoutine = null;
         textoActual = null;
+        hablanteActual = null;
         ocupada = false;
     }
 
@@ -643,6 +753,7 @@ public class BanterBattleUI : MonoBehaviour
         transform.SetAsLastSibling();
         panel.anchoredPosition = posicionOculta;
         canvasGroup.alpha = 0f;
+        canvasGroup.blocksRaycasts = true;
 
         const float duracionEntrada = 0.28f;
         float tiempo = 0f;
@@ -696,6 +807,66 @@ public class BanterBattleUI : MonoBehaviour
         panel.anchoredPosition = posicionOculta;
         panel.localScale = escalaBase;
         canvasGroup.alpha = 0f;
+        canvasGroup.blocksRaycasts = false;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!ocupada || mostrarRoutine == null)
+        {
+            return;
+        }
+
+        StopCoroutine(mostrarRoutine);
+        mostrarRoutine = StartCoroutine(DescartarPorHover());
+    }
+
+    private IEnumerator DescartarPorHover()
+    {
+        canvasGroup.blocksRaycasts = false;
+        if (audioBanter != null)
+        {
+            audioBanter.Stop();
+        }
+
+        Image[] imagenes = GetComponentsInChildren<Image>(true);
+        for (int i = 0; i < imagenes.Length; i++)
+        {
+            Image imagen = imagenes[i];
+            coloresOriginalesHover[imagen] = imagen.color;
+            imagen.color = Color.Lerp(imagen.color, Color.white, 0.14f);
+        }
+        panel.localScale = escalaBase * 1.02f;
+
+        const float duracionHighlight = 0.07f;
+        float tiempo = 0f;
+        while (tiempo < duracionHighlight)
+        {
+            tiempo += Time.unscaledDeltaTime;
+            canvasGroup.alpha = 1f - Mathf.Clamp01(tiempo / duracionHighlight);
+            yield return null;
+        }
+
+        RestaurarHighlightHover();
+        panel.anchoredPosition = posicionOculta;
+        panel.localScale = escalaBase;
+        canvasGroup.alpha = 0f;
+        mostrarRoutine = null;
+        textoActual = null;
+        hablanteActual = null;
+        ocupada = false;
+    }
+
+    private void RestaurarHighlightHover()
+    {
+        foreach (KeyValuePair<Image, Color> par in coloresOriginalesHover)
+        {
+            if (par.Key != null)
+            {
+                par.Key.color = par.Value;
+            }
+        }
+        coloresOriginalesHover.Clear();
     }
 
     private static bool EsSolicitudValida(SolicitudBanter solicitud)
@@ -827,12 +998,16 @@ public class BanterBattleUI : MonoBehaviour
         cola.Clear();
         StopAllCoroutines();
         RestaurarFlashesActivos();
+        RestaurarHighlightHover();
         procesarColaRoutine = null;
+        mostrarRoutine = null;
         textoActual = null;
+        hablanteActual = null;
         ocupada = false;
         panel.anchoredPosition = posicionOculta;
         panel.localScale = escalaBase;
         canvasGroup.alpha = 0f;
+        canvasGroup.blocksRaycasts = false;
 
         if (segundaVista != null)
         {
@@ -865,15 +1040,19 @@ public class BanterBattleUI : MonoBehaviour
     {
         StopAllCoroutines();
         RestaurarFlashesActivos();
+        RestaurarHighlightHover();
         if (audioBanter != null)
         {
             audioBanter.Stop();
         }
         textoActual = null;
+        hablanteActual = null;
         ocupada = false;
+        mostrarRoutine = null;
         panel.anchoredPosition = posicionOculta;
         panel.localScale = escalaBase;
         canvasGroup.alpha = 0f;
+        canvasGroup.blocksRaycasts = false;
     }
 
     private Image BuscarImagen(string nombre)

@@ -8,7 +8,7 @@ public class Actividad_Descansar : Actividad
     {
       IDActividad = 1; //Descansar
 
-      desc = TRADU.i.Traducir("<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>El personaje se centrará en descansar y recuperar su salud.</color></i>\\n\\nMejora la velocidad de recuperación pasiva del personaje.\\nSi se produce un combate, lo arrancará Fresco.");
+      desc = "<color=#0cca74><b>Descanso: </b></color><color=#d3d3d3><i>El personaje se centrará en descansar y recuperar su salud.</color></i>\\n\\nMejora la velocidad de recuperación pasiva del personaje.\\nSi se produce un combate, lo arrancará Fresco.";
 
     }
 
@@ -21,7 +21,7 @@ public class Actividad_Descansar : Actividad
         ? TRADU.i.Traducir("Vida recuperada por hora: ")
         : "Vida recuperada por hora: ";
 
-      return desc
+      return base.ObtenerDescripcion(personaje)
         + "\\n"
         + etiqueta
         + porcentajePorHora.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)

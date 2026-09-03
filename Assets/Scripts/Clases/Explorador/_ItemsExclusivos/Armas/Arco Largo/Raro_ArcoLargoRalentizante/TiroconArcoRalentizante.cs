@@ -52,7 +52,7 @@ public class TiroconArcoRalentizante : Habilidad
 
 
 
-    imHab = Resources.Load<Sprite>("imHab/Explorador_Tiroconarco");
+      imHab = Resources.Load<Sprite>("imHab/Explorador_TiroconArco");
 
     txtDescripcion = "<color=#5dade2><b>Tiro con Arco Ralentizante</b></color>\n\n";
     txtDescripcion += "<i>El explorador ataca con su arco al enemigo.</i>\n\n";

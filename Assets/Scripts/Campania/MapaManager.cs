@@ -193,7 +193,10 @@ public class MapaManager : MonoBehaviour
     public void IniciarIntroCampaniaPendienteTrasCarga(bool ignorarFaderInicial = false)
     {
         CampaignManager campaignManager = CampaignManager.Instance;
-        if (campaignManager == null || introCampaniaEnPreparacion || !campaignManager.IntroCampaniaActivaOPendiente)
+        if (campaignManager == null
+            || campaignManager.LoreCampaniaActivo
+            || introCampaniaEnPreparacion
+            || !campaignManager.IntroCampaniaActivaOPendiente)
         {
             return;
         }
@@ -360,6 +363,7 @@ public class MapaManager : MonoBehaviour
         {
             introFinalizada = true;
         }, rotacionVisualLider, ProgresoInicialVisualIntroCampania);
+        campaignManager.NotificarInicioMovimientoIntroCampania();
 
         while (!introFinalizada)
         {

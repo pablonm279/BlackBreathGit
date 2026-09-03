@@ -423,7 +423,7 @@ public class Asesinar : Habilidad
  
        void VFXAplicar(GameObject objetivo)
     {
-      VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_ASesinar");
+      VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_Asesinar");
       if (objetivo == null)
       {
         return;

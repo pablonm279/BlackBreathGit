@@ -44,7 +44,7 @@ public class TiroconArco : Habilidad
     requiereRecurso = 1;
     tipoPorcentaje = 2;
 
-    imHab = Resources.Load<Sprite>("imHab/Explorador_Tiroconarco");
+    imHab = Resources.Load<Sprite>("imHab/Explorador_TiroconArco");
     ActualizarDescripcion();
   }
   public override void ActualizarDescripcion()

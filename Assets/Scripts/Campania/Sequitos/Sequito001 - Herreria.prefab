@@ -305,7 +305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 1
-  intRepresentacionciviles: -1
+  intRepresentacionciviles: 10
   txtNombre: {fileID: 4757030896022959829}
   imSplashart: {fileID: 6417374767776026216}
   txtdesc: {fileID: 8853909083671567916}
@@ -2504,7 +2504,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Cantidad de Civiles: No.'
+  m_text: 'Cantidad de Civiles: 10.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}

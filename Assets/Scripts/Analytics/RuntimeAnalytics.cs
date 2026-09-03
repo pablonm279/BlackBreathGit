@@ -8,6 +8,7 @@ using UnityEngine;
 public static class RuntimeAnalytics
 {
     public const string TelemetryEnabledPlayerPrefsKey = "Telemetry_Enabled";
+    public const string DemoPathPlayerPrefsKey = "Analytics_DemoPath";
 
     private const string RuntimeSettingsResourcePath = "Analytics/RuntimeAnalyticsSettings";
     private const string DefaultLogFolderName = "Metrics";
@@ -30,6 +31,7 @@ public static class RuntimeAnalytics
     private static float battleHealingReceived;
     private static int battleEnemiesDown;
     private static int battleAlliesDown;
+    private static readonly Dictionary<string, float> battleDetailTotals = new Dictionary<string, float>();
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoInitialize()
@@ -84,6 +86,7 @@ public static class RuntimeAnalytics
         }
 
         metricsReady = false;
+        initializeAttempted = false;
         ResetBattle();
         GameAnalyticsRuntimeProvider.Disable();
         RuntimeAnalyticsLifecycle.DestroyExisting();
@@ -160,6 +163,25 @@ public static class RuntimeAnalytics
         TrackResource("sink", currency, amount, itemType, itemId);
     }
 
+    public static void SetDemoPath(string path)
+    {
+        string sanitizedPath = SanitizeToken(path);
+        switch (sanitizedPath)
+        {
+            case "standard":
+            case "tutorial":
+            case "continue":
+                break;
+            default:
+                sanitizedPath = "unknown";
+                break;
+        }
+
+        PlayerPrefs.SetString(DemoPathPlayerPrefsKey, sanitizedPath);
+        PlayerPrefs.Save();
+        GameAnalyticsRuntimeProvider.RefreshPlayerDimensions();
+    }
+
     public static void BeginBattle(string type, string encounter)
     {
         if (!EnsureProviderReady())
@@ -214,7 +236,7 @@ public static class RuntimeAnalytics
             battleDamageReceived += amount;
         }
 
-        TrackDesignValue(
+        TrackBattleDetail(
             amount,
             "combat",
             "damage",
@@ -236,7 +258,7 @@ public static class RuntimeAnalytics
             battleHealingReceived += amount;
         }
 
-        TrackDesignValue(amount, "combat", "healing", "received", side);
+        TrackBattleDetail(amount, "combat", "healing", "received", side);
     }
 
     public static void TrackCombatState(string action, string state, float amount, Unidad target)
@@ -246,7 +268,7 @@ public static class RuntimeAnalytics
             return;
         }
 
-        TrackDesignValue(amount, "combat", "state", action, state, SideToken(target));
+        TrackBattleDetail(amount, "combat", "state", action, state, SideToken(target));
     }
 
     public static void TrackCombatStateResisted(string state, Unidad target)
@@ -256,7 +278,7 @@ public static class RuntimeAnalytics
             return;
         }
 
-        TrackDesign("combat", "state", "resisted", state, SideToken(target));
+        TrackBattleDetail(1f, "combat", "state", "resisted", state, SideToken(target));
     }
 
     public static void TrackCombatBuff(string action, string buffName, bool beneficial, Unidad target)
@@ -266,7 +288,8 @@ public static class RuntimeAnalytics
             return;
         }
 
-        TrackDesign(
+        TrackBattleDetail(
+            1f,
             "combat",
             beneficial ? "buff" : "debuff",
             action,
@@ -281,7 +304,7 @@ public static class RuntimeAnalytics
             return;
         }
 
-        TrackDesign("combat", "ability_used", SideToken(user), AbilityToken(ability));
+        TrackBattleDetail(1f, "combat", "ability_used", SideToken(user), AbilityToken(ability));
     }
 
     public static void TrackUnitDown(Unidad unit)
@@ -301,7 +324,7 @@ public static class RuntimeAnalytics
             battleAlliesDown++;
         }
 
-        TrackDesign("combat", "unit_down", enemy ? "enemy" : "ally", UnitTypeToken(unit));
+        TrackBattleDetail(1f, "combat", "unit_down", enemy ? "enemy" : "ally", UnitTypeToken(unit));
     }
 
     public static void TrackEnemyPartyComposition(IEnumerable<Unidad> initialEnemies, IEnumerable<GameObject> reinforcements)
@@ -328,6 +351,7 @@ public static class RuntimeAnalytics
 
         battleMaxRound = Mathf.Max(battleMaxRound, rounds);
         EmitBattleSummary(victory ? "victory" : "defeat");
+        FlushBattleDetails();
         ResetBattle();
     }
 
@@ -341,6 +365,7 @@ public static class RuntimeAnalytics
         TrackDesign("battle", "abandoned", battleType, battleEncounter, reason);
         TrackProgressionFail("battle", battleType, battleEncounter);
         EmitBattleSummary("abandoned");
+        FlushBattleDetails();
         ResetBattle();
     }
 
@@ -617,6 +642,7 @@ public static class RuntimeAnalytics
         battleHealingReceived = 0f;
         battleEnemiesDown = 0;
         battleAlliesDown = 0;
+        battleDetailTotals.Clear();
     }
 
     private static bool EnsureProviderReady()
@@ -626,7 +652,45 @@ public static class RuntimeAnalytics
             Initialize();
         }
 
+        if (metricsReady)
+        {
+            GameAnalyticsRuntimeProvider.RefreshPlayerDimensions();
+        }
+
         return metricsReady;
+    }
+
+    private static void TrackBattleDetail(float value, params string[] parts)
+    {
+        if (!EnsureProviderReady())
+        {
+            return;
+        }
+
+        string eventName = BuildEventName(parts);
+        if (string.IsNullOrEmpty(eventName))
+        {
+            return;
+        }
+
+        Emit(new MetricEvent
+        {
+            type = "design",
+            name = eventName,
+            hasValue = true,
+            value = value
+        });
+
+        battleDetailTotals.TryGetValue(eventName, out float current);
+        battleDetailTotals[eventName] = current + value;
+    }
+
+    private static void FlushBattleDetails()
+    {
+        foreach (KeyValuePair<string, float> detail in battleDetailTotals)
+        {
+            GameAnalyticsRuntimeProvider.TrackDesign(detail.Key, detail.Value);
+        }
     }
 
     private static bool CanSendEvents(out string reason)

@@ -60,6 +60,11 @@ public class MeleeApproachMover : MonoBehaviour
 
   object ElegirObjetivoVisualParaHabilidad(Habilidad habilidad, List<object> objetivos)
   {
+    if (EsCorteVertical(habilidad))
+    {
+      return ElegirObjetivoVisualCentral(objetivos);
+    }
+
     if (habilidad != null && habilidad.targetEspecial == 10 && BattleManager.Instance != null)
     {
       Casilla casillaCentro = BattleManager.Instance.casillaClickHabilidad;
@@ -80,6 +85,61 @@ public class MeleeApproachMover : MonoBehaviour
     }
 
     return ElegirObjetivoVisual(objetivos);
+  }
+
+  bool EsCorteVertical(Habilidad habilidad)
+  {
+    return habilidad is Cortevertical
+      || habilidad is CorteVerticalSagrado
+      || habilidad is CorteVerticalSediento
+      || habilidad is CorteVerticalCongelado;
+  }
+
+  object ElegirObjetivoVisualCentral(List<object> objetivos)
+  {
+    List<object> candidatos = new List<object>();
+    BattleManager battleManager = BattleManager.Instance;
+    if (battleManager != null)
+    {
+      AgregarCandidatosVisuales(candidatos, battleManager.lUnidadesPosiblesHabilidadActiva);
+      AgregarCandidatosVisuales(candidatos, battleManager.lObstaculosPosiblesHabilidadActiva);
+    }
+
+    if (candidatos.Count == 0)
+    {
+      AgregarCandidatosVisuales(candidatos, objetivos);
+    }
+
+    if (candidatos.Count == 0)
+    {
+      return null;
+    }
+
+    candidatos.Sort((a, b) => ObtenerPosicionVertical(a).CompareTo(ObtenerPosicionVertical(b)));
+    return candidatos[candidatos.Count / 2];
+  }
+
+  void AgregarCandidatosVisuales<T>(List<object> candidatos, IEnumerable<T> posibles)
+  {
+    if (posibles == null)
+    {
+      return;
+    }
+
+    foreach (object objetivo in posibles)
+    {
+      if (TryObtenerDatosObjetivo(objetivo, out _) && !ContieneObjetivo(candidatos, objetivo))
+      {
+        candidatos.Add(objetivo);
+      }
+    }
+  }
+
+  float ObtenerPosicionVertical(object objetivo)
+  {
+    return TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform)
+      ? objetivoTransform.position.y
+      : 0f;
   }
 
   bool ContieneObjetivo(IEnumerable<object> objetivos, object buscado)

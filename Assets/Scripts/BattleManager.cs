@@ -724,7 +724,10 @@ public class BattleManager : MonoBehaviour
       return true;
     }
 
-    GameObject panel = fijar && habilidad.esHostil ? panelhabderecha : panelhabizquierda;
+    bool mostrarPanelHostilALaDerecha = fijar
+      && habilidad.esHostil
+      && !HayObjetivoHostilEnRetaguardia();
+    GameObject panel = mostrarPanelHostilALaDerecha ? panelhabderecha : panelhabizquierda;
     if (panel == null)
     {
       return false;
@@ -771,6 +774,31 @@ public class BattleManager : MonoBehaviour
     }
 
     return true;
+  }
+
+  private bool HayObjetivoHostilEnRetaguardia()
+  {
+    if (unidadActiva == null || unidadActiva.CasillaPosicion == null || lUnidadesPosiblesHabilidadActiva == null)
+    {
+      return false;
+    }
+
+    foreach (Unidad objetivo in lUnidadesPosiblesHabilidadActiva)
+    {
+      if (objetivo == null
+        || objetivo.CasillaPosicion == null
+        || objetivo.CasillaPosicion.lado == unidadActiva.CasillaPosicion.lado)
+      {
+        continue;
+      }
+
+      if (objetivo.ObtenerCasillasHuella().Any(casilla => casilla != null && casilla.posX == 1))
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public void OcultarPanelDescripcionHabilidad(Habilidad habilidad, bool liberarFijada)
@@ -927,46 +955,53 @@ public class BattleManager : MonoBehaviour
   }
 
   [SerializeField] private TextMeshProUGUI textoTurno;
-  private bool _isFlashingTurnText;
+  private bool _isFlashingTurnButton;
+  private int _turnButtonPulseVersion;
 
 
   public void RevisarAPUnidadActiva()
   {
     if (unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null && unidadActiva.ObtenerAPActual() <= 0)
     {
-      if (!_isFlashingTurnText && textoTurno != null)
+      if (!_isFlashingTurnButton && textoTurno != null)
       {
-        StartCoroutine(FlashTextoTurnoAlpha());
+        StartCoroutine(FlashBotonTurnoAlpha());
       }
     }
   }
 
-  private IEnumerator FlashTextoTurnoAlpha()
+  private IEnumerator FlashBotonTurnoAlpha()
   {
-    if (textoTurno == null)
+    Button botonTurno = textoTurno != null ? textoTurno.GetComponentInParent<Button>() : null;
+    Graphic graficoBoton = botonTurno != null ? botonTurno.targetGraphic : null;
+    if (graficoBoton == null)
     {
-      _isFlashingTurnText = false;
+      _isFlashingTurnButton = false;
       yield break;
     }
-    _isFlashingTurnText = true;
-    Color originalColor = textoTurno.color;
-    float flashDuration = 0.3f;
-    int flashCount = 8;
 
-    for (int i = 0; i < flashCount; i++)
+    _isFlashingTurnButton = true;
+    int versionPulso = _turnButtonPulseVersion;
+    Color colorOriginal = graficoBoton.color;
+    Color colorPulsoMaximo = Color.Lerp(colorOriginal, Color.white, 0.32f);
+    colorPulsoMaximo.a = colorOriginal.a;
+    const float duracionPulso = 1.6f;
+
+    while (versionPulso == _turnButtonPulseVersion)
     {
-      // bajar alpha
-      Color c = textoTurno.color;
-      c.a = 0.25f;
-      textoTurno.color = c;
-      yield return new WaitForSeconds(flashDuration);
-      // restaurar alpha original
-      c.a = originalColor.a;
-      textoTurno.color = c;
-      yield return new WaitForSeconds(flashDuration);
+      float tiempo = 0f;
+      while (tiempo < duracionPulso && versionPulso == _turnButtonPulseVersion)
+      {
+        tiempo += Time.unscaledDeltaTime;
+        float progreso = Mathf.Clamp01(tiempo / duracionPulso);
+        float pulso = (1f - Mathf.Cos(progreso * Mathf.PI * 2f)) * 0.5f;
+        graficoBoton.color = Color.Lerp(colorOriginal, colorPulsoMaximo, pulso);
+        yield return null;
+      }
     }
-    textoTurno.color = originalColor;
-    _isFlashingTurnText = false;
+
+    graficoBoton.color = colorOriginal;
+    _isFlashingTurnButton = false;
   }
 
 
@@ -985,6 +1020,8 @@ public class BattleManager : MonoBehaviour
 
   public void TerminarTurno(bool fueManualConBoton = false) //Termina el turno de la unidad activa
   {
+    _turnButtonPulseVersion++;
+
     TutorialEvents.Emit(new TutorialEventPayload(TutorialEventNames.BattleTurnEnded, gameObject)
       .Add("manual", fueManualConBoton ? 1 : 0)
       .Add("unit", unidadActiva != null ? unidadActiva.uNombre : string.Empty));
@@ -1009,7 +1046,7 @@ public class BattleManager : MonoBehaviour
     }
 
 
-    if (scTutorialCombate.tutorialCombateActivo && scTutorialCombate.ObtenerPasoActual() == 7)
+    if (scTutorialCombate.EsPasoFinTurno())
     {
       scTutorialCombate.SiguientePasoCombate();
     }
@@ -1077,7 +1114,7 @@ public class BattleManager : MonoBehaviour
     rondaText.text = TRADU.i.Traducir("Ronda") + " " + RondaNro;
     //  BorrarLog();
 
-     if (scTutorialCombate.tutorialCombateActivo && scTutorialCombate.ObtenerPasoActual() == 8)
+     if (scTutorialCombate.EsPasoNuevaRonda())
     {
       scTutorialCombate.SiguientePasoCombate();
     }
@@ -1228,6 +1265,7 @@ public class BattleManager : MonoBehaviour
 
   public List<GameObject> enemigosRefuerzos = new List<GameObject>();
   readonly Dictionary<GameObject, int> rondaMinimaRefuerzoEnemigo = new Dictionary<GameObject, int>();
+  readonly HashSet<Unidad> refuerzosEnemigosPrioridadSiguienteRonda = new HashSet<Unidad>();
   public int delayRefuerzo = 0; //La cantidad de turnos para que empiecen a aparecer los refuerzos.
   public bool enviarUnRefuerzoEnemigoPorRonda = false;
   public bool ignorarModificadoresDelayRefuerzosEnemigos = false;
@@ -1264,6 +1302,7 @@ public class BattleManager : MonoBehaviour
     enemigosRefuerzos.Clear();
     aliadosRefuerzos.Clear();
     rondaMinimaRefuerzoEnemigo.Clear();
+    refuerzosEnemigosPrioridadSiguienteRonda.Clear();
     delayRefuerzo = 0;
     enviarUnRefuerzoEnemigoPorRonda = false;
     ignorarModificadoresDelayRefuerzosEnemigos = false;
@@ -1372,6 +1411,12 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
+    Unidad unidadRefuerzo = refuerzo.GetComponent<Unidad>();
+    if (unidadRefuerzo != null)
+    {
+      refuerzosEnemigosPrioridadSiguienteRonda.Add(unidadRefuerzo);
+    }
+
     enemigosRefuerzos.RemoveAt(indiceRefuerzo);
     rondaMinimaRefuerzoEnemigo.Remove(refuerzo);
     ladoA.ActualizarListaDeUnidadesEnLado();
@@ -1426,17 +1471,27 @@ public class BattleManager : MonoBehaviour
     Casilla[] entradasEnemigas = unidadRefuerzo.bGrande
       ? new[] { ladoA.c2x3, ladoA.c2x2, ladoA.c2x4, ladoA.c2x1 }
       : new[] { ladoA.c1x3, ladoA.c1x2, ladoA.c1x4, ladoA.c1x5, ladoA.c1x1 };
+
+    List<Casilla> entradasDisponibles = new List<Casilla>();
     foreach (Casilla casillaEntrada in entradasEnemigas)
     {
-      if (casillaEntrada == null || !unidadRefuerzo.PuedeOcuparCasilla(casillaEntrada))
+      if (casillaEntrada == null
+        || !unidadRefuerzo.PuedeOcuparCasilla(casillaEntrada)
+        || unidadRefuerzo.ObtenerCasillasHuella(casillaEntrada).Any(casilla => casilla.GetComponent<Trampa>() != null))
       {
         continue;
       }
+
+      entradasDisponibles.Add(casillaEntrada);
+    }
+
+    if (entradasDisponibles.Count > 0)
+    {
+      Casilla casillaEntrada = entradasDisponibles[UnityEngine.Random.Range(0, entradasDisponibles.Count)];
       enemigo.SetActive(true);
       casillaEntrada.PonerObjetoEnCasillaAnimado(enemigo, 2);
       unidadRefuerzo.EstablecerAPActualA(0);
       seColoco = true;
-      break;
     }
 
     if (!seColoco)
@@ -2057,13 +2112,19 @@ public class BattleManager : MonoBehaviour
     if (RondaNro < 2 && (tipoEmboscadaOrdenIniciativa == 1 || tipoEmboscadaOrdenIniciativa == 2))
     {
       lUnidadesTotal = lUnidadesTotal
-        .OrderBy(u => ObtenerPrioridadOrdenEmboscada(u))
+        .OrderBy(u => refuerzosEnemigosPrioridadSiguienteRonda.Contains(u) ? 0 : 1)
+        .ThenBy(u => ObtenerPrioridadOrdenEmboscada(u))
         .ThenByDescending(u => u.iniciativa_actual)
         .ToList();
+      refuerzosEnemigosPrioridadSiguienteRonda.Clear();
       return;
     }
 
-    lUnidadesTotal = lUnidadesTotal.OrderByDescending(u => u.iniciativa_actual).ToList();
+    lUnidadesTotal = lUnidadesTotal
+      .OrderBy(u => refuerzosEnemigosPrioridadSiguienteRonda.Contains(u) ? 0 : 1)
+      .ThenByDescending(u => u.iniciativa_actual)
+      .ToList();
+    refuerzosEnemigosPrioridadSiguienteRonda.Clear();
 
   }
 
@@ -2141,6 +2202,11 @@ public class BattleManager : MonoBehaviour
   private bool DebeTenerHabilidadDestruirObstaculo(Unidad unidad)
   {
     if (unidad == null)
+    {
+      return false;
+    }
+
+    if (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
     {
       return false;
     }
@@ -3096,6 +3162,21 @@ public class BattleManager : MonoBehaviour
   }
 
   public bool HoverUnidadesCentralizadoActivo => true;
+
+  public bool DebeMostrarProbabilidadSobreObjetivo(Unidad unidad)
+  {
+    AdministradorEscenas administradorEscenas = CampaignManager.Instance != null
+      ? CampaignManager.Instance.scAdministradorEscenas
+      : null;
+    if (administradorEscenas == null)
+    {
+      administradorEscenas = ObtenerAdministradorEscenasActual();
+    }
+
+    return administradorEscenas?.EsPrimerCombateTutorialEnCurso == true
+      || (unidad != null && unidad == unidadHoverBajoMouse && EsUnidadObjetivoVisualHabilidadActiva(unidad));
+  }
+
   public bool SeleccionHabilidadSoloCasillaActiva => !TutorialCombateActivo()
     && SeleccionandoObjetivo
     && HabilidadActivaSeleccionaCasilla();
@@ -3432,7 +3513,9 @@ public class BattleManager : MonoBehaviour
       }
 
       Casilla casillaBajoMouse = ObtenerCasillaBajoMouse();
-      Unidad unidadGrande = casillaBajoMouse?.Presente?.GetComponent<Unidad>();
+      Unidad unidadGrande = casillaBajoMouse != null && casillaBajoMouse.Presente != null
+        ? casillaBajoMouse.Presente.GetComponent<Unidad>()
+        : null;
       return unidadGrande != null
         && !HabilidadActivaSeleccionaCasilla()
         && unidadGrande.bGrande
@@ -3573,6 +3656,12 @@ public class BattleManager : MonoBehaviour
         continue;
       }
 
+      UIEstadoCuadro estadoBarraVida = go.GetComponentInParent<UIEstadoCuadro>();
+      if (estadoBarraVida != null && estadoBarraVida.debarravida)
+      {
+        return true;
+      }
+
       if (go.GetComponentInParent<Unidad>() != null)
       {
         return false;
@@ -3680,10 +3769,9 @@ public class BattleManager : MonoBehaviour
 
     FiltrarObjetivosActivosMeleePorInmovilizacion();
 
-    SincronizarMarcasHabilidadActiva();
-
-    ActualizarTextoSeleccionObjetivo();
     ActualizarHoverUnidadBajoMouse();
+    SincronizarMarcasHabilidadActiva();
+    ActualizarTextoSeleccionObjetivo();
     ActualizarPreviewAmenazaMeleeIA();
   }
 
@@ -3823,12 +3911,6 @@ public class BattleManager : MonoBehaviour
     Vector3 mousePos = Input.mousePosition;
     if (incluirImagenYUI)
     {
-      Unidad unidadPorRect = ObtenerUnidadBajoMousePorRectImagen(mousePos, margenPantallaPixeles);
-      if (unidadPorRect != null)
-      {
-        return unidadPorRect;
-      }
-
       if (EventSystem.current != null)
       {
         PointerEventData pointerData = new PointerEventData(EventSystem.current)
@@ -3846,12 +3928,24 @@ public class BattleManager : MonoBehaviour
             continue;
           }
 
+          UIEstadoCuadro estadoBarraVida = go.GetComponentInParent<UIEstadoCuadro>();
+          if (estadoBarraVida != null && estadoBarraVida.debarravida)
+          {
+            return null;
+          }
+
           Unidad unidadUI = go.GetComponentInParent<Unidad>();
           if (unidadUI != null)
           {
             return unidadUI;
           }
         }
+      }
+
+      Unidad unidadPorRect = ObtenerUnidadBajoMousePorRectImagen(mousePos, margenPantallaPixeles);
+      if (unidadPorRect != null)
+      {
+        return unidadPorRect;
       }
     }
 

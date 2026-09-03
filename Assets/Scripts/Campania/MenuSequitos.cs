@@ -184,6 +184,11 @@ public class MenuSequitos : MonoBehaviour
       {
          case 1:
             CrearInstanciaSequito(ID, Sequito001Herreros, "Séquito de Herreros");
+
+            if (aplicarEfectosEntrada)
+            {
+               CampaignManager.Instance.CambiarCivilesActuales(10);
+            }
             break;
          case 2:
             CrearInstanciaSequito(ID, Sequito002Curanderos, "Séquito de Curanderos");
@@ -329,6 +334,7 @@ public class MenuSequitos : MonoBehaviour
       if (ID == 1)
       {
          lstSequitos.Remove(1);
+         CampaignManager.Instance.CambiarCivilesActuales(-10);
       }
       if (ID == 2)
       {

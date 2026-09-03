@@ -124,6 +124,9 @@ public class botoneraNews : MonoBehaviour
   public void AbrirForms()
   {
     Application.OpenURL(UrlForms);
+
+ //   PlayerPrefs.DeleteAll();//!!!!!!!!!!!!!!!!!!!!!!!!!1 Borrrrrrrrrrrrrrrarrrrrrrrrrr
+ //   PlayerPrefs.Save();
   }
 
   private Button BuscarBotonContinuar()

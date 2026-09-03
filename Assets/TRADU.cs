@@ -3057,8 +3057,8 @@ public class TRADU : MonoBehaviour
             case "Es un excelente lugar para descansar y recuperar fuerzas.\n\n\n\n\n":
                 r = "It is an excellent place to rest and recover strength.\n\n\n\n\n";
                 break;
-            case "<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro acumulará solo 4 h durante un descanso de 8 h.\n-+10% curación recibida.\n-El evento será positivo.</b></color>":
-                r = "<color=#a0e812><b>+5 Hope.\n\nResting here also grants these benefits:\n-The Black Breath accumulates only 4 h during an 8 h rest.\n-+10% healing received.\n-The event will be positive.</b></color>";
+            case "<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro avanzará menos.\n-+10% curación recibida.\n-El evento será positivo.</b></color>":
+                r = "<color=#a0e812><b>+5 Hope.\n\nResting here also grants these benefits:\n-The Black Breath will advance less.\n-+10% healing received.\n-The event will be positive.</b></color>";
                 break;
             case "Has llegado a un pequeño asentamiento. Notas que los civiles están desorganizados y necesitan liderazgo para sobrevivir al Aliento Negro.":
                 r = "You have arrived at a small settlement. You notice that the civilians are disorganized and need leadership to survive the Black Breath.";
@@ -3354,8 +3354,8 @@ public class TRADU : MonoBehaviour
             case "Los civiles organizan una feria con juegos y celebraciones.\n\n":
                 r = "Civilians throw a fair with games and celebrations.\n\n";
                 break;
-            case "<color=#d8a205>• +10 a 15 Esperanza</color>\n":
-                r = "<color=#d8a205>• +10 to 15 Hope</color>\n";
+            case "<color=#d8a205>• +10-15 Esperanza</color>\n":
+                r = "<color=#d8a205>• +10-15 Hope</color>\n";
                 break;
             case "<color=#d8a205>• Consumo de Suministros +20%</color>\n":
                 r = "<color=#d8a205>• Supply consumption +20%</color>\n";
@@ -4265,6 +4265,9 @@ public class TRADU : MonoBehaviour
                 break;
             case "Desplazado":
                 r = "Displaced";
+                break;
+            case "AP máx -1 por 1 turno":
+                r = "-1 Max AP for 1 turn";
                 break;
             case "Condenado":
                 r = "Condemned";
@@ -10493,8 +10496,8 @@ public class TRADU : MonoBehaviour
             case "Es un excelente lugar para descansar y recuperar fuerzas.\n\n\n\n\n":
                 r = "É um excelente lugar para descansar e recuperar as forças.\n\n\n\n\n";
                 break;
-            case "<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro acumulará solo 4 h durante un descanso de 8 h.\n-+10% curación recibida.\n-El evento será positivo.</b></color>":
-                r = "<color=#a0e812><b>+5 Esperança.\n\nDescansar neste lugar também terá benefícios adicionais:\n-O Respiro Negro acumula apenas 4 h durante um descanso de 8 h.\n-+10% de cura recebida.\n-O evento será positivo.</b></color>";
+            case "<color=#a0e812><b>+5 Esperanza.\n\nDescansar en este lugar tendrá también beneficios adicionales:\n-El Aliento Negro avanzará menos.\n-+10% curación recibida.\n-El evento será positivo.</b></color>":
+                r = "<color=#a0e812><b>+5 Esperança.\n\nDescansar neste lugar também terá benefícios adicionais:\n-O Respiro Negro avançará menos.\n-+10% de cura recebida.\n-O evento será positivo.</b></color>";
                 break;
             case "Has llegado a un pequeño asentamiento. Notas que los civiles están desorganizados y necesitan liderazgo para sobrevivir al Aliento Negro.":
                 r = "Você chegou a um pequeno assentamento. Você nota que os civis estão desorganizados e precisam de liderança para sobreviver ao Respiro Negro.";
@@ -10790,8 +10793,8 @@ public class TRADU : MonoBehaviour
             case "Los civiles organizan una feria con juegos y celebraciones.\n\n":
                 r = "Os civis organizam uma feira com jogos e celebrações.\n\n";
                 break;
-            case "<color=#d8a205>• +10 a 15 Esperanza</color>\n":
-                r = "<color=#d8a205>• +10 a 15 Esperança</color>\n";
+            case "<color=#d8a205>• +10-15 Esperanza</color>\n":
+                r = "<color=#d8a205>• +10-15 Esperança</color>\n";
                 break;
             case "<color=#d8a205>• Consumo de Suministros +20%</color>\n":
                 r = "<color=#d8a205>• Consumo de Suprimentos +20%</color>\n";
@@ -11701,6 +11704,9 @@ public class TRADU : MonoBehaviour
                 break;
             case "Desplazado":
                 r = "Deslocado";
+                break;
+            case "AP máx -1 por 1 turno":
+                r = "-1 PA máximo por 1 turno";
                 break;
             case "Condenado":
                 r = "Condenado";

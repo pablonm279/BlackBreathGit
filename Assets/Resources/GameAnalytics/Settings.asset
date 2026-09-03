@@ -30,7 +30,7 @@ MonoBehaviour:
   secretKey:
   - adacc5af7f56ddd80f023ae065147c9b410ade5b
   Build:
-  - 0.75
+  - 0.76
   SelectedPlatformOrganization:
   - 
   SelectedPlatformStudio:
@@ -56,9 +56,21 @@ MonoBehaviour:
   UseManualSessionHandling: 0
   SendExampleGameDataToMyGame: 0
   InternetConnectivity: 0
-  CustomDimensions01: []
-  CustomDimensions02: []
-  CustomDimensions03: []
+  CustomDimensions01:
+  - es
+  - en
+  - pt
+  CustomDimensions02:
+  - difficulty_0
+  - difficulty_1
+  - difficulty_2
+  - difficulty_3
+  - difficulty_4
+  CustomDimensions03:
+  - unknown
+  - standard
+  - tutorial
+  - continue
   ResourceItemTypes:
   - merchant_item
   - caravan_upgrade

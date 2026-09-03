@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -30,6 +31,7 @@ public class TutorialDirector : MonoBehaviour
   private bool autoStartPendienteTrasIntro;
   private bool pendingStartPendienteTrasIntro;
   private Coroutine timedAdvanceCoroutine;
+  private readonly HashSet<string> trackedAnalyticsSteps = new HashSet<string>();
   private static PendingRestoreState pendingRestoreState;
 
   public bool IsRunning => running;
@@ -226,11 +228,13 @@ public class TutorialDirector : MonoBehaviour
     }
 
     activeDefinition = definition;
+    trackedAnalyticsSteps.Clear();
     int requestedIndex = definition.GetStepIndex(stepId);
-    stepIndex = requestedIndex >= 0 ? requestedIndex : 0;
+    stepIndex = definition.GetNextActiveStepIndex(requestedIndex >= 0 ? requestedIndex : 0);
     running = true;
     suspendedForLegacyCombatTutorial = false;
     StopTimedAdvance();
+    RuntimeAnalytics.TrackDesign("tutorial", "started", definition.tutorialId);
     EnterCurrentStep();
   }
 
@@ -248,11 +252,14 @@ public class TutorialDirector : MonoBehaviour
       presenter.StopCurrentStepNarration();
     }
     ExitCurrentStep();
-    stepIndex++;
+    int exitingStepIndex = stepIndex;
+    stepIndex = activeDefinition != null
+      ? activeDefinition.GetNextActiveStepIndex(stepIndex + 1)
+      : -1;
 
-    if (activeDefinition == null || stepIndex >= activeDefinition.steps.Count)
+    if (activeDefinition == null || stepIndex < 0)
     {
-      CompleteTutorial(exitingStep != null && exitingStep.id == FinalStepId);
+      CompleteTutorial(DebeVolverAlMenuAlCompletar(exitingStepIndex, exitingStep));
       return;
     }
 
@@ -261,7 +268,13 @@ public class TutorialDirector : MonoBehaviour
 
   public void PreviousStep()
   {
-    if (!running || stepIndex <= 0)
+    if (!running || activeDefinition == null)
+    {
+      return;
+    }
+
+    int previousStepIndex = activeDefinition.GetPreviousActiveStepIndex(stepIndex - 1);
+    if (previousStepIndex < 0)
     {
       return;
     }
@@ -272,7 +285,7 @@ public class TutorialDirector : MonoBehaviour
       presenter.StopCurrentStepNarration();
     }
     ExitCurrentStep();
-    stepIndex--;
+    stepIndex = previousStepIndex;
     EnterCurrentStep();
   }
 
@@ -283,7 +296,12 @@ public class TutorialDirector : MonoBehaviour
     {
       presenter.StopCurrentStepNarration();
     }
-    CompleteTutorial();
+    RuntimeAnalytics.TrackDesign(
+      "tutorial",
+      "skipped",
+      activeDefinition != null ? activeDefinition.tutorialId : "unknown",
+      CurrentStepId);
+    CompleteTutorial(false, true);
   }
 
   public bool AllowsInput(string targetId)
@@ -381,10 +399,31 @@ public class TutorialDirector : MonoBehaviour
   private void EnterCurrentStep()
   {
     TutorialStep step = CurrentStep;
-    if (step == null)
+    if (step == null || !step.activo)
     {
-      CompleteTutorial();
+      int currentIndex = stepIndex;
+      stepIndex = activeDefinition != null
+        ? activeDefinition.GetNextActiveStepIndex(stepIndex + 1)
+        : -1;
+
+      if (stepIndex < 0)
+      {
+        CompleteTutorial(DebeVolverAlMenuAlCompletar(currentIndex, step));
+        return;
+      }
+
+      EnterCurrentStep();
       return;
+    }
+
+    string analyticsStepKey = (activeDefinition != null ? activeDefinition.tutorialId : "unknown") + ":" + step.id;
+    if (trackedAnalyticsSteps.Add(analyticsStepKey))
+    {
+      RuntimeAnalytics.TrackDesign(
+        "tutorial",
+        "step_reached",
+        activeDefinition != null ? activeDefinition.tutorialId : "unknown",
+        step.id);
     }
 
     ExecuteActions(step.enterActions);
@@ -393,7 +432,9 @@ public class TutorialDirector : MonoBehaviour
 
     if (presenter != null)
     {
-      presenter.Show(step, stepIndex > 0);
+      bool canGoBack = activeDefinition != null
+        && activeDefinition.GetPreviousActiveStepIndex(stepIndex - 1) >= 0;
+      presenter.Show(step, canGoBack);
     }
 
     if (step.advanceMode == TutorialAdvanceMode.Timed)
@@ -409,6 +450,30 @@ public class TutorialDirector : MonoBehaviour
     {
       ExecuteActions(step.exitActions);
     }
+  }
+
+  private bool DebeVolverAlMenuAlCompletar(int exitingStepIndex, TutorialStep exitingStep)
+  {
+    if (exitingStep != null && exitingStep.id == FinalStepId)
+    {
+      return true;
+    }
+
+    if (activeDefinition == null || activeDefinition.steps == null)
+    {
+      return false;
+    }
+
+    for (int i = Mathf.Max(0, exitingStepIndex + 1); i < activeDefinition.steps.Count; i++)
+    {
+      TutorialStep step = activeDefinition.steps[i];
+      if (step != null && step.id == FinalStepId)
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private void ExecuteActions(System.Collections.Generic.List<TutorialAction> actions)
@@ -449,13 +514,18 @@ public class TutorialDirector : MonoBehaviour
     }
   }
 
-  private void CompleteTutorial(bool volverAlMenuPrincipal = false)
+  private void CompleteTutorial(bool volverAlMenuPrincipal = false, bool skipped = false)
   {
     StopTimedAdvance();
     CancelarRestauracionPendiente();
 
     if (activeDefinition != null && !string.IsNullOrEmpty(activeDefinition.tutorialId))
     {
+      if (!skipped)
+      {
+        RuntimeAnalytics.TrackDesign("tutorial", "completed", activeDefinition.tutorialId);
+      }
+
       PlayerPrefs.SetInt(GetCompletedKey(activeDefinition.tutorialId), 1);
     }
 
@@ -654,6 +724,7 @@ public class TutorialDirector : MonoBehaviour
     {
       stepIndex = 0;
     }
+    stepIndex = definition.GetNextActiveStepIndex(stepIndex);
 
     running = true;
     suspendedForLegacyCombatTutorial = false;

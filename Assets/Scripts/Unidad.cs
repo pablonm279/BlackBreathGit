@@ -32,6 +32,7 @@ public class Unidad : MonoBehaviour
   private static Unidad redireccionAtaqueObjetivoReal;
   private bool omitirSiguienteVisualMiss;
   private float omitirVisualMissHasta;
+  private int tiradaSalvacionMentalForzada;
 
    [Header ("Lógica")]
    public Casilla CasillaPosicion;
@@ -1834,6 +1835,12 @@ public bool movimientoEnCurso = false;
 
     if (CasillaDeseadaMov != null)
     {
+      if (estado_inmovil > 0)
+      {
+        CancelarMovimientoPendiente();
+        return;
+      }
+
       if ((CasillaPosicion != CasillaDeseadaMov) && (scBattleManager.unidadActiva == this))
       {
         if (!PuedeOcuparCasilla(CasillaDeseadaMov))
@@ -2684,6 +2691,8 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       unidadRedirigida.NotificarAtaqueRecibido();
       return;
     }
+
+    MostrarBarraVidaTemporalmente();
 
     Buff[] buffs = this.GetComponents<Buff>();
     foreach (Buff buff in buffs)
@@ -3627,10 +3636,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       danioTotal = adminTraitVida != null ? adminTraitVida.AjustarDanioRecibidoPorTraits(this, danioTotal) : danioTotal;
       muereConDanio = HP_actual - danioTotal < 1;
       HP_actual -= danioTotal;
-      if (danioTotal > 0)
-      {
-        MostrarBarraVidaTemporalmente();
-      }
+      MostrarBarraVidaTemporalmente();
       RuntimeAnalytics.TrackCombatDamage(danioTotal, tipoDanio, esCritico, uCausante, this);
       RegistrarDanioCampania(uCausante, danioTotal);
       if (danioTotal > 0)
@@ -4328,10 +4334,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       }
       await BattleManager.DelayCombateAsync(150);
       HP_actual -= danioFinalInt;
-      if (danioFinalInt > 0)
-      {
-        MostrarBarraVidaTemporalmente();
-      }
+      MostrarBarraVidaTemporalmente();
       RuntimeAnalytics.TrackCombatDamage(danioFinalInt, tipoDanio, false, uCausante, this);
       RegistrarDanioCampania(uCausante, danioFinalInt);
       adminTraitVida?.ProcesarTraitPuertasDeLaMuerteSiCorresponde(this);
@@ -5931,7 +5934,9 @@ private bool DebeIgnorarMousePorVistaTactica()
   {
     tipoSalvacion = NormalizarTipoSalvacionIndice(tipoSalvacion);
     float atributoDefiende = ObtenerAtributoTS(tipoSalvacion);
-    float iTiradaDefensa = UnityEngine.Random.Range(1,21);
+    float iTiradaDefensa = tipoSalvacion == TipoSalvacionMental && tiradaSalvacionMentalForzada > 0
+      ? tiradaSalvacionMentalForzada
+      : UnityEngine.Random.Range(1,21);
     float iResultadoAtaque =  dificultadHabilidada;
     float iResultadoDefensa = iTiradaDefensa + atributoDefiende;
 
@@ -5966,6 +5971,11 @@ private bool DebeIgnorarMousePorVistaTactica()
     }
 
     return noSeSalva;
+  }
+
+  public void ForzarResultadoTiradasSalvacionMental(int tirada)
+  {
+    tiradaSalvacionMentalForzada = Mathf.Clamp(tirada, 1, 20);
   }
 
   private int NormalizarTipoSalvacionIndice(int tipoSalvacion)

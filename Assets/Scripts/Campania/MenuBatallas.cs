@@ -290,7 +290,14 @@ public class MenuBatallas : MonoBehaviour
     }
  }
 
-bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predicate<EnemyFactionConfig> factionFilter, out EncounterDefinition definition, int faseOverride = 0, bool aplicarAjustePrimeraBatallaRun = false)
+bool TryGenerarEncuentro(
+   BattleEncounterType tipo,
+   EncounterZoneType zona,
+   Predicate<EnemyFactionConfig> factionFilter,
+   out EncounterDefinition definition,
+   int faseOverride = 0,
+   bool aplicarAjustePrimeraBatallaRun = false,
+   bool permitirRepetirFaccion = false)
 {
    definition = null;
    var atributosZona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
@@ -300,7 +307,8 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
     }
 
    int fase = faseOverride > 0 ? faseOverride : Mathf.Max(1, atributosZona.FASE);
-   Predicate<EnemyFactionConfig> filtroEfectivo = CombinarFiltroFacciones(factionFilter);
+   Predicate<EnemyFactionConfig> filtroEfectivo = CombinarFiltroFacciones(
+      AgregarFiltroFaccionPrimeraPelea(tipo, factionFilter, permitirRepetirFaccion));
    int budgetModifier = aplicarAjustePrimeraBatallaRun ? ObtenerModificadorPoolEnemigoPrimeraBatallaRun() : 0;
    CampaignManager campaignManager = CampaignManager.Instance;
    if (campaignManager != null
@@ -321,6 +329,26 @@ bool TryGenerarEncuentro(BattleEncounterType tipo, EncounterZoneType zona, Predi
    }
 
   return EncounterGenerator.TryGenerateEncounter(atributosZona, zona, tipo, fase, out definition, filtroEfectivo, budgetModifier);
+}
+
+Predicate<EnemyFactionConfig> AgregarFiltroFaccionPrimeraPelea(
+   BattleEncounterType tipo,
+   Predicate<EnemyFactionConfig> factionFilter,
+   bool permitirRepetirFaccion)
+{
+   CampaignManager campaignManager = CampaignManager.Instance;
+   if (permitirRepetirFaccion
+      || tipo == BattleEncounterType.Subterraneo
+      || EstaActivoDebugFaccionesCombate()
+      || campaignManager == null
+      || campaignManager.DebeUsarConfiguracionTutorial())
+   {
+      return factionFilter;
+   }
+
+   return faction => faction != null
+      && (factionFilter == null || factionFilter(faction))
+      && !campaignManager.DebeExcluirFaccionDePrimeraPelea(faction.factionId);
 }
 
 int ObtenerModificadorPoolEnemigoPrimeraBatallaRun()
@@ -358,8 +386,9 @@ public bool TryGenerarFaccionScout(Nodo nodo, out string factionId, out string f
          string.Equals(faction.factionId, KaleTavFactionId, StringComparison.OrdinalIgnoreCase);
    }
 
-   if (!TryGenerarEncuentro(tipo, zonaActual, filtro, out EncounterDefinition definition) &&
-       !TryGenerarEncuentro(tipo, EncounterZoneType.Generico, filtro, out definition))
+   bool faccionForzada = filtro != null;
+   if (!TryGenerarEncuentro(tipo, zonaActual, filtro, out EncounterDefinition definition, permitirRepetirFaccion: faccionForzada) &&
+       !TryGenerarEncuentro(tipo, EncounterZoneType.Generico, filtro, out definition, permitirRepetirFaccion: faccionForzada))
    {
       return false;
    }
@@ -494,7 +523,7 @@ bool TryGenerarEncuentroPresagioEnemigos(BattleEncounterType tipo, EncounterZone
          && !string.IsNullOrWhiteSpace(faction.factionId)
          && string.Equals(faction.factionId, factionId, StringComparison.OrdinalIgnoreCase);
 
-      generado = TryGenerarEncuentro(tipo, EncounterZoneType.Generico, filtro, out definition, 0, true);
+      generado = TryGenerarEncuentro(tipo, EncounterZoneType.Generico, filtro, out definition, 0, true, true);
       if (generado)
       {
          encuentroZonaActual = EncounterZoneType.Generico;
@@ -2009,12 +2038,12 @@ public void DejanEnListaParticipantesSolo()
 
             if (forzarBandidos)
             {
-                generado = TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, filtroBandidos, out encuentroGeneradoActual, 0, true);
+                generado = TryGenerarEncuentro(BattleEncounterType.Normal, zonaActual, filtroBandidos, out encuentroGeneradoActual, 0, true, true);
                 if (generado)
                 {
                     encuentroZonaActual = zonaActual;
                 }
-                else if (TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, filtroBandidos, out encuentroGeneradoActual, 0, true))
+                else if (TryGenerarEncuentro(BattleEncounterType.Normal, EncounterZoneType.Generico, filtroBandidos, out encuentroGeneradoActual, 0, true, true))
                 {
                     encuentroZonaActual = EncounterZoneType.Generico;
                     generado = true;
@@ -2128,8 +2157,8 @@ public void DejanEnListaParticipantesSolo()
                     !string.IsNullOrWhiteSpace(faction.factionId) &&
                     string.Equals(faction.factionId, KaleTavFactionId, StringComparison.OrdinalIgnoreCase);
 
-                generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, kaleFilter, out encuentroGeneradoActual, 0, true);
-                if (!generado && TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, kaleFilter, out encuentroGeneradoActual, 0, true))
+                generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, kaleFilter, out encuentroGeneradoActual, 0, true, true);
+                if (!generado && TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, kaleFilter, out encuentroGeneradoActual, 0, true, true))
                 {
                     encuentroZonaActual = EncounterZoneType.Generico;
                     generado = true;
@@ -2208,8 +2237,8 @@ public void DejanEnListaParticipantesSolo()
         encuentroZonaActual = zonaActual;
 
         Predicate<EnemyFactionConfig> corruptosFilter = faction => EsFaccionDeLista(faction, corruptFactionIds);
-        bool generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, corruptosFilter, out encuentroGeneradoActual, 0, true);
-        if (!generado && TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, corruptosFilter, out encuentroGeneradoActual, 0, true))
+        bool generado = TryGenerarEncuentro(BattleEncounterType.Elite, zonaActual, corruptosFilter, out encuentroGeneradoActual, 0, true, true);
+        if (!generado && TryGenerarEncuentro(BattleEncounterType.Elite, EncounterZoneType.Generico, corruptosFilter, out encuentroGeneradoActual, 0, true, true))
         {
             encuentroZonaActual = EncounterZoneType.Generico;
             generado = true;
@@ -3177,6 +3206,21 @@ public void EfectosDeBatallaEnCampaña(int resultado)
 
     bool usarRefuerzosAliadosCaravana = esBatallaFinal;
     CampaignManager.Instance?.RegistrarInicioBatallaPresagioEnemigos();
+    if (encuentroGeneradoActual != null)
+    {
+      CampaignManager campaignManager = CampaignManager.Instance;
+      Nodo nodoActual = campaignManager != null && campaignManager.scMapaManager != null
+         ? campaignManager.scMapaManager.nodoActual
+         : null;
+      if (nodoActual != null && nodoActual.TieneFaccionScoutRevelada())
+      {
+         nodoActual.RegistrarFaccionScoutRevelada(
+            encuentroGeneradoActual.factionId,
+            ObtenerNombreFaccionTraducido(encuentroGeneradoActual.factionId, encuentroGeneradoActual.factionName));
+      }
+
+      campaignManager?.RegistrarFaccionCombatidaEnZonaActual(encuentroGeneradoActual.factionId);
+    }
     string battleTypeToken = RuntimeAnalytics.SanitizeToken(encuentroTipoActual.ToString());
     string encounterToken = ObtenerAnalyticsEncounterToken();
     RuntimeAnalytics.BeginBattle(battleTypeToken, encounterToken);

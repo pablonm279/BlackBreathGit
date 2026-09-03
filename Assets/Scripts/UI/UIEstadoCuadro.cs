@@ -11,7 +11,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
 {
   // El icono se dibuja muy chico en los canvas de las unidades. Ampliamos solo
   // su zona de hover; el filtro de raycast de abajo resuelve los solapamientos.
-  private static readonly Vector4 PaddingRaycast = new Vector4(16f, 16f, 16f, 16f);
+  private static readonly Vector4 PaddingRaycast = new Vector4(24f, 24f, 24f, 24f);
 
   public int indexEstadoRepresentado;
   private Image Retrato;
@@ -30,6 +30,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
   private readonly List<TextMeshProUGUI> textosStacksEncontrados = new List<TextMeshProUGUI>();
   private bool textosStacksCacheados;
   private int ultimoValorTextoStacksAplicado = int.MinValue;
+  private UnidadCanvas unidadCanvasBarraVida;
 
   void Awake()
   {
@@ -49,6 +50,27 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
     {
       AplicarTextoStacks(valorTextoStacksActual);
     }
+  }
+
+  void OnDisable()
+  {
+    NotificarPunteroSobreEstado(false);
+    if (debarravida)
+    {
+      TooltipBatalla tooltipBatalla = scTooltipBatalla != null ? scTooltipBatalla : TooltipBatalla.Instance;
+      tooltipBatalla?.SolicitarOcultarTooltipEstado();
+    }
+  }
+
+  private void NotificarPunteroSobreEstado(bool encima)
+  {
+    if (!debarravida) { return; }
+
+    if (unidadCanvasBarraVida == null)
+    {
+      unidadCanvasBarraVida = GetComponentInParent<UnidadCanvas>(true);
+    }
+    unidadCanvasBarraVida?.EstablecerPunteroSobreEstado(this, encima);
   }
 
   void Update()
@@ -352,6 +374,12 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
       return string.Empty;
     }
 
+    string descripcionAlientoNegro = GenerarDescripcionAlientoNegro(buff);
+    if (!string.IsNullOrEmpty(descripcionAlientoNegro))
+    {
+      return descripcionAlientoNegro;
+    }
+
     string descripcion = TraducirSeguro(buff.buffNombre) + "\n" + TraducirSeguro(buff.buffDescr) + "\n";
 
     if (buff.percHPMax != 0) descripcion += TRADU.i.Traducir("HP Máximo: ") + "<color=" + (buff.percHPMax > 0 ? "green" : "red") + ">" + buff.percHPMax + "%" + "</color>\n";
@@ -405,7 +433,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
     if (buff.cantDanioPorcentaje != 0) descripcion += TRADU.i.Traducir("Daño: ") + "<color=" + (buff.cantDanioPorcentaje > 0 ? "green" : "red") + ">" + buff.cantDanioPorcentaje + "%" + "</color>\n";
 
     if (buff.cantCritDado != 0) descripcion += TRADU.i.Traducir("Crítico Dado: ") + "<color=" + (buff.cantCritDado > 0 ? "green" : "red") + ">" + buff.cantCritDado + "</color>\n";
-    if (buff.cantCritDadoRecibido != 0) descripcion += EtiquetaBilingue("Critico recibido: ", "Incoming crit range: ") + "<color=" + (buff.cantCritDadoRecibido > 0 ? "green" : "red") + ">" + buff.cantCritDadoRecibido + "</color>\n";
+    if (buff.cantCritDadoRecibido != 0) descripcion += EtiquetaBilingue("Probabilidad de critico recibido: ", "Incoming crit chance: ") + "<color=" + (buff.cantCritDadoRecibido > 0 ? "green" : "red") + ">" + (buff.cantCritDadoRecibido * 5) + "%</color>\n";
     if (buff.cantPenetracionArmadura != 0) descripcion += EtiquetaBilingue("Penetracion armadura: ", "Armor Penetration: ") + "<color=" + (buff.cantPenetracionArmadura > 0 ? "green" : "red") + ">" + buff.cantPenetracionArmadura + "</color>\n";
     if (buff.cantReduccionDanioRecibidoPorcentaje != 0) descripcion += EtiquetaBilingue("Reduccion dano recibido: ", "Damage reduction: ") + "<color=" + (buff.cantReduccionDanioRecibidoPorcentaje > 0 ? "green" : "red") + ">" + buff.cantReduccionDanioRecibidoPorcentaje + "%" + "</color>\n";
     if (buff.cantReduccionDanioCriticoRecibidoPorcentaje != 0) descripcion += EtiquetaBilingue("Reduccion dano critico recibido: ", "Critical damage reduction: ") + "<color=" + (buff.cantReduccionDanioCriticoRecibidoPorcentaje > 0 ? "green" : "red") + ">" + buff.cantReduccionDanioCriticoRecibidoPorcentaje + "%" + "</color>\n";
@@ -438,6 +466,46 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
     if (buff.seConsumeAlRecibirAtaque) descripcion += TRADU.i.Traducir("Se consume al recibir el próximo ataque.") + "\n";
 
     return descripcion;
+  }
+
+  private string GenerarDescripcionAlientoNegro(Buff buff)
+  {
+    bool esAlientoNegro = buff.buffNombre == "Aliento Negro: Débil"
+      || buff.buffNombre == "Aliento Negro: Presente"
+      || buff.buffNombre == "Aliento Negro: Fuerte"
+      || buff.buffNombre == "Aliento Negro: Empoderante";
+    if (!esAlientoNegro)
+    {
+      return string.Empty;
+    }
+
+    int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
+    string efecto = idioma switch
+    {
+      TRADU.IdiomaIngles => buff.buffNombre switch
+      {
+        "Aliento Negro: Débil" => "-5% Damage · -1 Attack · -5 Necrotic Res. · -1% Saves",
+        "Aliento Negro: Presente" => "+5% Max HP · +4 Necrotic Damage · +1 HP/turn · +1% Saves",
+        "Aliento Negro: Fuerte" => "+10% Max HP · +6 Necrotic Damage · +1 Attack · +3 HP/turn · +2% Saves",
+        _ => "+15% Max HP · +8 Necrotic Damage · +2 Attack · +5 HP/turn · +3% Saves"
+      },
+      TRADU.IdiomaPortugues => buff.buffNombre switch
+      {
+        "Aliento Negro: Débil" => "-5% Dano · -1 Ataque · -5 Res. Necrótica · -1% Salvaguardas",
+        "Aliento Negro: Presente" => "+5% PV Máx. · +4 Dano Necrótico · +1 PV/turno · +1% Salvaguardas",
+        "Aliento Negro: Fuerte" => "+10% PV Máx. · +6 Dano Necrótico · +1 Ataque · +3 PV/turno · +2% Salvaguardas",
+        _ => "+15% PV Máx. · +8 Dano Necrótico · +2 Ataque · +5 PV/turno · +3% Salvaguardas"
+      },
+      _ => buff.buffNombre switch
+      {
+        "Aliento Negro: Débil" => "-5% Daño · -1 Ataque · -5 Res. Necrótica · -1% Salvaciones",
+        "Aliento Negro: Presente" => "+5% PV Máx. · +4 Daño Necrótico · +1 PV/turno · +1% Salvaciones",
+        "Aliento Negro: Fuerte" => "+10% PV Máx. · +6 Daño Necrótico · +1 Ataque · +3 PV/turno · +2% Salvaciones",
+        _ => "+15% PV Máx. · +8 Daño Necrótico · +2 Ataque · +5 PV/turno · +3% Salvaciones"
+      }
+    };
+
+    return TraducirSeguro(buff.buffNombre) + "\n" + efecto;
   }
 
   private void ActualizarTextoStacks(int valor)
@@ -610,6 +678,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
 
   public void ActivarTooltip()
   {
+    NotificarPunteroSobreEstado(true);
     string textoTooltip = ObtenerTextoTooltip();
     if (string.IsNullOrEmpty(textoTooltip))
     {
@@ -635,6 +704,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
 
   public void DesactivarTooltip()
   {
+    NotificarPunteroSobreEstado(false);
     
     if (!debarravida && goTooltip != null)
       goTooltip.SetActive(false);
@@ -646,7 +716,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
 
       if (scTooltipBatalla != null)
       {
-        scTooltipBatalla.HideTooltipSinAnim();
+        scTooltipBatalla.SolicitarOcultarTooltipEstado();
       }
     }
   }

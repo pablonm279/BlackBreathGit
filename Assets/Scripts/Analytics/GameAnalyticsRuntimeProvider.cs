@@ -7,10 +7,15 @@ using UnityEngine;
 internal static class GameAnalyticsRuntimeProvider
 {
     private const string TrackerObjectName = "[Metrics] GameAnalytics";
+    private const string LanguagePlayerPrefsKey = "nIdioma";
+    private const string DifficultyPlayerPrefsKey = "dificultad_index";
 
     private static bool initializationAttempted;
     private static bool ready;
     private static bool failureLogged;
+    private static string activeLanguage;
+    private static string activeDifficulty;
+    private static string activeDemoPath;
 
     public static void Initialize(RuntimeAnalyticsSettings runtimeSettings)
     {
@@ -45,6 +50,8 @@ internal static class GameAnalyticsRuntimeProvider
                 trackerObject.AddComponent<GameAnalytics>();
             }
 
+            ConfigurePlayerDimensions(settings);
+            ApplyPlayerDimensions(true);
             GameAnalytics.Initialize();
             if (GameAnalytics.Initialized)
             {
@@ -60,7 +67,11 @@ internal static class GameAnalyticsRuntimeProvider
 
     public static void Disable()
     {
+        initializationAttempted = false;
         ready = false;
+        activeLanguage = null;
+        activeDifficulty = null;
+        activeDemoPath = null;
         if (!GameAnalytics.Initialized)
         {
             return;
@@ -94,6 +105,14 @@ internal static class GameAnalyticsRuntimeProvider
         }
 
         TrySend(() => GameAnalytics.NewDesignEvent(eventName, value));
+    }
+
+    public static void RefreshPlayerDimensions()
+    {
+        if (ready)
+        {
+            ApplyPlayerDimensions(false);
+        }
     }
 
     public static void TrackProgression(
@@ -186,6 +205,73 @@ internal static class GameAnalyticsRuntimeProvider
         catch (Exception exception)
         {
             LogFailureOnce("GameAnalytics rechazo un evento; el registro local sigue activo. " + exception.Message);
+        }
+    }
+
+    private static void ApplyPlayerDimensions(bool force)
+    {
+        string language = GetLanguageDimension();
+        string difficulty = "difficulty_" + Mathf.Clamp(PlayerPrefs.GetInt(DifficultyPlayerPrefsKey, 2), 0, 4);
+        string demoPath = GetDemoPathDimension();
+
+        if (force || activeLanguage != language)
+        {
+            GameAnalytics.SetCustomDimension01(language);
+            activeLanguage = language;
+        }
+
+        if (force || activeDifficulty != difficulty)
+        {
+            GameAnalytics.SetCustomDimension02(difficulty);
+            activeDifficulty = difficulty;
+        }
+
+        if (force || activeDemoPath != demoPath)
+        {
+            GameAnalytics.SetCustomDimension03(demoPath);
+            activeDemoPath = demoPath;
+        }
+    }
+
+    private static void ConfigurePlayerDimensions(Settings settings)
+    {
+        if (settings.CustomDimensions01.Count > 0)
+        {
+            GA_Setup.SetAvailableCustomDimensions01(settings.CustomDimensions01);
+        }
+
+        if (settings.CustomDimensions02.Count > 0)
+        {
+            GA_Setup.SetAvailableCustomDimensions02(settings.CustomDimensions02);
+        }
+
+        if (settings.CustomDimensions03.Count > 0)
+        {
+            GA_Setup.SetAvailableCustomDimensions03(settings.CustomDimensions03);
+        }
+    }
+
+    private static string GetLanguageDimension()
+    {
+        switch (PlayerPrefs.GetInt(LanguagePlayerPrefsKey, 2))
+        {
+            case 1: return "es";
+            case 3: return "pt";
+            default: return "en";
+        }
+    }
+
+    private static string GetDemoPathDimension()
+    {
+        string path = PlayerPrefs.GetString(RuntimeAnalytics.DemoPathPlayerPrefsKey, "unknown");
+        switch (path)
+        {
+            case "standard":
+            case "tutorial":
+            case "continue":
+                return path;
+            default:
+                return "unknown";
         }
     }
 

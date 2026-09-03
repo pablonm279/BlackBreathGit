@@ -6,6 +6,10 @@ using UnityEngine.Rendering;
 [DisallowMultipleComponent]
 public class CaminoMesh : MonoBehaviour
 {
+    [Header("Rework visual reversible")]
+    [Tooltip("Desactivar para volver al renderer anterior de caminos.")]
+    [SerializeField] private bool usarReworkVisual = true;
+
     [Header("Ajustes visuales")]
     private float width = 0.56925f;       // Ancho del camino
     private float yOffset = 0.02f;        // Altura para evitar z-fighting
@@ -37,6 +41,18 @@ public class CaminoMesh : MonoBehaviour
     private const string UnderlayName = "BaseTierraCamino";
     private const string RutsName = "HuellasCarretaCamino";
     private const string FootprintsName = "PisadasConvoyCamino";
+    private const string ReworkShaderResource = "CaminoSueloRework";
+    private const string ReworkAlbedoResource = "Imagenes/Materials/CaminoSueloRework";
+    private const string VillageRoadAlbedoResource = "Imagenes/Materials/caminopiedra";
+    private const int ReworkRenderQueue = (int)RenderQueue.Transparent - 20;
+    private const float ReworkWidthScale = 2.185f;
+    private const float ReworkUvTilesPerUnit = 0.54f;
+    private const float ReworkEdgeVariation = 0.075f;
+    private const float ReworkCenterWander = 0.018f;
+    private const float ReworkEndpointInsetMin = 0.42f;
+    private const float ReworkEndpointInsetVisualWidthScale = 0.52f;
+    private const float ReworkEndpointCapFade = 0.12f;
+    private static readonly float[] ReworkCrossSection = { -1f, -0.72f, 0f, 0.72f, 1f };
 
     Mesh _mesh;
     Mesh _underlayMesh;
@@ -62,6 +78,9 @@ public class CaminoMesh : MonoBehaviour
     bool _cullingVisionInicializado;
     bool _visibleParaDecoracion;
     bool _caminoRecorrido;
+    Shader _reworkShader;
+    Texture2D _reworkAlbedo;
+    Texture2D _villageRoadAlbedo;
 
     public bool VisibleParaDecoracion => _visibleParaDecoracion;
 
@@ -108,30 +127,216 @@ public class CaminoMesh : MonoBehaviour
                 ptsLocal[i] = tmp[i] + Vector3.up * yOffset;
         }
 
-        BuildStrip(ptsLocal, _mesh, RoadVisualWidthScale, 0f, 1f);
-
-        EnsureUnderlay();
-        BuildStrip(
-            ptsLocal,
-            _underlayMesh,
-            UnderlayWidthScale,
-            UnderlayYOffset,
-            UnderlayEdgeIrregularityScale);
-        EnsureRuts();
-        BuildRuts(ptsLocal, _rutsMesh);
-        if (_caminoRecorrido)
+        if (usarReworkVisual)
         {
-            EnsureFootprints();
-            BuildFootprints(ptsLocal, _footprintsMesh);
+            BuildIntegratedRoad(ptsLocal, _mesh);
+            DisableLegacyLayers();
+        }
+        else
+        {
+            BuildStrip(ptsLocal, _mesh, RoadVisualWidthScale, 0f, 1f);
+
+            EnsureUnderlay();
+            BuildStrip(
+                ptsLocal,
+                _underlayMesh,
+                UnderlayWidthScale,
+                UnderlayYOffset,
+                UnderlayEdgeIrregularityScale);
+            EnsureRuts();
+            BuildRuts(ptsLocal, _rutsMesh);
+            if (_caminoRecorrido)
+            {
+                EnsureFootprints();
+                BuildFootprints(ptsLocal, _footprintsMesh);
+            }
         }
 
         if (_mf != null) _mf.sharedMesh = _mesh;
         if (_underlayMf != null) _underlayMf.sharedMesh = _underlayMesh;
         if (_rutsMf != null) _rutsMf.sharedMesh = _rutsMesh;
         if (_mr != null) _mr.enabled = _visible;
-        if (_underlayMr != null) _underlayMr.enabled = _visible;
-        if (_rutsMr != null) _rutsMr.enabled = _visible && _caminoRecorrido;
-        if (_footprintsMr != null) _footprintsMr.enabled = _visible && _caminoRecorrido;
+        if (_underlayMr != null) _underlayMr.enabled = !usarReworkVisual && _visible;
+        if (_rutsMr != null) _rutsMr.enabled = !usarReworkVisual && _visible && _caminoRecorrido;
+        if (_footprintsMr != null) _footprintsMr.enabled = !usarReworkVisual && _visible && _caminoRecorrido;
+    }
+
+    void BuildIntegratedRoad(IList<Vector3> ptsLocal, Mesh targetMesh)
+    {
+        if (targetMesh == null || ptsLocal == null || ptsLocal.Count < 2)
+            return;
+
+        float endpointInset = Mathf.Max(
+            ReworkEndpointInsetMin,
+            width * ReworkWidthScale * ReworkEndpointInsetVisualWidthScale);
+        ptsLocal = TrimVisualEndpoints(ptsLocal, endpointInset);
+        if (ptsLocal.Count < 2)
+        {
+            targetMesh.Clear();
+            return;
+        }
+
+        int pointCount = ptsLocal.Count;
+        int railCount = ReworkCrossSection.Length;
+        int vertexCount = pointCount * railCount;
+        int triangleCount = (pointCount - 1) * (railCount - 1) * 6;
+
+        var vertices = new Vector3[vertexCount];
+        var normals = new Vector3[vertexCount];
+        var tangents = new Vector4[vertexCount];
+        var uvs = new Vector2[vertexCount];
+        var colors = new Color[vertexCount];
+        var triangles = new int[triangleCount];
+        var distances = new float[pointCount];
+
+        float totalDistance = 0f;
+        for (int i = 1; i < pointCount; i++)
+        {
+            totalDistance += Vector3.Distance(ptsLocal[i], ptsLocal[i - 1]);
+            distances[i] = totalDistance;
+        }
+
+        float edgePhase = CalculateStablePhase(ptsLocal, 11.31f);
+        float centerPhase = CalculateStablePhase(ptsLocal, 13.79f);
+        float uvOffset = CalculateStablePhase(ptsLocal, 17.17f);
+        float uvScale = ReworkUvTilesPerUnit;
+
+        for (int i = 0; i < pointCount; i++)
+        {
+            float distance = distances[i];
+            Vector3 forward;
+            if (i == 0) forward = (ptsLocal[1] - ptsLocal[0]).normalized;
+            else if (i == pointCount - 1) forward = (ptsLocal[pointCount - 1] - ptsLocal[pointCount - 2]).normalized;
+            else forward = (ptsLocal[i + 1] - ptsLocal[i - 1]).normalized;
+
+            Vector3 side = Vector3.Cross(Vector3.up, forward).normalized;
+            if (side.sqrMagnitude <= 0.0001f)
+                side = Vector3.right;
+
+            Vector3 normal = Vector3.Cross(forward, side).normalized;
+            if (normal.sqrMagnitude <= 0.0001f || Vector3.Dot(normal, Vector3.up) < 0f)
+                normal = normal.sqrMagnitude <= 0.0001f ? Vector3.up : -normal;
+
+            float endpointEnvelope = EvaluateIrregularityEnvelope(distance, totalDistance);
+            float widthScale = EvaluateWidthScale(distance, totalDistance);
+            float edgeNoise = EvaluateEdgeNoise(distance, edgePhase) * ReworkEdgeVariation * endpointEnvelope;
+            float centerNoise = EvaluateCenterNoise(distance, centerPhase) * ReworkCenterWander * endpointEnvelope;
+            float halfWidth = width * ReworkWidthScale * widthScale * 0.5f;
+            float distanceToEndpoint = Mathf.Min(distance, totalDistance - distance);
+            float endpointVisibility = Mathf.SmoothStep(
+                0f,
+                1f,
+                Mathf.InverseLerp(0f, ReworkEndpointCapFade, distanceToEndpoint));
+            Vector3 center = ptsLocal[i] + side * centerNoise;
+
+            for (int rail = 0; rail < railCount; rail++)
+            {
+                float cross = ReworkCrossSection[rail];
+                float edgeDirection = Mathf.Sign(cross);
+                float edgeInfluence = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.68f, 1f, Mathf.Abs(cross)));
+                float adjustedCross = cross + edgeDirection * edgeNoise * edgeInfluence;
+                int vertexIndex = i * railCount + rail;
+
+                vertices[vertexIndex] = center + side * (halfWidth * adjustedCross);
+                normals[vertexIndex] = normal;
+                tangents[vertexIndex] = new Vector4(forward.x, forward.y, forward.z, 1f);
+                uvs[vertexIndex] = new Vector2(uvOffset + distance * uvScale, cross * 0.5f + 0.5f);
+
+                float edgeDistance = 1f - Mathf.Abs(cross);
+                float stableVariation = EvaluateMicroNoise(distance + cross * 0.27f, edgePhase) * 0.5f + 0.5f;
+                colors[vertexIndex] = new Color(edgeDistance, cross * 0.5f + 0.5f, stableVariation, endpointVisibility);
+            }
+        }
+
+        int triangleIndex = 0;
+        for (int i = 0; i < pointCount - 1; i++)
+        {
+            int row = i * railCount;
+            int nextRow = row + railCount;
+            for (int rail = 0; rail < railCount - 1; rail++)
+            {
+                int current = row + rail;
+                int next = nextRow + rail;
+                triangles[triangleIndex++] = current;
+                triangles[triangleIndex++] = next;
+                triangles[triangleIndex++] = current + 1;
+                triangles[triangleIndex++] = current + 1;
+                triangles[triangleIndex++] = next;
+                triangles[triangleIndex++] = next + 1;
+            }
+        }
+
+        targetMesh.Clear();
+        targetMesh.vertices = vertices;
+        targetMesh.normals = normals;
+        targetMesh.tangents = tangents;
+        targetMesh.uv = uvs;
+        targetMesh.colors = colors;
+        targetMesh.triangles = triangles;
+        targetMesh.RecalculateBounds();
+    }
+
+    static IList<Vector3> TrimVisualEndpoints(IList<Vector3> points, float requestedInset)
+    {
+        int pointCount = points != null ? points.Count : 0;
+        if (pointCount < 2)
+            return points;
+
+        var cumulativeDistances = new float[pointCount];
+        float totalDistance = 0f;
+        for (int i = 1; i < pointCount; i++)
+        {
+            totalDistance += Vector3.Distance(points[i - 1], points[i]);
+            cumulativeDistances[i] = totalDistance;
+        }
+
+        if (totalDistance <= 0.001f)
+            return points;
+
+        float inset = Mathf.Min(Mathf.Max(0f, requestedInset), totalDistance * 0.35f);
+        if (inset <= 0.001f)
+            return points;
+
+        float startDistance = inset;
+        float endDistance = totalDistance - inset;
+        var trimmedPoints = new List<Vector3>(pointCount);
+        trimmedPoints.Add(SamplePointAtDistance(points, cumulativeDistances, startDistance));
+
+        for (int i = 1; i < pointCount - 1; i++)
+        {
+            float distance = cumulativeDistances[i];
+            if (distance > startDistance && distance < endDistance)
+                trimmedPoints.Add(points[i]);
+        }
+
+        Vector3 endPoint = SamplePointAtDistance(points, cumulativeDistances, endDistance);
+        if (Vector3.Distance(trimmedPoints[trimmedPoints.Count - 1], endPoint) > 0.001f)
+            trimmedPoints.Add(endPoint);
+
+        return trimmedPoints;
+    }
+
+    static Vector3 SamplePointAtDistance(IList<Vector3> points, float[] cumulativeDistances, float distance)
+    {
+        for (int i = 1; i < points.Count; i++)
+        {
+            if (cumulativeDistances[i] < distance)
+                continue;
+
+            float segmentStart = cumulativeDistances[i - 1];
+            float segmentLength = cumulativeDistances[i] - segmentStart;
+            float t = segmentLength > 0.0001f ? (distance - segmentStart) / segmentLength : 0f;
+            return Vector3.Lerp(points[i - 1], points[i], Mathf.Clamp01(t));
+        }
+
+        return points[points.Count - 1];
+    }
+
+    void DisableLegacyLayers()
+    {
+        if (_underlayMr != null) _underlayMr.enabled = false;
+        if (_rutsMr != null) _rutsMr.enabled = false;
+        if (_footprintsMr != null) _footprintsMr.enabled = false;
     }
 
     void BuildStrip(
@@ -596,14 +801,96 @@ public class CaminoMesh : MonoBehaviour
             return;
         }
 
-        _displayMaterial = new Material(source)
+        if (usarReworkVisual)
         {
-            name = source.name + " Camino Mate (Runtime)"
-        };
-        ClampSurfaceShine(_displayMaterial, 0.08f, 0.06f);
-        GradeDisplayMaterial(_displayMaterial, _caminoRecorrido);
-        ConfigureTransparentSurface(_displayMaterial);
+            if (_reworkShader == null)
+                _reworkShader = Resources.Load<Shader>(ReworkShaderResource);
+
+            if (_reworkShader != null)
+            {
+                _displayMaterial = new Material(_reworkShader)
+                {
+                    name = source.name + " Camino Suelo Rework (Runtime)"
+                };
+                _displayMaterial.CopyPropertiesFromMaterial(source);
+                ConfigureReworkMaterial(_displayMaterial, source);
+            }
+        }
+
+        if (_displayMaterial == null)
+        {
+            _displayMaterial = new Material(source)
+            {
+                name = source.name + " Camino Mate (Runtime)"
+            };
+            ClampSurfaceShine(_displayMaterial, 0.08f, 0.06f);
+            GradeDisplayMaterial(_displayMaterial, _caminoRecorrido);
+            ConfigureTransparentSurface(_displayMaterial);
+        }
+
         _mr.sharedMaterial = _displayMaterial;
+    }
+
+    void ConfigureReworkMaterial(Material material, Material source)
+    {
+        if (material == null)
+            return;
+
+        if (_reworkAlbedo == null)
+            _reworkAlbedo = Resources.Load<Texture2D>(ReworkAlbedoResource);
+        if (_villageRoadAlbedo == null)
+            _villageRoadAlbedo = Resources.Load<Texture2D>(VillageRoadAlbedoResource);
+
+        Texture2D selectedAlbedo = SourceUsesVillageRoadAlbedo(source)
+            ? _villageRoadAlbedo
+            : _reworkAlbedo;
+        if (selectedAlbedo != null && material.HasProperty("_MainTex"))
+        {
+            material.SetTexture("_MainTex", selectedAlbedo);
+            material.SetTextureScale("_MainTex", Vector2.one);
+            material.SetTextureOffset("_MainTex", Vector2.zero);
+        }
+
+        GradeDisplayMaterial(material, _caminoRecorrido);
+        ClampSurfaceShine(material, 0f, 0.055f);
+        if (material.HasProperty("_BumpScale"))
+            material.SetFloat("_BumpScale", 0f);
+
+        if (material.HasProperty("_CaminoRecorrido"))
+            material.SetFloat("_CaminoRecorrido", _caminoRecorrido ? 1f : 0f);
+        if (material.HasProperty("_BiomeTint"))
+            material.SetColor("_BiomeTint", ObtenerTinteBioma());
+        if (material.HasProperty("_EdgeFeather"))
+            material.SetFloat("_EdgeFeather", 0.20f);
+        if (material.HasProperty("_EdgeBreakup"))
+            material.SetFloat("_EdgeBreakup", 0.14f);
+        if (material.HasProperty("_RutStrength"))
+            material.SetFloat("_RutStrength", _caminoRecorrido ? 0.24f : 0.08f);
+        if (material.HasProperty("_MacroVariation"))
+            material.SetFloat("_MacroVariation", 0.08f);
+
+        ConfigureTransparentSurface(material);
+        material.renderQueue = ReworkRenderQueue;
+    }
+
+    bool SourceUsesVillageRoadAlbedo(Material source)
+    {
+        return source != null
+            && _villageRoadAlbedo != null
+            && source.HasProperty("_MainTex")
+            && source.GetTexture("_MainTex") == _villageRoadAlbedo;
+    }
+
+    static Color ObtenerTinteBioma()
+    {
+        int zona = CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null
+            ? CampaignManager.Instance.scAtributosZona.ID
+            : 0;
+
+        if (zona == 1) return new Color(0.42f, 0.31f, 0.20f, 1f);
+        if (zona == 2) return new Color(0.42f, 0.48f, 0.50f, 1f);
+        if (zona == 3) return new Color(0.31f, 0.29f, 0.27f, 1f);
+        return new Color(0.46f, 0.35f, 0.23f, 1f);
     }
 
     void UpdateUnderlayMaterial(Material source)
@@ -865,9 +1152,9 @@ public class CaminoMesh : MonoBehaviour
         _visible = visible;
         if (_mr == null) _mr = GetComponent<MeshRenderer>();
         if (_mr != null) _mr.enabled = _visible;
-        if (_underlayMr != null) _underlayMr.enabled = _visible;
-        if (_rutsMr != null) _rutsMr.enabled = _visible && _caminoRecorrido;
-        if (_footprintsMr != null) _footprintsMr.enabled = _visible && _caminoRecorrido;
+        if (_underlayMr != null) _underlayMr.enabled = !usarReworkVisual && _visible;
+        if (_rutsMr != null) _rutsMr.enabled = !usarReworkVisual && _visible && _caminoRecorrido;
+        if (_footprintsMr != null) _footprintsMr.enabled = !usarReworkVisual && _visible && _caminoRecorrido;
         if (_lr != null) _lr.enabled = false;
     }
 
@@ -896,14 +1183,19 @@ public class CaminoMesh : MonoBehaviour
             return;
 
         _caminoRecorrido = recorrido;
-        if (_caminoRecorrido)
+        if (_caminoRecorrido && !usarReworkVisual)
         {
             EnsureFootprints();
             RebuildFromLine();
         }
 
-        if (_rutsMr != null) _rutsMr.enabled = _visible && _caminoRecorrido;
-        if (_footprintsMr != null) _footprintsMr.enabled = _visible && _caminoRecorrido;
+        if (_displayMaterial != null && _displayMaterial.HasProperty("_CaminoRecorrido"))
+            _displayMaterial.SetFloat("_CaminoRecorrido", _caminoRecorrido ? 1f : 0f);
+        if (_displayMaterial != null && _displayMaterial.HasProperty("_RutStrength"))
+            _displayMaterial.SetFloat("_RutStrength", _caminoRecorrido ? 0.24f : 0.08f);
+
+        if (_rutsMr != null) _rutsMr.enabled = !usarReworkVisual && _visible && _caminoRecorrido;
+        if (_footprintsMr != null) _footprintsMr.enabled = !usarReworkVisual && _visible && _caminoRecorrido;
     }
 
     public void SetVisibleParaDecoracion(bool visible)
@@ -915,8 +1207,15 @@ public class CaminoMesh : MonoBehaviour
     {
         if (_mr == null) _mr = GetComponent<MeshRenderer>();
         UpdateDisplayMaterial(material);
-        UpdateUnderlayMaterial(material);
-        UpdateRutsMaterial(material);
+        if (usarReworkVisual)
+        {
+            DisableLegacyLayers();
+        }
+        else
+        {
+            UpdateUnderlayMaterial(material);
+            UpdateRutsMaterial(material);
+        }
         ClearMaterialPropertyOverrides();
     }
 

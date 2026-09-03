@@ -494,7 +494,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -197.07983, y: 10.560059}
+  m_AnchoredPosition: {x: -197.07986, y: 10.560059}
   m_SizeDelta: {x: 442.93, y: 356.86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &19448476
@@ -2589,7 +2589,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Credits\n\nCreated by Mart\xEDn Pablo\n\nArt Contributions\nNicol\xE1s
     Olguinn (Spriteshift Team)\n\nMusic\nMart\xEDn Mat\xEDas\n\nNarrator Voice\nTyler
-    Wood\n\nContact & Feedback: theblackbreathgame@gmail.com"
+    Wood\n\nContact & Feedback: contact@silverlandgames.com"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
@@ -7817,7 +7817,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Cr\xE9ditos:\n\nCreado por Mart\xEDn Pablo\n\nContribuciones art\xEDsticas\nNicol\xE1s
     Olguinn (Spriteshift team)\n\nM\xFAsica\nMart\xEDn Mat\xEDas\n\nNarrator Voice\nTyler
-    Wood\n\nContacto & Feedback: theblackbreathgame@gmail.com"
+    Wood\n\nContacto & Feedback: contact@silverlandgames.com"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
@@ -16507,26 +16507,27 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '                                                                   <b>DEMO
-    VERSION</b>
+  m_text: '                                                                   <Size=110%><b>DEMO
+    VERSION</b></Size>
 
 
 
 
 
-    This demo includes the tutorial and the complete <b><color=#D6A84B>Burning
-    Forest</color></b> region.
+    This demo includes the tutorial and the complete
+    <b><color=#D6A84B>Burning Forest</color></b> region.
 
 
 
-    Although the adventure is limited to this region,
-    no two expeditions will be the same. New <color=#D6A84B>paths, encounters, and
-    characters</color> can completely change the experience.
+    Although the adventure
+    is limited to this region, no two expeditions will be the same. New <color=#D6A84B>paths,
+    encounters, and characters</color> can completely change the experience.
 
 
 
-    The full version
-    will expand the journey with <b><color=#D6A84B>new regions, enemies, and challenges</color></b>.
+    The
+    full version will expand the journey with <b><color=#D6A84B>new regions, enemies,
+    and challenges</color></b>.
 
 
 
@@ -16534,10 +16535,10 @@ MonoBehaviour:
 
 
 
-    <color=#A0A0A0><i>To
-    help us improve the game, we collect information about your experience in real
-    time during gameplay. If you wish to <b><color=#B8B8B8>disable telemetry</color></b>,
-    you can do so now.</i></color>'
+    <color=#A0A0A0><i>To help us improve the
+    game, we collect information about your experience in real time during gameplay.
+    If you wish to <b><color=#B8B8B8>disable telemetry</color></b>, you can do so
+    now.</i></color>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
   m_sharedMaterial: {fileID: 1369702316804459117, guid: 54a3d28dd6785154fac83f0c31a69b7c, type: 2}
@@ -16564,11 +16565,11 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14.8
+  m_fontSize: 15.1
   m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 14.8
+  m_fontSizeMin: 15.1
   m_fontSizeMax: 15.5
   m_fontStyle: 0
   m_HorizontalAlignment: 1
@@ -16577,7 +16578,7 @@ MonoBehaviour:
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
   m_wordSpacing: 0
-  m_lineSpacing: -13
+  m_lineSpacing: -20
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
@@ -16642,13 +16643,13 @@ MonoBehaviour:
   textoIngles: "                                                                  
     <b>DEMO VERSION</b>\r\n\r\n\r\nThis demo includes the tutorial and the complete
     <b><color=#D6A84B>Burning Forest</color></b> region.\r\n\r\nAlthough the adventure
-    is limited to this region, <b>no two expeditions will be exactly the same</b>.
-    New <color=#D6A84B>paths, encounters, and characters</color> can completely change
-    the experience.\r\n\r\nThe full version will expand the journey with <b><color=#D6A84B>new
-    regions, enemies, and challenges</color></b>.\r\n\r\n\n\n\r<color=#A0A0A0><i>To
-    help us improve the game, we collect information about your experience in real
-    time during gameplay. If you wish to <b><color=#B8B8B8>disable telemetry</color></b>,
-    you can do so now.</i></color>"
+    is limited to this region, <b>no two expeditions will be the same</b>. New <color=#D6A84B>paths,
+    encounters, and characters</color> can completely change the experience.\r\n\r\nThe
+    full version will expand the journey with <b><color=#D6A84B>new regions, enemies,
+    and challenges</color></b>.\r\n\r\n\n\n\r<color=#A0A0A0><i>To help us improve
+    the game, we collect information about your experience in real time during gameplay.
+    If you wish to <b><color=#B8B8B8>disable telemetry</color></b>, you can do so
+    now.</i></color>"
   textoPortugues: "                                                                  
     <b>VERS\xC3O DEMO</b>\r\n\r\n\r\nEsta demo inclui o tutorial e a regi\xE3o completa
     da <b><color=#D6A84B>Floresta Ardente</color></b>.\r\n\r\nEmbora a aventura esteja
@@ -35323,7 +35324,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Cr\xE9ditos\n\nCriado por Mart\xEDn Pablo\n\nContribui\xE7\xF5es art\xEDsticas\nNicol\xE1s
     Olguinn (Equipe Spriteshift)\n\nM\xFAsica\nMart\xEDn Mat\xEDas\n\nVoz do Narrador\nTyler
-    Wood\n\nContacto & Feedback: theblackbreathgame@gmail.com"
+    Wood\n\nContacto & Feedback: contact@silverlandgames.com"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
   m_sharedMaterial: {fileID: -4687675609486072877, guid: ff458e0654087aa41a97fa8ea3db3b66, type: 2}
@@ -60324,7 +60325,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 51.329956, y: -128.08008}
+  m_AnchoredPosition: {x: 51.329956, y: -128.08005}
   m_SizeDelta: {x: -129.76, y: -234.28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1826515061

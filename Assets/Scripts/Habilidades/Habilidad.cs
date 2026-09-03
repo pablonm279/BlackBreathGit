@@ -1350,7 +1350,7 @@ public abstract class Habilidad : MonoBehaviour
     
     if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
     {
-            if(BattleManager.Instance.scTutorialCombate.ObtenerPasoActual()  == 4)
+            if(BattleManager.Instance.scTutorialCombate.EsPasoAtaqueBallesta())
             {
                await BattleManager.DelayCombateAsync(1500);
                 BattleManager.Instance.scTutorialCombate.SiguientePasoCombate();
@@ -1492,7 +1492,7 @@ public abstract class Habilidad : MonoBehaviour
     bool ocultarBonificacionesBallestaTutorial = this is TiroBallestaDeMano
       && BattleManager.Instance.scTutorialCombate != null
       && BattleManager.Instance.scTutorialCombate.tutorialCombateActivo
-      && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() == 4;
+      && BattleManager.Instance.scTutorialCombate.EsPasoAtaqueBallesta();
 
     if (BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
     {
@@ -1727,16 +1727,20 @@ public abstract class Habilidad : MonoBehaviour
 
       unidadesMarcadasPrevisualizacion.Add(unidad);
 
-      if (DebeMostrarInvulnerableEnProbabilidad(unidad))
+      if (BattleManager.Instance != null && !BattleManager.Instance.DebeMostrarProbabilidadSobreObjetivo(unidad))
+      {
+        unidad.OcultarProbabilidad();
+      }
+      else if (DebeMostrarInvulnerableEnProbabilidad(unidad))
       {
         unidad.MostrarProbabilidad(0f, TRADU.i.Traducir("Invulnerable"));
-        nuevas.Add(unidad);
-        continue;
       }
-
-      float? prob = CalcularProbabilidadSobreObjetivo(unidad);
-      string textoProbabilidad = prob.HasValue ? ObtenerTextoProbabilidadSobreObjetivo(unidad, prob.Value) : null;
-      unidad.MostrarProbabilidad(prob, textoProbabilidad);
+      else
+      {
+        float? prob = CalcularProbabilidadSobreObjetivo(unidad);
+        string textoProbabilidad = prob.HasValue ? ObtenerTextoProbabilidadSobreObjetivo(unidad, prob.Value) : null;
+        unidad.MostrarProbabilidad(prob, textoProbabilidad);
+      }
 
       if (!unidadesPreviewDanio.Contains(unidad)
         && TryObtenerRangoDanioPreview(unidad, out int danioMinimo, out int danioMaximo))

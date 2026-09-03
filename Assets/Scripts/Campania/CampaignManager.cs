@@ -80,6 +80,7 @@ public class CampaignManager : MonoBehaviour
   private const float AlcanceVisionMinimoPasos = 1.14f;
   private const float MultiplicadorAlcanceVisionCatalejos = 0.85f;
   private const float MultiplicadorAlcanceVisionAntorchas = 0.80f;
+  private const float MultiplicadorVisionBaseNocturna = 0.90f;
   private const float MultiplicadorVisionNiebla = 0.85f;
   private static readonly float[] AlcanceVisionCatalejosPorTier =
   {
@@ -90,7 +91,7 @@ public class CampaignManager : MonoBehaviour
     3.5f
   };
   private const float DuracionEnvioExploradoresHoras = 3f;
-  private const float DuracionAnimacionEnvioExploradoresSegundos = 5f;
+  private const float DuracionAnimacionEnvioExploradoresSegundos = 5.2f;
   private const float DuracionResultadoExploradoresSegundos = 1.2f;
   private const float RetrasoInicioEnvioExploradoresSegundos = 0.25f;
   private const float RetrasoEntreTextosExploradoresSegundos = 0.9f;
@@ -126,6 +127,7 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private bool debugForzarCombateJefeGulekGulAlIniciar = false;
   [SerializeField] private bool debugForzarAuroraPasoVientoHelado = false;
   [SerializeField, InspectorName("Debug Ignorar Peleas")] private bool debugIgnorarCombates = false;
+  public bool DebugIgnorarCombatesActivo => debugIgnorarCombates;
   [SerializeField] private bool debugMostrarTodosLosCaminosMapa = false;
   [SerializeField] private bool debugIniciarConCaballeroCompleto = false;
   [SerializeField] private bool debugIniciarConExploradorCompleto = false;
@@ -253,8 +255,11 @@ public class CampaignManager : MonoBehaviour
   private bool bloquearOlaDeCalorEnSiguienteTiradaClima;
   public Nodo nodoDestinoActual;
   private readonly List<int> eventosAleatoriosUsadosMapa = new List<int>();
+  private int zonaPrimeraFaccionCombate;
+  private string primeraFaccionCombate = string.Empty;
+  private int combatesRegistradosZona;
   private const float MultiplicadorVelocidadSobrecarga = 0.70f;
-  private const float MultiplicadorDuracionAtajoSubterraneo = 0.70f;
+  private const float MultiplicadorDuracionAtajoSubterraneo = 0.50f;
   private float multiplicadorVelocidadVisualViajeActual = 1f;
   private bool estadoSobrecargaInicializado;
   private bool sobrecargaAnterior;
@@ -312,6 +317,10 @@ public class CampaignManager : MonoBehaviour
   private readonly List<TextMeshProUGUI> textosCargaCampania = new List<TextMeshProUGUI>();
   private Coroutine rutinaAnimacionTextoCargaCampania;
   private string prefijoTextoCargaCampania = "Cargando";
+  [SerializeField] private GameObject panelLore;
+  [SerializeField, Min(0f)] private float retrasoOcultarFondoLoreTrasInicioCinematica = 0.35f;
+  private bool loreInteractivoActivo;
+  private Coroutine rutinaOcultarFondoLore;
 
 #if UNITY_EDITOR
   private static string ObtenerClaveEditorDebugZona(int zonaId)
@@ -362,6 +371,7 @@ public class CampaignManager : MonoBehaviour
     }
 
     PrepararEscenaCampania();
+    MostrarLoreTrasCarga();
 
     if (SaveGameService.TryConsumePendingLoad(out SaveFileData savePendiente))
     {
@@ -1094,10 +1104,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   }
 
   public bool IntroCampaniaActivaOPendiente => introCampaniaPendiente || introCampaniaActiva;
+  public bool LoreCampaniaActivo => loreInteractivoActivo;
 
   public bool IntroCampaniaPuedeIniciarTrasCarga()
   {
-    return !DebeEsperarFaderInicialIntroCampania();
+    return !LoreCampaniaActivo && !DebeEsperarFaderInicialIntroCampania();
   }
 
   public bool ConsumirIntroCampaniaPendiente()
@@ -1126,6 +1137,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     EjecutarAccionesAlFinalizarIntroCampania();
+    if (!loreInteractivoActivo)
+    {
+      OcultarPanelLoreCompleto();
+    }
+
     TutorialDirector.ReintentarAutoarranqueTrasIntroSiCorresponde();
     CompletarInicioCampaniaSiCorresponde();
   }
@@ -1378,6 +1394,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     transicionZonaEnCurso = false;
     bloquearOlaDeCalorEnSiguienteTiradaClima = false;
     nodoDestinoActual = null;
+    zonaPrimeraFaccionCombate = 0;
+    primeraFaccionCombate = string.Empty;
+    combatesRegistradosZona = 0;
     BATALLA_EnCurso = 0;
     EMBOSCADA_EnCurso = 0;
     emboscadaViajeCalculada = false;
@@ -1520,6 +1539,33 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       primeraBatallaPresagioEnemigosConsumida = true;
     }
+  }
+
+  public bool DebeExcluirFaccionDePrimeraPelea(string factionId)
+  {
+    return scAtributosZona != null
+      && zonaPrimeraFaccionCombate == scAtributosZona.ID
+      && combatesRegistradosZona == 1
+      && !string.IsNullOrWhiteSpace(factionId)
+      && string.Equals(primeraFaccionCombate, factionId, StringComparison.OrdinalIgnoreCase);
+  }
+
+  public void RegistrarFaccionCombatidaEnZonaActual(string factionId)
+  {
+    if (scAtributosZona == null || string.IsNullOrWhiteSpace(factionId))
+    {
+      return;
+    }
+
+    if (zonaPrimeraFaccionCombate != scAtributosZona.ID || combatesRegistradosZona <= 0)
+    {
+      zonaPrimeraFaccionCombate = scAtributosZona.ID;
+      primeraFaccionCombate = factionId;
+      combatesRegistradosZona = 1;
+      return;
+    }
+
+    combatesRegistradosZona++;
   }
 
   private void AplicarPresagioEsperanzaInicial()
@@ -2191,7 +2237,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private void InicializarSequitosNuevaCampania()
   {
-    scMenuSequito.AgregarSequito(1);
     scMenuSequito.AgregarSequito(2);
     scMenuSequito.AgregarSequito(3);
   }
@@ -3079,12 +3124,144 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     else if (introCampaniaPendiente)
     {
-      SolicitarInicioIntroCampaniaTrasCarga();
+      if (panelLore == null || !panelLore.activeSelf)
+      {
+        SolicitarInicioIntroCampaniaTrasCarga();
+      }
     }
     else if (!introCampaniaPendiente)
     {
       CompletarInicioCampaniaSiCorresponde();
     }
+  }
+
+  private void MostrarLoreTrasCarga()
+  {
+    if (panelLore == null)
+    {
+      Transform[] objetosEscena = Resources.FindObjectsOfTypeAll<Transform>();
+      GameObject candidatoSinHijos = null;
+      for (int i = 0; i < objetosEscena.Length; i++)
+      {
+        if (objetosEscena[i].name == "PanelLore" && objetosEscena[i].gameObject.scene == gameObject.scene)
+        {
+          if (objetosEscena[i].childCount > 0)
+          {
+            panelLore = objetosEscena[i].gameObject;
+            break;
+          }
+
+          candidatoSinHijos = objetosEscena[i].gameObject;
+        }
+      }
+
+      panelLore ??= candidatoSinHijos;
+    }
+
+    if (panelLore == null)
+    {
+      return;
+    }
+
+    loreInteractivoActivo = true;
+    panelLore.SetActive(true);
+  }
+
+  public void TerminarLore()
+  {
+    bool iniciarTutorialDesdeLore = DebeUsarConfiguracionTutorial();
+    bool hayIntroPendiente = IntroCampaniaActivaOPendiente;
+    loreInteractivoActivo = false;
+    if (panelLore != null)
+    {
+      for (int i = 0; i < panelLore.transform.childCount; i++)
+      {
+        panelLore.transform.GetChild(i).gameObject.SetActive(false);
+      }
+
+      if (!hayIntroPendiente)
+      {
+        OcultarPanelLoreCompleto();
+      }
+    }
+
+    LiberarFaderIntroCampaniaSiCorresponde(true);
+    if (iniciarTutorialDesdeLore)
+    {
+      ContinuarTutorialDesdeLore();
+    }
+
+    if (introCampaniaPendiente)
+    {
+      SolicitarInicioIntroCampaniaTrasCarga();
+    }
+
+    if (scAdministradorEscenas == null || scAdministradorEscenas.fader == null)
+    {
+      return;
+    }
+
+    scAdministradorEscenas.SetFaderHold(false);
+    scAdministradorEscenas.fader.alpha = 0f;
+    scAdministradorEscenas.fader.blocksRaycasts = false;
+    scAdministradorEscenas.fader.interactable = false;
+  }
+
+  public void NotificarInicioMovimientoIntroCampania()
+  {
+    if (panelLore == null || loreInteractivoActivo || !panelLore.activeSelf)
+    {
+      return;
+    }
+
+    if (rutinaOcultarFondoLore != null)
+    {
+      StopCoroutine(rutinaOcultarFondoLore);
+    }
+
+    rutinaOcultarFondoLore = StartCoroutine(OcultarFondoLoreTrasInicioCinematica());
+  }
+
+  IEnumerator OcultarFondoLoreTrasInicioCinematica()
+  {
+    if (retrasoOcultarFondoLoreTrasInicioCinematica > 0f)
+    {
+      yield return new WaitForSecondsRealtime(retrasoOcultarFondoLoreTrasInicioCinematica);
+    }
+
+    rutinaOcultarFondoLore = null;
+    OcultarPanelLoreCompleto();
+  }
+
+  void OcultarPanelLoreCompleto()
+  {
+    if (rutinaOcultarFondoLore != null)
+    {
+      StopCoroutine(rutinaOcultarFondoLore);
+      rutinaOcultarFondoLore = null;
+    }
+
+    if (panelLore != null)
+    {
+      panelLore.SetActive(false);
+    }
+  }
+
+  void ContinuarTutorialDesdeLore()
+  {
+    MostrarLogsPresagiosInicioTrasContinuarDescripcionZona();
+    if (IntroCampaniaActivaOPendiente)
+    {
+      EjecutarTrasIntroCampania(ContinuarTutorialDesdeLore);
+      return;
+    }
+
+    if (scTutorialManager != null)
+    {
+      scTutorialManager.ComenzarTutorial();
+    }
+
+    TutorialDirector.TryStartPendingAfterZoneDescription();
   }
 
   IEnumerator IniciarIntroCampaniaTrasCarga(bool ignorarFaderInicial = false)
@@ -3282,6 +3459,12 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public bool PuedeGuardarCampania(out string motivo)
   {
+    if (DebeUsarConfiguracionTutorial())
+    {
+      motivo = "No se puede guardar durante el tutorial.";
+      return false;
+    }
+
     if (!campaniaInicializada)
     {
       motivo = "La campania aun no termino de inicializar.";
@@ -3395,7 +3578,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       float alcanceNocturno = Mathf.Max(
         AlcanceVisionMinimoPasos,
-        ObtenerAlcanceVisionNormalEnPasos() * ObtenerMultiplicadorClimaVision());
+        ObtenerAlcanceVisionNormalEnPasos()
+          * ObtenerMultiplicadorClimaVision()
+          * MultiplicadorVisionBaseNocturna);
 
       if (!antorchasEncendidas)
       {
@@ -3403,7 +3588,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       }
       else
       {
-        alcance = Mathf.Max(alcanceNocturno, ObtenerAlcanceVisionAntorchasEnPasos());
+        alcance = ObtenerAlcanceVisionAntorchasEnPasos();
       }
     }
     else
@@ -4194,6 +4379,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     data.presagiosRegionId = presagiosRegionActivaId;
     data.presagiosActivos = new List<int>(presagiosActivosRegion);
     data.primeraBatallaPresagioEnemigosConsumida = primeraBatallaPresagioEnemigosConsumida;
+    data.zonaPrimeraFaccionCombate = zonaPrimeraFaccionCombate;
+    data.primeraFaccionCombate = primeraFaccionCombate;
+    data.combatesRegistradosZona = combatesRegistradosZona;
     data.horasTotales = horasTotales;
     data.posicionCaravana = posicionCaravana;
     data.tipoClima = intTipoClima;
@@ -4849,6 +5037,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       presagiosActivosRegion.AddRange(data.presagiosActivos);
     }
     primeraBatallaPresagioEnemigosConsumida = data.primeraBatallaPresagioEnemigosConsumida;
+    zonaPrimeraFaccionCombate = data.zonaPrimeraFaccionCombate;
+    primeraFaccionCombate = data.primeraFaccionCombate ?? string.Empty;
+    combatesRegistradosZona = Mathf.Max(0, data.combatesRegistradosZona);
     mejoraCaravanaAntorchas = NormalizarTierMejoraCaravana(data.mejoraCaravanaAntorchas);
     mejoraCaravanaAlforjas = NormalizarTierMejoraCaravana(data.mejoraCaravanaAlforjas);
     mejoraCaravanaTiendas = NormalizarTierMejoraCaravana(data.mejoraCaravanaTiendas);
@@ -7061,7 +7252,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (descansoTareaCivil == 4) multiplicadorCuracion *= 1.1f;
     if (descansoInterrumpidoPendiente && descansoHorasRestantes > 0.0001f)
     {
-      if (descansoEmboscadaPendiente)
+      if (descansoEmboscadaPendiente && !debugIgnorarCombates)
       {
         float horasHastaEmboscada = Mathf.Min(descansoHorasRestantes, descansoHorasHastaEmboscada);
         yield return TranscurrirDescansoPendienteTrasCarga(
@@ -7997,6 +8188,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public void ActivarDerrota()
   {
+    if (debugIgnorarCombates)
+    {
+      return;
+    }
+
     if (goDerrota == null)
     {
       return;
@@ -10173,13 +10369,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       personaje.HorasViajadas += horasValidas;
     }
 
-    progresoFatigaHoras += horasValidas;
-    int fatigaGanada = Mathf.FloorToInt(progresoFatigaHoras / HorasPorPasoMapa);
-    if (fatigaGanada > 0)
-    {
-      progresoFatigaHoras -= fatigaGanada * HorasPorPasoMapa;
-      CambiarFatigaActual(fatigaGanada);
-    }
+    progresoFatigaHoras = 0f;
+    CambiarFatigaActual(1);
     FinalizarAccionTemporal();
   }
 
@@ -10506,6 +10697,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
   #region Fatiga
+  private const int PerdidaEsperanzaViajarAgitado = 5;
   [SerializeField] private TextMeshProUGUI valueFatiga;
 
   private int FatigaActual;
@@ -10540,7 +10732,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
       switch (fatigaAhora)
       {
-        case 4: CambiarEsperanzaActual(-10); int rand = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand); if (rand < 0) { EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.") + " " + rand + TRADU.i.Traducir(" Bueyes")); } break;    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        case 4: CambiarEsperanzaActual(-PerdidaEsperanzaViajarAgitado); int rand = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand); if (rand < 0) { EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.") + " " + rand + TRADU.i.Traducir(" Bueyes")); } break;    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         case 5: CambiarEsperanzaActual(-15); int rand2 = UnityEngine.Random.Range(-2, 1); CambiarBueyesActuales(rand2); if (rand2 < 0) { EscribirLog(TRADU.i.Traducir("-La fatiga ha provocado la muerte de algunos Bueyes.") + " " + rand2 + TRADU.i.Traducir(" Bueyes")); } break;
         case > 5: CambiarEsperanzaActual(-20); int rand3 = UnityEngine.Random.Range(-4, 1); CambiarBueyesActuales(rand3); int rand4 = UnityEngine.Random.Range(-10, 1); CambiarCivilesActuales(rand4); if (rand3 < 0 || rand4 < 0) { EscribirLog(TRADU.i.Traducir("-La fatiga extrema ha provocado la muerte de algunos Bueyes y Civiles.") + " " + rand3 + TRADU.i.Traducir(" Bueyes ") + rand4 + TRADU.i.Traducir(" Civiles")); } break;
       }
@@ -10576,6 +10768,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private async Task CambiarEsperanzaActualAsync(int esperanza)
   {
+    if (debugIgnorarCombates && esperanza < 0)
+    {
+      return;
+    }
+
     int mitigacionConsuelo = 0;
     if (esperanza < 0)
     {
@@ -10914,6 +11111,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private async Task CambiarSuministrosActualesAsync(int suministros)
   {
+    if (debugIgnorarCombates && suministros < 0)
+    {
+      return;
+    }
+
     int suministrosAnteriores = SuministrosActuales;
     SuministrosActuales = Mathf.Max(0, SuministrosActuales + suministros);
     int suministrosAplicados = SuministrosActuales - suministrosAnteriores;
@@ -11445,7 +11647,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         case 0: text += TRADU.i.Traducir("Actualmente estan Descansados(1), no habrá penalizaciones por viajar.\n\n"); break;
         case 1: text += TRADU.i.Traducir("Actualmente estan Frescos(2), no habrá penalizaciones por viajar."); break;
         case 2: text += TRADU.i.Traducir("Actualmente estan En Marcha(3), no habrá penalizaciones por viajar."); break;
-        case 3: text += TRADU.i.Traducir("Actualmente estan Agitados(4), -10 Esperanza, pocos Bueyes podrán morir si viajas."); break;
+        case 3:
+          text += PresagioCatalog.ObtenerIdiomaActual() switch
+          {
+            TRADU.IdiomaIngles => $"They are currently Agitated(4): -{PerdidaEsperanzaViajarAgitado} Hope, and a few Oxen may die if you travel.",
+            TRADU.IdiomaPortugues => $"Atualmente estão Agitados(4), -{PerdidaEsperanzaViajarAgitado} Esperança, e alguns Bois podem morrer se você viajar.",
+            _ => $"Actualmente están Agitados(4), -{PerdidaEsperanzaViajarAgitado} Esperanza, pocos Bueyes podrán morir si viajas."
+          };
+          break;
         case 4: text += TRADU.i.Traducir("Actualmente estan Cansados(5), -15 Esperanza y algunos Bueyes podrán morir si viajas."); break;
         case > 4: text += TRADU.i.Traducir("Actualmente estan Exhaustos(6), -20 Esperanza y varios Bueyes podrán morir si viajas."); break;
       }
@@ -12799,7 +13008,17 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.iResDivino = 0;
 
 
-    SortearRasgos(pers1); //Método vacío!!
+    bool configuracionTutorial = DebeUsarConfiguracionTutorial();
+    if (configuracionTutorial)
+    {
+      pers1.LimpiarRasgos();
+      pers1.AgregarRasgo(PersonajeTraitCatalog.TraitHeroeLocal);
+      AplicarTraitHeroeLocalInicialSiCorresponde(pers1);
+    }
+    else
+    {
+      SortearRasgos(pers1);
+    }
 
     //Habilidades Intrinsecas
     //pers1.AddComponent<REPRESENTACIONArmaduraLimitante>(); //AGREGADA POR ARMADURA
@@ -12814,7 +13033,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
      
 
 
-    if (!scTutorialManager.tutorialActivo)
+    if (!configuracionTutorial)
     {
       int randHabPot1 = UnityEngine.Random.Range(1, 5);
       switch (randHabPot1)
@@ -12835,7 +13054,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     else
     {
-      pers1.AddComponent<GritoMotivador>(); pers1.GetComponent<GritoMotivador>().NIVEL = 1;
+      pers1.Habilidad_2 = 1; pers1.AddComponent<GritoMotivador>(); pers1.GetComponent<GritoMotivador>().NIVEL = 1;
+      pers1.Habilidad_8 = 1; pers1.AddComponent<SiguesTu>(); pers1.GetComponent<SiguesTu>().NIVEL = 1;
 
     }
 
@@ -13025,7 +13245,17 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
 
-    SortearRasgos(pers1); //Método vacío!!
+    bool configuracionTutorial = DebeUsarConfiguracionTutorial();
+    if (configuracionTutorial)
+    {
+      pers1.LimpiarRasgos();
+      pers1.AgregarRasgo(PersonajeTraitCatalog.TraitDetestaNedukazal);
+      pers1.AgregarRasgo(PersonajeTraitCatalog.TraitOdiaNomuertos);
+    }
+    else
+    {
+      SortearRasgos(pers1);
+    }
 
  
 
@@ -13036,22 +13266,30 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.GetComponent<REPRESENTACIONFervorConjunto>().NIVEL = -1; //Pasiva   -1 porque es intrinseca, no sube de nivel
 
     //Habilidades Base
-    int randHabPot1 = UnityEngine.Random.Range(1, 5);
-    switch (randHabPot1)
+    if (configuracionTutorial)
     {
-      case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONAuraSagrada>(); pers1.GetComponent<REPRESENTACIONAuraSagrada>().NIVEL = 1; break;
-      case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<REPRESENTACIONEcosDivinos>(); pers1.GetComponent<REPRESENTACIONEcosDivinos>().NIVEL = 1; break;
-      case 3: pers1.Habilidad_3 = 1; pers1.AddComponent<SalmoPurificador>(); pers1.GetComponent<SalmoPurificador>().NIVEL = 1; break;
-      case 4: pers1.Habilidad_4 = 1; pers1.AddComponent<LlamaDivina>(); pers1.GetComponent<LlamaDivina>().NIVEL = 1; break;
+      pers1.Habilidad_4 = 1; pers1.AddComponent<LlamaDivina>(); pers1.GetComponent<LlamaDivina>().NIVEL = 1;
+      pers1.Habilidad_5 = 1; pers1.AddComponent<Enmendar>(); pers1.GetComponent<Enmendar>().NIVEL = 1;
     }
-
-    int randHabPot2 = UnityEngine.Random.Range(1, 5);
-    switch (randHabPot2)
+    else
     {
-      case 1: pers1.Habilidad_5 = 1; pers1.AddComponent<Enmendar>(); pers1.GetComponent<Enmendar>().NIVEL = 1; break;
-      case 2: pers1.Habilidad_6 = 1; pers1.AddComponent<LuzCegadora>(); pers1.GetComponent<LuzCegadora>().NIVEL = 1; break;
-      case 3: pers1.Habilidad_7 = 1; pers1.AddComponent<PilaresDeLuz>(); pers1.GetComponent<PilaresDeLuz>().NIVEL = 1; break;
-      case 4: pers1.Habilidad_8 = 1; pers1.AddComponent<CastigaraLosMalvados>(); pers1.GetComponent<CastigaraLosMalvados>().NIVEL = 1; break;
+      int randHabPot1 = UnityEngine.Random.Range(1, 5);
+      switch (randHabPot1)
+      {
+        case 1: pers1.Habilidad_1 = 1; pers1.AddComponent<REPRESENTACIONAuraSagrada>(); pers1.GetComponent<REPRESENTACIONAuraSagrada>().NIVEL = 1; break;
+        case 2: pers1.Habilidad_2 = 1; pers1.AddComponent<REPRESENTACIONEcosDivinos>(); pers1.GetComponent<REPRESENTACIONEcosDivinos>().NIVEL = 1; break;
+        case 3: pers1.Habilidad_3 = 1; pers1.AddComponent<SalmoPurificador>(); pers1.GetComponent<SalmoPurificador>().NIVEL = 1; break;
+        case 4: pers1.Habilidad_4 = 1; pers1.AddComponent<LlamaDivina>(); pers1.GetComponent<LlamaDivina>().NIVEL = 1; break;
+      }
+
+      int randHabPot2 = UnityEngine.Random.Range(1, 5);
+      switch (randHabPot2)
+      {
+        case 1: pers1.Habilidad_5 = 1; pers1.AddComponent<Enmendar>(); pers1.GetComponent<Enmendar>().NIVEL = 1; break;
+        case 2: pers1.Habilidad_6 = 1; pers1.AddComponent<LuzCegadora>(); pers1.GetComponent<LuzCegadora>().NIVEL = 1; break;
+        case 3: pers1.Habilidad_7 = 1; pers1.AddComponent<PilaresDeLuz>(); pers1.GetComponent<PilaresDeLuz>().NIVEL = 1; break;
+        case 4: pers1.Habilidad_8 = 1; pers1.AddComponent<CastigaraLosMalvados>(); pers1.GetComponent<CastigaraLosMalvados>().NIVEL = 1; break;
+      }
     }
 
 
@@ -13198,6 +13436,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     pers1.itemArma = Instantiate(scContprefab.armaEspadaCorta);
     pers1.itemArmadura = Instantiate(scContprefab.ArmaduraCueroReforzado);
     AplicarTraitHerenciaInicialSiCorresponde(pers1);
+    if (configuracionTutorial)
+    {
+      pers1.indiceAparienciaAlternativa = Personaje.IndiceAparienciaBase;
+      pers1.aparienciaAlternativaResuelta = true;
+    }
     SincronizarAparienciaVisualPersonaje(pers1);
     scMenuPersonajes.listaPersonajes.Add(pers1);
     scMenuPersonajes.scEquipo.ActualizarEquipo(pers1);

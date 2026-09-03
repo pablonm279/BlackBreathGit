@@ -44,7 +44,7 @@ public class CorteVerticalCongelado : Habilidad
        tipoPorcentaje = 1;
 
 
-      imHab = Resources.Load<Sprite>("imHab/Caballero_corteVertical");
+      imHab = Resources.Load<Sprite>("imHab/Caballero_CorteVertical");
 
       if (TRADU.i.nIdioma == 1)
       {

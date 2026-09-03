@@ -137,6 +137,9 @@ public class CampaignSaveData
   public int presagiosRegionId;
   public List<int> presagiosActivos = new List<int>();
   public bool primeraBatallaPresagioEnemigosConsumida;
+  public int zonaPrimeraFaccionCombate;
+  public string primeraFaccionCombate;
+  public int combatesRegistradosZona;
 
   public float alientoNegroHoras;
   public bool antorchasEncendidas = true;

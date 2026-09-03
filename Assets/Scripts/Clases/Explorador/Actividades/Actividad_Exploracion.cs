@@ -8,7 +8,7 @@ public class Actividad_Exploracion: Actividad
     {
       IDActividad = 9; //
 
-      desc = TRADU.i.Traducir("<color=#0cca74><b>Exploración: </b></color><color=#d3d3d3><i>El personaje explora los destinos posibles adelante de la caravana.</color></i>\\n\\n+10% Exploración pasiva y Rango de Visión de día.\\nSi se da un combate, lo arranca Fatigado.");
+      desc = "<color=#0cca74><b>Exploración: </b></color><color=#d3d3d3><i>El personaje explora los destinos posibles adelante de la caravana.</color></i>\\n\\n+10% Exploración pasiva y Rango de Visión de día.\\nSi se da un combate, lo arranca Fatigado.";
 
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
@@ -10,6 +11,19 @@ public class MenuCaravana : MonoBehaviour
     private const int MaxTierMejoraCaravana = 5;
     private const int ProbabilidadBasePerderSequitoPorDerrota = 50;
     private const string ColorTextoFactoresExploracion = "#C8C8C8";
+    private const string ColorIncrementoMejora = "#DFEA02";
+    private enum TipoMejoraCaravana
+    {
+        Ninguna,
+        Antorchas,
+        Alforjas,
+        Tiendas,
+        Catalejos,
+        Almacen,
+        Defensas
+    }
+
+    private TipoMejoraCaravana mejoraCaravanaHover;
     private bool coloresCostoInicializados;
     private Color colorCostoAntorchasNormal;
     private Color colorCostoAlforjasNormal;
@@ -236,6 +250,7 @@ public class MenuCaravana : MonoBehaviour
     {
         InicializarColoresCostoSiHaceFalta();
         InicializarBotonAntorcha();
+        InicializarHoverMejoras();
     }
 
     void Update()
@@ -415,6 +430,60 @@ public class MenuCaravana : MonoBehaviour
         }
     }
 
+    private void InicializarHoverMejoras()
+    {
+        RegistrarHoverMejora(btMejoraAntorchas, TipoMejoraCaravana.Antorchas);
+        RegistrarHoverMejora(btMejoraAlforjas, TipoMejoraCaravana.Alforjas);
+        RegistrarHoverMejora(btMejoraTiendas, TipoMejoraCaravana.Tiendas);
+        RegistrarHoverMejora(btMejoraCatalejos, TipoMejoraCaravana.Catalejos);
+        RegistrarHoverMejora(btMejoraAlmacen, TipoMejoraCaravana.Almacen);
+        RegistrarHoverMejora(btMejoraDefensas, TipoMejoraCaravana.Defensas);
+    }
+
+    private void RegistrarHoverMejora(GameObject boton, TipoMejoraCaravana tipoMejora)
+    {
+        if (boton == null)
+        {
+            return;
+        }
+
+        EventTrigger trigger = boton.GetComponent<EventTrigger>();
+        if (trigger == null)
+        {
+            trigger = boton.AddComponent<EventTrigger>();
+        }
+
+        if (trigger.triggers == null)
+        {
+            trigger.triggers = new List<EventTrigger.Entry>();
+        }
+
+        EventTrigger.Entry entrada = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+        entrada.callback.AddListener(_ => MostrarPreviewMejora(tipoMejora));
+        trigger.triggers.Add(entrada);
+
+        EventTrigger.Entry salida = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        salida.callback.AddListener(_ => OcultarPreviewMejora(tipoMejora));
+        trigger.triggers.Add(salida);
+    }
+
+    private void MostrarPreviewMejora(TipoMejoraCaravana tipoMejora)
+    {
+        mejoraCaravanaHover = tipoMejora;
+        ActualizarDescripcionesMejoras();
+    }
+
+    private void OcultarPreviewMejora(TipoMejoraCaravana tipoMejora)
+    {
+        if (mejoraCaravanaHover != tipoMejora)
+        {
+            return;
+        }
+
+        mejoraCaravanaHover = TipoMejoraCaravana.Ninguna;
+        ActualizarDescripcionesMejoras();
+    }
+
     private int ObtenerIdiomaActual()
     {
         if (TRADU.i != null)
@@ -465,6 +534,16 @@ public class MenuCaravana : MonoBehaviour
         return tier * 5;
     }
 
+    private string ObtenerIncrementoPreview(bool mostrar, int tier, int valorActual, int valorSiguiente, string sufijo = "")
+    {
+        if (!mostrar || tier >= MaxTierMejoraCaravana || valorActual == valorSiguiente)
+        {
+            return string.Empty;
+        }
+
+        return " <color=" + ColorIncrementoMejora + ">(" + FormatearModificadorEntero(valorSiguiente - valorActual) + sufijo + ")</color>";
+    }
+
     private int CalcularCostoEscaladoDesdeSistemaViejo(int tierActual, int costoTier1Viejo, int costoTier3Viejo)
     {
         if (MaxTierMejoraCaravana <= 1)
@@ -505,39 +584,39 @@ public class MenuCaravana : MonoBehaviour
 
         ActualizarDescripcionMejora(
             descAntorchas,
-            ObtenerDescripcionAntorchasEs(tierAntorchas),
-            ObtenerDescripcionAntorchasEn(tierAntorchas),
-            ObtenerDescripcionAntorchasPt(tierAntorchas));
+            ObtenerDescripcionAntorchasEs(tierAntorchas, mejoraCaravanaHover == TipoMejoraCaravana.Antorchas),
+            ObtenerDescripcionAntorchasEn(tierAntorchas, mejoraCaravanaHover == TipoMejoraCaravana.Antorchas),
+            ObtenerDescripcionAntorchasPt(tierAntorchas, mejoraCaravanaHover == TipoMejoraCaravana.Antorchas));
 
         ActualizarDescripcionMejora(
             descAlforjas,
-            ObtenerDescripcionAlforjasEs(tierAlforjas),
-            ObtenerDescripcionAlforjasEn(tierAlforjas),
-            ObtenerDescripcionAlforjasPt(tierAlforjas));
+            ObtenerDescripcionAlforjasEs(tierAlforjas, mejoraCaravanaHover == TipoMejoraCaravana.Alforjas),
+            ObtenerDescripcionAlforjasEn(tierAlforjas, mejoraCaravanaHover == TipoMejoraCaravana.Alforjas),
+            ObtenerDescripcionAlforjasPt(tierAlforjas, mejoraCaravanaHover == TipoMejoraCaravana.Alforjas));
 
         ActualizarDescripcionMejora(
             descTiendas,
-            ObtenerDescripcionTiendasEs(tierTiendas),
-            ObtenerDescripcionTiendasEn(tierTiendas),
-            ObtenerDescripcionTiendasPt(tierTiendas));
+            ObtenerDescripcionTiendasEs(tierTiendas, mejoraCaravanaHover == TipoMejoraCaravana.Tiendas),
+            ObtenerDescripcionTiendasEn(tierTiendas, mejoraCaravanaHover == TipoMejoraCaravana.Tiendas),
+            ObtenerDescripcionTiendasPt(tierTiendas, mejoraCaravanaHover == TipoMejoraCaravana.Tiendas));
 
         ActualizarDescripcionMejora(
             descCatalejos,
-            ObtenerDescripcionCatalejosEs(tierCatalejos),
-            ObtenerDescripcionCatalejosEn(tierCatalejos),
-            ObtenerDescripcionCatalejosPt(tierCatalejos));
+            ObtenerDescripcionCatalejosEs(tierCatalejos, mejoraCaravanaHover == TipoMejoraCaravana.Catalejos),
+            ObtenerDescripcionCatalejosEn(tierCatalejos, mejoraCaravanaHover == TipoMejoraCaravana.Catalejos),
+            ObtenerDescripcionCatalejosPt(tierCatalejos, mejoraCaravanaHover == TipoMejoraCaravana.Catalejos));
 
         ActualizarDescripcionMejora(
             descAlmacen,
-            ObtenerDescripcionAlmacenEs(tierAlmacen),
-            ObtenerDescripcionAlmacenEn(tierAlmacen),
-            ObtenerDescripcionAlmacenPt(tierAlmacen));
+            ObtenerDescripcionAlmacenEs(tierAlmacen, mejoraCaravanaHover == TipoMejoraCaravana.Almacen),
+            ObtenerDescripcionAlmacenEn(tierAlmacen, mejoraCaravanaHover == TipoMejoraCaravana.Almacen),
+            ObtenerDescripcionAlmacenPt(tierAlmacen, mejoraCaravanaHover == TipoMejoraCaravana.Almacen));
 
         ActualizarDescripcionMejora(
             descDefensas,
-            ObtenerDescripcionDefensasEs(tierDefensas),
-            ObtenerDescripcionDefensasEn(tierDefensas),
-            ObtenerDescripcionDefensasPt(tierDefensas));
+            ObtenerDescripcionDefensasEs(tierDefensas, mejoraCaravanaHover == TipoMejoraCaravana.Defensas),
+            ObtenerDescripcionDefensasEn(tierDefensas, mejoraCaravanaHover == TipoMejoraCaravana.Defensas),
+            ObtenerDescripcionDefensasPt(tierDefensas, mejoraCaravanaHover == TipoMejoraCaravana.Defensas));
 
         ActualizarDescripcionMejora(
             txtExplicacionVistaLejana,
@@ -590,6 +669,10 @@ public class MenuCaravana : MonoBehaviour
         }
 
         bool abrir = !MenuMejoras.activeInHierarchy;
+        if (abrir)
+        {
+            mejoraCaravanaHover = TipoMejoraCaravana.Ninguna;
+        }
         ActualizarMejoras();
         CerrarMenusExclusivos();
         CampaignManager.Instance.ActivarLog(0);
@@ -789,7 +872,6 @@ public class MenuCaravana : MonoBehaviour
 
     private void AbrirMenuPersonajes(Personaje personajeInicial, bool alternarMenu, bool desdeHotkey, bool desdeHover)
     {
-         TutorialEvents.Emit("ui.menupersonajescerrado1", gameObject);
         bool estabaAbiertoPorHover = menuPersonajesAbiertoPorHover;
         if (desdeHotkey && MenuPersonajesEstaAbierto())
         {
@@ -841,7 +923,14 @@ public class MenuCaravana : MonoBehaviour
             return;
         }
 
-        CerrarMenusExclusivos();
+        bool cambiaPersonajeConMenuAbierto = !alternarMenu
+            && personajeInicial != null
+            && MenuPersonajes.activeInHierarchy;
+        if (!cambiaPersonajeConMenuAbierto)
+        {
+            CerrarMenusExclusivos();
+        }
+
         CampaignManager.Instance.ActivarLog(0);
         bool estabaAbierto = MenuPersonajes.activeInHierarchy;
         bool abrir = alternarMenu ? !estabaAbierto : true;
@@ -1062,29 +1151,33 @@ public class MenuCaravana : MonoBehaviour
 
     }
 
-    private string ObtenerDescripcionAntorchasEs(int tier)
+    private string ObtenerDescripcionAntorchasEs(int tier, bool mostrarIncremento)
     {
+        int visionActual = Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f);
+        int visionSiguiente = Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier + 1) * 10f);
         return "Antorchas de Caravana:\n"
             + "De noche, si están prendidas, aumentan el rango de visión de la caravana por "
-            + Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f) + ".\n"
-            + "Si están apagadas, la velocidad de viaje se reduce un 20%.\n"
+            + visionActual + ObtenerIncrementoPreview(mostrarIncremento, tier, visionActual, visionSiguiente) + ".\n"
             + "Además aumentan las chances de encontrar items tras una batalla.";
     }
 
-    private string ObtenerDescripcionAntorchasEn(int tier)
+    private string ObtenerDescripcionAntorchasEn(int tier, bool mostrarIncremento)
     {
+        int visionActual = Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f);
+        int visionSiguiente = Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier + 1) * 10f);
         return "Caravan Torches:\n"
             + "At night, when lit, they increase the caravan's Vision Range by "
-            + Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f) + ".\n"
+            + visionActual + ObtenerIncrementoPreview(mostrarIncremento, tier, visionActual, visionSiguiente) + ".\n"
             + "They also increase the chance to find items after a battle.";
     }
 
-    private string ObtenerDescripcionAntorchasPt(int tier)
+    private string ObtenerDescripcionAntorchasPt(int tier, bool mostrarIncremento)
     {
+        int visionActual = Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f);
+        int visionSiguiente = Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier + 1) * 10f);
         return "Tochas da Caravana:\n"
             + "À noite, quando acesas, aumentam o Alcance de Visão da caravana em "
-            + Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f) + ".\n"
-            + "Quando apagadas, a velocidade de viagem é reduzida em 20%.\n"
+            + visionActual + ObtenerIncrementoPreview(mostrarIncremento, tier, visionActual, visionSiguiente) + ".\n"
             + "Além disso, aumentam as chances de encontrar itens após uma batalha.";
     }
 
@@ -1095,85 +1188,136 @@ public class MenuCaravana : MonoBehaviour
         return Mathf.Max(1.5f, alcances[indice] * 0.90f);
     }
 
-    private string ObtenerDescripcionAlforjasEs(int tier)
+    private string ObtenerDescripcionAlforjasEs(int tier, bool mostrarIncremento)
     {
+        int bonusActual = ObtenerBonusCargaPorBueyAlforjas(tier);
+        int bonusSiguiente = ObtenerBonusCargaPorBueyAlforjas(tier + 1);
         return "Alforjas:\n"
-            + "Agregan +" + ObtenerBonusCargaPorBueyAlforjas(tier) + " de capacidad de carga a los bueyes que llevan los suministros de la caravana.";
+            + "Agregan +" + bonusActual + ObtenerIncrementoPreview(mostrarIncremento, tier, bonusActual, bonusSiguiente)
+            + " de capacidad de carga a los bueyes que llevan los suministros de la caravana.";
     }
 
-    private string ObtenerDescripcionAlforjasEn(int tier)
+    private string ObtenerDescripcionAlforjasEn(int tier, bool mostrarIncremento)
     {
+        int bonusActual = ObtenerBonusCargaPorBueyAlforjas(tier);
+        int bonusSiguiente = ObtenerBonusCargaPorBueyAlforjas(tier + 1);
         return "Saddlebags:\n"
-            + "Add +" + ObtenerBonusCargaPorBueyAlforjas(tier) + " carrying capacity to the oxen that haul the caravan supplies.";
+            + "Add +" + bonusActual + ObtenerIncrementoPreview(mostrarIncremento, tier, bonusActual, bonusSiguiente)
+            + " carrying capacity to the oxen that haul the caravan supplies.";
     }
 
-    private string ObtenerDescripcionAlforjasPt(int tier)
+    private string ObtenerDescripcionAlforjasPt(int tier, bool mostrarIncremento)
     {
+        int bonusActual = ObtenerBonusCargaPorBueyAlforjas(tier);
+        int bonusSiguiente = ObtenerBonusCargaPorBueyAlforjas(tier + 1);
         return "Alforjes:\n"
-            + "Adicionam +" + ObtenerBonusCargaPorBueyAlforjas(tier) + " de capacidade de carga aos bois que levam os suprimentos da caravana.";
+            + "Adicionam +" + bonusActual + ObtenerIncrementoPreview(mostrarIncremento, tier, bonusActual, bonusSiguiente)
+            + " de capacidade de carga aos bois que levam os suprimentos da caravana.";
     }
 
-    private string ObtenerDescripcionTiendasEs(int tier)
+    private string ObtenerDescripcionTiendasEs(int tier, bool mostrarIncremento)
     {
+        int esperanzaActual = ObtenerBonusEsperanzaTiendas(tier);
+        int esperanzaSiguiente = ObtenerBonusEsperanzaTiendas(tier + 1);
+        int capacidadActual = Mathf.Max(0, tier - 1);
+        int capacidadSiguiente = Mathf.Max(0, tier);
         return "Tiendas:\n"
             + "Las tiendas proporcionan refugio y descanso a los civiles.\n"
-            + "Al descansar: +" + ObtenerBonusEsperanzaTiendas(tier) + " Esperanza.\n"
-            + "Además aumenta en +" + Mathf.Max(0, tier - 1) + " la capacidad de Personajes.";
+            + "Al descansar: +" + esperanzaActual + ObtenerIncrementoPreview(mostrarIncremento, tier, esperanzaActual, esperanzaSiguiente) + " Esperanza.\n"
+            + "Además aumenta en +" + capacidadActual + ObtenerIncrementoPreview(mostrarIncremento, tier, capacidadActual, capacidadSiguiente)
+            + " la capacidad de Personajes.";
     }
 
-    private string ObtenerDescripcionTiendasEn(int tier)
+    private string ObtenerDescripcionTiendasEn(int tier, bool mostrarIncremento)
     {
+        int esperanzaActual = ObtenerBonusEsperanzaTiendas(tier);
+        int esperanzaSiguiente = ObtenerBonusEsperanzaTiendas(tier + 1);
+        int capacidadActual = Mathf.Max(0, tier - 1);
+        int capacidadSiguiente = Mathf.Max(0, tier);
         return "Tents:\n"
             + "Provide shelter and rest quality to the civilians.\n"
-            + "When resting: +" + ObtenerBonusEsperanzaTiendas(tier) + " Hope.\n"
-            + "Also increases character capacity by +" + Mathf.Max(0, tier - 1) + ".";
+            + "When resting: +" + esperanzaActual + ObtenerIncrementoPreview(mostrarIncremento, tier, esperanzaActual, esperanzaSiguiente) + " Hope.\n"
+            + "Also increases character capacity by +" + capacidadActual
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, capacidadActual, capacidadSiguiente) + ".";
     }
 
-    private string ObtenerDescripcionTiendasPt(int tier)
+    private string ObtenerDescripcionTiendasPt(int tier, bool mostrarIncremento)
     {
+        int esperanzaActual = ObtenerBonusEsperanzaTiendas(tier);
+        int esperanzaSiguiente = ObtenerBonusEsperanzaTiendas(tier + 1);
+        int capacidadActual = Mathf.Max(0, tier - 1);
+        int capacidadSiguiente = Mathf.Max(0, tier);
         return "Tendas:\n"
             + "As tendas oferecem abrigo e descanso aos civis.\n"
-            + "Ao descansar: +" + ObtenerBonusEsperanzaTiendas(tier) + " Esperança.\n"
-            + "Além disso, aumentam em +" + Mathf.Max(0, tier - 1) + " a capacidade de Personagens.";
+            + "Ao descansar: +" + esperanzaActual + ObtenerIncrementoPreview(mostrarIncremento, tier, esperanzaActual, esperanzaSiguiente) + " Esperança.\n"
+            + "Além disso, aumentam em +" + capacidadActual + ObtenerIncrementoPreview(mostrarIncremento, tier, capacidadActual, capacidadSiguiente)
+            + " a capacidade de Personagens.";
     }
 
-    private string ObtenerDescripcionCatalejosEs(int tier)
+    private string ObtenerDescripcionCatalejosEs(int tier, bool mostrarIncremento)
     {
+        int visionActual = ObtenerBonusVisionCatalejos(tier) * 10;
+        int visionSiguiente = ObtenerBonusVisionCatalejos(tier + 1) * 10;
         return "Catalejos:\n"
-            + "Disipan la niebla y aumentan en +" + ObtenerBonusVisionCatalejos(tier) * 10 + " el Rango de Visión de la caravana.";
+            + "Disipan la niebla y aumentan en +" + visionActual
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, visionActual, visionSiguiente) + " el Rango de Visión de la caravana.";
     }
 
-    private string ObtenerDescripcionCatalejosEn(int tier)
+    private string ObtenerDescripcionCatalejosEn(int tier, bool mostrarIncremento)
     {
+        int visionActual = ObtenerBonusVisionCatalejos(tier) * 10;
+        int visionSiguiente = ObtenerBonusVisionCatalejos(tier + 1) * 10;
         return "Spyglasses:\n"
-            + "Dispel the fog and increase the caravan's Vision Range by +" + ObtenerBonusVisionCatalejos(tier) * 10 + ".";
+            + "Dispel the fog and increase the caravan's Vision Range by +" + visionActual
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, visionActual, visionSiguiente) + ".";
     }
 
-    private string ObtenerDescripcionCatalejosPt(int tier)
+    private string ObtenerDescripcionCatalejosPt(int tier, bool mostrarIncremento)
     {
+        int visionActual = ObtenerBonusVisionCatalejos(tier) * 10;
+        int visionSiguiente = ObtenerBonusVisionCatalejos(tier + 1) * 10;
         return "Lunetas:\n"
-            + "Dissipam a névoa e aumentam em +" + ObtenerBonusVisionCatalejos(tier) * 10 + " o Alcance de Visão da caravana.";
+            + "Dissipam a névoa e aumentam em +" + visionActual
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, visionActual, visionSiguiente) + " o Alcance de Visão da caravana.";
     }
 
-    private string ObtenerDescripcionAlmacenEs(int tier)
+    private string ObtenerDescripcionAlmacenEs(int tier, bool mostrarIncremento)
     {
+        int reduccionActual = ObtenerReduccionConsumoAlmacen(tier);
+        int reduccionSiguiente = ObtenerReduccionConsumoAlmacen(tier + 1);
+        int cargaActual = ObtenerBonusCargaAlmacen(tier);
+        int cargaSiguiente = ObtenerBonusCargaAlmacen(tier + 1);
         return "Carro Almacén:\n"
-            + "Al descansar se consumen " + ObtenerReduccionConsumoAlmacen(tier) + "% menos Suministros.\n"
-            + "Además aumenta en " + ObtenerBonusCargaAlmacen(tier) + " la capacidad total de carga.";
+            + "Al descansar se consumen " + reduccionActual + "%"
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, reduccionActual, reduccionSiguiente, "%") + " menos Suministros.\n"
+            + "Además aumenta en " + cargaActual + ObtenerIncrementoPreview(mostrarIncremento, tier, cargaActual, cargaSiguiente)
+            + " la capacidad total de carga.";
     }
 
-    private string ObtenerDescripcionAlmacenEn(int tier)
+    private string ObtenerDescripcionAlmacenEn(int tier, bool mostrarIncremento)
     {
+        int reduccionActual = ObtenerReduccionConsumoAlmacen(tier);
+        int reduccionSiguiente = ObtenerReduccionConsumoAlmacen(tier + 1);
+        int cargaActual = ObtenerBonusCargaAlmacen(tier);
+        int cargaSiguiente = ObtenerBonusCargaAlmacen(tier + 1);
         return "Storage Wagon:\n"
-            + "While resting, Supplies consumption is reduced by " + ObtenerReduccionConsumoAlmacen(tier) + "%.\n"
-            + "It also increases total carrying capacity by " + ObtenerBonusCargaAlmacen(tier) + ".";
+            + "While resting, Supplies consumption is reduced by " + reduccionActual + "%"
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, reduccionActual, reduccionSiguiente, "%") + ".\n"
+            + "It also increases total carrying capacity by " + cargaActual
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, cargaActual, cargaSiguiente) + ".";
     }
 
-    private string ObtenerDescripcionAlmacenPt(int tier)
+    private string ObtenerDescripcionAlmacenPt(int tier, bool mostrarIncremento)
     {
+        int reduccionActual = ObtenerReduccionConsumoAlmacen(tier);
+        int reduccionSiguiente = ObtenerReduccionConsumoAlmacen(tier + 1);
+        int cargaActual = ObtenerBonusCargaAlmacen(tier);
+        int cargaSiguiente = ObtenerBonusCargaAlmacen(tier + 1);
         return "Carro Armazém:\n"
-            + "Ao descansar, consomem-se " + ObtenerReduccionConsumoAlmacen(tier) + "% menos Suprimentos.\n"
-            + "Além disso, aumenta em " + ObtenerBonusCargaAlmacen(tier) + " a capacidade total de carga.";
+            + "Ao descansar, consomem-se " + reduccionActual + "%"
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, reduccionActual, reduccionSiguiente, "%") + " menos Suprimentos.\n"
+            + "Além disso, aumenta em " + cargaActual + ObtenerIncrementoPreview(mostrarIncremento, tier, cargaActual, cargaSiguiente)
+            + " a capacidade total de carga.";
     }
 
     private string ObtenerExplicacionVistaLejanaEs(int tierCatalejos)
@@ -1457,24 +1601,35 @@ public class MenuCaravana : MonoBehaviour
         }
     }
 
-    private string ObtenerDescripcionDefensasEs(int tier)
+    private string ObtenerDescripcionDefensasEs(int tier, bool mostrarIncremento)
     {
+        int reduccionActual = ObtenerReduccionPerdidaSequitoDefensas(tier);
+        int reduccionSiguiente = ObtenerReduccionPerdidaSequitoDefensas(tier + 1);
         return "Defensas:\n"
             + "Agrega trampas y barricadas a los combates de ataques directos a la caravana.\n"
-            + "Además reduce " + ObtenerReduccionPerdidaSequitoDefensas(tier) + "% las chances de perder un séquito tras una derrota.";
+            + "Además reduce " + reduccionActual + "%"
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, reduccionActual, reduccionSiguiente, "%")
+            + " las chances de perder un séquito tras una derrota.";
     }
 
-    private string ObtenerDescripcionDefensasEn(int tier)
+    private string ObtenerDescripcionDefensasEn(int tier, bool mostrarIncremento)
     {
+        int reduccionActual = ObtenerReduccionPerdidaSequitoDefensas(tier);
+        int reduccionSiguiente = ObtenerReduccionPerdidaSequitoDefensas(tier + 1);
         return "Defenses:\n"
             + "Adds traps and barricades to direct caravan defense battles.\n"
-            + "Also reduces the chance to lose a Retinue after a defeat by " + ObtenerReduccionPerdidaSequitoDefensas(tier) + "%.";
+            + "Also reduces the chance to lose a Retinue after a defeat by " + reduccionActual + "%"
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, reduccionActual, reduccionSiguiente, "%") + ".";
     }
 
-    private string ObtenerDescripcionDefensasPt(int tier)
+    private string ObtenerDescripcionDefensasPt(int tier, bool mostrarIncremento)
     {
+        int reduccionActual = ObtenerReduccionPerdidaSequitoDefensas(tier);
+        int reduccionSiguiente = ObtenerReduccionPerdidaSequitoDefensas(tier + 1);
         return "Defesas:\n"
             + "Adiciona armadilhas e barricadas aos combates de ataques diretos à caravana.\n"
-            + "Além disso, reduz em " + ObtenerReduccionPerdidaSequitoDefensas(tier) + "% as chances de perder um séquito após uma derrota.";
+            + "Além disso, reduz em " + reduccionActual + "%"
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, reduccionActual, reduccionSiguiente, "%")
+            + " as chances de perder um séquito após uma derrota.";
     }
 }

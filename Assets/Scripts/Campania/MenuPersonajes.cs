@@ -605,7 +605,7 @@ public class MenuPersonajes : MonoBehaviour
     if (txtDiasViajado != null)
     {
       txtDiasViajado.text = CampaignManager.Instance != null
-        ? CampaignManager.Instance.FormatearDuracionHoras(pSel.HorasViajadas)
+        ? CampaignManager.Instance.FormatearDuracionHoras(Mathf.Floor(pSel.HorasViajadas))
         : pSel.DiasViajado.ToString();
     }
     if (txtEnemigosEliminados != null) { txtEnemigosEliminados.text = pSel.EnemigosEliminados.ToString(); }

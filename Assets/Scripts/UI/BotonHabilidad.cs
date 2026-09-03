@@ -673,7 +673,7 @@ public class BotonHabilidad : MonoBehaviour, IPointerClickHandler
 
         if(tutorialCombate != null && tutorialCombate.tutorialCombateActivo)
         {
-            if(tutorialCombate.ObtenerPasoActual() < 4)
+            if(tutorialCombate.EstaAntesDelPasoAtaqueBallesta())
             {
                 tutorialCombate.SiguientePasoCombate();
             }
@@ -791,7 +791,7 @@ public class BotonHabilidad : MonoBehaviour, IPointerClickHandler
         {
              if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo)
            {
-            if(BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() < 4)
+            if(BattleManager.Instance.scTutorialCombate.EstaAntesDelPasoAtaqueBallesta())
             {
                     return;
             }

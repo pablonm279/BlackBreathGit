@@ -1325,7 +1325,7 @@ public class Casilla : MonoBehaviour
       BattleManager.Instance.scUIContadorAP.ResetearCirculos();
       if (costoMovimientoTotal > 0)
       {
-        BattleManager.Instance.scUIContadorAP.MarcarCirculos(costoMovimientoTotal);
+        BattleManager.Instance.scUIContadorAP.MarcarCirculosMovimiento(costoMovimientoTotal);
       }
     }
   }
@@ -1373,17 +1373,17 @@ public class Casilla : MonoBehaviour
     }
 
     //----
-    if(BattleManager.Instance.scTutorialCombate.tutorialCombateActivo && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() < 6)
+    if(BattleManager.Instance.scTutorialCombate.EstaAntesDelPasoMovimiento())
     {
 
       return;
     }
-    if (BattleManager.Instance.scTutorialCombate.tutorialCombateActivo && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() == 6 && (posX != 3 || posY != 3))
+    if (BattleManager.Instance.scTutorialCombate.EsPasoMovimiento() && (posX != 3 || posY != 3))
     {
 
       return;
     }
-    else if (BattleManager.Instance.scTutorialCombate.tutorialCombateActivo && BattleManager.Instance.scTutorialCombate.ObtenerPasoActual() == 6)
+    else if (BattleManager.Instance.scTutorialCombate.EsPasoMovimiento())
     {
       BattleManager.Instance.scTutorialCombate.SiguientePasoCombate();
     }
@@ -2245,6 +2245,7 @@ public class Casilla : MonoBehaviour
 
   public void DesactivarCapas()
   {
+    estadoVisualCasillaCache = EstadoVisualCasilla.NoInicializado;
     transform.GetChild(0).gameObject.SetActive(false);
     transform.GetChild(1).gameObject.SetActive(false);
     transform.GetChild(2).gameObject.SetActive(false);

@@ -85543,7 +85543,7 @@ MonoBehaviour:
   momentoAvisoEmboscadaBandada: 0.5
   scMapaManager: {fileID: 0}
   linePrefab: {fileID: 9221151320870401559, guid: d3655eff514fea94db90e0f5b139a996, type: 3}
-  lineWidth: 0.6
+  lineWidth: 0.83
   lineHeightOffset: 0.01
   MaterialCaminoOriginal: {fileID: 2100000, guid: ae282af2e7ea5754ea7c6b573651c21a, type: 2}
   MaterialCaminoMarcado: {fileID: 2100000, guid: 61ac5b5a778d1504fba5c849b21846a0, type: 2}
@@ -85559,7 +85559,7 @@ MonoBehaviour:
   nodoRitual: 0
   tipoNodoOriginalRitual: 0
   descripcion: 
-  rotSpeed: 9
+  rotSpeed: 7
   lookAheadDist: 0.5
 --- !u!1 &7871008110498989888
 GameObject:

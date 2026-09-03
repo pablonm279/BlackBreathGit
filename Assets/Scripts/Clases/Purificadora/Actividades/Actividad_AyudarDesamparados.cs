@@ -8,7 +8,7 @@ public class Actividad_AyudarDesamparados: Actividad
     {
       IDActividad = 11; //
 
-      desc = TRADU.i.Traducir("<color=#0cca74><b>Ayudar a los Desamparados: </b></color><color=#d3d3d3><i>La Purificadora usará su tiempo para ayudar a los rezagados y más débiles de la caravana.</color></i>\\n\\n+5-10 Esperanza cada 24 h activas. +1 Fervor en combate.");
+      desc = "<color=#0cca74><b>Ayudar a los Desamparados: </b></color><color=#d3d3d3><i>La Purificadora usará su tiempo para ayudar a los rezagados y más débiles de la caravana.</color></i>\\n\\n+5-10 Esperanza cada 24 h activas. +1 Fervor en combate.";
 
     }
 }

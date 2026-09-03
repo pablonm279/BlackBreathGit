@@ -105,6 +105,8 @@ public class TutorialAction
 public class TutorialStep
 {
   public string id;
+  [Tooltip("Si está desactivado, el tutorial saltea este paso.")]
+  public bool activo = true;
   public string titleKey;
   [TextArea(2, 6)] public string narratorKey;
   [TextArea(2, 6)] public string bodyKey;
@@ -166,5 +168,41 @@ public class TutorialDefinition : ScriptableObject
   public TutorialStep GetStep(int index)
   {
     return index >= 0 && index < steps.Count ? steps[index] : null;
+  }
+
+  public int GetNextActiveStepIndex(int startIndex)
+  {
+    if (steps == null)
+    {
+      return -1;
+    }
+
+    for (int i = Mathf.Max(0, startIndex); i < steps.Count; i++)
+    {
+      if (steps[i] != null && steps[i].activo)
+      {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
+  public int GetPreviousActiveStepIndex(int startIndex)
+  {
+    if (steps == null)
+    {
+      return -1;
+    }
+
+    for (int i = Mathf.Min(startIndex, steps.Count - 1); i >= 0; i--)
+    {
+      if (steps[i] != null && steps[i].activo)
+      {
+        return i;
+      }
+    }
+
+    return -1;
   }
 }

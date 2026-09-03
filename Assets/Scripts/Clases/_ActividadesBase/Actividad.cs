@@ -48,9 +48,14 @@ public abstract class Actividad : MonoBehaviour
 
    public virtual string ObtenerDescripcion(Personaje personaje = null)
    {
-      return desc;
+      string descripcion = TRADU.i != null ? TRADU.i.Traducir(desc) : desc;
+      return AplicarColorDescripcionSuperior(descripcion);
    }
 
+   protected string AplicarColorDescripcionSuperior(string descripcion)
+   {
+      return descripcion.Replace("<color=#d3d3d3><i>", "<color=#a8a8a8><i>");
+   }
 
 
 }

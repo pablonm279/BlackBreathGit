@@ -16,6 +16,9 @@ public class TooltipBatalla : MonoBehaviour
     [SerializeField] private float preferredTextMaxWidth = 260f;
     public bool usoSoloCostoMov;
     private UIFadeSlide tooltipAnim;
+    private Coroutine ocultarTooltipEstadoCoroutine;
+
+    private const float DemoraOcultarTooltipEstado = 0.08f;
 
     public bool tooltipFade = false;
     void Awake()
@@ -75,6 +78,7 @@ public class TooltipBatalla : MonoBehaviour
         if (usoSoloCostoMov) { return; }
         if (tooltipObject == null) { return; }
 
+        PrepararMostrarTooltip(true);
         desdeBarraVida = false;
 
         UIFadeSlideUtility.ShowAt(tooltipObject, Input.mousePosition);
@@ -94,10 +98,49 @@ public class TooltipBatalla : MonoBehaviour
         if (usoSoloCostoMov) { return; }
         if (tooltipObject == null) { return; }
 
+        PrepararMostrarTooltip(true);
         desdeBarraVida = true;
         UIFadeSlideUtility.ShowAt(tooltipObject, Input.mousePosition);
         tooltipText.text = TRADU.i.Traducir(txt);
         AjustarTamanoTooltip();
+    }
+
+    public void SolicitarOcultarTooltipEstado()
+    {
+        if (usoSoloCostoMov || tooltipObject == null) { return; }
+
+        CancelarOcultadoTooltipEstado();
+        if (!isActiveAndEnabled)
+        {
+            HideTooltipSinAnim();
+            return;
+        }
+
+        ocultarTooltipEstadoCoroutine = StartCoroutine(OcultarTooltipEstadoConDemora());
+    }
+
+    private IEnumerator OcultarTooltipEstadoConDemora()
+    {
+        yield return new WaitForSecondsRealtime(DemoraOcultarTooltipEstado);
+        ocultarTooltipEstadoCoroutine = null;
+        HideTooltipSinAnim();
+    }
+
+    private void PrepararMostrarTooltip(bool seguirPuntero)
+    {
+        CancelarOcultadoTooltipEstado();
+        if (tooltipAnim != null)
+        {
+            tooltipAnim.SetFollowMouse(seguirPuntero, new Vector2(14f, -18f));
+        }
+    }
+
+    private void CancelarOcultadoTooltipEstado()
+    {
+        if (ocultarTooltipEstadoCoroutine == null) { return; }
+
+        StopCoroutine(ocultarTooltipEstadoCoroutine);
+        ocultarTooltipEstadoCoroutine = null;
     }
 
     public void ShowTooltipTextSinAnim(string txt)
@@ -105,6 +148,7 @@ public class TooltipBatalla : MonoBehaviour
         if (usoSoloCostoMov) { return; }
         if (tooltipObject == null) { return; }
 
+        PrepararMostrarTooltip(true);
         desdeBarraVida = false;
         UIFadeSlideUtility.ShowAtImmediate(tooltipObject, Input.mousePosition);
         tooltipText.text = TRADU.i.Traducir(txt);
@@ -116,6 +160,7 @@ public class TooltipBatalla : MonoBehaviour
         if (usoSoloCostoMov) { return; }
         if (tooltipObject == null) { return; }
 
+        PrepararMostrarTooltip(true);
         desdeBarraVida = false;
         UIFadeSlideUtility.ShowAtImmediate(tooltipObject, Input.mousePosition);
         tooltipText.text = txt;
@@ -127,6 +172,7 @@ public class TooltipBatalla : MonoBehaviour
         if (!usoSoloCostoMov) { return; }
         if (tooltipObject == null) { return; }
 
+        PrepararMostrarTooltip(true);
         desdeBarraVida = false;
         UIFadeSlideUtility.ShowAtImmediate(tooltipObject, Input.mousePosition);
         tooltipText.text = txt;
@@ -239,12 +285,14 @@ public class TooltipBatalla : MonoBehaviour
 
     public void HideTooltip()
     {
+        CancelarOcultadoTooltipEstado();
         UIFadeSlideUtility.Hide(tooltipObject);
         desdeBarraVida = false;
     }
 
     public void HideTooltipSinAnim()
     {
+        CancelarOcultadoTooltipEstado();
         UIFadeSlideUtility.HideImmediate(tooltipObject);
         desdeBarraVida = false;
     }

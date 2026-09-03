@@ -166,6 +166,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -187,9 +190,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &2383047622823427081
 GameObject:
@@ -219,8 +224,8 @@ RectTransform:
   m_GameObject: {fileID: 2383047622823427081}
   m_LocalRotation: {x: -0, y: -0, z: 0.0051538493, w: -0.99998677}
   m_LocalPosition: {x: 0, y: 0, z: 0.000000051688403}
-  m_LocalScale: {x: 1.3912603, y: 1.6807437, z: 1.5044515}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.6359829, y: 1.9763864, z: 1.7690845}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6721434453643647482}
   - {fileID: 8775609431354661570}
@@ -228,7 +233,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.591}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.16, y: -18.906}
+  m_AnchoredPosition: {x: 2.17, y: -18.08}
   m_SizeDelta: {x: 24.43, y: 16.512}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1678664685221969079
@@ -261,7 +266,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: cfffb858ed422f14487eaa2a2bbfc324, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -721,6 +726,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CasillaPosicion: {fileID: 0}
   CasillaDeseadaMov: {fileID: 0}
+  bGrande: 0
+  omitirFlashAnimacionRecibirDanio: 0
   CasillaForzadoaMover: {fileID: 0}
   estaCargando: {fileID: 0}
   valorCargando: 0
@@ -870,6 +877,7 @@ MonoBehaviour:
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
   tierEnemigo: 1
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -927,13 +935,20 @@ MonoBehaviour:
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
   barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaSangradoColor: {r: 0.28, g: 0.015, b: 0.015, a: 1}
   barraVidaRatioInicioRojo: 0.2
   barraVidaOscurecerTurnoPasado: 0.72
+  barraVidaPreviewDanioColor: {r: 1, g: 0.42, b: 0.08, a: 0.82}
+  barraVidaPreviewDanioMinimoColor: {r: 0.16, g: 0.008, b: 0.005, a: 0.96}
+  barraVidaPreviewDanioVelocidadPulso: 6
+  indicadorMuerteGarantizadaVelocidadPulso: 4.5
   rotuloHabilidadOffset: {x: 0, y: 2.1}
   rotuloHabilidadPadding: {x: 0.34, y: 0.16}
   rotuloHabilidadDuracion: 3
   rotuloHabilidadFondo: {r: 0.09, g: 0.012, b: 0.012, a: 0.82}
   rotuloHabilidadBorde: {r: 0.35, g: 0.07, b: 0.06, a: 0.72}
+  duracionVisibilidadTemporal: 1.5
+  duracionMovimientoEstados: 0.12
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 6091353056242186099}
 --- !u!114 &266884403653698581
@@ -954,8 +969,6 @@ MonoBehaviour:
   vfxCasteo: {fileID: 0}
   requiereRecurso: 0
   costoPM: 0
-  cooldownMax: 0
-  cooldownActual: 0
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   NIVEL: 0
@@ -1016,6 +1029,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 0
   costoAP: 0
   pPrioridad: 0
@@ -1210,6 +1224,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1231,9 +1248,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1001 &54413245834599603
 PrefabInstance:

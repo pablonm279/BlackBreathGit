@@ -8,7 +8,7 @@ public class Actividad_AfilarArmas: Actividad
     {
       IDActividad = 13; //
 
-      desc = TRADU.i.Traducir("<color=#0cca74><b>Afilar Armas: </b></color><color=#d3d3d3><i>El Acechador se encarga de mantener sus armas afiladas.</color></i>\\n\\nSi se produce un combate tendrá +10% daño.");
+      desc = "<color=#0cca74><b>Afilar Armas: </b></color><color=#d3d3d3><i>El Acechador se encarga de mantener sus armas afiladas.</color></i>\\n\\nSi se produce un combate tendrá +10% daño.";
 
     }
 }

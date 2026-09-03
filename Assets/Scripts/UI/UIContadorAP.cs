@@ -25,6 +25,8 @@ public class UIContadorAP : MonoBehaviour
     private int apIndicadorAPCasilla = -1;
     private int apMarcadosIndicadorAPCasilla;
     private int esfuerzoIndicadorAPCasilla;
+    private bool previewMovimientoActivo;
+    private int ultimoFramePreviewMovimiento = -1;
  
    
    
@@ -50,6 +52,14 @@ public class UIContadorAP : MonoBehaviour
       if (indicadorAPCasilla != null)
       {
         indicadorAPCasilla.gameObject.SetActive(false);
+      }
+    }
+
+    private void LateUpdate()
+    {
+      if (previewMovimientoActivo && ultimoFramePreviewMovimiento < Time.frameCount)
+      {
+        ResetearCirculos();
       }
     }
 
@@ -211,6 +221,19 @@ public class UIContadorAP : MonoBehaviour
 
   public void MarcarCirculos(int n)
   {
+    previewMovimientoActivo = false;
+    MarcarCirculosInterno(n);
+  }
+
+  public void MarcarCirculosMovimiento(int n)
+  {
+    previewMovimientoActivo = true;
+    ultimoFramePreviewMovimiento = Time.frameCount;
+    MarcarCirculosInterno(n);
+  }
+
+  private void MarcarCirculosInterno(int n)
+  {
     if (!isActiveAndEnabled || !gameObject.scene.isLoaded || BattleManager.Instance == null || BattleManager.Instance.unidadActiva == null)
     {
       return;
@@ -250,6 +273,8 @@ public class UIContadorAP : MonoBehaviour
 
   public void ResetearCirculos()
   {
+    previewMovimientoActivo = false;
+    ultimoFramePreviewMovimiento = -1;
     ActualizarAPCirculos();
     apMarcadosIndicadorAPCasilla = 0;
     esfuerzoIndicadorAPCasilla = 0;

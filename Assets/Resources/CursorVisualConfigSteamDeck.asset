@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a17f408a0a834d15b4eb4a37d26f5b91, type: 3}
+  m_Name: CursorVisualConfigSteamDeck
+  m_EditorClassIdentifier: 
+  cursorNormal: {fileID: 2800000, guid: c234829678794f66baee55b6ea4cceef, type: 3}
+  cursorInteractivo: {fileID: 2800000, guid: 86bc74dca6d244129f48bfe2aa214531, type: 3}
+  cursorPresionado: {fileID: 2800000, guid: d15bbeb183e94e9ab9b2b1531e639a4d, type: 3}
+  cursorAlerta: {fileID: 2800000, guid: 1d58e125f4b849219a441283439f6d76, type: 3}
+  hotspotNormal: {x: 8, y: 2}
+  hotspotInteractivo: {x: 8, y: 2}
+  hotspotPresionado: {x: 8, y: 2}
+  hotspotAlerta: {x: 8, y: 2}
+  modoCursor: 0

@@ -142,7 +142,8 @@ public class MapDecorator : MonoBehaviour
     // ---- internos ----
     const string PrefGraficosIndex = "graficos_index";
     const int CalidadGraficaBaja = 0;
-    const float AumentoRadioDecoracionesPorNivelCalidad = 0.10f;
+    const float AumentoRadioDecoracionesCalidadBaja = 0.15f;
+    const float AumentoRadioDecoracionesCalidadMedia = 0.08f;
     const float UmbralDistCaminoRellenoRemovible = 0.15f;
     const float TamanoCeldaDecoracionRemovible = 2f;
     struct Segmento { public Vector3 a, b; public float halfWidth; }
@@ -674,7 +675,10 @@ public class MapDecorator : MonoBehaviour
             return radio;
         }
 
-        float multiplicador = 1f + (AumentoRadioDecoracionesPorNivelCalidad * nivelesDebajoDeUltra);
+        float aumento = calidadActual <= CalidadGraficaBaja
+            ? AumentoRadioDecoracionesCalidadBaja
+            : AumentoRadioDecoracionesCalidadMedia;
+        float multiplicador = 1f + aumento;
         return radio * multiplicador;
     }
 

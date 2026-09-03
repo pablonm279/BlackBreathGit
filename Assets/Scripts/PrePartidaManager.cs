@@ -12,6 +12,7 @@ using UnityEngine.UI;
 /// </summary>
 public class PrePartidaManager : MonoBehaviour
 {
+    private const string PrimeraCampaniaNormalIniciadaKey = "PrimeraCampaniaNormalIniciada";
     public const int ZonaDesconocida = 0;
     public const int ZonaBosqueArdiente = 1;
     public const int ZonaPasoVientoHelado = 2;
@@ -307,9 +308,24 @@ public class PrePartidaManager : MonoBehaviour
             return;
         }
 
-        EstablecerPresagiosInicialesPendientes(PresagioRegionPendienteStore.Consumir(zonaSeleccionada));
+        if (EsPrimeraCampaniaNormalPendiente())
+        {
+            EstablecerPresagiosInicialesPendientes(new List<int>());
+            PlayerPrefs.SetInt(PrimeraCampaniaNormalIniciadaKey, 1);
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            EstablecerPresagiosInicialesPendientes(PresagioRegionPendienteStore.Consumir(zonaSeleccionada));
+        }
+
         ReproducirAudioAlientoInicioPartida();
         menuController.IniciarNuevaPartidaDesdePrePartida(zonaSeleccionada);
+    }
+
+    private static bool EsPrimeraCampaniaNormalPendiente()
+    {
+        return PlayerPrefs.GetInt(PrimeraCampaniaNormalIniciadaKey, 0) == 0;
     }
 
     private void ReproducirAudioAlientoInicioPartida()
@@ -1005,7 +1021,9 @@ public class PrePartidaManager : MonoBehaviour
 
     private void ActualizarPresagiosZonaSeleccionada()
     {
-        List<int> presagios = PresagioRegionPendienteStore.ObtenerOCrear(zonaSeleccionada);
+        List<int> presagios = EsPrimeraCampaniaNormalPendiente()
+            ? new List<int>()
+            : PresagioRegionPendienteStore.ObtenerOCrear(zonaSeleccionada);
         List<string> textos = new List<string>();
         for (int i = 0; i < presagios.Count; i++)
         {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using TMPro;
@@ -341,27 +340,7 @@ public class FloatingTextAnimator : MonoBehaviour
             return texto;
         }
 
-        return RegexTachadoSimple.Replace(texto, match => AplicarTachadoUnicode(match.Groups[1].Value));
-    }
-
-    private static string AplicarTachadoUnicode(string texto)
-    {
-        if (string.IsNullOrEmpty(texto))
-        {
-            return texto;
-        }
-
-        var sb = new StringBuilder(texto.Length * 2);
-        foreach (char c in texto)
-        {
-            sb.Append(c);
-            if (!char.IsWhiteSpace(c))
-            {
-                sb.Append('\u0336');
-            }
-        }
-
-        return sb.ToString();
+        return RegexTachadoSimple.Replace(texto, match => "- " + match.Groups[1].Value);
     }
 
     private static FloatingTextProfile CreateGenericProfile()

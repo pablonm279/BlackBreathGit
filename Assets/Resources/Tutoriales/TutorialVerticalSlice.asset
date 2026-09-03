@@ -16,6 +16,7 @@ MonoBehaviour:
   restartIfCompleted: 1
   steps:
   - id: Intro
+    activo: 1
     titleKey: tutorial.intro.title
     narratorKey: tutorial.intro.narrator
     bodyKey: tutorial.intro.body
@@ -44,6 +45,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Intro2
+    activo: 1
     titleKey: tutorial.intro2.title
     narratorKey: tutorial.intro2.narrator
     bodyKey: tutorial.intro2.body
@@ -72,6 +74,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: intro4
+    activo: 1
     titleKey: tutorial.intro4.title
     narratorKey: tutorial.intro4.narrator
     bodyKey: tutorial.intro4.body
@@ -100,6 +103,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Intro3
+    activo: 0
     titleKey: tutorial.intro3.title
     narratorKey: tutorial.intro3.narrator
     bodyKey: tutorial.intro3.body
@@ -128,6 +132,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: mov1
+    activo: 1
     titleKey: tutorial.mov1.title
     narratorKey: tutorial.mov1.narrator
     bodyKey: tutorial.mov1.body
@@ -160,6 +165,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: prebatalla1
+    activo: 1
     titleKey: tutorial.prebatalla1.title
     narratorKey: tutorial.prebatalla1.narrator
     bodyKey: tutorial.prebatalla1.body
@@ -174,7 +180,7 @@ MonoBehaviour:
     showPointer: 1
     showHighlight: 1
     pointerDirection: 3
-    pointerOffset: {x: 0, y: 95}
+    pointerOffset: {x: 0, y: 120}
     pointerScale: 0.85
     highlightScale: 1.5
     highlightScaleXY: {x: 1, y: 1}
@@ -190,6 +196,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: prebatalla2
+    activo: 1
     titleKey: tutorial.prebatalla2.title
     narratorKey: tutorial.prebatalla2.narrator
     bodyKey: tutorial.prebatalla2.body
@@ -220,6 +227,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: prebatalla3
+    activo: 1
     titleKey: tutorial.prebatalla3.title
     narratorKey: tutorial.prebatalla3.narrator
     bodyKey: tutorial.prebatalla3.body
@@ -252,6 +260,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: postbatalla1
+    activo: 1
     titleKey: tutorial.postbatalla1.title
     narratorKey: tutorial.postbatalla1.narrator
     bodyKey: tutorial.postbatalla1.body
@@ -282,6 +291,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: postbatalla2
+    activo: 1
     titleKey: tutorial.postbatalla2.title
     narratorKey: tutorial.postbatalla2.narrator
     bodyKey: tutorial.postbatalla2.body
@@ -312,6 +322,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: MenuPersonaje
+    activo: 1
     titleKey: tutorial.personaje1.title
     narratorKey: tutorial.personaje1.narrator
     bodyKey: tutorial.personaje1.body
@@ -346,6 +357,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: MenuPersonaje2
+    activo: 1
     titleKey: tutorial.personaje2.title
     narratorKey: tutorial.personaje2.narrator
     bodyKey: tutorial.personaje2.body
@@ -378,6 +390,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: mov2
+    activo: 1
     titleKey: tutorial.mov2.title
     narratorKey: tutorial.mov2.narrator
     bodyKey: tutorial.mov2.body
@@ -410,6 +423,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Recursos1
+    activo: 1
     titleKey: tutorial.recursos1.title
     narratorKey: tutorial.recursos1.narrator
     bodyKey: tutorial.recursos1.body
@@ -438,6 +452,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Peso1
+    activo: 1
     titleKey: tutorial.peso1.title
     narratorKey: tutorial.peso1.narrator
     bodyKey: tutorial.peso1.body
@@ -466,6 +481,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: abrirmejoras
+    activo: 1
     titleKey: tutorial.abrirmejoras.title
     narratorKey: tutorial.abrirmejoras.narrator
     bodyKey: tutorial.abrirmejoras.body
@@ -496,6 +512,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Alforjas1
+    activo: 1
     titleKey: tutorial.alforjas1.title
     narratorKey: tutorial.alforjas1.narrator
     bodyKey: tutorial.alforjas1.body
@@ -526,6 +543,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Alforjas2
+    activo: 1
     titleKey: tutorial.alforjas2.title
     narratorKey: tutorial.alforjas2.narrator
     bodyKey: tutorial.alforjas2.body
@@ -558,6 +576,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: mov3
+    activo: 1
     titleKey: tutorial.mov3.title
     narratorKey: tutorial.mov3.narrator
     bodyKey: tutorial.mov3.body
@@ -590,6 +609,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Exploracion1
+    activo: 1
     titleKey: tutorial.exp1.title
     narratorKey: tutorial.exp1.narrator
     bodyKey: tutorial.exp1.body
@@ -618,6 +638,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Exploracion2
+    activo: 1
     titleKey: tutorial.exp2.title
     narratorKey: tutorial.exp2.narrator
     bodyKey: tutorial.exp2.body
@@ -646,6 +667,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: mov4
+    activo: 1
     titleKey: tutorial.exp3.title
     narratorKey: tutorial.exp3.narrator
     bodyKey: tutorial.exp3.body
@@ -678,6 +700,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Fatiga2
+    activo: 1
     titleKey: tutorial.fatiga2.title
     narratorKey: tutorial.fatiga2.narrator
     bodyKey: tutorial.fatiga2.body
@@ -708,6 +731,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Descanso1
+    activo: 1
     titleKey: tutorial.descanso1.title
     narratorKey: tutorial.descanso1.narrator
     bodyKey: tutorial.descanso1.body
@@ -740,6 +764,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Clima1
+    activo: 0
     titleKey: tutorial.clima.title
     narratorKey: tutorial.clima.narrator
     bodyKey: tutorial.clima.body
@@ -768,6 +793,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Sequitos1
+    activo: 1
     titleKey: tutorial.sequitos1.title
     narratorKey: tutorial.sequitos1.narrator
     bodyKey: tutorial.sequitos1.body
@@ -789,7 +815,7 @@ MonoBehaviour:
     advanceMode: 1
     inputBlockMode: 2
     showNextButton: 0
-    canGoBack: 1
+    canGoBack: 0
     canSkip: 0
     autoAdvanceDelay: 1
     advanceConditions:
@@ -798,6 +824,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Sequitos2Herreros
+    activo: 0
     titleKey: tutorial.sequitos2.title
     narratorKey: tutorial.sequitos2.narrator
     bodyKey: tutorial.sequitos2.body
@@ -826,6 +853,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Sequitos3Curanderos
+    activo: 1
     titleKey: tutorial.sequitos3.title
     narratorKey: tutorial.sequitos3.narrator
     bodyKey: tutorial.sequitos3.body
@@ -854,6 +882,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: Sequitos4Mercaderes
+    activo: 1
     titleKey: tutorial.sequitos4.title
     narratorKey: tutorial.sequitos4.narrator
     bodyKey: tutorial.sequitos4.body
@@ -882,6 +911,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: SequitosExit
+    activo: 1
     titleKey: tutorial.sequitosexit.title
     narratorKey: tutorial.sequitosexit.narrator
     bodyKey: tutorial.sequitosexit.body
@@ -914,6 +944,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: mov5
+    activo: 1
     titleKey: tutorial.batfinpre1.title
     narratorKey: tutorial.batfinpre1.narrator
     bodyKey: tutorial.batfinpre1.body
@@ -946,6 +977,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: prebatallafinal
+    activo: 1
     titleKey: tutorial.batfinpre2.title
     narratorKey: tutorial.batfinpre2.narrator
     bodyKey: tutorial.batfinpre2.body
@@ -976,6 +1008,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: espera_postbatfinal
+    activo: 1
     titleKey: tutorial.postbatfinal.wait.title
     narratorKey: tutorial.postbatfinal.wait.narrator
     bodyKey: tutorial.postbatfinal.wait.body
@@ -1006,6 +1039,7 @@ MonoBehaviour:
     enterActions: []
     exitActions: []
   - id: postbatfinal1
+    activo: 1
     titleKey: tutorial.postbatfinal1.title
     narratorKey: tutorial.postbatfinal1.narrator
     bodyKey: tutorial.postbatfinal1.body

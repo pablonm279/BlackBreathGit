@@ -120,6 +120,18 @@ public static class RuntimeAnalyticsSetupEditor
         changed |= AddUnique(settings.ResourceItemTypes, "merchant_item");
         changed |= AddUnique(settings.ResourceItemTypes, "caravan_upgrade");
         changed |= AddUnique(settings.ResourceItemTypes, "battle_reward");
+        changed |= AddUnique(settings.CustomDimensions01, "es");
+        changed |= AddUnique(settings.CustomDimensions01, "en");
+        changed |= AddUnique(settings.CustomDimensions01, "pt");
+        changed |= AddUnique(settings.CustomDimensions02, "difficulty_0");
+        changed |= AddUnique(settings.CustomDimensions02, "difficulty_1");
+        changed |= AddUnique(settings.CustomDimensions02, "difficulty_2");
+        changed |= AddUnique(settings.CustomDimensions02, "difficulty_3");
+        changed |= AddUnique(settings.CustomDimensions02, "difficulty_4");
+        changed |= AddUnique(settings.CustomDimensions03, "unknown");
+        changed |= AddUnique(settings.CustomDimensions03, "standard");
+        changed |= AddUnique(settings.CustomDimensions03, "tutorial");
+        changed |= AddUnique(settings.CustomDimensions03, "continue");
 
         if (settings.InfoLogBuild)
         {

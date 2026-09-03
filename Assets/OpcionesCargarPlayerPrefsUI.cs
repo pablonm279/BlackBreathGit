@@ -410,9 +410,15 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         new Vector2Int(1680, 1050),
         new Vector2Int(1920, 1080),
         new Vector2Int(1920, 1200),
+        new Vector2Int(2560, 1080),
         new Vector2Int(2560, 1440),
         new Vector2Int(2560, 1600),
-        new Vector2Int(3840, 2160)
+        new Vector2Int(3440, 1440),
+        new Vector2Int(3840, 1080),
+        new Vector2Int(3840, 1600),
+        new Vector2Int(3840, 2160),
+        new Vector2Int(5120, 1440),
+        new Vector2Int(5120, 2160)
     };
 
         Resolution[] todas = Screen.resolutions;
@@ -1044,7 +1050,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private void AplicarPreferenciasSyncYFPS()
     {
         bool vsync = PlayerPrefs.GetInt(PrefVsync, 1) == 1;
-        QualitySettings.vSyncCount = vsync ? 1 : 0;
+        QualitySettings.vSyncCount = LinuxDeckRuntime.ResolverVSyncCount(vsync);
 
         int fps = PlayerPrefs.GetInt(PrefFpsLimit, 60);
         Application.targetFrameRate = VisualPolishRuntime.ResolveTargetFrameRate(vsync, fps, SceneManager.GetActiveScene());

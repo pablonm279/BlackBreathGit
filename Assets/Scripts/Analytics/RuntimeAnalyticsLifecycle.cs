@@ -3,7 +3,7 @@ using UnityEngine.Profiling;
 
 internal sealed class RuntimeAnalyticsLifecycle : MonoBehaviour
 {
-    private const float PerformanceSampleSeconds = 60f;
+    private const float PerformanceSampleSeconds = 300f;
 
     private float elapsed;
     private int frames;

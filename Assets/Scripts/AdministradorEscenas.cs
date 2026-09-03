@@ -4140,6 +4140,7 @@ public class AdministradorEscenas : MonoBehaviour
       GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.DEBUGPRUEBA);
       ColocarEnCasillaEspecifica(2,enemigo2.gameObject,3,2);*/
       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.RufianConBallesta);
+      enemigo1.GetComponent<Unidad>()?.ForzarResultadoTiradasSalvacionMental(4);
       ColocarEnCasillaEspecifica(2,enemigo1.gameObject,1,4); 
       GameObject enemigo2 = Instantiate(ContenedorPrefabsBatalla.MastinTuto);
       ColocarEnCasillaEspecifica(2,enemigo2.gameObject,3,2); 
@@ -4163,10 +4164,6 @@ public class AdministradorEscenas : MonoBehaviour
       GameObject refuerzo1 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
       refuerzo1.SetActive(false);
       BattleManager.Instance.enemigosRefuerzos.Add(refuerzo1);
-
-      GameObject refuerzo2 = Instantiate(ContenedorPrefabsBatalla.LoboEspectral);
-      refuerzo2.SetActive(false);
-      BattleManager.Instance.enemigosRefuerzos.Add(refuerzo2);
 
       BattleManager.Instance.ActualizarRefuerzosUI();
     }
@@ -5547,6 +5544,28 @@ public class AdministradorEscenas : MonoBehaviour
   {
     int longitudBatallaFatiga = 7;
 
+    void SincronizarConsumiblesUsados(Personaje pers, Unidad unidad)
+    {
+      if (pers == null || unidad == null)
+      {
+        return;
+      }
+
+      if (pers.Consumible1 != null && unidad.ConsumibleA == null)
+      {
+        Consumible consumibleUsado = pers.Consumible1;
+        pers.QuitarConsumible1(consumibleUsado);
+        Destroy(consumibleUsado.gameObject);
+      }
+
+      if (pers.Consumible2 != null && unidad.ConsumibleB == null)
+      {
+        Consumible consumibleUsado = pers.Consumible2;
+        pers.QuitarConsumible2(consumibleUsado);
+        Destroy(consumibleUsado.gameObject);
+      }
+    }
+
     float VidaCampaniaDesdeUnidad(Personaje pers, Unidad unidad)
     {
       if (pers == null || unidad == null)
@@ -5578,6 +5597,8 @@ public class AdministradorEscenas : MonoBehaviour
 
     if (Personaje1 != null)
     {
+      SincronizarConsumiblesUsados(Personaje1, unidadPers1);
+
       float vidaFinalCamp = VidaCampaniaDesdeUnidad(Personaje1, unidadPers1);
       if (vidaFinalCamp < Personaje1.fVidaActual)
       { Personaje1.fVidaActual = vidaFinalCamp; } //No puede terminar con mas vida de la que empezo
@@ -5588,6 +5609,8 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (Personaje2 != null)
     {
+      SincronizarConsumiblesUsados(Personaje2, unidadPers2);
+
       float vidaFinalCamp = VidaCampaniaDesdeUnidad(Personaje2, unidadPers2);
       if (vidaFinalCamp < Personaje2.fVidaActual)
       { Personaje2.fVidaActual = vidaFinalCamp; } //No puede terminar con mas vida de la que empezo
@@ -5599,6 +5622,8 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (Personaje3 != null)
     {
+      SincronizarConsumiblesUsados(Personaje3, unidadPers3);
+
       float vidaFinalCamp = VidaCampaniaDesdeUnidad(Personaje3, unidadPers3);
       if (vidaFinalCamp < Personaje3.fVidaActual)
       { Personaje3.fVidaActual = vidaFinalCamp; } //No puede terminar con mas vida de la que empezo
@@ -5610,6 +5635,8 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (Personaje4 != null)
     {
+      SincronizarConsumiblesUsados(Personaje4, unidadPers4);
+
       float vidaFinalCamp = VidaCampaniaDesdeUnidad(Personaje4, unidadPers4);
       if (vidaFinalCamp < Personaje4.fVidaActual)
       { Personaje4.fVidaActual = vidaFinalCamp; } //No puede terminar con mas vida de la que empezo
@@ -5641,6 +5668,8 @@ public class AdministradorEscenas : MonoBehaviour
     {
         if (pers.sNombre == unidadRefuerzo.uNombre)
         {
+          SincronizarConsumiblesUsados(pers, unidadRefuerzo);
+
           // Plasmar vida actual (no puede terminar con más vida de la que empezó)
           float vidaFinalCamp = VidaCampaniaDesdeUnidad(pers, unidadRefuerzo);
           if (vidaFinalCamp < pers.fVidaActual)
