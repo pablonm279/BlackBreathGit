@@ -334,10 +334,10 @@ MonoBehaviour:
     panelAnchor: 6
     panelOffset: {x: 0, y: 0}
     compactPanelSize: {x: 610, y: 530}
-    showPointer: 0
+    showPointer: 1
     showHighlight: 0
-    pointerDirection: 3
-    pointerOffset: {x: 0, y: 55}
+    pointerDirection: 2
+    pointerOffset: {x: 53, y: -85}
     pointerScale: 0.85
     highlightScale: 1
     highlightScaleXY: {x: 1.5, y: 1.5}
@@ -375,7 +375,7 @@ MonoBehaviour:
     pointerOffset: {x: 0, y: 55}
     pointerScale: 0.85
     highlightScale: 1
-    highlightScaleXY: {x: 3.2, y: 2.2}
+    highlightScaleXY: {x: 8, y: 8}
     advanceMode: 1
     inputBlockMode: 0
     showNextButton: 0

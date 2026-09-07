@@ -914,7 +914,8 @@ public class MenuCaravana : MonoBehaviour
             MenuPersonajes.SetActive(false);
             menuPersonajesAbiertoPorHover = false;
             personajeMenuPersonajesHover = null;
-            EmitirCierreMenuPersonajesTutorial(desdeHotkey);
+            // Volver a pulsar el retrato seleccionado también cuenta como un cierre válido del tutorial.
+            EmitirCierreMenuPersonajesTutorial(true);
             return;
         }
 

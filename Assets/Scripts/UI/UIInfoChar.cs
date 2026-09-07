@@ -504,7 +504,10 @@ public class UIInfoChar : MonoBehaviour
 
     if (!EstaUnidadValidaParaInfo(unidadFijadaInterna))
     {
-      unidadFijadaInterna?.EstablecerObjetivoSeleccionadoBarraVida(false);
+      if (unidadFijadaInterna != null)
+      {
+        unidadFijadaInterna.EstablecerObjetivoSeleccionadoBarraVida(false);
+      }
       unidadFijadaInterna = null;
     }
   }

@@ -322,7 +322,9 @@ public class CorteHorizontal : Habilidad
 
      try
      {
-       object objetivoVisual = ObtenerObjetivoVisualAproximacion(Objetivos, cas);
+       object objetivoVisual = acercamientoMelee != null
+         ? acercamientoMelee.ElegirObjetivoVisualCentral(Objetivos)
+         : null;
        if (acercamientoMelee != null && objetivoVisual != null)
        {
          hizoAproximacion = await acercamientoMelee.PrepararAproximacionIAAsync(esMelee, 1, objetivoVisual, false);
@@ -337,47 +339,6 @@ public class CorteHorizontal : Habilidad
          await acercamientoMelee.VolverAPosicionInicialAsync();
        }
      }
-   }
-
-   object ObtenerObjetivoVisualAproximacion(List<object> objetivos, Casilla casillaClickeada)
-   {
-     if (casillaClickeada != null && casillaClickeada.Presente != null)
-     {
-       Unidad unidadCentro = casillaClickeada.Presente.GetComponent<Unidad>();
-       if (unidadCentro != null)
-       {
-         return unidadCentro;
-       }
-
-       Obstaculo obstaculoCentro = casillaClickeada.Presente.GetComponent<Obstaculo>();
-       if (obstaculoCentro != null)
-       {
-         return obstaculoCentro;
-       }
-     }
-
-     if (objetivos == null)
-     {
-       return null;
-     }
-
-     foreach (object objetivo in objetivos)
-     {
-       if (objetivo is Unidad)
-       {
-         return objetivo;
-       }
-     }
-
-     foreach (object objetivo in objetivos)
-     {
-       if (objetivo is Obstaculo)
-       {
-         return objetivo;
-       }
-     }
-
-     return null;
    }
 
     protected override Task EsperarPreImpactoAsync(List<object> objetivos, Casilla casillaOrigenTrampas)

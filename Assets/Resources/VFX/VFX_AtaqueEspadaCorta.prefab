@@ -105,7 +105,7 @@ MonoBehaviour:
   playOnEnable: 1
   playOnClick: 0
   startDelay: 0
-  duration: 0.25
+  duration: 0.21
   curve:
     serializedVersion: 2
     m_Curve:

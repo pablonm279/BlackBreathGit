@@ -15,6 +15,7 @@ public static class ItemTooltipFormatter
     private const string ColorRarezaArtefacto = "#00C8D7";
     private const string ColorEncabezadoEfectos = "#4F664B";
     private const string ColorStats = "#7F9B79";
+    private const string ColorMejora = "#E89A3C";
     private const string ColorHabilidades = "#C7B27A";
     private const string ColorDebuff = "#D28E6A";
     private const string ColorConsumible = "#9BC88A";
@@ -35,7 +36,7 @@ public static class ItemTooltipFormatter
                 nombreVisible += " " + sufijoNombre;
             }
 
-            texto.Append(FormatearTituloItem(nombreVisible));
+            texto.Append(FormatearTituloItem(nombreVisible, item.nivelMejora));
         }
 
         string lineaRareza = ConstruirLineaRareza(item);
@@ -155,14 +156,27 @@ public static class ItemTooltipFormatter
         return resultado.Trim();
     }
 
-    private static string FormatearTituloItem(string nombre)
+    private static string FormatearTituloItem(string nombre, int nivelMejora)
     {
         if (string.IsNullOrWhiteSpace(nombre))
         {
             return string.Empty;
         }
 
-        return $"<size=112%><color={ColorTituloItem}><b>{nombre}</b></color></size>";
+        string nombreFormateado = nombre;
+        if (nivelMejora > 0)
+        {
+            string sufijo = " +" + nivelMejora;
+            int indiceSufijo = nombre.LastIndexOf(sufijo);
+            if (indiceSufijo >= 0)
+            {
+                nombreFormateado = nombre.Substring(0, indiceSufijo)
+                    + $" <color={ColorMejora}>+{nivelMejora}</color>"
+                    + nombre.Substring(indiceSufijo + sufijo.Length);
+            }
+        }
+
+        return $"<size=112%><color={ColorTituloItem}><b>{nombreFormateado}</b></color></size>";
     }
 
     private static string ObtenerNombreVisibleItem(Item item)
@@ -418,6 +432,7 @@ public static class ItemTooltipFormatter
 
     private static string ConstruirBloqueEfectos(Item item)
     {
+        List<string> lineasMejora = new List<string>();
         List<string> lineasStats = new List<string>();
         List<string> lineasHabilidades = new List<string>();
         List<string> lineasDebuffImpacto = new List<string>();
@@ -426,6 +441,9 @@ public static class ItemTooltipFormatter
 
         if (item is Arma arma)
         {
+            AgregarLineaStat(lineasMejora, "Ataque: ", arma.nivelMejora);
+            AgregarLineaStat(lineasMejora, "Danio %: ", arma.nivelMejora * 5, "%");
+
             AgregarStatsComunes(
                 lineasStats,
                 arma.buffFuerza, arma.buffAgi, arma.buffPoder, arma.buffIniciativa,
@@ -491,7 +509,7 @@ public static class ItemTooltipFormatter
             AgregarLineaStat(lineasStats, "Danio %: ", 10, "%");
         }
 
-        if (lineasStats.Count == 0 && lineasHabilidades.Count == 0 && lineasDebuffImpacto.Count == 0 && lineasConsumible.Count == 0)
+        if (lineasMejora.Count == 0 && lineasStats.Count == 0 && lineasHabilidades.Count == 0 && lineasDebuffImpacto.Count == 0 && lineasConsumible.Count == 0)
         {
             return string.Empty;
         }
@@ -502,6 +520,15 @@ public static class ItemTooltipFormatter
         bloque.Append("><size=93%><b>");
         bloque.Append(Traducir("Efectos del item:"));
         bloque.Append("</b></size></color>");
+
+        for (int i = 0; i < lineasMejora.Count; i++)
+        {
+            bloque.Append("\n<color=");
+            bloque.Append(ColorMejora);
+            bloque.Append(">");
+            bloque.Append(FormatearLineaDetalle(lineasMejora[i]));
+            bloque.Append("</color>");
+        }
 
         for (int i = 0; i < lineasStats.Count; i++)
         {

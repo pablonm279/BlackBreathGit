@@ -335,10 +335,9 @@ MonoBehaviour:
     pt: Personagens
   - key: tutorial.personaje1.body
     es: "Cuando un Personaje sube de nivel, obtendr\xE1 mejoras que lo volver\xE1n
-      m\xE1s poderoso.\n\nPodr\xE1s:\n\nRepartir puntos de <b>Atributo</b>.\nMejorar
-      una <b>Habilidad</b>.\nDesbloquear nuevas opciones de combate a medida que
-      avance su experiencia.\n\n<color=#FFD54A><b>Reparte el punto de atributo deseado
-      y mejora una habilidad del Acechador</b></color>"
+      m\xE1s poderoso.\n\nPodr\xE1s:\n\nRepartir puntos de <b>Atributo</b>.\nDesbloquear
+      nuevas opciones de combate y mejorar habilidades a medida que avance su experiencia.\n\n<color=#FFD54A><b>Reparte
+      el punto de atributo deseado del Acechador</b></color>"
     en: 'When a Character levels up, they gain upgrades that make them stronger.
 
 
@@ -348,19 +347,19 @@ MonoBehaviour:
 
       Assign <b>Attribute</b> points.
 
-      Upgrade an
-      <b>Ability</b>.
+      Upgrade skills.
 
-      Unlock new combat options as their experience grows.
+      Unlock
+      new combat options as their experience grows.
 
 
       <color=#FFD54A><b>Assign
-      the desired attribute point and upgrade one Stalker skill</b></color>'
+      the desired attribute point.</b></color>'
     pt: "Quando um Personagem sobe de n\xEDvel, recebe melhorias que o tornam mais
       forte.\n\nVoc\xEA poder\xE1:\n\nDistribuir pontos de <b>Atributo</b>.\nMelhorar
       uma <b>Habilidade</b>.\nDesbloquear novas op\xE7\xF5es de combate conforme
       sua experi\xEAncia avance.\n\n<color=#FFD54A><b>Distribua o ponto de atributo
-      desejado e melhore uma habilidade do Espreitador</b></color>"
+      desejado</b></color>"
   - key: tutorial.personaje1.narrator
     es: "\u201CEl Acechador ha ganado experiencia en combate y ha mejorado sus capacidades\n\nMantenga
       vivos a sus hombres el tiempo suficiente, y terminar\xE1n convirti\xE9ndose
@@ -373,13 +372,22 @@ MonoBehaviour:
       muito mais capazes.\u201D"
   - key: tutorial.personaje2.body
     es: "Las <b>Actividades de Campa\xF1a</b> permiten asignar tareas a los Personajes
-      mientras la caravana viaja o descansa.\n\nCada Personaje posee opciones \xFAnicas
+      mientras la caravana viaja o descansa. La actividad por defecto es \"Guardia\"
+      pero puedes cambiarla si deseas.\n\nCada Personaje posee opciones \xFAnicas
       seg\xFAn su clase.\n\n<color=#FFD54A><b>Cierra el men\xFA de Personajes con
       la tecla \"C\" para continuar.</b></color>\n"
-    en: "<b>Campaign Activities</b> let you assign tasks to Characters while the
-      caravan travels or rests. \n\nEach Character has unique options based on their
-      class.\n\n<color=#FFD54A><b>Close the Characters menu with the \"C\" key to
-      continue.</b></color>\n"
+    en: '<b>Campaign Activities</b> let you assign tasks to Characters while the
+      caravan travels or rests. The default activity is "Guard" but you can change
+      it if you want.
+
+
+      Each Character has unique options based on their class.
+
+
+      <color=#FFD54A><b>Close
+      the Characters menu with the "C" key to continue.</b></color>
+
+'
     pt: "As <b>Atividades de Campanha</b> permitem atribuir tarefas aos Personagens
       enquanto a caravana viaja ou descansa.\n\nCada Personagem possui op\xE7\xF5es
       \xFAnicas conforme sua classe.\n\n<color=#FFD54A><b>Feche o menu de Personagens

@@ -1387,6 +1387,10 @@ public class AdministradorEscenas : MonoBehaviour
     {
       return;
     }
+    if (campaignManager.DebeUsarConfiguracionTutorial())
+    {
+      esEmboscada = 0;
+    }
     ultimoIDEncuentro = IDEncuentro;
     acechadorConBonusCriticoTutorial = null;
     encuentroGeneradoActual = encuentro;

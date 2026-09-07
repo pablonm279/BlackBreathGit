@@ -116,7 +116,6 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
     ruta.Progreso = 0f;
 
     CrearReticula();
-    CrearMarcadores();
     ActualizarPuntosPantalla();
     AplicarPosicionReticula();
   }
@@ -133,14 +132,14 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
 
     for (int i = 0; i < 8; i++)
     {
-      Image marca = CrearImagen("Marca" + i, reticula, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(1.5f, i % 2 == 0 ? 8f : 5f), ConAlpha(ColorExploracion, 0.52f));
+      Image marca = CrearImagen("Marca" + i, reticula, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(1f, i % 2 == 0 ? 5f : 3f), ConAlpha(ColorExploracion, 0.25f));
       float anguloGrados = i * 45f;
       float angulo = anguloGrados * Mathf.Deg2Rad;
       marca.rectTransform.anchoredPosition = new Vector2(-Mathf.Sin(angulo), Mathf.Cos(angulo)) * 31f;
       marca.rectTransform.localRotation = Quaternion.Euler(0f, 0f, anguloGrados);
     }
 
-    Image centro = CrearImagen("Centro", reticula, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(5f, 5f), ConAlpha(ColorExploracion, 0.58f));
+    Image centro = CrearImagen("Centro", reticula, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(3f, 3f), ConAlpha(ColorExploracion, 0.25f));
     centro.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
 
     Image barridoImagen = CrearImagen("Barrido", reticula, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(1f, 28f), new Color(ColorExploracion.r, ColorExploracion.g, ColorExploracion.b, 0.18f));
@@ -182,13 +181,13 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
       canvasGroup.alpha = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(p / 0.1f));
       tinte.color = new Color(0.015f, 0.025f, 0.026f, 0.025f + Mathf.Sin(p * Mathf.PI) * 0.025f);
       ruta.Progreso = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.04f, 0.57f, p));
-      ruta.color = ConAlpha(ColorExploracion, 0.20f + 0.12f * Mathf.Sin(Mathf.Clamp01(p / 0.62f) * Mathf.PI));
+      ruta.color = ConAlpha(ColorExploracion, 0.55f + 0.15f * Mathf.Sin(Mathf.Clamp01(p / 0.62f) * Mathf.PI));
 
       float aparicionReticula = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.34f, 0.58f, p));
-      float pulso = 1f + Mathf.Sin(tiempo * 2.9f) * 0.025f;
+      float pulso = 1f + Mathf.Sin(tiempo * 1.8f) * 0.015f;
       reticula.localScale = Vector3.one * aparicionReticula * pulso;
       reticula.localRotation = Quaternion.Euler(0f, 0f, Mathf.Sin(tiempo * 0.4f) * 3f);
-      barrido.localRotation = Quaternion.Euler(0f, 0f, -55f - p * 410f);
+      barrido.localRotation = Quaternion.Euler(0f, 0f, -55f - p * 140f);
       AplicarColorReticula(ColorExploracion, 0.20f + aparicionReticula * 0.28f);
 
       for (int i = 0; i < marcadores.Count; i++)
@@ -230,10 +229,10 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
 
       float salida = Mathf.SmoothStep(0f, 1f, p);
       tinte.color = ConAlpha(colorResultado, Mathf.Lerp(0.03f, 0f, salida));
-      ruta.color = ConAlpha(colorResultado, Mathf.Lerp(0.18f, 0.02f, salida));
+      ruta.color = ConAlpha(colorResultado, Mathf.Lerp(0.55f, 0.02f, salida));
       AplicarColorReticula(colorResultado, Mathf.Lerp(0.36f, 0f, salida));
       reticula.localScale = Vector3.one * Mathf.Lerp(1f, resultado.critico ? 1.15f : 1.08f, salida);
-      barrido.localRotation = Quaternion.Euler(0f, 0f, -465f - p * 190f);
+      barrido.localRotation = Quaternion.Euler(0f, 0f, -195f - p * 65f);
 
       for (int i = 0; i < marcadores.Count; i++)
       {
@@ -471,6 +470,14 @@ public sealed class ScoutExplorationRouteGraphic : MaskableGraphic
     {
       for (int i = 0; i < nuevosPuntos.Count; i++)
       {
+        if (i > 0)
+        {
+          int pasos = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(nuevosPuntos[i - 1], nuevosPuntos[i]) / 8f));
+          for (int paso = 1; paso < pasos; paso++)
+          {
+            puntos.Add(Vector2.Lerp(nuevosPuntos[i - 1], nuevosPuntos[i], (float)paso / pasos));
+          }
+        }
         puntos.Add(nuevosPuntos[i]);
       }
     }
@@ -498,7 +505,7 @@ public sealed class ScoutExplorationRouteGraphic : MaskableGraphic
 
     float distanciaVisible = distanciaTotal * progreso;
     float acumulada = 0f;
-    const float semigrosor = 1.2f;
+    const float semigrosor = 2.4f;
 
     for (int i = 1; i < puntos.Count; i++)
     {
@@ -521,19 +528,39 @@ public sealed class ScoutExplorationRouteGraphic : MaskableGraphic
       }
 
       Vector2 direccion = (p1 - p0).normalized;
-      Vector2 normal = new Vector2(-direccion.y, direccion.x) * semigrosor;
-      AgregarQuad(vh, p0 - normal, p0 + normal, p1 + normal, p1 - normal, color);
+      Vector2 perpendicular = new Vector2(-direccion.y, direccion.x);
+      float finalTramo = Mathf.Min(acumulada + tramo, distanciaVisible);
+      float desvanecido = Mathf.Min(28f, distanciaVisible * 0.35f);
+      float alphaInicio = Mathf.SmoothStep(0f, 1f, acumulada / desvanecido)
+        * Mathf.SmoothStep(0f, 1f, (distanciaVisible - acumulada) / desvanecido);
+      float alphaFinal = Mathf.SmoothStep(0f, 1f, finalTramo / desvanecido)
+        * Mathf.SmoothStep(0f, 1f, (distanciaVisible - finalTramo) / desvanecido);
+
+      // Halo tenue, cuerpo y nucleo: una sola estela continua, sin marcadores.
+      for (int capa = 0; capa < 3; capa++)
+      {
+        float ancho = capa == 0 ? semigrosor * 2.4f : capa == 1 ? semigrosor : 0.8f;
+        float opacidad = capa == 0 ? 0.09f : capa == 1 ? 0.38f : 0.85f;
+        Color tono = capa == 2 ? Color.Lerp(color, new Color(0.82f, 0.88f, 0.79f, color.a), 0.45f) : color;
+        Color inicio = tono;
+        Color fin = tono;
+        inicio.a = color.a * opacidad * alphaInicio;
+        fin.a = color.a * opacidad * alphaFinal;
+        Vector2 normal = perpendicular * ancho;
+        AgregarQuad(vh, p0 - normal, p0 + normal, p1 + normal, p1 - normal, inicio, fin);
+      }
       acumulada += tramo;
     }
   }
 
-  static void AgregarQuad(VertexHelper vh, Vector2 a, Vector2 b, Vector2 c, Vector2 d, Color color)
+  static void AgregarQuad(VertexHelper vh, Vector2 a, Vector2 b, Vector2 c, Vector2 d, Color color, Color colorFinal)
   {
     int baseVertice = vh.currentVertCount;
     UIVertex vertice = UIVertex.simpleVert;
     vertice.color = color;
     vertice.position = a; vh.AddVert(vertice);
     vertice.position = b; vh.AddVert(vertice);
+    vertice.color = colorFinal;
     vertice.position = c; vh.AddVert(vertice);
     vertice.position = d; vh.AddVert(vertice);
     vh.AddTriangle(baseVertice, baseVertice + 1, baseVertice + 2);

@@ -843,7 +843,10 @@ public class Personaje : MonoBehaviour
       {
         case 2:
           OtorgarVidaExtraPorDivisor(10f);
-          NivelPuntoHabilidad++;
+          if (CampaignManager.Instance == null || !CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+          {
+            NivelPuntoHabilidad++;
+          }
           NivelPuntoAtributo++;
           break;
         case 3:

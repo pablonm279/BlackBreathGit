@@ -7408,6 +7408,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       scTutorialManager.establecerPasoEspecifico(3);
     }
 
+    if (DebeUsarConfiguracionTutorial())
+    {
+      return 0;
+    }
+
     int modEmboscadaViajeActual = estadosCaravana != null ? estadosCaravana.ObtenerModificadorEmboscadaDuranteViajeActual() : 0;
     int randomEmboscada = UnityEngine.Random.Range(1, 101);
 
@@ -7428,11 +7433,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       chancesemboscada -= 100;
     }
-    if (DebeUsarConfiguracionTutorial())
-    {
-      chancesemboscada = 0;
-    }
-
     int chanceEmboscadaNormalizada = Mathf.Clamp(chancesemboscada, 0, 100);
     int chanceEmboscadaEnemiga = ReducirFrecuenciaEmboscada(chanceEmboscadaNormalizada);
     int chanceEmboscadaAliada = ReducirFrecuenciaEmboscada(Mathf.Max(0, 51 - chanceEmboscadaNormalizada));
@@ -13368,7 +13368,16 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
 
 
-    SortearRasgos(pers1); //Método vacío!!
+    if (configuracionTutorial)
+    {
+      pers1.LimpiarRasgos();
+      pers1.AgregarRasgo(PersonajeTraitCatalog.TraitRudioso);
+      pers1.AgregarRasgo(PersonajeTraitCatalog.TraitOptimista);
+    }
+    else
+    {
+      SortearRasgos(pers1);
+    }
 
 
 
