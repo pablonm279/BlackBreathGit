@@ -1038,7 +1038,8 @@ public class Unidad : MonoBehaviour
 
     if (goSANGRE != null)
     {
-      Instantiate(goSANGRE, puntoEntrante.position, Quaternion.identity);
+      var sangre = Instantiate(goSANGRE, puntoEntrante.position, Quaternion.identity);
+      CampoVivoBatalla.AjustarSangre(sangre);
     }
   }
 
@@ -1186,6 +1187,7 @@ public class Unidad : MonoBehaviour
 
   public void ReproducirAnimacionMorir()
   {
+    if (poseController != null) poseController.DetenerAnimacionIlustrada();
     if(animator != null)
     {
         animator.SetTrigger( "Trigger_Morir");

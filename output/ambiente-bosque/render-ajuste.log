@@ -1,0 +1,398 @@
+Assertion failed on expression: 'SUCCEEDED(hr)'
+Assertion failed on expression: 'SUCCEEDED(hr)'
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.3/staging' branch; Version is '6000.3.20f1 (c9ba695d4f07) revision 13220457'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Pablo" at "2026-09-09T17:16:05.043426Z"
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'es' Physical Memory: 32717 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-09-09T17:16:05Z
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Unity.exe
+-batchmode
+-projectPath
+C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+-executeMethod
+BosqueRender.Run
+-quit
+-logFile
+C:/UnityProyectosNOborrar/GDD - Untitled/output/ambiente-bosque/render-ajuste.log
+Successfully changed project path to: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+Player connection [30664]  Target information:
+
+Player connection [30664]  * "[IP] 192.168.100.6 [Port] 55505 [Flags] 2 [Guid] 532465545 [EditorId] 532465545 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-IAS7GE8) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [30664]  * "[IP] 192.168.193.7 [Port] 55505 [Flags] 2 [Guid] 532465545 [EditorId] 532465545 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-IAS7GE8) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [30664] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [30664] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 20652, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              9e4f1f4d52c04621b5f864801b084550
+  Correlation Id:          8b06f6eeb886d2764bcd03c118c25fa5
+  External correlation Id: 5582061893080920416
+  Machine Id:              s2vqK+FirQPpy6L4elJAoHlXiTM=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-Pablo" (connect: 0.00s, validation: 0.00s, handshake: 0.06s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Pablo-notifications" at "2026-09-09T17:16:05.1051942Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-AUGU-9VX5-WU58-JJSY-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.09s
+[Package Manager] Connected to IPC stream "Upm-10408" after 0.3 seconds.
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Artifact Garbage Collection - Removed 2 unused hashed content files
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.3.20f1 (c9ba695d4f07)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 2060 (ID=0x1f08)
+    Vendor:   NVIDIA
+    VRAM:     5954 MB
+    Driver:   32.0.15.9579
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56408
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.004783 seconds.
+- Loaded All Assemblies, in  0.701 seconds
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.654 seconds
+Domain Reload Profiling: 1347ms
+	BeginReloadAssembly (243ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (6ms)
+	RebuildCommonClasses (60ms)
+	RebuildNativeTypeToScriptingClass (24ms)
+	initialDomainReloadingComplete (92ms)
+	LoadAllAssembliesAndSetupDomain (274ms)
+		LoadAssemblies (227ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (269ms)
+			TypeCache.Refresh (267ms)
+				TypeCache.ScanAssembly (248ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (1ms)
+	FinalizeReload (655ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (595ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (74ms)
+			SetLoadedEditorAssemblies (7ms)
+			BeforeProcessingInitializeOnLoad (150ms)
+			ProcessInitializeOnLoadAttributes (224ms)
+			ProcessInitializeOnLoadMethodAttributes (139ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 7 packages:
+  Built-in packages:
+    com.unity.modules.particlesystem@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.audio@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.ui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.imgui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imgui)
+  Embedded packages:
+    com.unity.ugui@file:C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.01 seconds
+[Package Manager] Done resolving packages in 0.53 seconds
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 7 packages:
+  Built-in packages:
+    com.unity.modules.particlesystem@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.audio@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.ui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.imgui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imgui)
+  Embedded packages:
+    com.unity.ugui@file:C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.00 seconds
+[ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+DisplayProgressbar: Compiling Scripts
+ExitCode: 4 Duration: 0s430ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+*** Tundra requires additional run (0.38 seconds), 1 items updated, 202 evaluated
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+ExitCode: 0 Duration: 0s393ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+ExitCode: 0 Duration: 0s695ms
+Finished compiling graph: 212 nodes, 1552 flattened edges (1458 ToBuild, 16 ToUse), maximum node priority 108
+[171/209    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp
+[203/209    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+Assets\MapDecorator.cs(916,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\MapDecorator.cs(933,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\MapDecorator.cs(1003,21): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+[204/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
+[205/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
+[206/209    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+[207/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[208/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (0.66 seconds), 7 items updated, 209 evaluated
+Assets\MapDecorator.cs(916,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\MapDecorator.cs(933,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\MapDecorator.cs(1003,21): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+AssetDatabase: script compilation time: 2.036113s
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  0.773 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.692 seconds
+Domain Reload Profiling: 1458ms
+	BeginReloadAssembly (459ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (84ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (154ms)
+	RebuildCommonClasses (55ms)
+	RebuildNativeTypeToScriptingClass (21ms)
+	initialDomainReloadingComplete (37ms)
+	LoadAllAssembliesAndSetupDomain (194ms)
+		LoadAssemblies (327ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (21ms)
+			TypeCache.Refresh (12ms)
+				TypeCache.ScanAssembly (7ms)
+			BuildScriptInfoCaches (4ms)
+			ResolveRequiredComponents (3ms)
+	FinalizeReload (693ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (474ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (52ms)
+			SetLoadedEditorAssemblies (4ms)
+			BeforeProcessingInitializeOnLoad (184ms)
+			ProcessInitializeOnLoadAttributes (163ms)
+			ProcessInitializeOnLoadMethodAttributes (57ms)
+			AfterProcessingInitializeOnLoad (14ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (34ms)
+Start importing Assets/Resources/ObjetosMapa/BosqueArdiente - Arbol1.prefab using Guid(15c3aae601260c5478403fa8ebe744fc) (PrefabImporter) -> (artifact id: 'f4f62638f3b21f709ff56a77335ca028') in 0.0295407 seconds
+Start importing Assets/Resources/ObjetosMapa/Llama1GO.prefab using Guid(5936c3c4460b4884fbca8b6ae125221a) (PrefabImporter) -> (artifact id: '0b6464657ede2e30d05ba8f828662067') in 0.0492863 seconds
+Start importing Assets/Resources/ObjetosMapa/LlamaEspectral.prefab using Guid(79aa5586b41c2134cbd9880261f75f2e) (PrefabImporter) -> (artifact id: '4871e7da91b1589877eae75aa5c6d06a') in 0.0289128 seconds
+Start importing Assets/Resources/ObjetosMapa/BosqueArdiente - Piedra1.prefab using Guid(6b151a79da062f845ac67b229ff2560d) (PrefabImporter) -> (artifact id: '1ba7388ad7a99b4dbfabed1497e3192c') in 0.008424 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=cc86d5be7146d114f8889f9d9b2ec612): Total: 4.547 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	Summary:
+		Imports: total=4 (actual=4, local cache=0, cache server=0)
+		Asset DB Process Time: managed=4 ms, native=1072 ms
+		Asset DB Callback time: managed=78 ms, native=558 ms
+		Scripting: domain reloads=1, domain reload time=773 ms, compile time=2039 ms, other=19 ms
+		Project Asset Count: scripts=80, non-scripts=67
+		Asset File Changes: new=2, changed=4, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokeCustomDependenciesCallbacks: 0.002ms
+	InvokePackagesCallback: 559.701ms
+	ApplyChangesToAssetFolders: 0.655ms
+	Scan: 53.654ms
+	OnSourceAssetsModified: 1.183ms
+	CategorizeAssetsWithTransientArtifact: 1.359ms
+	ProcessAssetsWithTransientArtifactChanges: 7.492ms
+	CategorizeAssets: 1.113ms
+	ImportOutOfDateAssets: 856.596ms (-1344.509ms without children)
+		ImportManagerImport: 161.945ms (44.079ms without children)
+			ImportInProcess: 117.815ms
+			UpdateCategorizedAssets: 0.051ms
+		CompileScripts: 2038.703ms
+		ReloadNativeAssets: 0.001ms
+		UnloadImportedAssets: 0.135ms
+		ReloadImportedAssets: 0.001ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.026ms
+		InitializingProgressBar: 0.007ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
+		OnDemandSchedulerStart: 0.286ms
+	PostProcessAllAssets: 80.384ms
+	Hotreload: 1.264ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.005ms
+	UnloadStreamsBegin: 2.514ms
+	PersistCurrentRevisions: 0.076ms
+	UnloadStreamsEnd: 0.001ms
+	GenerateScriptTypeHashes: 0.197ms
+	Untracked: 2980.975ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Scanning for USB devices : 8.837ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-The Black Breath
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 266 unused Assets / (0.5 MB). Loaded Objects now: 899.
+Memory consumption went from 91.2 MB to 90.7 MB.
+Total: 6.483200 ms (FindLiveObjects: 0.091700 ms CreateObjectMapping: 0.015700 ms MarkObjects: 6.040300 ms  DeleteObjects: 0.334100 ms)
+
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 0 unused Assets / (Unknown). Loaded Objects now: 899.
+Memory consumption went from 90.5 MB to 90.5 MB.
+Total: 8.336900 ms (FindLiveObjects: 0.069800 ms CreateObjectMapping: 0.009100 ms MarkObjects: 8.251500 ms  DeleteObjects: 0.005500 ms)
+
+OK Shader BosqueArdienteSuelo
+OK Shader BosqueArdienteAmbiente
+OK Incendios lejanos generados: 8
+OK Incendio a mas de 7 m del nodo
+OK Distancia a caminos visibles y ocultos
+OK Sector sur protegido
+OK Incendio alto
+OK Variantes grandes no consumen RNG en Start
+OK Particulas realmente mas altas
+OK Incendio a mas de 7 m del nodo
+OK Distancia a caminos visibles y ocultos
+OK Sector sur protegido
+OK Incendio alto
+OK Variantes grandes no consumen RNG en Start
+OK Particulas realmente mas altas
+OK Incendio a mas de 7 m del nodo
+OK Distancia a caminos visibles y ocultos
+OK Sector sur protegido
+OK Incendio alto
+OK Variantes grandes no consumen RNG en Start
+OK Particulas realmente mas altas
+OK Incendio a mas de 7 m del nodo
+OK Distancia a caminos visibles y ocultos
+OK Sector sur protegido
+OK Incendio alto
+OK Variantes grandes no consumen RNG en Start
+OK Particulas realmente mas altas
+OK Incendio a mas de 7 m del nodo
+OK Distancia a caminos visibles y ocultos
+OK Sector sur protegido
+OK Incendio alto
+OK Variantes grandes no consumen RNG en Start
+OK Particulas realmente mas altas
+OK Incendio a mas de 7 m del nodo
+OK Distancia a caminos visibles y ocultos
+OK Sector sur protegido
+OK Incendio alto
+OK Variantes grandes no consumen RNG en Start
+OK Particulas realmente mas altas
+OK Incendio a mas de 7 m del nodo
+OK Distancia a caminos visibles y ocultos
+OK Sector sur protegido
+OK Incendio alto
+OK Variantes grandes no consumen RNG en Start
+OK Particulas realmente mas altas
+OK Incendio a mas de 7 m del nodo
+OK Distancia a caminos visibles y ocultos
+OK Sector sur protegido
+OK Incendio alto
+OK Variantes grandes no consumen RNG en Start
+OK Particulas realmente mas altas
+OK Ambiente creado
+OK RNG de juego intacto al preparar
+OK Material original sin mutacion
+OK Llamas incluidas: Decorador generado (70)
+OK Llamas incluidas: Bosque inicial (11)
+OK Preparar dos veces no duplica
+OK RNG de juego intacto al animar
+OK Posiciones iniciales y generadas intactas
+OK Reloj respeta dt cero
+OK Ambiente limpio al salir de campaña
+Assertion failed on expression: 'SUCCEEDED(hr)'
+Assertion failed on expression: 'SUCCEEDED(hr)'
+Batchmode quit successfully invoked - shutting down!
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-Pablo-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-Pablo channel disconnected successfully.
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+Exiting batchmode successfully now!
+Exiting without the bug reporter. Application will terminate with return code 0

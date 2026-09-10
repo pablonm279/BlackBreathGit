@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -33,6 +33,8 @@ public class BattleManager : MonoBehaviour
   private Image imagenFantasmaPreviewHoverHostil;
   private Canvas canvasFantasmaPreviewHoverHostil;
   private readonly Dictionary<Casilla, EstadoVisualCasillaPreview> estadosAmenazaMeleeIA = new Dictionary<Casilla, EstadoVisualCasillaPreview>();
+  private readonly HashSet<Casilla> casillasRojasAmenazaMeleeIA = new HashSet<Casilla>();
+  private readonly HashSet<Casilla> casillasNegrasAmenazaMeleeIA = new HashSet<Casilla>();
   private readonly Dictionary<Renderer, MaterialPropertyBlock> propiedadesVisualesAmenazaMeleeIA = new Dictionary<Renderer, MaterialPropertyBlock>();
   private readonly Dictionary<GameObject, bool> estadosVisualesMovimientoAmenazaMeleeIA = new Dictionary<GameObject, bool>();
   private readonly Dictionary<Transform, EstadoTransformAmenazaMeleeIA> transformsFlechasAmenazaMeleeIA = new Dictionary<Transform, EstadoTransformAmenazaMeleeIA>();
@@ -4578,6 +4580,7 @@ public class BattleManager : MonoBehaviour
   private bool retornoTiltCamaraIntegradoEnCurso;
   private Camera componenteCamaraBatalla;
   private Oscilacioncamara oscilacionCamaraBatalla;
+  private BattleWheelPerspective perspectivaRuedaBatalla;
   private Vector3 posicionOrigenFocoCamara;
   private float fovOrigenFocoCamara;
   private bool focoCamaraInicializado;
@@ -4740,7 +4743,8 @@ public class BattleManager : MonoBehaviour
     float limiteVertical = focoCamaraDesplazamientoVerticalMax * intensidad;
     offsetObjetivo.y = Mathf.Clamp(offsetObjetivo.y, -limiteVertical, limiteVertical);
     float fovDeltaAjustado = focoCamaraFovDelta - (distanciaYFoco * focoCamaraFovDeltaPorDistanciaY);
-    float fovObjetivo = Mathf.Clamp(fovOrigenFocoCamara + (fovDeltaAjustado * intensidad * 1.15f), 25f, 80f);
+    float multiplicadorZoomPorAlcance = esMelee ? 0.9f : 0.68f;
+    float fovObjetivo = Mathf.Clamp(fovOrigenFocoCamara + (fovDeltaAjustado * intensidad * 1.15f * 2.028f * 0.81f * multiplicadorZoomPorAlcance), 25f, 80f);
     Quaternion rotacionObjetivo = CalcularRotacionFocoHabilidad(objetivos);
 
     if (corrutinaTiltCamara != null)
@@ -4834,6 +4838,9 @@ public class BattleManager : MonoBehaviour
 
     componenteCamaraBatalla = goCamara.GetComponent<Camera>();
     oscilacionCamaraBatalla = goCamara.GetComponent<Oscilacioncamara>();
+    perspectivaRuedaBatalla = goCamara.transform.parent != null
+      ? goCamara.transform.parent.GetComponent<BattleWheelPerspective>()
+      : null;
     posicionOrigenFocoCamara = oscilacionCamaraBatalla != null ? oscilacionCamaraBatalla.PosicionBase : goCamara.transform.position;
     fovOrigenFocoCamara = componenteCamaraBatalla != null ? componenteCamaraBatalla.fieldOfView : 52f;
     rotacionObjetivoFocoCamaraLocal = rotacionOrigenCamaraLocal;
@@ -5130,6 +5137,11 @@ public class BattleManager : MonoBehaviour
     Vector3 offsetInicial = ObtenerOffsetFocoCamaraActual();
     float fovInicial = componenteCamaraBatalla != null ? componenteCamaraBatalla.fieldOfView : fovObjetivo;
     Quaternion rotacionInicial = goCamara != null ? goCamara.transform.localRotation : Quaternion.identity;
+    float perspectivaInicial = perspectivaRuedaBatalla != null ? perspectivaRuedaBatalla.FocoHabilidad : 0f;
+    bool vuelveAlOrigen = offsetObjetivo == Vector3.zero
+      && componenteCamaraBatalla != null
+      && Mathf.Abs(fovObjetivo - fovOrigenFocoCamara) <= 0.01f;
+    float perspectivaObjetivo = vuelveAlOrigen ? 0f : 1f;
     float elapsedTime = 0f;
     duracion = Mathf.Max(0.01f, duracion);
 
@@ -5150,6 +5162,10 @@ public class BattleManager : MonoBehaviour
       {
         goCamara.transform.localRotation = Quaternion.Slerp(rotacionInicial, rotacionObjetivo, t);
       }
+      if (perspectivaRuedaBatalla != null)
+      {
+        perspectivaRuedaBatalla.SetFocoHabilidad(Mathf.Lerp(perspectivaInicial, perspectivaObjetivo, t));
+      }
 
       elapsedTime += Time.deltaTime;
       yield return null;
@@ -5169,12 +5185,16 @@ public class BattleManager : MonoBehaviour
     {
       goCamara.transform.localRotation = rotacionObjetivo;
     }
+    if (perspectivaRuedaBatalla != null)
+    {
+      perspectivaRuedaBatalla.SetFocoHabilidad(perspectivaObjetivo);
+    }
     if (integrarRetornoTilt)
     {
       retornoTiltCamaraIntegradoEnCurso = false;
     }
 
-    if (offsetObjetivo == Vector3.zero && componenteCamaraBatalla != null && Mathf.Abs(fovObjetivo - fovOrigenFocoCamara) <= 0.01f)
+    if (vuelveAlOrigen)
     {
       retornoFocoCamaraEnCurso = false;
     }
@@ -6909,9 +6929,11 @@ public class BattleManager : MonoBehaviour
   {
     Unidad unidadPreview = ObtenerUnidadAmenazaMeleeIAObjetivo();
     Casilla origenPreview = unidadPreview != null ? unidadPreview.CasillaPosicion : null;
+    bool esTurnoJugador = unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null;
     if (unidadPreview == unidadAmenazaMeleeIA && origenPreview == origenAmenazaMeleeIA)
     {
-      if (estadosVisualesMovimientoAmenazaMeleeIA.Count > 0)
+      ReaplicarCapasAmenazaMeleeIA();
+      if (!esTurnoJugador && estadosVisualesMovimientoAmenazaMeleeIA.Count > 0)
       {
         OcultarVisualesMovimientoDuranteAmenazaMeleeIA();
       }
@@ -6928,7 +6950,6 @@ public class BattleManager : MonoBehaviour
     HashSet<Casilla> casillasRojasRango = new HashSet<Casilla>();
     HashSet<Casilla> casillasNegras = new HashSet<Casilla>();
     IAUnidad iaUnidadPreview = unidadPreview.GetComponent<IAUnidad>();
-    bool esTurnoJugador = unidadActiva.GetComponent<IAUnidad>() == null;
     bool mostrarRangoEnHover = esTurnoJugador && iaUnidadPreview != null;
     foreach (IAHabilidad habilidad in unidadPreview.GetComponents<IAHabilidad>())
     {
@@ -6980,12 +7001,16 @@ public class BattleManager : MonoBehaviour
       return;
     }
 
-    OcultarVisualesMovimientoDuranteAmenazaMeleeIA();
+    if (!esTurnoJugador)
+    {
+      OcultarVisualesMovimientoDuranteAmenazaMeleeIA();
+    }
     casillasNegras.ExceptWith(casillasRojas);
 
     foreach (Casilla casilla in casillasNegras)
     {
       GuardarEstadoAmenazaMeleeIA(casilla);
+      casillasNegrasAmenazaMeleeIA.Add(casilla);
       casilla.ActivarCapaColorNegro();
       AtenuarRenderersAmenazaMeleeIA(casilla.MarcaMeleeAtraviesa);
       ConfigurarFlechaAmenazaMeleeIA(casilla.MarcaMeleeAtraviesa);
@@ -6994,6 +7019,7 @@ public class BattleManager : MonoBehaviour
     foreach (Casilla casilla in casillasRojas)
     {
       GuardarEstadoAmenazaMeleeIA(casilla);
+      casillasRojasAmenazaMeleeIA.Add(casilla);
       casilla.ActivarCapaColorRojo();
       GameObject capaRoja = casilla.transform.childCount > 1
         ? casilla.transform.GetChild(1).gameObject
@@ -7096,6 +7122,19 @@ public class BattleManager : MonoBehaviour
       meshRendererActivo = meshRenderer == null || meshRenderer.enabled,
       marcaMeleeAtraviesaActiva = casilla.MarcaMeleeAtraviesa != null && casilla.MarcaMeleeAtraviesa.activeSelf
     });
+  }
+
+  private void ReaplicarCapasAmenazaMeleeIA()
+  {
+    foreach (Casilla casilla in casillasNegrasAmenazaMeleeIA)
+    {
+      casilla?.ActivarCapaColorNegro();
+    }
+
+    foreach (Casilla casilla in casillasRojasAmenazaMeleeIA)
+    {
+      casilla?.ActivarCapaColorRojo();
+    }
   }
 
   private void AtenuarRenderersAmenazaMeleeIA(GameObject visual, bool esPreviewRango = false)
@@ -7250,6 +7289,8 @@ public class BattleManager : MonoBehaviour
     }
 
     estadosAmenazaMeleeIA.Clear();
+    casillasRojasAmenazaMeleeIA.Clear();
+    casillasNegrasAmenazaMeleeIA.Clear();
     unidadAmenazaMeleeIA = null;
     origenAmenazaMeleeIA = null;
   }

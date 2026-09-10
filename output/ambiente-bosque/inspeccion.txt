@@ -1,0 +1,3 @@
+Play: False
+Camara: UIcamera activa=True pos=(0.00, 1.00, -10.00) rot=(0.00, 0.00, 0.00) fov=110,6 mask=32
+Camara: Main Camera activa=True pos=(0.00, 1.00, -10.00) rot=(0.00, 0.00, 0.00) fov=110,6 mask=32727

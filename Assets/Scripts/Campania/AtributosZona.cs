@@ -850,21 +850,21 @@ public class AtributosZona : MonoBehaviour
       // Async sin congelar: replicamos las llamadas Generar pero con yield
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_ArbolQuemado1,
-         cantidad: 2650,
+         cantidad: 2850,
          sector: 0,  //EN QUE SECTOR SE GENERA - 0 es en todos MENOS sectorno: x.
          sectorno: 3,//por ejemplo no se generarian en el sector TerrenoSur(3)
          distCaminoOverride: 0.11f,
          distNodoOverride: 0.13f,
-         rOverride: 0.535f,
+         rOverride: 0.515f,
          kOverride: 20);
          
        yield return scMapDecorator.GenerarAsyncCR(
         BosqueAngustiante_ArbolQuemado1,
-        cantidad: 690,
+        cantidad: 890,
         sector: 0,
         sectorno: 3,
         distCaminoOverride: 0.16f,
-        distNodoOverride: 0.14f,
+        distNodoOverride: 0.13f,
         rOverride: 1.25f,
         kOverride: 20);
         
@@ -941,20 +941,22 @@ public class AtributosZona : MonoBehaviour
          kOverride: 20);
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_Llama,
-         cantidad: 14,
+         cantidad: 18,
          sector: 2,
-         distCaminoOverride: 0.74f,
-          distNodoOverride: 0.80f,
-          rOverride: 5.8f,
+         distCaminoOverride: 0.71f,
+          distNodoOverride: 0.74f,
+          rOverride: 5.1f,
           kOverride: 20);
       yield return scMapDecorator.GenerarAsyncCR(
          BosqueAngustiante_LlamaEspectral,
-         cantidad: 5,
+         cantidad: 3,
          sector: 2,
          distCaminoOverride: 0.74f,
           distNodoOverride: 0.80f,
-          rOverride: 7.43f,
+          rOverride: 7.33f,
           kOverride: 20);
+
+      AmbienteBosqueArdiente.Preparar(this, usarTexturaProceduralBosqueAngustiante);
 
       if (admin != null)
       {

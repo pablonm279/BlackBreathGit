@@ -1,0 +1,1 @@
+16 comprobaciones OK sobre EvaluarFrame/ResolverReposo extraidos del fuente actual; dobles de Sprite/controlador, sin Play Mode.

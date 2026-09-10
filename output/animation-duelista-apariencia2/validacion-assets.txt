@@ -1,0 +1,4 @@
+reposo: PNG RGBA valido, margen y referencia conservados
+anticipacion: PNG RGBA valido, margen y referencia conservados
+impacto: PNG RGBA valido, margen y referencia conservados
+Cinco perfiles sin colisiones: CaballeroApariencia1.asset, CaballeroApariencia2.asset, DriadaQuemada.asset, DuelistaApariencia1.asset, DuelistaApariencia2.asset

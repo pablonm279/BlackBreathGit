@@ -1,0 +1,1357 @@
+Built from '6000.3/staging' branch; Version is '6000.3.20f1 (c9ba695d4f07) revision 13220457'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::Module] Trying to connect to existing licensing client channel...
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'es' Physical Memory: 32717 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Pablo" at "2026-09-09T19:39:33.5296994Z"
+System  architecture: x64
+Process architecture: x64
+Date: 2026-09-09T19:39:33Z
+Assertion failed on expression: 'SUCCEEDED(hr)'
+Assertion failed on expression: 'SUCCEEDED(hr)'
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Unity.exe
+-batchmode
+-projectPath
+C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+-executeMethod
+BosqueTerrenoRender.Run
+-quit
+-logFile
+C:/UnityProyectosNOborrar/GDD - Untitled/output/ambiente-bosque/render-terreno-calidad.log
+Successfully changed project path to: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+Player connection [34160]  Target information:
+
+Player connection [34160]  * "[IP] 192.168.100.6 [Port] 55505 [Flags] 2 [Guid] 2866702167 [EditorId] 2866702167 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-IAS7GE8) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [34160]  * "[IP] 192.168.193.7 [Port] 55505 [Flags] 2 [Guid] 2866702167 [EditorId] 2866702167 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-IAS7GE8) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 20652, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+Player connection [34160] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [34160] Host joined alternative multi-casting on [225.0.0.222:34997]...
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              0b13c671c88c4fb69ce7aef5a7340792
+  Correlation Id:          8b06f6eeb886d2764bcd03c118c25fa5
+  External correlation Id: 5386611088670190347
+  Machine Id:              s2vqK+FirQPpy6L4elJAoHlXiTM=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-Pablo" (connect: 0.00s, validation: 0.00s, handshake: 0.06s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Pablo-notifications" at "2026-09-09T19:39:33.5894732Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-AUGU-9VX5-WU58-JJSY-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: Unlimited
+Input System module state changed to: Initialized.
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.07s
+[Package Manager] Connected to IPC stream "Upm-37640" after 0.4 seconds.
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.3.20f1 (c9ba695d4f07)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 2060 (ID=0x1f08)
+    Vendor:   NVIDIA
+    VRAM:     5954 MB
+    Driver:   32.0.15.9579
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56640
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.004584 seconds.
+- Loaded All Assemblies, in  0.620 seconds
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.609 seconds
+Domain Reload Profiling: 1222ms
+	BeginReloadAssembly (211ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (8ms)
+	RebuildCommonClasses (57ms)
+	RebuildNativeTypeToScriptingClass (20ms)
+	initialDomainReloadingComplete (80ms)
+	LoadAllAssembliesAndSetupDomain (244ms)
+		LoadAssemblies (196ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (240ms)
+			TypeCache.Refresh (238ms)
+				TypeCache.ScanAssembly (220ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (1ms)
+	FinalizeReload (609ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (556ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (77ms)
+			SetLoadedEditorAssemblies (5ms)
+			BeforeProcessingInitializeOnLoad (123ms)
+			ProcessInitializeOnLoadAttributes (219ms)
+			ProcessInitializeOnLoadMethodAttributes (132ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 7 packages:
+  Built-in packages:
+    com.unity.modules.particlesystem@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.audio@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.ui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.imgui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imgui)
+  Embedded packages:
+    com.unity.ugui@file:C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.01 seconds
+[Package Manager] Done resolving packages in 0.48 seconds
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 7 packages:
+  Built-in packages:
+    com.unity.modules.particlesystem@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.audio@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.ui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.imgui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imgui)
+  Embedded packages:
+    com.unity.ugui@file:C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.00 seconds
+[ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+DisplayProgressbar: Compiling Scripts
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+ExitCode: 4 Duration: 2s114ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+[203/209    2s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+Assets\MapDecorator.cs(916,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\MapDecorator.cs(933,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\MapDecorator.cs(1003,21): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+*** Tundra requires additional run (2.06 seconds), 1 items updated, 202 evaluated
+ExitCode: 0 Duration: 0s600ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+ExitCode: 0 Duration: 0s582ms
+Finished compiling graph: 212 nodes, 1552 flattened edges (1458 ToBuild, 16 ToUse), maximum node priority 108
+[171/209    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.rsp
+[206/209    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+[207/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[208/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (0.55 seconds), 4 items updated, 209 evaluated
+AssetDatabase: script compilation time: 3.801076s
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  0.658 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.719 seconds
+Domain Reload Profiling: 1370ms
+	BeginReloadAssembly (433ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (35ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (153ms)
+	RebuildCommonClasses (58ms)
+	RebuildNativeTypeToScriptingClass (21ms)
+	initialDomainReloadingComplete (37ms)
+	LoadAllAssembliesAndSetupDomain (101ms)
+		LoadAssemblies (245ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (22ms)
+			TypeCache.Refresh (12ms)
+				TypeCache.ScanAssembly (7ms)
+			BuildScriptInfoCaches (4ms)
+			ResolveRequiredComponents (3ms)
+	FinalizeReload (720ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (498ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (37ms)
+			SetLoadedEditorAssemblies (5ms)
+			BeforeProcessingInitializeOnLoad (191ms)
+			ProcessInitializeOnLoadAttributes (182ms)
+			ProcessInitializeOnLoadMethodAttributes (66ms)
+			AfterProcessingInitializeOnLoad (17ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (37ms)
+Start importing Assets/Resources/BosqueArdienteSuelo.shader using Guid(35f74afedbdde4c409768d524d2979c9) (ShaderImporter)Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+ -> (artifact id: '9b5c5a44e55e4fe6c3da961b2c7a2868') in 2.3889762 seconds
+Start importing Assets/Resources/BosqueSueloAntes.shader using Guid(7b2a5201e4c8ce142b77d78d6b29c00e) (ShaderImporter) -> (artifact id: '3d6877cc99b024cffaa2cb3620a7399b') in 1.7401322 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=b12a34261569c5e469974f2babf9b177): Total: 10.183 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	Summary:
+		Imports: total=2 (actual=2, local cache=0, cache server=0)
+		Asset DB Process Time: managed=4 ms, native=5047 ms
+		Asset DB Callback time: managed=96 ms, native=551 ms
+		Scripting: domain reloads=1, domain reload time=658 ms, compile time=3804 ms, other=19 ms
+		Project Asset Count: scripts=80, non-scripts=70
+		Asset File Changes: new=2, changed=3, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokeCustomDependenciesCallbacks: 0.002ms
+	InvokePackagesCallback: 504.489ms
+	ApplyChangesToAssetFolders: 0.835ms
+	Scan: 55.900ms
+	OnSourceAssetsModified: 2.480ms
+	CategorizeAssetsWithTransientArtifact: 1.236ms
+	ProcessAssetsWithTransientArtifactChanges: 9.056ms
+	CategorizeAssets: 2.165ms
+	ImportOutOfDateAssets: 4861.488ms (-3090.411ms without children)
+		ImportManagerImport: 4139.017ms (9.183ms without children)
+			ImportInProcess: 4129.789ms
+			UpdateCategorizedAssets: 0.045ms
+		CompileScripts: 3804.453ms
+		ReloadNativeAssets: 0.001ms
+		UnloadImportedAssets: 0.733ms
+		ReloadImportedAssets: 7.436ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.042ms
+		InitializingProgressBar: 0.041ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
+		OnDemandSchedulerStart: 0.176ms
+	PostProcessAllAssets: 144.461ms
+	Hotreload: 1.396ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.006ms
+	UnloadStreamsBegin: 2.469ms
+	PersistCurrentRevisions: 0.057ms
+	UnloadStreamsEnd: 0.001ms
+	GenerateScriptTypeHashes: 0.681ms
+	Untracked: 4596.633ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Scanning for USB devices : 7.525ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-The Black Breath
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 268 unused Assets / (0.5 MB). Loaded Objects now: 902.
+Memory consumption went from 94.0 MB to 93.5 MB.
+Total: 6.722300 ms (FindLiveObjects: 0.086600 ms CreateObjectMapping: 0.017200 ms MarkObjects: 6.279700 ms  DeleteObjects: 0.337300 ms)
+
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 0 unused Assets / (0 B). Loaded Objects now: 902.
+Memory consumption went from 93.3 MB to 93.3 MB.
+Total: 6.078100 ms (FindLiveObjects: 0.077800 ms CreateObjectMapping: 0.009500 ms MarkObjects: 5.984700 ms  DeleteObjects: 0.004900 ms)
+
+Start importing Assets/ES-CampañaPrueba.unity using Guid(a81815f1c09fd5e40a5d1733007b5819) (DefaultImporter) -> (artifact id: 'a8b9b8880581d4d24c1166708b789f98') in 0.0014025 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=4e0044d1c1351904489f0419a7aa64d6): Total: 0.034 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[MapDecorator] Este GameObject deberáa estar en escala (1,1,1) para no heredar escalas raras.
+OK Shader BosqueArdienteSuelo
+OK Shader BosqueArdienteAmbiente
+OK Shader BosqueArdienteLlamas
+OK Ambiente creado
+OK RNG de juego intacto al preparar
+OK Suelo mejorado conservado
+OK Solo cambia el material: emisores, humo, posiciones y LOD intactos
+OK Materiales fuente sin modificar
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Llamas refinadas: Decorador generado
+OK Llamas refinadas: Bosque inicial
+OK Sin incendios grandes del rework
+OK Brasas, ceniza y humo ambiental conservados
+OK Preparar dos veces no duplica
+OK Reaplicar tampoco modifica emisores
+OK RNG de juego intacto al animar
+OK Posiciones originales intactas
+OK Sombreado original conservado: error 0,000 % en 11216 pixeles de fuego
+OK Reloj respeta dt cero
+OK Ambiente limpio al salir de campaña
+Comparacion terreno antes/despues completada.
+Assertion failed on expression: 'SUCCEEDED(hr)'
+Assertion failed on expression: 'SUCCEEDED(hr)'
+Batchmode quit successfully invoked - shutting down!
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-Pablo-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-Pablo channel disconnected successfully.
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+Exiting batchmode successfully now!
+Exiting without the bug reporter. Application will terminate with return code 0

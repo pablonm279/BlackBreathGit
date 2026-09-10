@@ -1,0 +1,65 @@
+{
+  "reposo": {
+    "source": "reposo-fuente.png",
+    "scale": 0.605,
+    "source_feet_x": 628,
+    "source_bounds": [
+      200,
+      63,
+      956,
+      1214
+    ],
+    "pixels": [
+      1024,
+      768
+    ],
+    "output_bounds": [
+      253,
+      56,
+      710,
+      752
+    ]
+  },
+  "anticipacion": {
+    "source": "anticipacion-fuente.png",
+    "scale": 0.585,
+    "source_feet_x": 675,
+    "source_bounds": [
+      172,
+      30,
+      1138,
+      1204
+    ],
+    "pixels": [
+      1024,
+      768
+    ],
+    "output_bounds": [
+      218,
+      65,
+      783,
+      752
+    ]
+  },
+  "impacto": {
+    "source": "impacto-fuente.png",
+    "scale": 0.615,
+    "source_feet_x": 720,
+    "source_bounds": [
+      12,
+      56,
+      1312,
+      1123
+    ],
+    "pixels": [
+      1024,
+      768
+    ],
+    "output_bounds": [
+      77,
+      96,
+      877,
+      752
+    ]
+  }
+}

@@ -20,6 +20,14 @@ public sealed class BattleWheelPerspective : MonoBehaviour
   private float perspectivaObjetivo;
   private float perspectivaActual;
   private float velocidadPerspectiva;
+  private float focoHabilidad;
+
+  public float FocoHabilidad => focoHabilidad;
+
+  public void SetFocoHabilidad(float nivel)
+  {
+    focoHabilidad = Mathf.Clamp01(nivel);
+  }
 
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
   private static void RegistrarInstalacion()
@@ -112,9 +120,10 @@ public sealed class BattleWheelPerspective : MonoBehaviour
       return;
     }
 
-    float nivelVisual = perspectivaActual >= 0f
+    float nivelRueda = perspectivaActual >= 0f
       ? Mathf.SmoothStep(0f, 1f, perspectivaActual)
       : -Mathf.SmoothStep(0f, 1f, Mathf.Abs(perspectivaActual) / Mathf.Max(0.001f, alejamientoMaximo)) * alejamientoMaximo;
+    float nivelVisual = Mathf.Lerp(nivelRueda, 1f, focoHabilidad);
 
     Quaternion rotacionCamaraLocal = camara.localRotation;
     Quaternion inclinacionLocalCamara = Quaternion.Euler(-nivelVisual * inclinacionMaxima, 0f, 0f);
@@ -127,6 +136,7 @@ public sealed class BattleWheelPerspective : MonoBehaviour
 
   private void OnDisable()
   {
+    focoHabilidad = 0f;
     RestaurarRigBase();
   }
 

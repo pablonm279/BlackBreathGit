@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -118,6 +119,30 @@ public sealed class ScoutExplorationSequenceFx : MonoBehaviour
     CrearReticula();
     ActualizarPuntosPantalla();
     AplicarPosicionReticula();
+    CrearTextoPasoTiempo();
+  }
+
+  void CrearTextoPasoTiempo()
+  {
+    GameObject textoGo = new GameObject("TimePasses", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+    textoGo.transform.SetParent(transform, false);
+
+    RectTransform rect = textoGo.GetComponent<RectTransform>();
+    rect.anchorMin = new Vector2(0.5f, 0f);
+    rect.anchorMax = new Vector2(0.5f, 0f);
+    rect.pivot = new Vector2(0.5f, 0f);
+    rect.anchoredPosition = new Vector2(0f, 48f);
+    rect.sizeDelta = new Vector2(760f, 52f);
+
+    TextMeshProUGUI texto = textoGo.GetComponent<TextMeshProUGUI>();
+    texto.text = "Time Passes...";
+    texto.font = Resources.Load<TMP_FontAsset>("Fuentes/Cinzel/CinzelDecorative-Regular SDF");
+    texto.fontSize = 25f;
+    texto.characterSpacing = 1.5f;
+    texto.alignment = TextAlignmentOptions.Center;
+    texto.color = new Color(0.88f, 0.86f, 0.80f, 0.72f);
+    texto.textWrappingMode = TextWrappingModes.NoWrap;
+    texto.raycastTarget = false;
   }
 
   void CrearReticula()

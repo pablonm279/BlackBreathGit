@@ -29,7 +29,9 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
   private RectTransform rootRect;
   private Image silueta;
   private Image sombra;
+  private UnidadAnimacionIlustrada animacionIlustrada;
   private float fase;
+  private float tiempoRespiracion;
   private float visibilidad;
   private float pulsoTurnoRestante = -1f;
 
@@ -40,6 +42,17 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
   {
     unidad = GetComponent<Unidad>();
     fase = Random.Range(0f, Mathf.PI * 2f);
+  }
+
+  private void Start()
+  {
+    UnidadAnimacionIlustrada.InicializarIASinControlador(unidad);
+  }
+
+  public static float ObtenerFactorRespiracion(Unidad destino)
+  {
+    if (destino == null || BattleManager.Instance == null) return 1f;
+    return BattleManager.Instance.unidadActiva == destino ? 1f : 0.8f;
   }
 
   private void LateUpdate()
@@ -57,6 +70,8 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
     }
 
     bool mostrar = DebeMostrarVidaAmbiental();
+    if (mostrar)
+      tiempoRespiracion += Time.deltaTime * ObtenerFactorRespiracion(unidad);
     float velocidad = mostrar ? velocidadAparicion : velocidadDesaparicion;
     visibilidad = Mathf.MoveTowards(visibilidad, mostrar ? 1f : 0f, Time.unscaledDeltaTime * velocidad);
 
@@ -120,6 +135,7 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
     {
       imagenUnidad = actual;
       imagenRect = actualRect;
+      animacionIlustrada = actual.GetComponent<UnidadAnimacionIlustrada>();
       if (rootRect != null)
       {
         Destroy(rootRect.gameObject);
@@ -222,14 +238,16 @@ public sealed class UnidadAmbientMotionFx : MonoBehaviour
   {
     CalcularPulsoTurno();
     float respiracion = Mathf.Sin(
-      Time.unscaledTime * Mathf.Max(0.01f, velocidadRespiracion) + fase);
+      tiempoRespiracion * Mathf.Max(0.01f, velocidadRespiracion) + fase);
 
     RectTransform siluetaRect = silueta.rectTransform;
     siluetaRect.sizeDelta = imagenRect.rect.size;
     siluetaRect.anchoredPosition = new Vector2(0f, respiracion * amplitudVertical);
     siluetaRect.localScale = Vector3.one * (1.002f + respiracion * amplitudEscala);
     siluetaRect.localEulerAngles = Vector3.zero;
-    silueta.color = new Color(0.48f, 0.58f, 0.62f, visibilidad * alphaSilueta);
+    // La IA ya respira sobre su propia malla: no dibujar una segunda figura desalineada.
+    bool respiraOriginal = animacionIlustrada != null && animacionIlustrada.UsaSpritesOriginalesIA;
+    silueta.color = new Color(0.48f, 0.58f, 0.62f, respiraOriginal ? 0f : visibilidad * alphaSilueta);
 
     RectTransform sombraRect = sombra.rectTransform;
     Vector2 tamano = imagenRect.rect.size;

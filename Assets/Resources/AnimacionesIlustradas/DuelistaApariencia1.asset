@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2120a9298565ad4ab15a9b86242850c, type: 3}
+  m_Name: DuelistaApariencia1
+  m_EditorClassIdentifier: 
+  origenIdle: {fileID: 21300000, guid: 48f6b20fb94a0e04d9050eda3a2c9cb8, type: 3}
+  origenMover: {fileID: 21300000, guid: 560e8b8f9d4253544a5af8ddcde1b5ac, type: 3}
+  origenAtacar: {fileID: 21300000, guid: fee39f6eea7570b42b36c716c2225dd4, type: 3}
+  origenTurnoActivo: {fileID: 21300000, guid: 6e1a26c73fca7db46b231c0502593f13, type: 3}
+  reposo: {fileID: 21300000, guid: 0e558c7465745071bc769a6bf345bf52, type: 3}
+  anticipacion: {fileID: 21300000, guid: 4613e20d0cee53e987ca18ff6585b840, type: 3}
+  impacto: {fileID: 21300000, guid: b65b64d8a252503c8dc71091e150ef08, type: 3}
+  apoyo: {x: 0.65, y: 0.0234375}
+  escalaHorizontal: 1.7066666666666668
+  desplazamientoHorizontal: -0.125
+  respiracion: 0.006

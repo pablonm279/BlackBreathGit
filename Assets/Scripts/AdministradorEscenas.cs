@@ -7,9 +7,17 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.TextCore;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using System.Threading.Tasks;
 // using TMPro; // removido (no se usa)
+
+[Serializable]
+public class FondoBatalla
+{
+  public Material fondo;
+  public Material fondoFrente;
+}
 
 public class AdministradorEscenas : MonoBehaviour
 {
@@ -44,13 +52,22 @@ public class AdministradorEscenas : MonoBehaviour
 
 
   public MeshRenderer mrFondoBatalla;
+  [SerializeField] private MeshRenderer mrFondoFrente;
 
-  public List<Material> listaFondosBosqueLamentos; //Para agregar fondos simplemente hay que agregarlos a la lista
-  public List<Material> listaFondosPasoVientoHelado; //Para agregar fondos simplemente hay que agregarlos a la lista
+  public List<FondoBatalla> fondosBosqueLamentos; //Para agregar fondos simplemente hay que agregarlos a la lista
+  public List<FondoBatalla> fondosPasoVientoHelado; //Para agregar fondos simplemente hay que agregarlos a la lista
 
-  public List<Material> listaFondosNedukazal; //Para agregar fondos simplemente hay que agregarlos a la lista
+  public List<FondoBatalla> fondosNedukazal; //Para agregar fondos simplemente hay que agregarlos a la lista
 
-  public List<Material> listaFondosSubterraneos; //Para agregar fondos simplemente hay que agregarlos a la lista
+  public List<FondoBatalla> fondosSubterraneos; //Para agregar fondos simplemente hay que agregarlos a la lista
+  [FormerlySerializedAs("listaFondosBosqueLamentos"), SerializeField, HideInInspector]
+  private List<Material> fondosBosqueLamentosLegacy;
+  [FormerlySerializedAs("listaFondosPasoVientoHelado"), SerializeField, HideInInspector]
+  private List<Material> fondosPasoVientoHeladoLegacy;
+  [FormerlySerializedAs("listaFondosNedukazal"), SerializeField, HideInInspector]
+  private List<Material> fondosNedukazalLegacy;
+  [FormerlySerializedAs("listaFondosSubterraneos"), SerializeField, HideInInspector]
+  private List<Material> fondosSubterraneosLegacy;
   private BattleAmbientLife battleAmbientLife;
   private EncounterZoneType zonaVisualBatallaActual = EncounterZoneType.BosqueAngustiante;
   private bool fondoBatallaSubterraneoActual;
@@ -2512,6 +2529,8 @@ public class AdministradorEscenas : MonoBehaviour
 
   void AdministrarFondos(int idEncuentro, EncounterDefinition encounterDefinition = null)
   {
+    MigrarFondosAnteriores();
+
     bool esSubterraneo = (encounterDefinition != null && (encounterDefinition.battleType == BattleEncounterType.Subterraneo || encounterDefinition.zoneType == EncounterZoneType.Subterraneo))
        || (idEncuentro > 399 && idEncuentro < 450);
     fondoBatallaSubterraneoActual = esSubterraneo;
@@ -2519,10 +2538,7 @@ public class AdministradorEscenas : MonoBehaviour
     if (esSubterraneo) // Encuentro subterraneo
     {
       zonaVisualBatallaActual = EncounterZoneType.Subterraneo;
-      if (listaFondosSubterraneos != null && listaFondosSubterraneos.Count > 0)
-      {
-        mrFondoBatalla.material = listaFondosSubterraneos[UnityEngine.Random.Range(0, listaFondosSubterraneos.Count)];
-      }
+      AplicarFondoAleatorio(fondosSubterraneos);
       return;
     }
 
@@ -2542,17 +2558,11 @@ public class AdministradorEscenas : MonoBehaviour
     {
       case EncounterZoneType.PasoVientoHelado:
         zonaVisualBatallaActual = EncounterZoneType.PasoVientoHelado;
-        if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
-        {
-          mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
-        }
+        AplicarFondoAleatorio(fondosPasoVientoHelado);
         break;
       case EncounterZoneType.Nedukazal:
         zonaVisualBatallaActual = EncounterZoneType.Nedukazal;
-        if (listaFondosNedukazal != null && listaFondosNedukazal.Count > 0)
-        {
-          mrFondoBatalla.material = listaFondosNedukazal[UnityEngine.Random.Range(0, listaFondosNedukazal.Count)];
-        }
+        AplicarFondoAleatorio(fondosNedukazal);
         break;
       case EncounterZoneType.Generico:
         // Usa la zona activa de campaña si existe, si no, cae al bosque
@@ -2562,18 +2572,16 @@ public class AdministradorEscenas : MonoBehaviour
           if (zonaActiva == EncounterZoneType.PasoVientoHelado)
           {
             zonaVisualBatallaActual = EncounterZoneType.PasoVientoHelado;
-            if (listaFondosPasoVientoHelado != null && listaFondosPasoVientoHelado.Count > 0)
+            if (AplicarFondoAleatorio(fondosPasoVientoHelado))
             {
-              mrFondoBatalla.material = listaFondosPasoVientoHelado[UnityEngine.Random.Range(0, listaFondosPasoVientoHelado.Count)];
               break;
             }
           }
           if (zonaActiva == EncounterZoneType.Nedukazal)
           {
             zonaVisualBatallaActual = EncounterZoneType.Nedukazal;
-            if (listaFondosNedukazal != null && listaFondosNedukazal.Count > 0)
+            if (AplicarFondoAleatorio(fondosNedukazal))
             {
-              mrFondoBatalla.material = listaFondosNedukazal[UnityEngine.Random.Range(0, listaFondosNedukazal.Count)];
               break;
             }
           }
@@ -2583,13 +2591,76 @@ public class AdministradorEscenas : MonoBehaviour
       case EncounterZoneType.BosqueAngustiante:
       default:
         zonaVisualBatallaActual = EncounterZoneType.BosqueAngustiante;
-        if (listaFondosBosqueLamentos != null && listaFondosBosqueLamentos.Count > 0)
-        {
-          mrFondoBatalla.material = listaFondosBosqueLamentos[UnityEngine.Random.Range(0, listaFondosBosqueLamentos.Count)];
-        }
+        AplicarFondoAleatorio(fondosBosqueLamentos);
         break;
     }
 
+  }
+
+  bool AplicarFondoAleatorio(List<FondoBatalla> fondos)
+  {
+    if (mrFondoBatalla == null || fondos == null || fondos.Count == 0)
+    {
+      return false;
+    }
+
+    FondoBatalla fondoSeleccionado = fondos[UnityEngine.Random.Range(0, fondos.Count)];
+    if (fondoSeleccionado == null || fondoSeleccionado.fondo == null)
+    {
+      return false;
+    }
+
+    mrFondoBatalla.material = fondoSeleccionado.fondo;
+
+    if (mrFondoFrente == null)
+    {
+      Transform fondoFrente = mrFondoBatalla.transform.Find("FondoFrente");
+      if (fondoFrente != null)
+      {
+        mrFondoFrente = fondoFrente.GetComponent<MeshRenderer>();
+      }
+    }
+
+    if (mrFondoFrente != null)
+    {
+      mrFondoFrente.sharedMaterial = fondoSeleccionado.fondoFrente;
+      mrFondoFrente.enabled = fondoSeleccionado.fondoFrente != null;
+    }
+
+    return true;
+  }
+
+  void OnValidate()
+  {
+    MigrarFondosAnteriores();
+  }
+
+  void MigrarFondosAnteriores()
+  {
+    MigrarFondosAnteriores(ref fondosBosqueLamentos, fondosBosqueLamentosLegacy);
+    MigrarFondosAnteriores(ref fondosPasoVientoHelado, fondosPasoVientoHeladoLegacy);
+    MigrarFondosAnteriores(ref fondosNedukazal, fondosNedukazalLegacy);
+    MigrarFondosAnteriores(ref fondosSubterraneos, fondosSubterraneosLegacy);
+  }
+
+  void MigrarFondosAnteriores(ref List<FondoBatalla> fondos, List<Material> fondosAnteriores)
+  {
+    if (fondosAnteriores == null || fondosAnteriores.Count == 0)
+    {
+      return;
+    }
+
+    if (fondos == null)
+    {
+      fondos = new List<FondoBatalla>();
+    }
+
+    foreach (Material fondoAnterior in fondosAnteriores)
+    {
+      fondos.Add(new FondoBatalla { fondo = fondoAnterior });
+    }
+
+    fondosAnteriores.Clear();
   }
 
   void ConfigurarAmbienteVidaBatalla()

@@ -248,6 +248,7 @@ public class MeleeApproachMover : MonoBehaviour
 
       AplicarPoseMovimiento();
 
+      CampoVivoBatalla.ReproducirArranqueMelee(unidad, destino);
       await AnimarWorld(tOrigen, origen, destino, durIda);
 
       if (pausaTrasLlegar > 0f)

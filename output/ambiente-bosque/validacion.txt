@@ -1,0 +1,1011 @@
+OK Shader BosqueArdienteSuelo
+OK Shader BosqueArdienteAmbiente
+OK Shader BosqueArdienteLlamas
+OK Ambiente creado
+OK RNG de juego intacto al preparar
+OK Suelo mejorado conservado
+OK Solo cambia el material: emisores, humo, posiciones y LOD intactos
+OK Materiales fuente sin modificar
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Llamas refinadas: Decorador generado
+OK Llamas refinadas: Bosque inicial
+OK Sin incendios grandes del rework
+OK Brasas, ceniza y humo ambiental conservados
+OK Preparar dos veces no duplica
+OK Reaplicar tampoco modifica emisores
+OK RNG de juego intacto al animar
+OK Posiciones originales intactas
+OK Sombreado original conservado: error 0,000 % en 7624 pixeles de fuego
+OK Reloj respeta dt cero
+OK Ambiente limpio al salir de campaña

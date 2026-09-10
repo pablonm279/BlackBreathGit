@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2120a9298565ad4ab15a9b86242850c, type: 3}
+  m_Name: AcechadorApariencia1
+  m_EditorClassIdentifier: 
+  origenIdle: {fileID: 21300000, guid: cb2cce450b6667c4c99a1214437f9644, type: 3}
+  origenMover: {fileID: 21300000, guid: 32f7997e200fc8b4d8c70b8c6aae214b, type: 3}
+  origenAtacar: {fileID: 21300000, guid: f78cfe14488de1a4c83e54566331161f, type: 3}
+  origenTurnoActivo: {fileID: 21300000, guid: 8ed18c5e239d40d468895c0292a7394b, type: 3}
+  reposo: {fileID: 21300000, guid: 9bb37023e8495d34a50d4796bf22733d, type: 3}
+  anticipacion: {fileID: 21300000, guid: 7d8fe9b51fd95b0794d6caef926b09dd, type: 3}
+  impacto: {fileID: 21300000, guid: 072e3dad4ed75d969489ec1157f7bac5, type: 3}
+  apoyo: {x: 0.5, y: 0.020833333333333332}
+  escalaHorizontal: 1.3653333333333333
+  desplazamientoHorizontal: -0.0050000000000000044
+  respiracion: 0.006

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2120a9298565ad4ab15a9b86242850c, type: 3}
+  m_Name: PurificadoraApariencia2
+  m_EditorClassIdentifier: 
+  origenIdle: {fileID: 21300000, guid: d81eda7ef0eb7ea4ab4114283bfbf52d, type: 3}
+  origenMover: {fileID: 21300000, guid: 261b4f68199f1c745a9827e60ffe3ed6, type: 3}
+  origenAtacar: {fileID: 21300000, guid: be80d28cec7bd8e4d93d8944fbebacd8, type: 3}
+  origenTurnoActivo: {fileID: 21300000, guid: 23ae867836d46b5458988e5d496e9471, type: 3}
+  reposo: {fileID: 21300000, guid: 4f1a515199b553a883c01fd6fb976394, type: 3}
+  anticipacion: {fileID: 21300000, guid: c73fe20911f05a37b52f999c4483af3f, type: 3}
+  impacto: {fileID: 21300000, guid: 7ddfc09853be5ebd83697e7e6c7777de, type: 3}
+  apoyo: {x: 0.5, y: 0.010416666666666666}
+  escalaHorizontal: 1.3653333333333333
+  desplazamientoHorizontal: 0.0
+  respiracion: 0.006

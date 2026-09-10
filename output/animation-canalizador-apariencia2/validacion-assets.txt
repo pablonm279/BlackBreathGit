@@ -1,0 +1,4 @@
+reposo: RGBA, margen, GUID e importacion OK; (345, 39, 659, 752)
+anticipacion: RGBA, margen, GUID e importacion OK; (229, 46, 759, 752)
+impacto: RGBA, margen, GUID e importacion OK; (186, 50, 762, 752)
+Referencias alternativas correctas; 9 perfiles con parejas unicas. Apariencia base excluida.

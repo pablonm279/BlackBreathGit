@@ -1,0 +1,56 @@
+diff --git a/Assets/Scripts/Habilidades/MeleeApproachMover.cs b/Assets/Scripts/Habilidades/MeleeApproachMover.cs
+index 75eed7fa..1d8069b9 100644
+--- a/Assets/Scripts/Habilidades/MeleeApproachMover.cs
++++ b/Assets/Scripts/Habilidades/MeleeApproachMover.cs
+@@ -248,6 +248,7 @@ public class MeleeApproachMover : MonoBehaviour
+ 
+       AplicarPoseMovimiento();
+ 
++      CampoVivoBatalla.ReproducirArranqueMelee(unidad, destino);
+       await AnimarWorld(tOrigen, origen, destino, durIda);
+ 
+       if (pausaTrasLlegar > 0f)
+diff --git a/Assets/Scripts/Visual/BattleAmbientLife.cs b/Assets/Scripts/Visual/BattleAmbientLife.cs
+index 8d9ffcd2..77e875de 100644
+--- a/Assets/Scripts/Visual/BattleAmbientLife.cs
++++ b/Assets/Scripts/Visual/BattleAmbientLife.cs
+@@ -62,12 +62,14 @@ public class BattleAmbientLife : MonoBehaviour
+     AplicarPresetVisual();
+     colorDiurnoFondo = colorBaseFondo;
+     AplicarModoNocturnoAlFondo();
++    CampoVivoBatalla.ConfigurarEn(this, fondo, zona, subterraneo);
+   }
+ 
+   public void EstablecerModoNocturno(bool activo)
+   {
+     modoNocturno = activo;
+     AplicarModoNocturnoAlFondo();
++    GetComponent<CampoVivoBatalla>()?.EstablecerNoche(activo);
+   }
+ 
+   void Update()
+@@ -83,9 +85,10 @@ public class BattleAmbientLife : MonoBehaviour
+       return;
+     }
+ 
+-    if (goAmbientRoot != null && !goAmbientRoot.activeSelf)
++    bool ambienteAnterior = !(GetComponent<CampoVivoBatalla>()?.SustituyeParticulas ?? false);
++    if (goAmbientRoot != null && goAmbientRoot.activeSelf != ambienteAnterior)
+     {
+-      goAmbientRoot.SetActive(true);
++      goAmbientRoot.SetActive(ambienteAnterior);
+     }
+ 
+     AnimarFondo();
+diff --git a/Assets/Scripts/Visual/BattleVisualJuice.cs b/Assets/Scripts/Visual/BattleVisualJuice.cs
+index cf230e85..e0ed22c6 100644
+--- a/Assets/Scripts/Visual/BattleVisualJuice.cs
++++ b/Assets/Scripts/Visual/BattleVisualJuice.cs
+@@ -52,6 +52,7 @@ public static class BattleVisualJuice
+ 
+   public static void ReproducirImpacto(Unidad causante, Unidad objetivo, bool critico, bool muerte, float danio)
+   {
++    CampoVivoBatalla.ReproducirImpacto(causante, objetivo, critico, muerte, danio);
+     if (!Enabled || objetivo == null || danio <= 0f)
+     {
+       return;

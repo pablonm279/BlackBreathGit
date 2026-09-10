@@ -1,0 +1,41 @@
+OK Asset activado y shader cargado por Resources
+OK Tres fondos quemados reconocibles en build
+OK Emision real en BosqueAngustiante
+OK RNG de combate intacto en BosqueAngustiante
+OK Unidades/AP/HP/camara/tiempo intactos en BosqueAngustiante
+   Particulas Ceniza nieve y polvo=28, Particulas cercanas=6, Bancos de bruma=1, Polvo de movimiento e impacto=0, Esquirlas=0
+OK Emision real en PasoVientoHelado
+OK RNG de combate intacto en PasoVientoHelado
+OK Unidades/AP/HP/camara/tiempo intactos en PasoVientoHelado
+   Particulas Ceniza nieve y polvo=46, Particulas cercanas=13, Bancos de bruma=1, Polvo de movimiento e impacto=0, Esquirlas=0
+OK Emision real en Nedukazal
+OK RNG de combate intacto en Nedukazal
+OK Unidades/AP/HP/camara/tiempo intactos en Nedukazal
+   Particulas Ceniza nieve y polvo=29, Particulas cercanas=10, Bancos de bruma=1, Polvo de movimiento e impacto=0, Esquirlas=0
+OK Emision real en Generico
+OK RNG de combate intacto en Generico
+OK Unidades/AP/HP/camara/tiempo intactos en Generico
+   Particulas Ceniza nieve y polvo=26, Particulas cercanas=5, Bancos de bruma=1, Polvo de movimiento e impacto=0, Esquirlas=0
+OK Emision real en Subterraneo
+OK RNG de combate intacto en Subterraneo
+OK Unidades/AP/HP/camara/tiempo intactos en Subterraneo
+   Particulas Ceniza nieve y polvo=18, Particulas cercanas=7, Bancos de bruma=1, Polvo de movimiento e impacto=0, Esquirlas=0
+OK Pausa tutorial congela reloj y particulas
+OK Pausa tutorial impide impactos nuevos
+OK Reanudacion del mismo reloj
+OK Interruptor de atmosfera limpia las motas
+OK Dash levanta polvo al arrancar
+OK Dash levanta polvo al llegar
+OK Voladores sin polvo de pisadas
+OK Critico produce polvo y esquirlas
+OK Impactos masivos reutilizan pool acotado
+OK Efectos transitorios expiran
+OK No se revelan enemigos ocultos
+OK Noche adapta la atmosfera
+OK Volver a dia no acumula tintes
+OK Desactivar elimina toda la capa y los rastros
+OK Reactivar reutiliza los recursos
+OK Integracion sustituye motas previas sin duplicar director
+OK Desactivar recupera las particulas anteriores
+OK El metodo de destruccion libera la raiz y sus recursos
+NOTA: prueba de componentes reales en Editor; no recorre el tutorial completo ni una partida en Play Mode.

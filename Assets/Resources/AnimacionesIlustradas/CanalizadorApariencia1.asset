@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2120a9298565ad4ab15a9b86242850c, type: 3}
+  m_Name: CanalizadorApariencia1
+  m_EditorClassIdentifier: 
+  origenIdle: {fileID: 21300000, guid: b8b5cbd439792b14f96bd5ce8750c655, type: 3}
+  origenMover: {fileID: 21300000, guid: bfa07ce1d2e7c9445a24d65a2393449b, type: 3}
+  origenAtacar: {fileID: 21300000, guid: 46f5d5375192a5541b801850d2e0d663, type: 3}
+  origenTurnoActivo: {fileID: 21300000, guid: 7fcdafc419d9afe45951c598e08e7ab7, type: 3}
+  reposo: {fileID: 21300000, guid: 30e37bb7630a579ea303558d2b04c2ee, type: 3}
+  anticipacion: {fileID: 21300000, guid: 55e360d247855b5d98a826e91c4fe5e9, type: 3}
+  impacto: {fileID: 21300000, guid: cd6f11ddc7db56a09a4c7afdac95ddc8, type: 3}
+  apoyo: {x: 0.5, y: 0.015625}
+  escalaHorizontal: 1.3653333333333333
+  desplazamientoHorizontal: 0.010000000000000009
+  respiracion: 0.006

@@ -71,6 +71,9 @@ public class Lamentodelbosque : IAHabilidad
 
     AplicarEfectosEnZona(ObtenerAfectadosZonaObjetivo(zonaX, zonaY, Objetivo)); //aca se determina la zona del Ataque relativo al objetivo
 
+    // Intervalo antes de que el Arbol de los Lamentos pueda realizar su siguiente accion.
+    await BattleManager.DelayCombateAsync(3000);
+
   }
 
    public List<object> ObtenerUnidadesEnZona(List<Casilla> casillas)

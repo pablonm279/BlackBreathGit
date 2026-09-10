@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b20c2f33bfe34713a247f6544f985ad0, type: 3}
+  m_Name: AjustesCampoVivo
+  m_EditorClassIdentifier:
+  activo: 1
+  atmosfera: 1
+  suelo: 1
+  desplazamientos: 1
+  impactos: 1
+  intensidad: 1
+  densidad: 1
+  fondosQuemados:
+  - {fileID: 2800000, guid: a49e0cb4a61ca354fa29339460f41b94, type: 3}
+  - {fileID: 2800000, guid: 0e50f431a4d18ea42a1c6577aebe2d79, type: 3}
+  - {fileID: 2800000, guid: e9831d0e6f74c834a84f19e12d2e54b3, type: 3}

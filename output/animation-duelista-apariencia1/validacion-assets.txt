@@ -1,0 +1,6 @@
+reposo: RGBA 1280x768, margen transparente, importacion sin reducir y referencia valida
+anticipacion: RGBA 1280x768, margen transparente, importacion sin reducir y referencia valida
+impacto: RGBA 1280x768, margen transparente, importacion sin reducir y referencia valida
+Registro: apoyo al 52.5% del Image; escala horizontal compensa el lienzo ampliado
+Cuatro perfiles sin colisiones: CaballeroApariencia1.asset, CaballeroApariencia2.asset, DriadaQuemada.asset, DuelistaApariencia1.asset
+Duelista apariencia 2 no coincide con ningun perfil activo

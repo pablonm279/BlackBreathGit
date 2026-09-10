@@ -1,0 +1,7 @@
+reposo: RGBA 1024x768, margen transparente, referencia e importacion correctas
+anticipacion: RGBA 1024x768, margen transparente, referencia e importacion correctas
+impacto: RGBA 1024x768, margen transparente, referencia e importacion correctas
+Cuatro referencias originales coinciden con la apariencia base del prefab
+Parejas mover/atacar unicas entre los 6 perfiles
+Solo tres poses nuevas; apariencia 2 excluida
+Pendiente: prueba de transiciones en Play Mode, batalla y tutorial.

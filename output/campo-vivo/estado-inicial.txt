@@ -1,0 +1,36 @@
+ M AGENTS.md
+ M Assets/Materiales/Mat_suelobatalla.mat
+ M "Assets/Resources/Fuentes/Fondamento/Fondamento-Regular SDF.asset"
+ M Assets/Resources/Fuentes/SpectralSC/CardoMarcada.asset
+ D "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/FondoBosqueLamentos1.mat"
+ D "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/FondoBosqueLamentos1.mat.meta"
+ D "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/bosquefondobatalla.png"
+ D "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/bosquefondobatalla.png.meta"
+ D "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/bosquefondobatalla3.png"
+ D "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/bosquefondobatalla3.png.meta"
+ M "Assets/Scenes/ES-Campa\303\261a.unity"
+ M Assets/Scripts/AdministradorEscenas.cs
+ M Assets/Scripts/BattleManager.cs
+ M Assets/Scripts/BattleWheelPerspective.cs
+ M Assets/Scripts/Habilidades/Habilidad.cs
+ M Assets/Scripts/Unidad.cs
+ M Assets/Scripts/UnidadPoseController.cs
+ M Assets/Scripts/Visual/UnidadAmbientMotionFx.cs
+ M ProjectSettings/QualitySettings.asset
+?? ACTUALIZACION_VISUAL_UNIDADES.md
+?? Assets/Editor/ValidacionAnimacionIlustrada.cs
+?? Assets/Editor/ValidacionAnimacionIlustrada.cs.meta
+?? Assets/Resources/AnimacionesIlustradas.meta
+?? Assets/Resources/AnimacionesIlustradas/
+?? "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/Fondo1BosqueArdiente.meta"
+?? "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/Fondo1BosqueArdiente/"
+?? "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/Fondo2BosqueArdiente.meta"
+?? "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/Fondo2BosqueArdiente/"
+?? "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/Fondo3BosqueArdiente.meta"
+?? "Assets/Resources/Imagenes/Fondos/Bosque Lamentos/Fondo3BosqueArdiente/"
+?? Assets/Scripts/Visual/PerfilAnimacionIlustrada.cs
+?? Assets/Scripts/Visual/PerfilAnimacionIlustrada.cs.meta
+?? Assets/Scripts/Visual/UnidadAnimacionIlustrada.cs
+?? Assets/Scripts/Visual/UnidadAnimacionIlustrada.cs.meta
+?? output/
+?? tools/animation-pilot/

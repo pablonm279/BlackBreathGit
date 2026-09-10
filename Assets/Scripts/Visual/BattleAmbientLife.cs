@@ -62,12 +62,14 @@ public class BattleAmbientLife : MonoBehaviour
     AplicarPresetVisual();
     colorDiurnoFondo = colorBaseFondo;
     AplicarModoNocturnoAlFondo();
+    CampoVivoBatalla.ConfigurarEn(this, fondo, zona, subterraneo);
   }
 
   public void EstablecerModoNocturno(bool activo)
   {
     modoNocturno = activo;
     AplicarModoNocturnoAlFondo();
+    GetComponent<CampoVivoBatalla>()?.EstablecerNoche(activo);
   }
 
   void Update()
@@ -83,9 +85,10 @@ public class BattleAmbientLife : MonoBehaviour
       return;
     }
 
-    if (goAmbientRoot != null && !goAmbientRoot.activeSelf)
+    bool ambienteAnterior = !(GetComponent<CampoVivoBatalla>()?.SustituyeParticulas ?? false);
+    if (goAmbientRoot != null && goAmbientRoot.activeSelf != ambienteAnterior)
     {
-      goAmbientRoot.SetActive(true);
+      goAmbientRoot.SetActive(ambienteAnterior);
     }
 
     AnimarFondo();

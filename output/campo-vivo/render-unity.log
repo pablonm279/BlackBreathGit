@@ -1,0 +1,1454 @@
+[CoreBusinessMetrics] System persistent data directory not found: 
+[CoreBusinessMetrics] Unable to configure cache. Connection string was invalid or not specified.
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.3/staging' branch; Version is '6000.3.20f1 (c9ba695d4f07) revision 13220457'; Using compiler version '194234433'; Build Type 'Release'
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'es' Physical Memory: 32717 MB
+[Licensing::IpcConnector] Channel LicenseClient-Pablo doesn't exist
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-09-09T03:22:29Z
+Assertion failed on expression: 'SUCCEEDED(hr)'
+Assertion failed on expression: 'SUCCEEDED(hr)'
+Assertion failed on expression: 'ERROR_SUCCESS == status'
+[Licensing::Module] Successfully launched the LicensingClient (PId: 9688)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Unity.exe
+-batchmode
+-projectPath
+C:/UnityProyectosNOborrar/GDD - Untitled
+-executeMethod
+ValidacionCampoVivo.Renderizar
+-quit
+-logFile
+C:/UnityProyectosNOborrar/GDD - Untitled/output/campo-vivo/render-unity.log
+Successfully changed project path to: C:/UnityProyectosNOborrar/GDD - Untitled
+C:/UnityProyectosNOborrar/GDD - Untitled
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+Player connection [1908]  Target information:
+
+Player connection [1908]  * "[IP] 192.168.100.6 [Port] 55504 [Flags] 2 [Guid] 3516030232 [EditorId] 3516030232 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-IAS7GE8) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [1908]  * "[IP] 192.168.193.7 [Port] 55504 [Flags] 2 [Guid] 3516030232 [EditorId] 3516030232 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-IAS7GE8) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [1908] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [1908] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Package Manager] Connected to IPC stream "Upm-13600" after 0.3 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Pablo" at "2026-09-09T03:22:32.8690189Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 9688, path: "C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.1+9fbee8e
+  Session Id:              eacbdc51704d4f88878ce9d9b66bfc4d
+  Correlation Id:          1f949fc41da630dcceeb4a6a24753bb9
+  External correlation Id: 584452235305080979
+  Machine Id:              s2vqK+FirQPpy6L4elJAoHlXiTM=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-Pablo" (connect: 2.91s, validation: 0.26s, handshake: 0.29s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Pablo-notifications" at "2026-09-09T03:22:33.4185813Z"
+[Licensing::Module] Connected to LicensingClient (PId: 9688, launch time: 0.03, total connection time: 3.46s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-AUGU-9VX5-WU58-JJSY-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 3.53s
+[Licensing::Module] Licensing is initialized (took 2.34s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Refreshing native plugins compatible for Editor in 3.44 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.3.20f1 (c9ba695d4f07)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/UnityProyectosNOborrar/GDD - Untitled/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 2060 (ID=0x1f08)
+    Vendor:   NVIDIA
+    VRAM:     5954 MB
+    Driver:   32.0.15.9579
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56600
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.265385 seconds.
+- Loaded All Assemblies, in 10.955 seconds
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.616 seconds
+Domain Reload Profiling: 11565ms
+	BeginReloadAssembly (8789ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (38ms)
+	RebuildCommonClasses (515ms)
+	RebuildNativeTypeToScriptingClass (20ms)
+	initialDomainReloadingComplete (336ms)
+	LoadAllAssembliesAndSetupDomain (1288ms)
+		LoadAssemblies (8750ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (1278ms)
+			TypeCache.Refresh (1276ms)
+				TypeCache.ScanAssembly (980ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (1ms)
+	FinalizeReload (617ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (560ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (68ms)
+			SetLoadedEditorAssemblies (5ms)
+			BeforeProcessingInitializeOnLoad (129ms)
+			ProcessInitializeOnLoadAttributes (215ms)
+			ProcessInitializeOnLoadMethodAttributes (142ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 56 packages:
+  Packages from [https://package.openupm.com]:
+    com.gameanalytics.sdk@8.0.1 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.gameanalytics.sdk@770dff7b5a42)
+    com.google.external-dependency-manager@1.2.187 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.google.external-dependency-manager@f5312a5700af)
+  Packages from [https://packages.unity.com]:
+    com.unity.ai.navigation@2.0.13 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.ai.navigation@42d896194035)
+    com.unity.collab-proxy@2.12.4 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.collab-proxy@0b1559bcd34e)
+    com.unity.ide.rider@3.0.40 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.ide.rider@e4950c6d131b)
+    com.unity.ide.visualstudio@2.0.26 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f)
+    com.unity.ide.vscode@1.2.5 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.ide.vscode@82e68656b7bd)
+    com.unity.postprocessing@3.5.4 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.postprocessing@141166b789e3)
+    com.unity.timeline@1.8.12 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.timeline@8cd8509afae5)
+    com.unity.visualscripting@1.9.11 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.visualscripting@8bed5ad90189)
+    com.unity.editorcoroutines@1.1.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.editorcoroutines@87a15ed012c2)
+    com.unity.performance.profile-analyzer@1.4.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.performance.profile-analyzer@2bb26871883c)
+    com.unity.testtools.codecoverage@1.3.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.testtools.codecoverage@19a841221620)
+    com.unity.settings-manager@2.1.1 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.settings-manager@0b8638c5ce86)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.2d.sprite@d8bb22511404)
+    com.unity.feature.development@1.0.2 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.feature.development@767aadbc6eb7)
+    com.unity.multiplayer.center@1.0.1 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.multiplayer.center@f01f4ba8d00a)
+    com.unity.test-framework@1.6.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.test-framework@bd7f943e9647)
+    com.unity.ugui@2.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.ugui@e20f1880fa04)
+    com.unity.modules.accessibility@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.accessibility)
+    com.unity.modules.adaptiveperformance@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.adaptiveperformance)
+    com.unity.modules.ai@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.ai)
+    com.unity.modules.androidjni@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.androidjni)
+    com.unity.modules.animation@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.assetbundle@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.assetbundle)
+    com.unity.modules.audio@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.cloth@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.cloth)
+    com.unity.modules.director@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.director)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.jsonserialize@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.particlesystem@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.screencapture@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.screencapture)
+    com.unity.modules.terrain@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.modules.terrainphysics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.terrainphysics)
+    com.unity.modules.tilemap@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.umbra@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.umbra)
+    com.unity.modules.unityanalytics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.unityanalytics)
+    com.unity.modules.unitywebrequest@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.unitywebrequestwww)
+    com.unity.modules.vectorgraphics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.vectorgraphics)
+    com.unity.modules.vehicles@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.vehicles)
+    com.unity.modules.video@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.video)
+    com.unity.modules.vr@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.vr)
+    com.unity.modules.wind@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.wind)
+    com.unity.modules.xr@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.xr)
+    com.unity.modules.subsystems@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.subsystems)
+    com.unity.modules.hierarchycore@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.ext.nunit@2.0.5 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Library\PackageCache\com.unity.ext.nunit@d8c07649098d)
+[Package Manager] com.unity.ide.vscode is deprecated: Visual Studio Code package is not supported anymore. You can continue to use it, but we won't provide any update anymore.
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.03 seconds
+[ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled
+DisplayProgressbar: Compiling Scripts
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled
+ExitCode: 4 Duration: 10s
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+[BUSY       6s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+*** Tundra requires additional run (9.99 seconds), 1 items updated, 527 evaluated
+ExitCode: 0 Duration: 1s565ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled
+ExitCode: 0 Duration: 9s888ms
+Finished compiling graph: 537 nodes, 8666 flattened edges (7910 ToBuild, 88 ToUse), maximum node priority 378
+[322/534    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp
+[BUSY       6s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+[528/534    9s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+Assets\Scripts\UI\UIEstadoCuadro.cs(8,7): warning CS0105: The using directive for 'System.Collections.Generic' appeared previously in this namespace
+
+Assets\IAUnidadEspectroBosque.cs(37,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\IAUnidadEspectroBosque.cs(48,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\LogDeCampania.cs(464,13): warning CS0618: 'TMP_Text.enableKerning' is obsolete: 'The "enableKerning" property has been deprecated. Use the "fontFeatures" property to control what features are enabled on the text component.'
+
+Assets\LogDeCampania.cs(464,35): warning CS0618: 'TMP_Text.enableKerning' is obsolete: 'The "enableKerning" property has been deprecated. Use the "fontFeatures" property to control what features are enabled on the text component.'
+
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Rufi├ín con Mazo\EnemigoUnidadRufianMazo.cs(11,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\AsentamientoManager.cs(1517,16): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\AsentamientoManager.cs(1577,9): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\Prefabs\Prefabs NPC\VENGADORES DE KADRYN\Alabardero\IAPrimerGolpeAlabardero.cs(107,12): warning CS0219: The variable 'unidadEmpujada' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\VENGADORES DE KADRYN\Alabardero\IAPrimerGolpeAlabardero.cs(66,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Prefabs\Prefabs NPC\VENGADORES DE KADRYN\TrampaAlientoNegro\ReaccionVengadorKadryn.cs(26,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\MapDecorator.cs(916,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\MapDecorator.cs(933,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\ArbolMaldito\IACondenaRaices.cs(97,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\MapDecorator.cs(1003,21): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\Bruja Quemada\IACondenaFerozBruja.cs(110,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkil Guerrero\MiradaMasacre\TrampaMiradamasacre.cs(60,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkil Guerrero\IAMiradadeMasacre.cs(61,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(68,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkilever\IAGarraZarkilever.cs(168,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\ReaccionAtaqueCuervo.cs(43,10): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Efigie Animada\ReaccionEfigieAnimada.cs(43,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Efigie Animada\ReaccionEfigieAnimada.cs(26,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Faagdan\IAEmbestidaFaagdan.cs(153,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\RaizArdiendo\IAEnterrarRaizFuego.cs(120,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Buff.cs(240,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Buff.cs(244,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Campania\NieblaGuerraCaravana.cs(92,31): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\Scripts\Buff.cs(416,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Campania\MenuCaravana.cs(551,13): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\Abrojos\Abrojo.cs(31,31): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Acechador\Habilidades\ArrojarAbrojos.cs(107,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\AtaqueEspadaCorta.cs(128,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\BombaDeHumo.cs(106,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Campania\Personajes\btnPersonaje.cs(802,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\Scripts\Clases\Acechador\Habilidades\BombaDeHumo.cs(197,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Casilla.cs(735,11): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(127,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMaestriaBallesta.cs(76,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\DisparoEnvenenado.cs(236,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONSueldo.cs(37,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONSigiloso.cs(45,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMasacre.cs(75,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\TiroBallestaDeMano.cs(186,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Infrecuente_Espada Corta Filonegro\AtaqueEspadaCortaFilonegro.cs(127,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Infrecuente_Espada Corta Arcana\AtaqueEspadaCortaArcana.cs(129,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\ArrojarAbrojos.cs(236,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Rara_Espada Corta Consumevida\AtaqueEspadaCortaConsumevida.cs(124,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\CorteIncapacitante.cs(157,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\PosturaDefensiva.cs(149,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\Partir.cs(196,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONDeterminacion.cs(318,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONImplacable.cs(313,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Infrecuente_MandobleSediento\CorteVerticalSediento.cs(135,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Rara_MandobleCongelado\CorteVerticalCongelado.cs(137,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\AcumularEnergia.cs(129,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(294,11): warning CS0219: The variable 'rangoPlus' is assigned but its value is never used
+
+Assets\Scripts\Clases\Caballero\Habilidades\CorteVertical.cs(125,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDePoder.cs(135,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\CorteHorizontal.cs(182,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\Instatransporte.cs(127,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDesintegradora.cs(160,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\EscudoEnergetico.cs(131,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONSobrecarga.cs(53,10): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\ResiduoEnerg├®tico\ResiduoEnergetico.cs(32,31): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONExcesoDePoder.cs(113,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\ManifestacionArcana.cs(134,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\GritoMotivador.cs(145,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\ManifestacionArcana.cs(302,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONCorajeInquebrantable.cs(63,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaArcana.cs(108,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\SiguesTu.cs(150,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Campania\MenuBatallas.cs(1455,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\EnGarde.cs(89,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\AFondo.cs(133,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\CargaDeEstoque.cs(139,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\Asesinar.cs(144,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\Estocada.cs(106,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\SiguesTu.cs(388,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONAtaquesReveladores.cs(89,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONPasoLigero.cs(69,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\Asesinar.cs(458,11): warning CS0219: The variable 'rangoPlus' is assigned but its value is never used
+
+Assets\Scripts\Clases\Duelista\Habilidades\PresenciaProvocadora.cs(105,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONDanzaDelEstoque.cs(88,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONPosturaDemandante.cs(72,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\PuntaHiriente.cs(144,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armaduras\Gambeson\Rara_GambesonDelUltimoPaso\REPRESENTACIONUltimoPaso.cs(69,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONEvasionMaestra.cs(111,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\Riposte.cs(91,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\Riposte.cs(201,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Clases\Acechador\Habilidades\HaciaLasSombras.cs(99,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\HaciaLasSombras.cs(188,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Explorador\ClaseExplorador.cs(231,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONArmaduraLimitante.cs(59,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\SifonArcano.cs(133,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMaestriaEspadaCorta.cs(69,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\HombroConHombro.cs(160,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Infrecuente_MandobleSagrado\CorteVerticalSagrado.cs(138,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONAcumulacionProtegida.cs(103,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\ReaccionSifonArcano.cs(38,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Caballero\Habilidades\PrimerosAuxilios.cs(152,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONAcorazado.cs(273,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armas\Estoque\Infrecuente_EstoqueDelPrimerSangre\EstocadaPrimerSangre.cs(64,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\Habilidades\RecuperarAire.cs(96,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armas\Estoque\Rara_EstoqueDeLaRosaNegra\EstocadaRosaNegra.cs(61,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\Acechar.cs(160,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\Fogata.cs(152,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\Fogata.cs(238,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs(165,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\DisparoPotente.cs(198,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONPasoCauteloso.cs(69,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs(246,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Explorador\Habilidades\MarcarPresa.cs(166,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\MarcarPresa.cs(274,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONAcrobatico.cs(114,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\CorteDaga.cs(122,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONReconocimiento.cs(99,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONVistaLejana.cs(95,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\TiroconArco.cs(144,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\Rafaga.cs(210,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\Habilidades\Vigilancia.cs(177,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Infrecuente_ArcoLargoAcido\TiroconArcoAcido.cs(165,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\BattleManager.cs(5832,11): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Infrecuente_ArcoLargoPotente\TiroconArcoPotente.cs(166,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Raro_ArcoLargoRalentizante\TiroconArcoRalentizante.cs(167,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\CastigaraLosMalvados.cs(159,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\Enmendar.cs(148,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\GolpeBaston.cs(137,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\CastigaraLosMalvados.cs(323,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armas\Estoque\Raro_EstoqueAstral\EstocadaAstral.cs(62,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Canalizador\Habilidades\HojaDeEnergia.cs(155,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(199,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(374,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\BattleManager.cs(6590,5): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\Scripts\Clases\Purificadora\Habilidades\PilaresDeLuz.cs(154,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONFervorConjunto.cs(73,9): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\ReaccionCastigarMalvados.cs(36,31): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(155,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\BattleManager.cs(6962,74): warning CS0184: The given expression is never of the provided ('DestruirObstaculo') type
+
+Assets\Scripts\Clases\Purificadora\Habilidades\PilaresDeLuz.cs(379,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONAuraSagrada.cs(324,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONEcosDivinos.cs(328,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\SalmoPurificador.cs(157,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\_ItemsExclusivos\Armas\Baculo Purificador\Raro_BaculoDeLlamaSacra\AtaqueBaculoLlamaSacra.cs(149,5): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\EscudodeFe.cs(182,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Clases\Purificadora\Habilidades\SalmoPurificador.cs(380,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Estados.cs(28,28): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+
+Assets\Scripts\Estados.cs(67,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(79,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(180,32): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(209,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(213,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(228,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(233,6): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(249,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(252,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(268,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(273,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(288,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(293,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(309,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(313,12): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(328,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(331,12): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Estados.cs(354,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Clases\Purificadora\Habilidades\LlamaDivina.cs(203,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Campania\CampaignManager.cs(3103,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Habilidades\TerminoHoverPopup.cs(74,5): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\Scripts\Habilidades\Habilidades IA\IAHabilidad.cs(676,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Sistema\HandicapDificultad.cs(114,22): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\Scripts\Tutorial\TutorialDirector.cs(121,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\Scripts\Tutorial\TutorialDirector.cs(164,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\Scripts\Tutorial\TutorialDirector.cs(193,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\Scripts\Tutorial\TutorialPresenter.cs(444,25): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\Scripts\Tutorial\TutorialDirector.cs(639,19): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\Scripts\Campania\Nodo.cs(6342,17): warning CS0219: The variable 'minSampleDist' is assigned but its value is never used
+
+Assets\Scripts\IAUnidad.cs(1289,13): warning CS0184: The given expression is never of the provided ('DestruirObstaculo') type
+
+Assets\Scripts\Campania\Nodo.cs(7023,10): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\Scripts\UI\ScreenFlash.cs(55,28): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+
+Assets\Scripts\UI\BotonHabilidad.cs(710,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\UI\BotonHabilidad.cs(725,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\UI\BotonHabilidad.cs(730,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\UI\BotonHabilidad.cs(735,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\UI\BotonHabilidad.cs(741,21): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\UI\BotonHabilidad.cs(750,21): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\UI\BotonHabilidad.cs(758,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\UI\BotonHabilidad.cs(763,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Visual\VisualPolishRuntime.cs(197,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\SunController.cs(83,13): warning CS0618: 'Light.cookieSize' is obsolete: 'Light.cookieSize has been deprecated. Use Light.cookieSize2D instead.'
+
+Assets\Scripts\Visual\VisualPolishRuntime.cs(597,24): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\TooltipBatalla.cs(189,9): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+
+Assets\Scripts\Visual\VisualPolishRuntime.cs(667,35): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\Scripts\Visual\VisualPolishRuntime.cs(680,24): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\Scripts\Habilidades\Habilidad.cs(1621,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Campania\CampaignManager.cs(6951,7): warning CS0162: Unreachable code detected
+
+Assets\Scripts\Unidad.cs(2266,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\AdministradorEscenas.cs(5741,12): warning CS0219: The variable 'encontrado' is assigned but its value is never used
+
+Assets\Scripts\Unidad.cs(3409,15): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(3429,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(3630,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(3801,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(4181,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(4404,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(5129,3): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(5168,4): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(5880,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(5885,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\Scripts\Unidad.cs(5966,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+
+Assets\TRADU.cs(15272,18): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(15,34): warning CS0414: The field 'LuzCegadora.XdDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(15,34): warning CS0414: The field 'IAAtaqueCuervo.XdDanio' is assigned but its value is never used
+
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(14,34): warning CS0414: The field 'Purificacion.XdDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(15,34): warning CS0414: The field 'FerenesiDeAsesinato.XdDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(17,34): warning CS0414: The field 'IALevantarVuelo.tipoDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(17,34): warning CS0414: The field 'IAAtaqueCuervo.tipoDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(16,34): warning CS0414: The field 'FerenesiDeAsesinato.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladr├│n\LadronEnvenenarArma.cs(17,32): warning CS0414: The field 'LadronEnvenenarArma.tipoDanio' is assigned but its value is never used
+
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDePoder.cs(17,34): warning CS0414: The field 'DescargaDePoder.criticoRangoHab' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(12,32): warning CS0414: The field 'Perdicion.XdDanio' is assigned but its value is never used
+
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(279,10): warning CS0414: The field 'Purificacion.seTiroFlechaVFX' is assigned but its value is never used
+
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(361,10): warning CS0414: The field 'LuzCegadora.seTiroFlechaVFX' is assigned but its value is never used
+
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(17,34): warning CS0414: The field 'Purificacion.tipoDanio' is assigned but its value is never used
+
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(15,34): warning CS0414: The field 'Purificacion.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(14,32): warning CS0414: The field 'IADebatirTacticas.bonusAtaque' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(16,34): warning CS0414: The field 'CariciadelBosque.daniodX' is assigned but its value is never used
+
+Assets\EdgePanCameraX.cs(49,36): warning CS0414: The field 'EdgePanCameraZ.zoomInFovDelta' is assigned but its value is never used
+
+Assets\Scripts\Habilidades\RetrasarTurno.cs(13,34): warning CS0414: The field 'RetrasarTurno.XdDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(15,34): warning CS0414: The field 'IALevantarVuelo.XdDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(14,34): warning CS0414: The field 'CariciadelBosque.bonusAtaque' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkilever\IALenguetazo.cs(14,36): warning CS0414: The field 'IALenguetazo.vfxDuracion' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(16,34): warning CS0414: The field 'IAAtaqueCuervo.daniodX' is assigned but its value is never used
+
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(17,34): warning CS0414: The field 'Distraer.criticoRangoHab' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(17,34): warning CS0414: The field 'Enredar.tipoDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(17,34): warning CS0414: The field 'IAChirridoVagranilo.tipoDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(14,34): warning CS0414: The field 'FerenesiDeAsesinato.bonusAtaque' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(16,34): warning CS0414: The field 'IAChirridoVagranilo.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(16,34): warning CS0414: The field 'Enredar.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(17,34): warning CS0414: The field 'CariciadelBosque.tipoDanio' is assigned but its value is never used
+
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(16,34): warning CS0414: The field 'LuzCegadora.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladr├│n\LadronEnvenenarArma.cs(14,32): warning CS0414: The field 'LadronEnvenenarArma.bonusAtaque' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(16,32): warning CS0414: The field 'IALevantarMartillo.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(14,34): warning CS0414: The field 'IALevantarVuelo.bonusAtaque' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(14,32): warning CS0414: The field 'Perdicion.tipoDanio' is assigned but its value is never used
+
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(15,34): warning CS0414: The field 'Distraer.XdDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(15,32): warning CS0414: The field 'IADebatirTacticas.XdDanio' is assigned but its value is never used
+
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(18,34): warning CS0414: The field 'Distraer.tipoDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(14,34): warning CS0414: The field 'IAChirridoVagranilo.bonusAtaque' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(15,34): warning CS0414: The field 'CariciadelBosque.XdDanio' is assigned but its value is never used
+
+Assets\Scripts\Habilidades\BoladeFuego.cs(15,34): warning CS0414: The field 'BoladeFuego.criticoRangoHab' is assigned but its value is never used
+
+Assets\Scripts\Campania\CaravanTorchLight.cs(11,53): warning CS0414: The field 'CaravanTorchLight.alturaSobreCaravana' is assigned but its value is never used
+
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(16,34): warning CS0414: The field 'Distraer.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(14,32): warning CS0414: The field 'IALevantarMartillo.bonusAtaque' is assigned but its value is never used
+
+Assets\Scripts\Habilidades\RetrasarTurno.cs(14,34): warning CS0414: The field 'RetrasarTurno.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(14,34): warning CS0414: The field 'IAAtaqueCuervo.bonusAtaque' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladr├│n\LadronEnvenenarArma.cs(16,32): warning CS0414: The field 'LadronEnvenenarArma.daniodX' is assigned but its value is never used
+
+Assets\Scripts\Habilidades\RetrasarTurno.cs(15,34): warning CS0414: The field 'RetrasarTurno.tipoDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(13,32): warning CS0414: The field 'Perdicion.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(16,34): warning CS0414: The field 'IALevantarVuelo.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(11,32): warning CS0414: The field 'Perdicion.bonusAtaque' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(15,34): warning CS0414: The field 'Enredar.XdDanio' is assigned but its value is never used
+
+Assets\Scripts\UI\UIInfoChar.cs(11,34): warning CS0414: The field 'UIInfoChar.posicionAliadoTop' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(17,32): warning CS0414: The field 'IADebatirTacticas.tipoDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(15,34): warning CS0414: The field 'IAChirridoVagranilo.XdDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(17,34): warning CS0414: The field 'FerenesiDeAsesinato.tipoDanio' is assigned but its value is never used
+
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(14,34): warning CS0414: The field 'Distraer.bonusAtaque' is assigned but its value is never used
+
+Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs(13,26): warning CS0414: The field 'ImprovisarFlechas.usosBatalla' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(16,32): warning CS0414: The field 'IADebatirTacticas.daniodX' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(15,32): warning CS0414: The field 'IALevantarMartillo.XdDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladr├│n\LadronEnvenenarArma.cs(15,32): warning CS0414: The field 'LadronEnvenenarArma.XdDanio' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(14,34): warning CS0414: The field 'Enredar.bonusAtaque' is assigned but its value is never used
+
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(17,32): warning CS0414: The field 'IALevantarMartillo.tipoDanio' is assigned but its value is never used
+
+Assets\Scripts\Habilidades\RetrasarTurno.cs(12,34): warning CS0414: The field 'RetrasarTurno.bonusAtaque' is assigned but its value is never used
+[529/534    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
+[530/534    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
+[531/534    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+Assets\Editor\ValidacionCampoVivo.cs(12,31): warning CS0414: The field 'ValidacionCampoVivo.privado' is assigned but its value is never used
+[532/534    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[533/534    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (9.86 seconds), 7 items updated, 534 evaluated
+Assets\Scripts\UI\UIEstadoCuadro.cs(8,7): warning CS0105: The using directive for 'System.Collections.Generic' appeared previously in this namespace
+Assets\IAUnidadEspectroBosque.cs(37,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\IAUnidadEspectroBosque.cs(48,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\LogDeCampania.cs(464,13): warning CS0618: 'TMP_Text.enableKerning' is obsolete: 'The "enableKerning" property has been deprecated. Use the "fontFeatures" property to control what features are enabled on the text component.'
+Assets\LogDeCampania.cs(464,35): warning CS0618: 'TMP_Text.enableKerning' is obsolete: 'The "enableKerning" property has been deprecated. Use the "fontFeatures" property to control what features are enabled on the text component.'
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Rufián con Mazo\EnemigoUnidadRufianMazo.cs(11,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\AsentamientoManager.cs(1517,16): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\AsentamientoManager.cs(1577,9): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\Prefabs\Prefabs NPC\VENGADORES DE KADRYN\Alabardero\IAPrimerGolpeAlabardero.cs(107,12): warning CS0219: The variable 'unidadEmpujada' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\VENGADORES DE KADRYN\Alabardero\IAPrimerGolpeAlabardero.cs(66,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Prefabs\Prefabs NPC\VENGADORES DE KADRYN\TrampaAlientoNegro\ReaccionVengadorKadryn.cs(26,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\MapDecorator.cs(916,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\MapDecorator.cs(933,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\ArbolMaldito\IACondenaRaices.cs(97,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\MapDecorator.cs(1003,21): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\Bruja Quemada\IACondenaFerozBruja.cs(110,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkil Guerrero\MiradaMasacre\TrampaMiradamasacre.cs(60,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkil Guerrero\IAMiradadeMasacre.cs(61,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(68,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkilever\IAGarraZarkilever.cs(168,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\ReaccionAtaqueCuervo.cs(43,10): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Efigie Animada\ReaccionEfigieAnimada.cs(43,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Efigie Animada\ReaccionEfigieAnimada.cs(26,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Faagdan\IAEmbestidaFaagdan.cs(153,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\RaizArdiendo\IAEnterrarRaizFuego.cs(120,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Buff.cs(240,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Buff.cs(244,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Campania\NieblaGuerraCaravana.cs(92,31): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Buff.cs(416,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Campania\MenuCaravana.cs(551,13): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\Abrojos\Abrojo.cs(31,31): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Acechador\Habilidades\ArrojarAbrojos.cs(107,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\AtaqueEspadaCorta.cs(128,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\BombaDeHumo.cs(106,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Campania\Personajes\btnPersonaje.cs(802,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Clases\Acechador\Habilidades\BombaDeHumo.cs(197,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Casilla.cs(735,11): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(127,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMaestriaBallesta.cs(76,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\DisparoEnvenenado.cs(236,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONSueldo.cs(37,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONSigiloso.cs(45,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMasacre.cs(75,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\TiroBallestaDeMano.cs(186,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Infrecuente_Espada Corta Filonegro\AtaqueEspadaCortaFilonegro.cs(127,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Infrecuente_Espada Corta Arcana\AtaqueEspadaCortaArcana.cs(129,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\ArrojarAbrojos.cs(236,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Rara_Espada Corta Consumevida\AtaqueEspadaCortaConsumevida.cs(124,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\CorteIncapacitante.cs(157,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\PosturaDefensiva.cs(149,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\Partir.cs(196,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONDeterminacion.cs(318,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONImplacable.cs(313,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Infrecuente_MandobleSediento\CorteVerticalSediento.cs(135,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Rara_MandobleCongelado\CorteVerticalCongelado.cs(137,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\AcumularEnergia.cs(129,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(294,11): warning CS0219: The variable 'rangoPlus' is assigned but its value is never used
+Assets\Scripts\Clases\Caballero\Habilidades\CorteVertical.cs(125,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDePoder.cs(135,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\CorteHorizontal.cs(182,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\Instatransporte.cs(127,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDesintegradora.cs(160,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\EscudoEnergetico.cs(131,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONSobrecarga.cs(53,10): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\ResiduoEnergético\ResiduoEnergetico.cs(32,31): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONExcesoDePoder.cs(113,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\ManifestacionArcana.cs(134,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\GritoMotivador.cs(145,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\ManifestacionArcana.cs(302,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONCorajeInquebrantable.cs(63,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaArcana.cs(108,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\SiguesTu.cs(150,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Campania\MenuBatallas.cs(1455,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\EnGarde.cs(89,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\AFondo.cs(133,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\CargaDeEstoque.cs(139,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\Asesinar.cs(144,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\Estocada.cs(106,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\SiguesTu.cs(388,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONAtaquesReveladores.cs(89,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONPasoLigero.cs(69,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\Asesinar.cs(458,11): warning CS0219: The variable 'rangoPlus' is assigned but its value is never used
+Assets\Scripts\Clases\Duelista\Habilidades\PresenciaProvocadora.cs(105,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONDanzaDelEstoque.cs(88,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONPosturaDemandante.cs(72,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\PuntaHiriente.cs(144,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armaduras\Gambeson\Rara_GambesonDelUltimoPaso\REPRESENTACIONUltimoPaso.cs(69,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONEvasionMaestra.cs(111,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\Riposte.cs(91,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\Riposte.cs(201,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Acechador\Habilidades\HaciaLasSombras.cs(99,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\HaciaLasSombras.cs(188,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Explorador\ClaseExplorador.cs(231,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONArmaduraLimitante.cs(59,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\SifonArcano.cs(133,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMaestriaEspadaCorta.cs(69,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\HombroConHombro.cs(160,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Infrecuente_MandobleSagrado\CorteVerticalSagrado.cs(138,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONAcumulacionProtegida.cs(103,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\ReaccionSifonArcano.cs(38,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Caballero\Habilidades\PrimerosAuxilios.cs(152,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONAcorazado.cs(273,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armas\Estoque\Infrecuente_EstoqueDelPrimerSangre\EstocadaPrimerSangre.cs(64,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\RecuperarAire.cs(96,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armas\Estoque\Rara_EstoqueDeLaRosaNegra\EstocadaRosaNegra.cs(61,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Acechar.cs(160,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Fogata.cs(152,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Fogata.cs(238,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs(165,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\DisparoPotente.cs(198,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONPasoCauteloso.cs(69,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs(246,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Explorador\Habilidades\MarcarPresa.cs(166,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\MarcarPresa.cs(274,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONAcrobatico.cs(114,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\CorteDaga.cs(122,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONReconocimiento.cs(99,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONVistaLejana.cs(95,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\TiroconArco.cs(144,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Rafaga.cs(210,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Vigilancia.cs(177,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Infrecuente_ArcoLargoAcido\TiroconArcoAcido.cs(165,7): warning CS0162: Unreachable code detected
+Assets\Scripts\BattleManager.cs(5832,11): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Infrecuente_ArcoLargoPotente\TiroconArcoPotente.cs(166,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Raro_ArcoLargoRalentizante\TiroconArcoRalentizante.cs(167,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\CastigaraLosMalvados.cs(159,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\Enmendar.cs(148,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\GolpeBaston.cs(137,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\CastigaraLosMalvados.cs(323,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armas\Estoque\Raro_EstoqueAstral\EstocadaAstral.cs(62,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\HojaDeEnergia.cs(155,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(199,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(374,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\BattleManager.cs(6590,5): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\Scripts\Clases\Purificadora\Habilidades\PilaresDeLuz.cs(154,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONFervorConjunto.cs(73,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\ReaccionCastigarMalvados.cs(36,31): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(155,7): warning CS0162: Unreachable code detected
+Assets\Scripts\BattleManager.cs(6962,74): warning CS0184: The given expression is never of the provided ('DestruirObstaculo') type
+Assets\Scripts\Clases\Purificadora\Habilidades\PilaresDeLuz.cs(379,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONAuraSagrada.cs(324,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONEcosDivinos.cs(328,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\SalmoPurificador.cs(157,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\_ItemsExclusivos\Armas\Baculo Purificador\Raro_BaculoDeLlamaSacra\AtaqueBaculoLlamaSacra.cs(149,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\EscudodeFe.cs(182,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\SalmoPurificador.cs(380,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Estados.cs(28,28): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Estados.cs(67,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(79,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(180,32): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(209,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(213,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(228,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(233,6): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(249,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(252,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(268,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(273,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(288,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(293,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(309,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(313,12): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(328,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(331,12): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(354,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Purificadora\Habilidades\LlamaDivina.cs(203,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Campania\CampaignManager.cs(3103,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Habilidades\TerminoHoverPopup.cs(74,5): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\Scripts\Habilidades\Habilidades IA\IAHabilidad.cs(676,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Sistema\HandicapDificultad.cs(114,22): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Tutorial\TutorialDirector.cs(121,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Tutorial\TutorialDirector.cs(164,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Tutorial\TutorialDirector.cs(193,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Tutorial\TutorialPresenter.cs(444,25): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Tutorial\TutorialDirector.cs(639,19): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Campania\Nodo.cs(6342,17): warning CS0219: The variable 'minSampleDist' is assigned but its value is never used
+Assets\Scripts\IAUnidad.cs(1289,13): warning CS0184: The given expression is never of the provided ('DestruirObstaculo') type
+Assets\Scripts\Campania\Nodo.cs(7023,10): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\UI\ScreenFlash.cs(55,28): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\UI\BotonHabilidad.cs(710,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(725,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(730,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(735,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(741,21): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(750,21): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(758,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(763,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Visual\VisualPolishRuntime.cs(197,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\SunController.cs(83,13): warning CS0618: 'Light.cookieSize' is obsolete: 'Light.cookieSize has been deprecated. Use Light.cookieSize2D instead.'
+Assets\Scripts\Visual\VisualPolishRuntime.cs(597,24): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\TooltipBatalla.cs(189,9): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\Scripts\Visual\VisualPolishRuntime.cs(667,35): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Visual\VisualPolishRuntime.cs(680,24): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Habilidades\Habilidad.cs(1621,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Campania\CampaignManager.cs(6951,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Unidad.cs(2266,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\AdministradorEscenas.cs(5741,12): warning CS0219: The variable 'encontrado' is assigned but its value is never used
+Assets\Scripts\Unidad.cs(3409,15): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(3429,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(3630,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(3801,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(4181,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(4404,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(5129,3): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(5168,4): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(5880,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(5885,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(5966,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\TRADU.cs(15272,18): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(15,34): warning CS0414: The field 'LuzCegadora.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(15,34): warning CS0414: The field 'IAAtaqueCuervo.XdDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(14,34): warning CS0414: The field 'Purificacion.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(15,34): warning CS0414: The field 'FerenesiDeAsesinato.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(17,34): warning CS0414: The field 'IALevantarVuelo.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(17,34): warning CS0414: The field 'IAAtaqueCuervo.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(16,34): warning CS0414: The field 'FerenesiDeAsesinato.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladrón\LadronEnvenenarArma.cs(17,32): warning CS0414: The field 'LadronEnvenenarArma.tipoDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDePoder.cs(17,34): warning CS0414: The field 'DescargaDePoder.criticoRangoHab' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(12,32): warning CS0414: The field 'Perdicion.XdDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(279,10): warning CS0414: The field 'Purificacion.seTiroFlechaVFX' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(361,10): warning CS0414: The field 'LuzCegadora.seTiroFlechaVFX' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(17,34): warning CS0414: The field 'Purificacion.tipoDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(15,34): warning CS0414: The field 'Purificacion.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(14,32): warning CS0414: The field 'IADebatirTacticas.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(16,34): warning CS0414: The field 'CariciadelBosque.daniodX' is assigned but its value is never used
+Assets\EdgePanCameraX.cs(49,36): warning CS0414: The field 'EdgePanCameraZ.zoomInFovDelta' is assigned but its value is never used
+Assets\Scripts\Habilidades\RetrasarTurno.cs(13,34): warning CS0414: The field 'RetrasarTurno.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(15,34): warning CS0414: The field 'IALevantarVuelo.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(14,34): warning CS0414: The field 'CariciadelBosque.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkilever\IALenguetazo.cs(14,36): warning CS0414: The field 'IALenguetazo.vfxDuracion' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(16,34): warning CS0414: The field 'IAAtaqueCuervo.daniodX' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(17,34): warning CS0414: The field 'Distraer.criticoRangoHab' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(17,34): warning CS0414: The field 'Enredar.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(17,34): warning CS0414: The field 'IAChirridoVagranilo.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(14,34): warning CS0414: The field 'FerenesiDeAsesinato.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(16,34): warning CS0414: The field 'IAChirridoVagranilo.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(16,34): warning CS0414: The field 'Enredar.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(17,34): warning CS0414: The field 'CariciadelBosque.tipoDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(16,34): warning CS0414: The field 'LuzCegadora.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladrón\LadronEnvenenarArma.cs(14,32): warning CS0414: The field 'LadronEnvenenarArma.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(16,32): warning CS0414: The field 'IALevantarMartillo.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(14,34): warning CS0414: The field 'IALevantarVuelo.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(14,32): warning CS0414: The field 'Perdicion.tipoDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(15,34): warning CS0414: The field 'Distraer.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(15,32): warning CS0414: The field 'IADebatirTacticas.XdDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(18,34): warning CS0414: The field 'Distraer.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(14,34): warning CS0414: The field 'IAChirridoVagranilo.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(15,34): warning CS0414: The field 'CariciadelBosque.XdDanio' is assigned but its value is never used
+Assets\Scripts\Habilidades\BoladeFuego.cs(15,34): warning CS0414: The field 'BoladeFuego.criticoRangoHab' is assigned but its value is never used
+Assets\Scripts\Campania\CaravanTorchLight.cs(11,53): warning CS0414: The field 'CaravanTorchLight.alturaSobreCaravana' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(16,34): warning CS0414: The field 'Distraer.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(14,32): warning CS0414: The field 'IALevantarMartillo.bonusAtaque' is assigned but its value is never used
+Assets\Scripts\Habilidades\RetrasarTurno.cs(14,34): warning CS0414: The field 'RetrasarTurno.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(14,34): warning CS0414: The field 'IAAtaqueCuervo.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladrón\LadronEnvenenarArma.cs(16,32): warning CS0414: The field 'LadronEnvenenarArma.daniodX' is assigned but its value is never used
+Assets\Scripts\Habilidades\RetrasarTurno.cs(15,34): warning CS0414: The field 'RetrasarTurno.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(13,32): warning CS0414: The field 'Perdicion.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(16,34): warning CS0414: The field 'IALevantarVuelo.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(11,32): warning CS0414: The field 'Perdicion.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(15,34): warning CS0414: The field 'Enredar.XdDanio' is assigned but its value is never used
+Assets\Scripts\UI\UIInfoChar.cs(11,34): warning CS0414: The field 'UIInfoChar.posicionAliadoTop' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(17,32): warning CS0414: The field 'IADebatirTacticas.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(15,34): warning CS0414: The field 'IAChirridoVagranilo.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(17,34): warning CS0414: The field 'FerenesiDeAsesinato.tipoDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(14,34): warning CS0414: The field 'Distraer.bonusAtaque' is assigned but its value is never used
+Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs(13,26): warning CS0414: The field 'ImprovisarFlechas.usosBatalla' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(16,32): warning CS0414: The field 'IADebatirTacticas.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(15,32): warning CS0414: The field 'IALevantarMartillo.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladrón\LadronEnvenenarArma.cs(15,32): warning CS0414: The field 'LadronEnvenenarArma.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(14,34): warning CS0414: The field 'Enredar.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(17,32): warning CS0414: The field 'IALevantarMartillo.tipoDanio' is assigned but its value is never used
+Assets\Scripts\Habilidades\RetrasarTurno.cs(12,34): warning CS0414: The field 'RetrasarTurno.bonusAtaque' is assigned but its value is never used
+Assets\Editor\ValidacionCampoVivo.cs(12,31): warning CS0414: The field 'ValidacionCampoVivo.privado' is assigned but its value is never used
+AssetDatabase: script compilation time: 22.300329s
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  9.455 seconds
+Start importing Assets/Resources/CampoVivo using Guid(170a903c9f6f491688082a5290f96a79) (DefaultImporter) -> (artifact id: '6bea309cb590fc2e9b0b8c2cb80ae1a1') in 0.0211763 seconds
+Start importing Assets/Scripts/Visual/CampoVivo using Guid(f72fe28dd67c42fcb102c220339b466a) (DefaultImporter) -> (artifact id: 'ded8c926d87fb8f2b7c0cc716269429e') in 0.0012082 seconds
+Refreshing native plugins compatible for Editor in 244.09 ms, found 4 plugins.
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  2.301 seconds
+Domain Reload Profiling: 11745ms
+	BeginReloadAssembly (299ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (31ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (56ms)
+	RebuildCommonClasses (58ms)
+	RebuildNativeTypeToScriptingClass (20ms)
+	initialDomainReloadingComplete (48ms)
+	LoadAllAssembliesAndSetupDomain (9020ms)
+		LoadAssemblies (8495ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (676ms)
+			TypeCache.Refresh (595ms)
+				TypeCache.ScanAssembly (583ms)
+			BuildScriptInfoCaches (59ms)
+			ResolveRequiredComponents (17ms)
+	FinalizeReload (2301ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (2092ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (34ms)
+			SetLoadedEditorAssemblies (4ms)
+			BeforeProcessingInitializeOnLoad (260ms)
+			ProcessInitializeOnLoadAttributes (858ms)
+			ProcessInitializeOnLoadMethodAttributes (923ms)
+			AfterProcessingInitializeOnLoad (14ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (26ms)
+Start importing Assets/Resources/CampoVivo/CampoVivo.shader using Guid(af30e0e7bfa74f47bd129bda2327035a) (ShaderImporter)Launched and connected shader compiler UnityShaderCompiler.exe after 0.04 seconds
+ -> (artifact id: 'dceceb7f5ed1e97cc0fd2d3c4a135aaa') in 0.2312793 seconds
+Start importing Assets/Resources/CampoVivo/AjustesCampoVivo.asset using Guid(7aa5f60fcff75f54cb4d0ab2e2f05904) (NativeFormatImporter) -> (artifact id: '2f09804f3b1aba492bbbca442d830e20') in 0.0250514 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+ArgumentException: The specified path is not of a legal form (empty).
+  at System.IO.Path.InsecureGetFullPath (System.String path) [0x00025] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.Path.GetFullPath (System.String path) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at Microsoft.Unity.VisualStudio.Editor.FileUtility.GetAbsolutePath (System.String path) [0x00000] in .\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\Editor\FileUtility.cs:24 
+  at Microsoft.Unity.VisualStudio.Editor.VisualStudioEditor.TryGetVisualStudioInstallationForPath (System.String editorPath, System.Boolean lookupDiscoveredInstallations, Microsoft.Unity.VisualStudio.Editor.IVisualStudioInstallation& installation) [0x00000] in .\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\Editor\VisualStudioEditor.cs:100 
+  at Microsoft.Unity.VisualStudio.Editor.VisualStudioEditor.SyncIfNeeded (System.String[] addedFiles, System.String[] deletedFiles, System.String[] movedFiles, System.String[] movedFromFiles, System.String[] importedFiles) [0x00000] in .\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\Editor\VisualStudioEditor.cs:171 
+  at UnityEditor.CodeEditorProjectSync.PostprocessSyncProject (System.String[] importedAssets, System.String[] addedAssets, System.String[] deletedAssets, System.String[] movedAssets, System.String[] movedFromAssetPaths) [0x0000b] in <a90f148a0c664ac8982a824605784e74>:0 
+  at UnityEditor.AssetPostprocessingInternal.PostprocessAllAssets (System.String[] importedAssets, System.String[] addedAssets, System.String[] deletedAssets, System.String[] movedAssets, System.String[] movedFromPathAssets, System.Boolean didDomainReload) [0x00173] in <a90f148a0c664ac8982a824605784e74>:0 
+
+(Filename: ./Library/PackageCache/com.unity.ide.visualstudio@a99d56dec63f/Editor/FileUtility.cs Line: 24)
+
+Refreshing native plugins compatible for Editor in 12.71 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=a8410456895bdbb448c1e1182c4cdbb1): Total: 40.332 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	Summary:
+		Imports: total=4 (actual=4, local cache=0, cache server=0)
+		Asset DB Process Time: managed=4 ms, native=7140 ms
+		Asset DB Callback time: managed=256 ms, native=1067 ms
+		Scripting: domain reloads=1, domain reload time=9456 ms, compile time=22302 ms, other=104 ms
+		Project Asset Count: scripts=1187, non-scripts=3641
+		Asset File Changes: new=7, changed=10, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokeCustomDependenciesCallbacks: 0.002ms
+	InvokePackagesCallback: 63.395ms
+	ApplyChangesToAssetFolders: 0.895ms
+	Scan: 325.987ms
+	OnSourceAssetsModified: 2.444ms
+	CategorizeAssetsWithTransientArtifact: 3098.849ms
+	ProcessAssetsWithTransientArtifactChanges: 91.759ms
+	CategorizeAssets: 58.692ms
+	ImportOutOfDateAssets: 2869.356ms (-19722.949ms without children)
+		ImportManagerImport: 287.713ms (6.853ms without children)
+			ImportInProcess: 280.770ms
+			UpdateCategorizedAssets: 0.091ms
+		CompileScripts: 22302.231ms
+		ReloadNativeAssets: 0.022ms
+		UnloadImportedAssets: 0.908ms
+		ReloadImportedAssets: 0.001ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.987ms
+		InitializingProgressBar: 0.010ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.002ms
+		OnDemandSchedulerStart: 0.431ms
+	PostProcessAllAssets: 1244.849ms
+	Hotreload: 16.612ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.005ms
+	UnloadStreamsBegin: 2.081ms
+	PersistCurrentRevisions: 0.332ms
+	UnloadStreamsEnd: 0.002ms
+	GenerateScriptTypeHashes: 5.054ms
+	Untracked: 32556.275ms
+
+Application.AssetDatabase Initial Refresh End
+Scanning for USB devices : 7.947ms
+Initializing Unity extensions:
+ArgumentException: The specified path is not of a legal form (empty).
+  at System.IO.Path.InsecureGetFullPath (System.String path) [0x00025] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.Path.GetFullPath (System.String path) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at Microsoft.Unity.VisualStudio.Editor.FileUtility.GetAbsolutePath (System.String path) [0x00000] in .\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\Editor\FileUtility.cs:24 
+  at Microsoft.Unity.VisualStudio.Editor.VisualStudioEditor.TryGetVisualStudioInstallationForPath (System.String editorPath, System.Boolean lookupDiscoveredInstallations, Microsoft.Unity.VisualStudio.Editor.IVisualStudioInstallation& installation) [0x00000] in .\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\Editor\VisualStudioEditor.cs:100 
+  at Microsoft.Unity.VisualStudio.Editor.VisualStudioEditor.SyncAll () [0x00000] in .\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\Editor\VisualStudioEditor.cs:197 
+  at UnityEditor.CodeEditorProjectSync.SyncEditorProject () [0x0000b] in <a90f148a0c664ac8982a824605784e74>:0 
+
+(Filename: ./Library/PackageCache/com.unity.ide.visualstudio@a99d56dec63f/Editor/FileUtility.cs Line: 24)
+
+CreateDirectory '/../../Unity' failed: Acceso denegado.
+ (current dir: C:/UnityProyectosNOborrar/GDD - Untitled)
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-The Black Breath
+CreateDirectory '/../../Unity' failed: Acceso denegado.
+ (current dir: C:/UnityProyectosNOborrar/GDD - Untitled)
+Unloading 19 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 4820 unused Assets / (6.4 MB). Loaded Objects now: 5222.
+Memory consumption went from 157.4 MB to 151.0 MB.
+Total: 16.467700 ms (FindLiveObjects: 0.878900 ms CreateObjectMapping: 0.632600 ms MarkObjects: 9.867400 ms  DeleteObjects: 5.086800 ms)
+
+Opening scene 'Assets/Scenes/ES-Campaña.unity'
+Unloading 1480 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/Scenes/ES-Campaña.unity'
+	Deserialize:            10455.832 ms
+	Integration:            1266.680 ms
+	Integration of assets:  79.601 ms
+	Thread Wait Time:       -12.812 ms
+	Total Operation Time:   11789.301 ms
+Unloading 3 unused Assets / (1.8 KB). Loaded Objects now: 48612.
+Memory consumption went from 404.6 MB to 404.6 MB.
+Total: 21.822000 ms (FindLiveObjects: 5.438400 ms CreateObjectMapping: 1.819900 ms MarkObjects: 14.479600 ms  DeleteObjects: 0.082700 ms)
+
+Campo vivo: render finalizado.
+Assertion failed on expression: 'SUCCEEDED(hr)'
+Assertion failed on expression: 'SUCCEEDED(hr)'
+[Licensing::Client] Successfully resolved entitlement details
+Batchmode quit successfully invoked - shutting down!
+Clearing [Cardo-Regular SDF] dynamic font asset data.
+Clearing [CinzelDecorative-Regular SDF] dynamic font asset data.
+Clearing [CardoMarcada] dynamic font asset data.
+Clearing [SpectralSC-Regular SDF] dynamic font asset data.
+Start importing Assets/Resources/Fuentes/SpectralSC/SpectralSC-Regular SDF.asset using Guid(54a3d28dd6785154fac83f0c31a69b7c) (NativeFormatImporter) -> (artifact id: '961bb0b3a1e887afe82f2308c923f873') in 0.0321732 seconds
+Start importing Assets/Resources/Fuentes/Cinzel/CinzelDecorative-Regular SDF.asset using Guid(185ee1c6d79ccd949b75ce671a921084) (NativeFormatImporter) -> (artifact id: '2431b64a4ee42f8ca73765be7d2504ac') in 0.0219817 seconds
+Start importing Assets/Resources/Fuentes/SpectralSC/CardoMarcada.asset using Guid(3a5277fdbfb3ede4085c3336554184ba) (NativeFormatImporter) -> (artifact id: '14c5f654e985a090e21717b68351335a') in 0.0092377 seconds
+Start importing Assets/Resources/Fuentes/Cardo/Cardo-Regular SDF.asset using Guid(ff458e0654087aa41a97fa8ea3db3b66) (NativeFormatImporter) -> (artifact id: 'e498e82d6b3846643740ff13d130c114') in 0.0347794 seconds
+Unable to write to 'ProjectSettings\GvhProjectSettings.xml' (System.IO.IOException: Win32 IO returned 1224. Path: C:\UnityProyectosNOborrar\GDD - Untitled\ProjectSettings\GvhProjectSettings.xml
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean useAsync) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,bool)
+  at System.Xml.XmlWriterSettings.CreateWriter (System.String outputFileName) [0x00051] in <427707fe8c7a46f5a4a64fa13b05bdcf>:0 
+  at System.Xml.XmlWriter.Create (System.String outputFileName, System.Xml.XmlWriterSettings settings) [0x0000a] in <427707fe8c7a46f5a4a64fa13b05bdcf>:0 
+  at Google.ProjectSettings.Save () [0x00079] in /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:821 , Project settings were not saved!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogError (object)
+Google.Logger:Log (string,Google.LogLevel) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/Logger.cs:136)
+Google.ProjectSettings:Save () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:844)
+Google.ProjectSettings:SetBool (string,bool,Google.SettingsLocation) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:485)
+Google.ProjectSettings:SetBool (string,bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:497)
+Google.EditorMeasurement:set_Enabled (bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:133)
+Google.EditorMeasurement/<>c__DisplayClass84_0:<PromptToEnable>b__0 (Google.DialogWindow/Option) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:373)
+Google.DialogWindow:DisplayDefault (string,string,Google.DialogWindow/Option,string,string,string,single,Google.DialogWindow/Option,System.Action`1<Google.DialogWindow/Option>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/DialogWindow.cs:218)
+Google.DialogWindow:Display (string,string,Google.DialogWindow/Option,string,string,string,single,Google.DialogWindow/Option,System.Action`1<Google.DialogWindow/Option>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/DialogWindow.cs:247)
+Google.EditorMeasurement:PromptToEnable (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:362)
+Google.EditorMeasurement:Report (string,string) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:494)
+Google.VersionHandlerImpl/<>c__DisplayClass39_0:<NotifyWhenCompliationComplete>b__0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/VersionHandlerImpl.cs:2431)
+Google.RunOnMainThread:ExecutePollingJobs () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:409)
+Google.RunOnMainThread/<>c:<ExecuteAllUnnested>b__28_0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:541)
+Google.RunOnMainThread:RunAction (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:343)
+Google.RunOnMainThread:ExecuteAllUnnested (bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:530)
+Google.RunOnMainThread/<>c:<PollOnUpdateUntilComplete>b__20_0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:365)
+Google.RunOnMainThread:RunAction (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:343)
+Google.RunOnMainThread:PollOnUpdateUntilComplete (System.Func`1<bool>,bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:363)
+Google.RunOnMainThread/ScheduledJob:Schedule (System.Action,double) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:87)
+Google.RunOnMainThread:Schedule (System.Action,double) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:440)
+Google.VersionHandlerImpl:OnPostprocessAllAssets (string[],string[],string[],string[]) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/VersionHandlerImpl.cs:3040)
+System.Reflection.RuntimeMethodInfo:Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo)
+System.Reflection.MethodBase:Invoke (object,object[])
+UnityEditor.AssetPostprocessingInternal:InvokeMethod (System.Reflection.MethodInfo,object[])
+UnityEditor.AssetPostprocessingInternal:PostprocessAllAssets (string[],string[],string[],string[],string[],bool)
+
+(Filename: /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs Line: 844)
+
+Unable to write to 'ProjectSettings\GvhProjectSettings.xml' (System.IO.IOException: Win32 IO returned 1224. Path: C:\UnityProyectosNOborrar\GDD - Untitled\ProjectSettings\GvhProjectSettings.xml
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean useAsync) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,bool)
+  at System.Xml.XmlWriterSettings.CreateWriter (System.String outputFileName) [0x00051] in <427707fe8c7a46f5a4a64fa13b05bdcf>:0 
+  at System.Xml.XmlWriter.Create (System.String outputFileName, System.Xml.XmlWriterSettings settings) [0x0000a] in <427707fe8c7a46f5a4a64fa13b05bdcf>:0 
+  at Google.ProjectSettings.Save () [0x00079] in /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:821 , Project settings were not saved!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogError (object)
+Google.Logger:Log (string,Google.LogLevel) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/Logger.cs:136)
+Google.ProjectSettings:Save () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:844)
+Google.ProjectSettings:SetString (string,string,Google.SettingsLocation) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:537)
+Google.EditorMeasurement:set_Cookie (string) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:170)
+Google.EditorMeasurement:set_Enabled (bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:138)
+Google.EditorMeasurement/<>c__DisplayClass84_0:<PromptToEnable>b__0 (Google.DialogWindow/Option) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:373)
+Google.DialogWindow:DisplayDefault (string,string,Google.DialogWindow/Option,string,string,string,single,Google.DialogWindow/Option,System.Action`1<Google.DialogWindow/Option>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/DialogWindow.cs:218)
+Google.DialogWindow:Display (string,string,Google.DialogWindow/Option,string,string,string,single,Google.DialogWindow/Option,System.Action`1<Google.DialogWindow/Option>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/DialogWindow.cs:247)
+Google.EditorMeasurement:PromptToEnable (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:362)
+Google.EditorMeasurement:Report (string,string) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:494)
+Google.VersionHandlerImpl/<>c__DisplayClass39_0:<NotifyWhenCompliationComplete>b__0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/VersionHandlerImpl.cs:2431)
+Google.RunOnMainThread:ExecutePollingJobs () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:409)
+Google.RunOnMainThread/<>c:<ExecuteAllUnnested>b__28_0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:541)
+Google.RunOnMainThread:RunAction (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:343)
+Google.RunOnMainThread:ExecuteAllUnnested (bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:530)
+Google.RunOnMainThread/<>c:<PollOnUpdateUntilComplete>b__20_0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:365)
+Google.RunOnMainThread:RunAction (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:343)
+Google.RunOnMainThread:PollOnUpdateUntilComplete (System.Func`1<bool>,bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:363)
+Google.RunOnMainThread/ScheduledJob:Schedule (System.Action,double) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:87)
+Google.RunOnMainThread:Schedule (System.Action,double) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:440)
+Google.VersionHandlerImpl:OnPostprocessAllAssets (string[],string[],string[],string[]) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/VersionHandlerImpl.cs:3040)
+System.Reflection.RuntimeMethodInfo:Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo)
+System.Reflection.MethodBase:Invoke (object,object[])
+UnityEditor.AssetPostprocessingInternal:InvokeMethod (System.Reflection.MethodInfo,object[])
+UnityEditor.AssetPostprocessingInternal:PostprocessAllAssets (string[],string[],string[],string[],string[],bool)
+
+(Filename: /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs Line: 844)
+
+Unable to write to 'ProjectSettings\GvhProjectSettings.xml' (System.IO.IOException: Win32 IO returned 1224. Path: C:\UnityProyectosNOborrar\GDD - Untitled\ProjectSettings\GvhProjectSettings.xml
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean useAsync) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,bool)
+  at System.Xml.XmlWriterSettings.CreateWriter (System.String outputFileName) [0x00051] in <427707fe8c7a46f5a4a64fa13b05bdcf>:0 
+  at System.Xml.XmlWriter.Create (System.String outputFileName, System.Xml.XmlWriterSettings settings) [0x0000a] in <427707fe8c7a46f5a4a64fa13b05bdcf>:0 
+  at Google.ProjectSettings.Save () [0x00079] in /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:821 , Project settings were not saved!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogError (object)
+Google.Logger:Log (string,Google.LogLevel) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/Logger.cs:136)
+Google.ProjectSettings:Save () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:844)
+Google.ProjectSettings:SetBool (string,bool,Google.SettingsLocation) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:485)
+Google.ProjectSettings:SetBool (string,bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:497)
+Google.EditorMeasurement:set_Enabled (bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:133)
+Google.EditorMeasurement/<>c__DisplayClass84_0:<PromptToEnable>b__0 (Google.DialogWindow/Option) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:373)
+Google.DialogWindow:DisplayDefault (string,string,Google.DialogWindow/Option,string,string,string,single,Google.DialogWindow/Option,System.Action`1<Google.DialogWindow/Option>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/DialogWindow.cs:218)
+Google.DialogWindow:Display (string,string,Google.DialogWindow/Option,string,string,string,single,Google.DialogWindow/Option,System.Action`1<Google.DialogWindow/Option>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/DialogWindow.cs:247)
+Google.EditorMeasurement:PromptToEnable (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:362)
+Google.EditorMeasurement:Report (string,string) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:494)
+Google.VersionHandlerImpl/<>c__DisplayClass39_0:<NotifyWhenCompliationComplete>b__0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/VersionHandlerImpl.cs:2431)
+Google.RunOnMainThread:ExecutePollingJobs () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:409)
+Google.RunOnMainThread/<>c:<ExecuteAllUnnested>b__28_0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:541)
+Google.RunOnMainThread:RunAction (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:343)
+Google.RunOnMainThread:ExecuteAllUnnested (bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:530)
+Google.RunOnMainThread/<>c:<PollOnUpdateUntilComplete>b__20_0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:365)
+Google.RunOnMainThread:RunAction (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:343)
+Google.RunOnMainThread:PollOnUpdateUntilComplete (System.Func`1<bool>,bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:363)
+Google.RunOnMainThread/ScheduledJob:Schedule (System.Action,double) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:87)
+Google.RunOnMainThread:Schedule (System.Action,double) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:440)
+Google.VersionHandlerImpl:OnPostprocessAllAssets (string[],string[],string[],string[]) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/VersionHandlerImpl.cs:3040)
+System.Reflection.RuntimeMethodInfo:Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo)
+System.Reflection.MethodBase:Invoke (object,object[])
+UnityEditor.AssetPostprocessingInternal:InvokeMethod (System.Reflection.MethodInfo,object[])
+UnityEditor.AssetPostprocessingInternal:PostprocessAllAssets (string[],string[],string[],string[],string[],bool)
+
+(Filename: /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs Line: 844)
+
+Unable to write to 'ProjectSettings\GvhProjectSettings.xml' (System.IO.IOException: Win32 IO returned 1224. Path: C:\UnityProyectosNOborrar\GDD - Untitled\ProjectSettings\GvhProjectSettings.xml
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) [0x0019e] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean useAsync) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at (wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,bool)
+  at System.Xml.XmlWriterSettings.CreateWriter (System.String outputFileName) [0x00051] in <427707fe8c7a46f5a4a64fa13b05bdcf>:0 
+  at System.Xml.XmlWriter.Create (System.String outputFileName, System.Xml.XmlWriterSettings settings) [0x0000a] in <427707fe8c7a46f5a4a64fa13b05bdcf>:0 
+  at Google.ProjectSettings.Save () [0x00079] in /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:821 , Project settings were not saved!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogError (object)
+Google.Logger:Log (string,Google.LogLevel) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/Logger.cs:136)
+Google.ProjectSettings:Save () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:844)
+Google.ProjectSettings:SetString (string,string,Google.SettingsLocation) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs:537)
+Google.EditorMeasurement:set_Cookie (string) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:170)
+Google.EditorMeasurement:set_Enabled (bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:138)
+Google.EditorMeasurement/<>c__DisplayClass84_0:<PromptToEnable>b__0 (Google.DialogWindow/Option) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:373)
+Google.DialogWindow:DisplayDefault (string,string,Google.DialogWindow/Option,string,string,string,single,Google.DialogWindow/Option,System.Action`1<Google.DialogWindow/Option>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/DialogWindow.cs:218)
+Google.DialogWindow:Display (string,string,Google.DialogWindow/Option,string,string,string,single,Google.DialogWindow/Option,System.Action`1<Google.DialogWindow/Option>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>,System.Action`1<Google.DialogWindow>) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/DialogWindow.cs:247)
+Google.EditorMeasurement:PromptToEnable (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:362)
+Google.EditorMeasurement:Report (string,string) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/EditorMeasurement.cs:494)
+Google.VersionHandlerImpl/<>c__DisplayClass39_0:<NotifyWhenCompliationComplete>b__0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/VersionHandlerImpl.cs:2431)
+Google.RunOnMainThread:ExecutePollingJobs () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:409)
+Google.RunOnMainThread/<>c:<ExecuteAllUnnested>b__28_0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:541)
+Google.RunOnMainThread:RunAction (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:343)
+Google.RunOnMainThread:ExecuteAllUnnested (bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:530)
+Google.RunOnMainThread/<>c:<PollOnUpdateUntilComplete>b__20_0 () (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:365)
+Google.RunOnMainThread:RunAction (System.Action) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:343)
+Google.RunOnMainThread:PollOnUpdateUntilComplete (System.Func`1<bool>,bool) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:363)
+Google.RunOnMainThread/ScheduledJob:Schedule (System.Action,double) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:87)
+Google.RunOnMainThread:Schedule (System.Action,double) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/RunOnMainThread.cs:440)
+Google.VersionHandlerImpl:OnPostprocessAllAssets (string[],string[],string[],string[]) (at /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/VersionHandlerImpl.cs:3040)
+System.Reflection.RuntimeMethodInfo:Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo)
+System.Reflection.MethodBase:Invoke (object,object[])
+UnityEditor.AssetPostprocessingInternal:InvokeMethod (System.Reflection.MethodInfo,object[])
+UnityEditor.AssetPostprocessingInternal:PostprocessAllAssets (string[],string[],string[],string[],string[],bool)
+
+(Filename: /Users/amaurice/Documents/GitHub/unity-jar-resolver/source/VersionHandlerImpl/src/ProjectSettings.cs Line: 844)
+
+ArgumentException: The specified path is not of a legal form (empty).
+  at System.IO.Path.InsecureGetFullPath (System.String path) [0x00025] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.IO.Path.GetFullPath (System.String path) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at Microsoft.Unity.VisualStudio.Editor.FileUtility.GetAbsolutePath (System.String path) [0x00000] in .\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\Editor\FileUtility.cs:24 
+  at Microsoft.Unity.VisualStudio.Editor.VisualStudioEditor.TryGetVisualStudioInstallationForPath (System.String editorPath, System.Boolean lookupDiscoveredInstallations, Microsoft.Unity.VisualStudio.Editor.IVisualStudioInstallation& installation) [0x00000] in .\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\Editor\VisualStudioEditor.cs:100 
+  at Microsoft.Unity.VisualStudio.Editor.VisualStudioEditor.SyncIfNeeded (System.String[] addedFiles, System.String[] deletedFiles, System.String[] movedFiles, System.String[] movedFromFiles, System.String[] importedFiles) [0x00000] in .\Library\PackageCache\com.unity.ide.visualstudio@a99d56dec63f\Editor\VisualStudioEditor.cs:171 
+  at UnityEditor.CodeEditorProjectSync.PostprocessSyncProject (System.String[] importedAssets, System.String[] addedAssets, System.String[] deletedAssets, System.String[] movedAssets, System.String[] movedFromAssetPaths) [0x0000b] in <a90f148a0c664ac8982a824605784e74>:0 
+  at UnityEditor.AssetPostprocessingInternal.PostprocessAllAssets (System.String[] importedAssets, System.String[] addedAssets, System.String[] deletedAssets, System.String[] movedAssets, System.String[] movedFromPathAssets, System.Boolean didDomainReload) [0x00173] in <a90f148a0c664ac8982a824605784e74>:0 
+
+(Filename: ./Library/PackageCache/com.unity.ide.visualstudio@a99d56dec63f/Editor/FileUtility.cs Line: 24)
+
+Refreshing native plugins compatible for Editor in 9.78 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=4ecd90b15785107458d68c936245fbb4): Total: 0.347 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+	Summary:
+		Imports: total=4 (actual=4, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=202 ms
+		Asset DB Callback time: managed=109 ms, native=34 ms
+		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
+		Project Asset Count: scripts=1187, non-scripts=3641
+		Asset File Changes: new=0, changed=2, moved=0, deleted=0
+		Scan Filter Count: 10
+	InvokeCustomDependenciesCallbacks: 0.001ms
+	InvokePackagesCallback: 0.001ms
+	ApplyChangesToAssetFolders: 0.150ms
+	Scan: 16.379ms
+	OnSourceAssetsModified: 1.110ms
+	CategorizeAssetsWithTransientArtifact: 0.024ms
+	ProcessAssetsWithTransientArtifactChanges: 0.065ms
+	CategorizeAssets: 3.421ms
+	ImportOutOfDateAssets: 176.556ms (0.477ms without children)
+		ImportManagerImport: 174.150ms (73.595ms without children)
+			ImportInProcess: 100.490ms
+			UpdateCategorizedAssets: 0.066ms
+		ReloadNativeAssets: 0.351ms
+		UnloadImportedAssets: 0.368ms
+		ReloadImportedAssets: 0.001ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.806ms
+		InitializingProgressBar: 0.017ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.002ms
+		OnDemandSchedulerStart: 0.383ms
+	PostProcessAllAssets: 125.109ms
+	Hotreload: 17.873ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.248ms
+	UnloadStreamsBegin: 1.661ms
+	PersistCurrentRevisions: 0.325ms
+	UnloadStreamsEnd: 0.154ms
+	Untracked: 3.719ms
+
+Leftover web requests after shut down
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-Pablo-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-Pablo channel disconnected successfully.
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+Exiting batchmode successfully now!
+Exiting without the bug reporter. Application will terminate with return code 0

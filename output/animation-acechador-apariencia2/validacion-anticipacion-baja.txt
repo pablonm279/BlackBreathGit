@@ -1,0 +1,4 @@
+Anticipacion nueva RGBA 1024x768, alfa 0..255 y margen transparente.
+SHA256 sin cambios: reposo, impacto, meta/GUID de anticipacion y perfil.
+Bounds: (114, 76, 765, 760)
+Pendiente: transicion visual en Play Mode.

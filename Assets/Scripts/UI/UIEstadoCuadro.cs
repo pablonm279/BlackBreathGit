@@ -37,7 +37,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
     Retrato = gameObject.GetComponent<Image>();
     if (Retrato != null)
     {
-      Retrato.raycastPadding = PaddingRaycast;
+      Retrato.raycastPadding = -PaddingRaycast;
     }
 
     CachearTextosStacks();
@@ -85,7 +85,7 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
       Retrato = gameObject.GetComponent<Image>();
       if (Retrato != null)
       {
-        Retrato.raycastPadding = PaddingRaycast;
+        Retrato.raycastPadding = -PaddingRaycast;
       }
     }
   }

@@ -1,0 +1,8 @@
+reposo: RGBA 1024x768, margenes, referencia e importacion correctos; bounds (348, 41, 680, 760)
+anticipacion: RGBA 1024x768, margenes, referencia e importacion correctos; bounds (100, 14, 789, 760)
+impacto: RGBA 1024x768, margenes, referencia e importacion correctos; bounds (149, 73, 742, 760)
+Las cuatro referencias originales coinciden con la entrada Apariencia2 del prefab
+Parejas mover/atacar unicas entre 7 perfiles
+Apariencia1 excluida; solo tres poses nuevas, sin dano ni pasos
+Anticipacion conserva el alfa real de su fuente; reposo e impacto usan recorte autorizado
+Pendiente: transiciones en Play Mode, batalla y tutorial.

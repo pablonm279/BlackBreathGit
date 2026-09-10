@@ -1,0 +1,90 @@
+{
+  "CaballeroApariencia1": [
+    {
+      "frame": "reposo",
+      "source_bounds": [
+        73,
+        45,
+        420,
+        488
+      ],
+      "pixels": [
+        1024,
+        768
+      ],
+      "alpha": true
+    },
+    {
+      "frame": "anticipacion",
+      "source_bounds": [
+        117,
+        499,
+        440,
+        982
+      ],
+      "pixels": [
+        1024,
+        768
+      ],
+      "alpha": true
+    },
+    {
+      "frame": "impacto",
+      "source_bounds": [
+        466,
+        583,
+        962,
+        968
+      ],
+      "pixels": [
+        1024,
+        768
+      ],
+      "alpha": true
+    }
+  ],
+  "DriadaQuemada": [
+    {
+      "frame": "reposo",
+      "source_bounds": [
+        163,
+        40,
+        467,
+        486
+      ],
+      "pixels": [
+        1024,
+        768
+      ],
+      "alpha": true
+    },
+    {
+      "frame": "anticipacion",
+      "source_bounds": [
+        131,
+        536,
+        422,
+        981
+      ],
+      "pixels": [
+        1024,
+        768
+      ],
+      "alpha": true
+    },
+    {
+      "frame": "impacto",
+      "source_bounds": [
+        509,
+        530,
+        980,
+        995
+      ],
+      "pixels": [
+        1024,
+        768
+      ],
+      "alpha": true
+    }
+  ]
+}

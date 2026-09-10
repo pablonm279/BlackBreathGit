@@ -52,6 +52,7 @@ public static class BattleVisualJuice
 
   public static void ReproducirImpacto(Unidad causante, Unidad objetivo, bool critico, bool muerte, float danio)
   {
+    CampoVivoBatalla.ReproducirImpacto(causante, objetivo, critico, muerte, danio);
     if (!Enabled || objetivo == null || danio <= 0f)
     {
       return;

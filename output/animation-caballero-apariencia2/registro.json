@@ -1,0 +1,52 @@
+{
+  "reposo": {
+    "source": "lamina-descartada-solapamiento.png",
+    "region": [
+      0,
+      0,
+      595,
+      899
+    ],
+    "scale": 0.98,
+    "source_feet": [
+      335,
+      856
+    ],
+    "output_bounds": [
+      218,
+      47,
+      750,
+      733
+    ]
+  },
+  "anticipacion": {
+    "source": "anticipacion-fuente.png",
+    "region": null,
+    "scale": 0.603,
+    "source_feet": [
+      635,
+      1198
+    ],
+    "output_bounds": [
+      293,
+      16,
+      778,
+      730
+    ]
+  },
+  "impacto": {
+    "source": "impacto-fuente.png",
+    "region": null,
+    "scale": 0.635,
+    "source_feet": [
+      734,
+      1170
+    ],
+    "output_bounds": [
+      69,
+      95,
+      815,
+      728
+    ]
+  }
+}

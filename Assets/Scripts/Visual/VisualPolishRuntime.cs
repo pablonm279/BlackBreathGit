@@ -746,7 +746,8 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       baseExposure = 0.04f;
       baseContrast = 5f;
     }
-    color.postExposure.Override(baseExposure + brightnessExposureOffset);
+    // La exposicion usa pasos logaritmicos: este aumento multiplica el brillo base por 1.10.
+    color.postExposure.Override(baseExposure + brightnessExposureOffset + Mathf.Log(1.10f, 2f));
     color.contrast.Override(Mathf.Clamp(baseContrast + contrastOffset, -100f, 100f));
 
     Bloom bloom = GetOrAddSetting<Bloom>(profile);

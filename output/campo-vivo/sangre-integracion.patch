@@ -1,0 +1,12 @@
+--- a/Assets/Scripts/Unidad.cs
++++ b/Assets/Scripts/Unidad.cs
+@@ -1038,7 +1038,8 @@
+ 
+     if (goSANGRE != null)
+     {
+-      Instantiate(goSANGRE, puntoEntrante.position, Quaternion.identity);
++      var sangre = Instantiate(goSANGRE, puntoEntrante.position, Quaternion.identity);
++      CampoVivoBatalla.AjustarSangre(sangre);
+     }
+   }
+ 

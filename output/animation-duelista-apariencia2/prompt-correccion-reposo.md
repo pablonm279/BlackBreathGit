@@ -1,0 +1,3 @@
+# Corrección del fondo de reposo
+
+Use case: background-extraction. Edit this single full-body female duelist sprite: remove ALL the dark brown/black gradient background, halo, glow and cast shadows. Keep the character, sword, hair, face, costume, every gold tassel, body proportions, pose and composition unchanged. Output a clean cutout with REAL TRANSPARENT ALPHA and crisp anti-aliased edges, no residual brown or white matte, no checkerboard pixels. Preserve the full sword tip, feet and head. If transparency is not available, use absolutely uniform pure white #FFFFFF background, with no gradient, shadow or checkerboard.

@@ -95,9 +95,14 @@ public class CampaignManager : MonoBehaviour
   private const float DuracionResultadoExploradoresSegundos = 1.2f;
   private const float RetrasoInicioEnvioExploradoresSegundos = 0.25f;
   private const float RetrasoEntreTextosExploradoresSegundos = 0.9f;
+  private const float DuracionFadeIndicadorPasoTiempo = 0.22f;
   private const float DuracionHighlightNodoSegundos = 10f;
   private const float DuracionFadeOutHighlightNodoSegundos = 1f;
   private bool enviandoExploradores;
+  private GameObject indicadorPasoTiempoRoot;
+  private CanvasGroup grupoIndicadorPasoTiempo;
+  private Coroutine rutinaIndicadorPasoTiempo;
+  private int solicitudesIndicadorPasoTiempo;
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteExploradores = new Dictionary<GameObject, bool>();
   private readonly Dictionary<GameObject, bool> estadosCanvasCampaniaDuranteIntro = new Dictionary<GameObject, bool>();
   private readonly Dictionary<int, int> ultimasAparienciasAlternativasPorClase = new Dictionary<int, int>();
@@ -2559,6 +2564,20 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   private void OnDisable()
   {
     AjustesAudio.VolumenSfxCambiado -= ActualizarVolumenSfxMovimientoCaravana;
+    solicitudesIndicadorPasoTiempo = 0;
+    if (rutinaIndicadorPasoTiempo != null)
+    {
+      StopCoroutine(rutinaIndicadorPasoTiempo);
+    }
+    rutinaIndicadorPasoTiempo = null;
+    if (grupoIndicadorPasoTiempo != null)
+    {
+      grupoIndicadorPasoTiempo.alpha = 0f;
+    }
+    if (indicadorPasoTiempoRoot != null)
+    {
+      indicadorPasoTiempoRoot.SetActive(false);
+    }
     if (rutinaAnimacionTextoCargaCampania != null)
     {
       StopCoroutine(rutinaAnimacionTextoCargaCampania);
@@ -2944,6 +2963,17 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     bool progresarActividades = true)
   {
     float restantes = Mathf.Max(0f, horas);
+    if (restantes <= 0.0001f)
+    {
+      yield break;
+    }
+
+    bool mostrarIndicador = tipo == TipoAvanceTiempoCampania.Posada
+      || tipo == TipoAvanceTiempoCampania.Asentamiento;
+    if (mostrarIndicador)
+    {
+      MostrarIndicadorPasoTiempo();
+    }
     while (restantes > 0.0001f)
     {
       float delta = Mathf.Min(restantes, Mathf.Max(0f, Time.deltaTime));
@@ -2956,6 +2986,124 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       restantes -= delta;
       yield return null;
     }
+    if (mostrarIndicador)
+    {
+      OcultarIndicadorPasoTiempo();
+    }
+  }
+
+  public void MostrarIndicadorPasoTiempo()
+  {
+    solicitudesIndicadorPasoTiempo++;
+    AsegurarIndicadorPasoTiempo();
+    if (indicadorPasoTiempoRoot == null || grupoIndicadorPasoTiempo == null)
+    {
+      return;
+    }
+
+    indicadorPasoTiempoRoot.SetActive(true);
+    AnimarIndicadorPasoTiempo(1f, false);
+  }
+
+  public void OcultarIndicadorPasoTiempo()
+  {
+    solicitudesIndicadorPasoTiempo = Mathf.Max(0, solicitudesIndicadorPasoTiempo - 1);
+    if (solicitudesIndicadorPasoTiempo > 0 || grupoIndicadorPasoTiempo == null)
+    {
+      return;
+    }
+
+    AnimarIndicadorPasoTiempo(0f, true);
+  }
+
+  private void AsegurarIndicadorPasoTiempo()
+  {
+    if (indicadorPasoTiempoRoot != null)
+    {
+      return;
+    }
+
+    indicadorPasoTiempoRoot = new GameObject(
+      "IndicadorPasoTiempo",
+      typeof(RectTransform),
+      typeof(Canvas),
+      typeof(CanvasScaler),
+      typeof(CanvasGroup));
+    indicadorPasoTiempoRoot.transform.SetParent(transform, false);
+
+    Canvas canvas = indicadorPasoTiempoRoot.GetComponent<Canvas>();
+    canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+    canvas.overrideSorting = true;
+    canvas.sortingOrder = 32766;
+
+    CanvasScaler scaler = indicadorPasoTiempoRoot.GetComponent<CanvasScaler>();
+    scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+    scaler.referenceResolution = new Vector2(1920f, 1080f);
+    scaler.matchWidthOrHeight = 0.5f;
+
+    grupoIndicadorPasoTiempo = indicadorPasoTiempoRoot.GetComponent<CanvasGroup>();
+    grupoIndicadorPasoTiempo.alpha = 0f;
+    grupoIndicadorPasoTiempo.interactable = false;
+    grupoIndicadorPasoTiempo.blocksRaycasts = false;
+
+    GameObject textoGo = new GameObject(
+      "Texto",
+      typeof(RectTransform),
+      typeof(CanvasRenderer),
+      typeof(TextMeshProUGUI));
+    textoGo.transform.SetParent(indicadorPasoTiempoRoot.transform, false);
+
+    RectTransform textoRect = textoGo.GetComponent<RectTransform>();
+    textoRect.anchorMin = new Vector2(0.5f, 0f);
+    textoRect.anchorMax = new Vector2(0.5f, 0f);
+    textoRect.pivot = new Vector2(0.5f, 0f);
+    textoRect.anchoredPosition = new Vector2(0f, 48f);
+    textoRect.sizeDelta = new Vector2(760f, 52f);
+
+    TextMeshProUGUI texto = textoGo.GetComponent<TextMeshProUGUI>();
+    texto.text = "Time Passes...";
+    texto.font = Resources.Load<TMP_FontAsset>("Fuentes/Cinzel/CinzelDecorative-Regular SDF");
+    texto.fontSize = 25f;
+    texto.characterSpacing = 1.5f;
+    texto.alignment = TextAlignmentOptions.Center;
+    texto.color = new Color(0.88f, 0.86f, 0.80f, 0.72f);
+    texto.textWrappingMode = TextWrappingModes.NoWrap;
+    texto.raycastTarget = false;
+
+    indicadorPasoTiempoRoot.SetActive(false);
+  }
+
+  private void AnimarIndicadorPasoTiempo(float alphaObjetivo, bool desactivarAlFinal)
+  {
+    if (rutinaIndicadorPasoTiempo != null)
+    {
+      StopCoroutine(rutinaIndicadorPasoTiempo);
+    }
+    rutinaIndicadorPasoTiempo = StartCoroutine(
+      AnimarIndicadorPasoTiempoCoroutine(alphaObjetivo, desactivarAlFinal));
+  }
+
+  private IEnumerator AnimarIndicadorPasoTiempoCoroutine(float alphaObjetivo, bool desactivarAlFinal)
+  {
+    float alphaInicial = grupoIndicadorPasoTiempo != null ? grupoIndicadorPasoTiempo.alpha : 0f;
+    float tiempo = 0f;
+    while (grupoIndicadorPasoTiempo != null && tiempo < DuracionFadeIndicadorPasoTiempo)
+    {
+      tiempo += Time.unscaledDeltaTime;
+      float t = Mathf.Clamp01(tiempo / DuracionFadeIndicadorPasoTiempo);
+      grupoIndicadorPasoTiempo.alpha = Mathf.Lerp(alphaInicial, alphaObjetivo, Mathf.SmoothStep(0f, 1f, t));
+      yield return null;
+    }
+
+    if (grupoIndicadorPasoTiempo != null)
+    {
+      grupoIndicadorPasoTiempo.alpha = alphaObjetivo;
+    }
+    if (desactivarAlFinal && indicadorPasoTiempoRoot != null && solicitudesIndicadorPasoTiempo == 0)
+    {
+      indicadorPasoTiempoRoot.SetActive(false);
+    }
+    rutinaIndicadorPasoTiempo = null;
   }
 
   public void FinalizarAccionTemporal()

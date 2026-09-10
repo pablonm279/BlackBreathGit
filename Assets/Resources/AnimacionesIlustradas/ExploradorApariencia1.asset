@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2120a9298565ad4ab15a9b86242850c, type: 3}
+  m_Name: ExploradorApariencia1
+  m_EditorClassIdentifier: 
+  origenIdle: {fileID: 21300000, guid: 8cd41d9e4d6a92044b4bcbb19b7e478b, type: 3}
+  origenMover: {fileID: 21300000, guid: 537e298d5105b8d46ba674ff7fbf7b03, type: 3}
+  origenAtacar: {fileID: 21300000, guid: 81e7f7b5ea067554ebaecc6872fe74ce, type: 3}
+  origenTurnoActivo: {fileID: 21300000, guid: 5cbdaa60f45ac9243a4b3436b86f98c4, type: 3}
+  reposo: {fileID: 21300000, guid: 431bc37df0715a06a014a897a8edddd5, type: 3}
+  anticipacion: {fileID: 21300000, guid: 86e45bb847935caa8300f2adf8208cfd, type: 3}
+  impacto: {fileID: 21300000, guid: 918e6483125f5f128ca497d80fee3f8e, type: 3}
+  apoyo: {x: 0.5, y: 0.026041666666666668}
+  escalaHorizontal: 1.3653333333333333
+  desplazamientoHorizontal: 0.030000000000000027
+  respiracion: 0.006
+  preparacion: {fileID: 21300000, guid: 881e43f73d915389b30be94f720a09f2, type: 3}

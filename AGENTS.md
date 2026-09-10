@@ -54,6 +54,13 @@
 - Si aparece una referencia duplicada entre `Assets/...` y `GDD - Untitled/Assets/...`, tomar `Assets/...` como fuente primaria salvo evidencia en contra.
 - `Assets/TRADU.cs` queda off-limits salvo pedido explicito del usuario. Si una solucion requiere tocar traducciones, avisarlo primero en chat con clave original + propuesta en ingles + propuesta en portugues BR, y esperar confirmacion antes de editar.
 
+## Actualizacion visual y animaciones de unidades
+
+- Ante cualquier pedido de actualizar visualmente o animar una unidad, leer completo [ACTUALIZACION_VISUAL_UNIDADES.md](ACTUALIZACION_VISUAL_UNIDADES.md) antes de generar assets o editar codigo.
+- Seguir ese procedimiento en orden y sus criterios de aceptacion. Es el resultado aprobado para Caballero apariencia 1 y Driada Quemada, incluido el ajuste final de escala y bordes del idle.
+- Aplicarlo tambien cuando el usuario diga simplemente "actualiza esta unidad" en contexto de arte o animaciones. No aplicarlo a pedidos exclusivamente de balance o logica.
+- Mantener las decisiones aprobadas salvo que el usuario pida cambiarlas; no volver a proponer caminata ni sprites nuevos de dano. Calibrar las medidas para cada unidad como indica el documento.
+
 ## Flujo para cambios chicos
 
 - Trabajar en modo clinico: tocar lo minimo indispensable para resolver el pedido.

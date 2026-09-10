@@ -1172,7 +1172,13 @@ public abstract class Habilidad : MonoBehaviour
     // - Canalizador hostil: usa ataque
     // - Hostil melee: usa ataque
     // - Resto: usa pose de habilidad
-    if (!omitirAnimacionDeUso)
+    bool usoPosePreparacion = false;
+    if ((this is ImprovisarFlechas || this is Acechar) && scEstaUnidad != null)
+    {
+      var controladorPreparacion = scEstaUnidad.GetComponent<UnidadPoseController>();
+      usoPosePreparacion = controladorPreparacion != null && controladorPreparacion.PlayPreparationPose();
+    }
+    if (!omitirAnimacionDeUso && !usoPosePreparacion)
     {
       bool usarAtaque = !forzarPoseHabilidad && (fuerzaPoseAtaque || (scEstaUnidad is ClaseCanalizador && esHostil) || (esHostil && esMelee));
       if (usarAtaque)
@@ -1191,6 +1197,15 @@ public abstract class Habilidad : MonoBehaviour
       {
         scEstaUnidad.ReproducirAnimacionHabilidadNoHostil();
       }
+    }
+    // Las descargas del Canalizador sincronizan el sprite con su preimpacto real.
+    UnidadAnimacionIlustrada animacionCanalizador = null;
+    if (!omitirAnimacionDeUso && scEstaUnidad is ClaseCanalizador)
+    {
+      var controladorIlustrado = scEstaUnidad.GetComponent<UnidadPoseController>();
+      if (controladorIlustrado != null && controladorIlustrado.targetImage != null)
+        animacionCanalizador = controladorIlustrado.targetImage.GetComponent<UnidadAnimacionIlustrada>();
+      animacionCanalizador?.EsperarImpactoHabilidad();
     }
     // Log de uso de habilidad
     if (BattleManager.Instance != null && scEstaUnidad != null)
@@ -1253,6 +1268,7 @@ public abstract class Habilidad : MonoBehaviour
       }
 
       await EsperarPreImpactoAsync(Objetivos, casillaOrigenTrampas);
+      animacionCanalizador?.ConfirmarImpactoHabilidad();
 
       int tirada = UnityEngine.Random.Range(1, 21); //la tirada es la misma para toda la habilidad, no para cada objetivo
 
