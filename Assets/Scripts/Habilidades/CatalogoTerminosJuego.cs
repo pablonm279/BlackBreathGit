@@ -14,6 +14,7 @@ public class TerminoJuegoDefinicion
   [TextArea(2, 6)] public string descripcionEs;
   [TextArea(2, 6)] public string descripcionEn;
   [TextArea(2, 6)] public string descripcionPt;
+  [TextArea(2, 6)] public string descripcionZh;
 
   public string ObtenerDescripcion()
   {
@@ -26,6 +27,11 @@ public class TerminoJuegoDefinicion
     if (idioma == TRADU.IdiomaPortugues && !string.IsNullOrEmpty(descripcionPt))
     {
       return descripcionPt;
+    }
+
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+      return !string.IsNullOrEmpty(descripcionZh) ? descripcionZh : descripcionEn;
     }
 
     return descripcionEs;

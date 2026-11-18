@@ -62,6 +62,30 @@ public class REPRESENTACIONMasacre : Habilidad
       return;
     }
 
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+      string apMaxZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点");
+      string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, "敏捷");
+      string mentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智", "ic_mental");
+      string terrorZh = TerminoDescripcion(TerminoDescripcionId.Aterrorizado, "惊恐", "Estado_debuff");
+      string atkZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+      string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：豁免难度 +1。" : NIVEL == 2 ? "下一级：本回合伤害 +5%。" : NIVEL == 3 ? "选项A：惊恐额外施加最大行动点 -2。选项B：击杀时获得 +1 行动点。" : null;
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        $"屠杀 {sufijo}",
+        "被动：击杀敌人会强化潜猎者，并可能使周围所有敌人陷入惊恐。",
+        new[]
+        {
+          LineaDescripcion("触发", "击杀一名敌人。"),
+          LineaDescripcion("效果", $"获得 {apGanado} 点{apZh}，本回合剩余时间内伤害 +{danio}%。"),
+          LineaDescripcion("豁免", $"所有敌人进行一次 {mentalZh} 豁免，对抗难度 {dcBase} + {agiZh}。"),
+          LineaDescripcion("豁免失败", $"{terrorZh}：{atkZh} -2，{apMaxZh} {apMaxAterrorizado}，该项豁免 -2。", 1)
+        },
+        proxZh,
+        costoSuperior: string.Empty);
+      return;
+    }
+
     if (TRADU.i != null && TRADU.i.nIdioma == 3)
     {
       string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap"); string apMax=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP máximo"); string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade"); string mental=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Mental","ic_mental"); string medo=TerminoDescripcion(TerminoDescripcionId.Aterrorizado,"Aterrorizado","Estado_debuff"); string atk=TerminoDescripcion(TerminoDescripcionId.Ataque,"Ataque"); string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 CD da salvaguarda.":NIVEL==2?"Próximo nível: +5% de dano durante o turno.":NIVEL==3?"Opção A: Aterrorizado aplica -2 AP máximo. Opção B: +1 AP ao matar.":null;

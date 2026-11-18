@@ -1,0 +1,4 @@
+Capturas: 07:00, 09:00, 13:00, 18:30, 20:00 y 23:00.
+Reloj inicial: 9
+Reloj final: 9
+Camara e iluminacion restauradas.

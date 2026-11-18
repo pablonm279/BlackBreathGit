@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -36,8 +35,7 @@ public class LadoManager : MonoBehaviour
 
   void Start()
   {
-     BattleManager.Instance.OnRondaNueva  += BattleManager_OnRondaNueva;
-
+     // El handler de OnRondaNueva estaba vacio y nunca se desuscribia; se evita retener este lado en el evento.
      ActualizarListaDeUnidadesEnLado();
     
 

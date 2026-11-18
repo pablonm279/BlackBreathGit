@@ -558,7 +558,7 @@ public class MenuCaravana : MonoBehaviour
         return Mathf.RoundToInt(costoBase * (1f + aumentoPorTier));
     }
 
-    private void ActualizarDescripcionMejora(TextMeshProUGUI txtDescripcion, string textoEs, string textoEn, string textoPt)
+    private void ActualizarDescripcionMejora(TextMeshProUGUI txtDescripcion, string textoEs, string textoEn, string textoPt, string textoZh = null)
     {
         if (txtDescripcion == null)
         {
@@ -569,6 +569,7 @@ public class MenuCaravana : MonoBehaviour
         {
             TRADU.IdiomaPortugues => textoPt,
             TRADU.IdiomaIngles => textoEn,
+            TRADU.IdiomaChinoSimplificado => string.IsNullOrEmpty(textoZh) ? textoEn : textoZh,
             _ => textoEs
         };
     }
@@ -586,49 +587,57 @@ public class MenuCaravana : MonoBehaviour
             descAntorchas,
             ObtenerDescripcionAntorchasEs(tierAntorchas, mejoraCaravanaHover == TipoMejoraCaravana.Antorchas),
             ObtenerDescripcionAntorchasEn(tierAntorchas, mejoraCaravanaHover == TipoMejoraCaravana.Antorchas),
-            ObtenerDescripcionAntorchasPt(tierAntorchas, mejoraCaravanaHover == TipoMejoraCaravana.Antorchas));
+            ObtenerDescripcionAntorchasPt(tierAntorchas, mejoraCaravanaHover == TipoMejoraCaravana.Antorchas),
+            ObtenerDescripcionAntorchasZh(tierAntorchas, mejoraCaravanaHover == TipoMejoraCaravana.Antorchas));
 
         ActualizarDescripcionMejora(
             descAlforjas,
             ObtenerDescripcionAlforjasEs(tierAlforjas, mejoraCaravanaHover == TipoMejoraCaravana.Alforjas),
             ObtenerDescripcionAlforjasEn(tierAlforjas, mejoraCaravanaHover == TipoMejoraCaravana.Alforjas),
-            ObtenerDescripcionAlforjasPt(tierAlforjas, mejoraCaravanaHover == TipoMejoraCaravana.Alforjas));
+            ObtenerDescripcionAlforjasPt(tierAlforjas, mejoraCaravanaHover == TipoMejoraCaravana.Alforjas),
+            ObtenerDescripcionAlforjasZh(tierAlforjas, mejoraCaravanaHover == TipoMejoraCaravana.Alforjas));
 
         ActualizarDescripcionMejora(
             descTiendas,
             ObtenerDescripcionTiendasEs(tierTiendas, mejoraCaravanaHover == TipoMejoraCaravana.Tiendas),
             ObtenerDescripcionTiendasEn(tierTiendas, mejoraCaravanaHover == TipoMejoraCaravana.Tiendas),
-            ObtenerDescripcionTiendasPt(tierTiendas, mejoraCaravanaHover == TipoMejoraCaravana.Tiendas));
+            ObtenerDescripcionTiendasPt(tierTiendas, mejoraCaravanaHover == TipoMejoraCaravana.Tiendas),
+            ObtenerDescripcionTiendasZh(tierTiendas, mejoraCaravanaHover == TipoMejoraCaravana.Tiendas));
 
         ActualizarDescripcionMejora(
             descCatalejos,
             ObtenerDescripcionCatalejosEs(tierCatalejos, mejoraCaravanaHover == TipoMejoraCaravana.Catalejos),
             ObtenerDescripcionCatalejosEn(tierCatalejos, mejoraCaravanaHover == TipoMejoraCaravana.Catalejos),
-            ObtenerDescripcionCatalejosPt(tierCatalejos, mejoraCaravanaHover == TipoMejoraCaravana.Catalejos));
+            ObtenerDescripcionCatalejosPt(tierCatalejos, mejoraCaravanaHover == TipoMejoraCaravana.Catalejos),
+            ObtenerDescripcionCatalejosZh(tierCatalejos, mejoraCaravanaHover == TipoMejoraCaravana.Catalejos));
 
         ActualizarDescripcionMejora(
             descAlmacen,
             ObtenerDescripcionAlmacenEs(tierAlmacen, mejoraCaravanaHover == TipoMejoraCaravana.Almacen),
             ObtenerDescripcionAlmacenEn(tierAlmacen, mejoraCaravanaHover == TipoMejoraCaravana.Almacen),
-            ObtenerDescripcionAlmacenPt(tierAlmacen, mejoraCaravanaHover == TipoMejoraCaravana.Almacen));
+            ObtenerDescripcionAlmacenPt(tierAlmacen, mejoraCaravanaHover == TipoMejoraCaravana.Almacen),
+            ObtenerDescripcionAlmacenZh(tierAlmacen, mejoraCaravanaHover == TipoMejoraCaravana.Almacen));
 
         ActualizarDescripcionMejora(
             descDefensas,
             ObtenerDescripcionDefensasEs(tierDefensas, mejoraCaravanaHover == TipoMejoraCaravana.Defensas),
             ObtenerDescripcionDefensasEn(tierDefensas, mejoraCaravanaHover == TipoMejoraCaravana.Defensas),
-            ObtenerDescripcionDefensasPt(tierDefensas, mejoraCaravanaHover == TipoMejoraCaravana.Defensas));
+            ObtenerDescripcionDefensasPt(tierDefensas, mejoraCaravanaHover == TipoMejoraCaravana.Defensas),
+            ObtenerDescripcionDefensasZh(tierDefensas, mejoraCaravanaHover == TipoMejoraCaravana.Defensas));
 
         ActualizarDescripcionMejora(
             txtExplicacionVistaLejana,
             ObtenerExplicacionVistaLejanaEs(tierCatalejos),
             ObtenerExplicacionVistaLejanaEn(tierCatalejos),
-            ObtenerExplicacionVistaLejanaPt(tierCatalejos));
+            ObtenerExplicacionVistaLejanaPt(tierCatalejos),
+            ObtenerExplicacionVistaLejanaZh(tierCatalejos));
 
         ActualizarDescripcionMejora(
             txtExplicacionExploracionPasiva,
             ObtenerExplicacionExploracionPasivaEs(tierCatalejos),
             ObtenerExplicacionExploracionPasivaEn(tierCatalejos),
-            ObtenerExplicacionExploracionPasivaPt(tierCatalejos));
+            ObtenerExplicacionExploracionPasivaPt(tierCatalejos),
+            ObtenerExplicacionExploracionPasivaZh(tierCatalejos));
     }
 
     public void AbrirMenuMejoras()
@@ -787,32 +796,33 @@ public class MenuCaravana : MonoBehaviour
         CampaignManager campaignManager = CampaignManager.Instance;
         StringBuilder sb = new StringBuilder(160);
         sb.AppendLine(FormatearLineaStat(
-            ObtenerTextoStats("Tiempo viajado", "Travel time", "Tempo viajado"),
+            ObtenerTextoStats("Tiempo viajado", "Travel time", "Tempo viajado", "旅行时间"),
             campaignManager.FormatearDuracionHoras(campaignManager.ObtenerEstadisticaHorasViajadas())));
         sb.AppendLine(FormatearLineaStat(
-            ObtenerTextoStats("Batallas libradas", "Battles fought", "Batalhas travadas"),
+            ObtenerTextoStats("Batallas libradas", "Battles fought", "Batalhas travadas", "参与的战斗"),
             campaignManager.ObtenerEstadisticaBatallasLibradas()));
         sb.AppendLine(FormatearLineaStat(
-            ObtenerTextoStats("Personajes muertos", "Characters dead", "Personagens mortos"),
+            ObtenerTextoStats("Personajes muertos", "Characters dead", "Personagens mortos", "死亡的角色"),
             campaignManager.ObtenerEstadisticaPersonajesMuertos()));
         sb.AppendLine(FormatearLineaStat(
-            ObtenerTextoStats("Enemigos asesinados", "Enemies killed", "Inimigos assassinados"),
+            ObtenerTextoStats("Enemigos asesinados", "Enemies killed", "Inimigos assassinados", "击杀的敌人"),
             campaignManager.ObtenerEstadisticaEnemigosAsesinados()));
         sb.AppendLine(FormatearLineaStat(
-            ObtenerTextoStats("Civiles perdidos", "Civilians lost", "Civis perdidos"),
+            ObtenerTextoStats("Civiles perdidos", "Civilians lost", "Civis perdidos", "损失的平民"),
             campaignManager.ObtenerEstadisticaCivilesPerdidos()));
         sb.Append(FormatearLineaStat(
-            ObtenerTextoStats("Asentamientos visitados", "Settlements visited", "Assentamentos visitados"),
+            ObtenerTextoStats("Asentamientos visitados", "Settlements visited", "Assentamentos visitados", "到访的定居点"),
             campaignManager.ObtenerEstadisticaAsentamientosVisitados()));
         txtStatsViaje.text = sb.ToString();
     }
 
-    private string ObtenerTextoStats(string textoEs, string textoEn, string textoPt)
+    private string ObtenerTextoStats(string textoEs, string textoEn, string textoPt, string textoZh = null)
     {
         return ObtenerIdiomaActual() switch
         {
             TRADU.IdiomaPortugues => textoPt,
             TRADU.IdiomaIngles => textoEn,
+            TRADU.IdiomaChinoSimplificado => string.IsNullOrEmpty(textoZh) ? textoEn : textoZh,
             _ => textoEs
         };
     }
@@ -1182,6 +1192,16 @@ public class MenuCaravana : MonoBehaviour
             + "Além disso, aumentam as chances de encontrar itens após uma batalha.";
     }
 
+    private string ObtenerDescripcionAntorchasZh(int tier, bool mostrarIncremento)
+    {
+        int visionActual = Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier) * 10f);
+        int visionSiguiente = Mathf.RoundToInt(ObtenerAlcanceVisionAntorchas(tier + 1) * 10f);
+        return "车队火把：\n"
+            + "夜间点燃时，可将车队的视野范围提升 "
+            + visionActual + ObtenerIncrementoPreview(mostrarIncremento, tier, visionActual, visionSiguiente) + "。\n"
+            + "此外还能提高战斗结束后获得物品的几率。";
+    }
+
     private float ObtenerAlcanceVisionAntorchas(int tier)
     {
         float[] alcances = { 1.5f, 1.9f, 2.5f, 2.9f, 3.5f };
@@ -1214,6 +1234,15 @@ public class MenuCaravana : MonoBehaviour
         return "Alforjes:\n"
             + "Adicionam +" + bonusActual + ObtenerIncrementoPreview(mostrarIncremento, tier, bonusActual, bonusSiguiente)
             + " de capacidade de carga aos bois que levam os suprimentos da caravana.";
+    }
+
+    private string ObtenerDescripcionAlforjasZh(int tier, bool mostrarIncremento)
+    {
+        int bonusActual = ObtenerBonusCargaPorBueyAlforjas(tier);
+        int bonusSiguiente = ObtenerBonusCargaPorBueyAlforjas(tier + 1);
+        return "鞍袋：\n"
+            + "为运送车队补给的牛群增加 +" + bonusActual + ObtenerIncrementoPreview(mostrarIncremento, tier, bonusActual, bonusSiguiente)
+            + " 负重能力。";
     }
 
     private string ObtenerDescripcionTiendasEs(int tier, bool mostrarIncremento)
@@ -1255,6 +1284,19 @@ public class MenuCaravana : MonoBehaviour
             + " a capacidade de Personagens.";
     }
 
+    private string ObtenerDescripcionTiendasZh(int tier, bool mostrarIncremento)
+    {
+        int esperanzaActual = ObtenerBonusEsperanzaTiendas(tier);
+        int esperanzaSiguiente = ObtenerBonusEsperanzaTiendas(tier + 1);
+        int capacidadActual = Mathf.Max(0, tier - 1);
+        int capacidadSiguiente = Mathf.Max(0, tier);
+        return "帐篷：\n"
+            + "为平民提供庇护与休息之所。\n"
+            + "休整时：+" + esperanzaActual + ObtenerIncrementoPreview(mostrarIncremento, tier, esperanzaActual, esperanzaSiguiente) + " 希望。\n"
+            + "此外还能将角色容量提升 +" + capacidadActual
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, capacidadActual, capacidadSiguiente) + "。";
+    }
+
     private string ObtenerDescripcionCatalejosEs(int tier, bool mostrarIncremento)
     {
         int visionActual = ObtenerBonusVisionCatalejos(tier) * 10;
@@ -1280,6 +1322,15 @@ public class MenuCaravana : MonoBehaviour
         return "Lunetas:\n"
             + "Dissipam a névoa e aumentam em +" + visionActual
             + ObtenerIncrementoPreview(mostrarIncremento, tier, visionActual, visionSiguiente) + " o Alcance de Visão da caravana.";
+    }
+
+    private string ObtenerDescripcionCatalejosZh(int tier, bool mostrarIncremento)
+    {
+        int visionActual = ObtenerBonusVisionCatalejos(tier) * 10;
+        int visionSiguiente = ObtenerBonusVisionCatalejos(tier + 1) * 10;
+        return "望远镜：\n"
+            + "驱散迷雾，将车队的视野范围提升 +" + visionActual
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, visionActual, visionSiguiente) + "。";
     }
 
     private string ObtenerDescripcionAlmacenEs(int tier, bool mostrarIncremento)
@@ -1321,6 +1372,19 @@ public class MenuCaravana : MonoBehaviour
             + " a capacidade total de carga.";
     }
 
+    private string ObtenerDescripcionAlmacenZh(int tier, bool mostrarIncremento)
+    {
+        int reduccionActual = ObtenerReduccionConsumoAlmacen(tier);
+        int reduccionSiguiente = ObtenerReduccionConsumoAlmacen(tier + 1);
+        int cargaActual = ObtenerBonusCargaAlmacen(tier);
+        int cargaSiguiente = ObtenerBonusCargaAlmacen(tier + 1);
+        return "仓库马车：\n"
+            + "休整时消耗的补给减少 " + reduccionActual + "%"
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, reduccionActual, reduccionSiguiente, "%") + "。\n"
+            + "此外还能将总负重能力提升 " + cargaActual + ObtenerIncrementoPreview(mostrarIncremento, tier, cargaActual, cargaSiguiente)
+            + "。";
+    }
+
     private string ObtenerExplicacionVistaLejanaEs(int tierCatalejos)
     {
         return "<u>Rango de Visión:</u>\n"
@@ -1342,6 +1406,13 @@ public class MenuCaravana : MonoBehaviour
             + ObtenerFactoresVistaLejanaPt(tierCatalejos);
     }
 
+    private string ObtenerExplicacionVistaLejanaZh(int tierCatalejos)
+    {
+        return "<u>视野范围：</u>\n"
+            + "决定前方有多少节点和道路处于迷雾外的可视范围内，有助于提前规划并预判地图的走向。"
+            + ObtenerFactoresVistaLejanaZh(tierCatalejos);
+    }
+
     private string ObtenerExplicacionExploracionPasivaEs(int tierCatalejos)
     {
         return "<u>Exploración Pasiva:</u>\n"
@@ -1361,6 +1432,13 @@ public class MenuCaravana : MonoBehaviour
         return "<u>Exploração Passiva:</u>\n"
             + "Ao descansar ou chegar a um novo nó, a caravana fará uma rolagem de Exploração. Em caso de sucesso, ela revela os tipos dos nós adjacentes e às vezes também os que estiverem mais à frente."
             + ObtenerFactoresExploracionPasivaPt(tierCatalejos);
+    }
+
+    private string ObtenerExplicacionExploracionPasivaZh(int tierCatalejos)
+    {
+        return "<u>被动探索：</u>\n"
+            + "休整或抵达新节点时，车队会进行一次探索检定；若成功，将揭示相邻节点的类型，有时还能揭示更远处的节点。"
+            + ObtenerFactoresExploracionPasivaZh(tierCatalejos);
     }
 
     private string ObtenerFactoresVistaLejanaEs(int tierCatalejos)
@@ -1396,6 +1474,18 @@ public class MenuCaravana : MonoBehaviour
             "Noite",
             "Tochas acesas",
             "Tochas apagadas",
+            tierCatalejos);
+    }
+
+    private string ObtenerFactoresVistaLejanaZh(int tierCatalejos)
+    {
+        return ObtenerResumenFactoresVistaLejana(
+            "当前数值",
+            "天气",
+            ObtenerNombreClimaVisionZh(),
+            "夜晚",
+            "火把已点燃",
+            "火把已熄灭",
             tierCatalejos);
     }
 
@@ -1468,6 +1558,18 @@ public class MenuCaravana : MonoBehaviour
             ObtenerNombreClimaVisionPt(),
             "Presságio",
             "Noite",
+            tierCatalejos);
+    }
+
+    private string ObtenerFactoresExploracionPasivaZh(int tierCatalejos)
+    {
+        return ObtenerResumenFactoresExploracionPasiva(
+            "当前数值",
+            "地区",
+            "天气",
+            ObtenerNombreClimaVisionZh(),
+            "预兆",
+            "夜晚",
             tierCatalejos);
     }
 
@@ -1602,6 +1704,28 @@ public class MenuCaravana : MonoBehaviour
         }
     }
 
+    private string ObtenerNombreClimaVisionZh()
+    {
+        if (CampaignManager.Instance == null)
+        {
+            return "未知";
+        }
+
+        switch (CampaignManager.Instance.intTipoClima)
+        {
+            case 1: return "晴天";
+            case 2: return "热浪";
+            case 3: return "降雨";
+            case 4: return "降雪";
+            case 5: return "迷雾";
+            case 6: return "起舞的亡魂";
+            case 7: return "极光";
+            case 8: return "内杜卡赞的黑暗";
+            case 9: return "内杜卡赞的屠杀";
+            default: return "未知";
+        }
+    }
+
     private string ObtenerDescripcionDefensasEs(int tier, bool mostrarIncremento)
     {
         int reduccionActual = ObtenerReduccionPerdidaSequitoDefensas(tier);
@@ -1632,5 +1756,16 @@ public class MenuCaravana : MonoBehaviour
             + "Além disso, reduz em " + reduccionActual + "%"
             + ObtenerIncrementoPreview(mostrarIncremento, tier, reduccionActual, reduccionSiguiente, "%")
             + " as chances de perder um séquito após uma derrota.";
+    }
+
+    private string ObtenerDescripcionDefensasZh(int tier, bool mostrarIncremento)
+    {
+        int reduccionActual = ObtenerReduccionPerdidaSequitoDefensas(tier);
+        int reduccionSiguiente = ObtenerReduccionPerdidaSequitoDefensas(tier + 1);
+        return "防御工事：\n"
+            + "为车队遭受直接袭击的战斗添加陷阱和路障。\n"
+            + "此外还能将战败后失去随行队伍的几率降低 " + reduccionActual + "%"
+            + ObtenerIncrementoPreview(mostrarIncremento, tier, reduccionActual, reduccionSiguiente, "%")
+            + "。";
     }
 }

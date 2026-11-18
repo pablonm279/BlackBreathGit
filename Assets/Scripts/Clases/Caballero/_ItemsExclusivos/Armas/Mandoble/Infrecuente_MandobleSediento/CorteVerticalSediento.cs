@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -76,6 +75,7 @@ public class CorteVerticalSediento : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
       int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
       int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
@@ -89,9 +89,9 @@ public class CorteVerticalSediento : Habilidad
         : esPortugues
           ? $"<color={colorFuerza}>Forca ({stats.Fuerza})</color>"
           : $"<color={colorFuerza}>Fuerza ({stats.Fuerza})</color>";
-      string titulo = esIngles ? "Thirsty Vertical Slash" : esPortugues ? "Corte Vertical Sedento" : "Corte Vertical Sediento";
-      string subtitulo = esIngles ? "Heavy melee attack; stronger against wounded targets." : esPortugues ? "Ataque corpo a corpo pesado; melhora contra alvos feridos." : "Ataque melee pesado; mejora contra objetivos heridos.";
-      string efecto = esIngles ? "If target has 50% HP or less and is not Construct: +1 attack, +5% Crit" : esPortugues ? "Se o alvo tem 50% HP ou menos e nao e Construto: +1 ataque, +5% Critico" : "Si el objetivo tiene 50% HP o menos y no es Constructo: +1 ataque, +5% Critico";
+      string titulo = esIngles ? "Thirsty Vertical Slash" : esPortugues ? "Corte Vertical Sedento" : esChino ? "渴血纵斩" : "Corte Vertical Sediento";
+      string subtitulo = esIngles ? "Heavy melee attack; stronger against wounded targets." : esPortugues ? "Ataque corpo a corpo pesado; melhora contra alvos feridos." : esChino ? "沉重的近战攻击；对受伤目标效果更强。" : "Ataque melee pesado; mejora contra objetivos heridos.";
+      string efecto = esIngles ? "If target has 50% HP or less and is not Construct: +1 attack, +5% Crit" : esPortugues ? "Se o alvo tem 50% HP ou menos e nao e Construto: +1 ataque, +5% Critico" : esChino ? "若目标生命值 50% 或更低且不是构造体：攻击 +1，暴击 +5%" : "Si el objetivo tiene 50% HP o menos y no es Constructo: +1 ataque, +5% Critico";
       if (esIngles)
       {
         string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
@@ -110,6 +110,21 @@ public class CorteVerticalSediento : Habilidad
           },
           mostrarIconoMelee: true);
         return;
+      }
+
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{stats.Fuerza}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string cortanteZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        string criticoSinIconoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "一记沉重的打击，对受伤的目标更加精准。", new[]
+        {
+          LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"), LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{cortanteZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada}，对抗{defensaZh}。大失败：10%。{criticoZh}：{criticoPorcentaje}%。", 1),
+          LineaDescripcion("武器效果", $"对生命值 50% 或更低且非构造体的单位：攻击 +1，{criticoSinIconoZh} +5%。")
+        }, mostrarIconoMelee: true); return;
       }
 
       if (esPortugues)

@@ -23,3 +23,20 @@ no carga partidas y no representa una captura de la campaña completa.
 Para revisar una campaña real en Play está el menú
 `Tools > Campaña > Bosque Ardiente > Capturar ambiente actual`.
 El menú `Reaplicar ambiente (Play)` permite actualizar sus materiales sin regenerar el mapa.
+
+## Pulido integral del bosque
+
+`python tools/prepare-bosque-preview.py --pulido` incluye las comprobaciones nuevas y una
+copia visual de terrenos, cámara, luces y partículas de la escena fuente. Extrae las doce
+tandas de decoración originales del método de campaña y las ejecuta con el decorador real.
+El proyecto aislado usa su propia identidad para no compartir PlayerPrefs con el juego.
+
+Ejecutar Unity con `-batchmode -executeMethod BosqueEscenarioRender.RunTodo -quit` sobre
+`Temp/BosquePreview`. Los resultados quedan en `output/bosque-pulido-v1`: regresión de llamas,
+exclusiones de rutas visibles y ocultas, limpieza, RNG, regeneración, límites de calidad,
+compilación de shaders y capturas de día/noche, paneos y zoom. Las comparaciones usan las
+fuentes conservadas en `output/bosque-pulido-v1/fuentes-antes`.
+
+La copia visual conserva la escala y cámara serializadas de la escena, pero omite gestores,
+UI y controladores de cámara. No contiene la distribución de nodos de una partida real ni
+su posprocesado. No reemplaza una prueba interactiva de campaña ni del tutorial completo.

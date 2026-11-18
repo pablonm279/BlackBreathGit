@@ -33,6 +33,11 @@ public class armaMandoble : Arma
             sNombreItem = "Greatsword " + nmejora;
             itemDescripcion = "A huge sword that requires great strength to be used.\n\nAttack ability: Vertical Cut.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "双手大剑 " + nmejora;
+            itemDescripcion = "一把需要极大力量才能挥动的巨剑。\n\n攻击技能：纵斩。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Montante " + nmejora;
@@ -54,6 +59,11 @@ public class armaMandoble : Arma
             sNombreItem = "Frozen Greatsword " + nmejora;
             itemDescripcion = "A huge sword made of ice-steel, capable of harming enemies with its extreme cold.\n\nAttack ability: Frozen Vertical Slash.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "冰封双手大剑 " + nmejora;
+            itemDescripcion = "一把由冰霜之钢打造的巨剑，能以极寒之力伤害敌人。\n\n攻击技能：冰封纵斩。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Montante Congelado " + nmejora;
@@ -73,6 +83,11 @@ public class armaMandoble : Arma
             sNombreItem = "Sacred Greatsword " + nmejora;
             itemDescripcion = "A huge sword blessed by the Purifiers and the sacred light.\n\nAttack ability: Sacred Vertical Slash.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "神圣双手大剑 " + nmejora;
+            itemDescripcion = "一把由净化者与圣光祝福的巨剑。\n\n攻击技能：神圣纵斩。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Montante Sagrado " + nmejora;
@@ -91,6 +106,11 @@ public class armaMandoble : Arma
          {
             sNombreItem = "Thirsty Greatsword " + nmejora;
             itemDescripcion = "A huge sword that is deadlier if the enemy is wounded.\n\nAttack ability: Thirsty Vertical Slash.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "渴血双手大剑 " + nmejora;
+            itemDescripcion = "一把在敌人受伤时更加致命的巨剑。\n\n攻击技能：渴血纵斩。";
          }
          else if (TRADU.i.nIdioma == 3)
          {

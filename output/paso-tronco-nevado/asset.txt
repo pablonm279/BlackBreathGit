@@ -1,0 +1,8 @@
+Generado con la herramienta integrada ImageGen. PNG RGBA original con transparencia conservada.
+Imagen: Assets/Resources/ObjetosMapa/PasoVientoHelado_TroncoCaidoNevado.png
+Material: Assets/Resources/ObjetosMapa/PasoVientoHelado_TroncoCaidoNevado.mat
+Prefab: Assets/Resources/ObjetosMapa/PasoVientoHelado_TroncoCaidoNevado.prefab
+Ancho base: 5,4 m; escala aleatoria 0,9–1,12. En mapas densos se permiten ejemplares de escala 0,82–1 (ancho total 4,43–6,05 m).
+Se intentan colocar hasta tres ejemplares por mapa del Paso; se omiten si no hay un lugar seguro.
+Sin colliders, sin movimiento por viento, con niebla y luz del Paso. No modifica escenas ni traducciones.
+Prompt completo: prompt.txt

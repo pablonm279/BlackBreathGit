@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
@@ -47,10 +46,12 @@ public class AcumulacionInestable : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
     string tituloEs = "Acumulacion Inestable I";
     string tituloEn = "Unstable Gathering I";
     string tituloPt = "Acumulacao Instavel I";
+    string tituloZh = "不稳定积蓄 I";
     if (NIVEL == 2) { tituloEs = "Acumulacion Inestable II"; tituloEn = "Unstable Gathering II"; }
     if (NIVEL == 3) { tituloEs = "Acumulacion Inestable III"; tituloEn = "Unstable Gathering III"; }
     if (NIVEL == 4) { tituloEs = "Acumulacion Inestable IV a"; tituloEn = "Unstable Gathering IV a"; }
@@ -59,6 +60,10 @@ public class AcumulacionInestable : Habilidad
     if (NIVEL == 3) { tituloPt = "Acumulacao Instavel III"; }
     if (NIVEL == 4) { tituloPt = "Acumulacao Instavel IV a"; }
     if (NIVEL == 5) { tituloPt = "Acumulacao Instavel IV b"; }
+    if (NIVEL == 2) { tituloZh = "不稳定积蓄 II"; }
+    if (NIVEL == 3) { tituloZh = "不稳定积蓄 III"; }
+    if (NIVEL == 4) { tituloZh = "不稳定积蓄 IV a"; }
+    if (NIVEL == 5) { tituloZh = "不稳定积蓄 IV b"; }
 
     int bonusDanioArcano = NIVEL > 2 ? 7 : 5;
     bool arrancaEnCooldown = NIVEL != 4;
@@ -89,6 +94,34 @@ public class AcumulacionInestable : Habilidad
           LineaDescripcion("Battle start", arrancaEnCooldown ? "Starts on cooldown." : "Available immediately.")
         },
         proximaMejora);
+      return;
+    }
+
+    if (esChino)
+    {
+      string energiaZh = TerminoDescripcion(TerminoDescripcionId.Energia, "能量等级", "Estado_acumularenergia");
+      string danioArcanoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害", "dano_arcano");
+      string danioArcanoSinIconoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "冷却时间 -1。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "奥术伤害 +2。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：不会以冷却状态开局。\n选项B：无反噬伤害。"; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "强行立即提升能量，但有奥术反噬的风险。",
+        new[]
+        {
+          LineaDescripcion("目标", "自身"),
+          LineaDescripcion("效果", $"获得 +1 {energiaZh}。"),
+          LineaDescripcion("加成", $"本回合 {danioArcanoZh} +{bonusDanioArcano}。"),
+          LineaDescripcion("反噬", recibeDanioPropio ? $"受到 1-6 点{danioArcanoSinIconoZh}。" : "无。"),
+          LineaDescripcion("战斗开局", arrancaEnCooldown ? "以冷却状态开局。" : "开局即可使用。")
+        },
+        proximaMejoraZh);
       return;
     }
 

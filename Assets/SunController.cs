@@ -46,7 +46,7 @@ public class SunController : MonoBehaviour
     [Range(0f, 1f)] public float sunsetIntensityFactor = 0.62f;
     [HideInInspector] public float nightIntensityFactor = 0.015f;
     [Tooltip("Intensidad nocturna respecto de la intensidad original del sol.")]
-    [Range(0f, 0.2f)] public float intensidadLuzNocturna = 0.06f;
+    [Range(0f, 4f)] public float intensidadLuzNocturna = 0.06f;
 
     [Header("Ambiente")]
     public bool controlarLuzAmbiente = true;
@@ -63,6 +63,28 @@ public class SunController : MonoBehaviour
     float _initialPasoY;
     Color _initialAmbientColor;
     bool _initialAmbientCaptured;
+    bool perfilPasoVientoHelado;
+    bool luzPasoInicializada;
+    float intensidadPasoObjetivo;
+    Color colorPasoObjetivo, ambientePasoObjetivo;
+
+    public void ConfigurarPasoVientoHelado()
+    {
+        perfilPasoVientoHelado = true;
+    }
+
+    void LateUpdate()
+    {
+        if (!luzPasoInicializada) return;
+        var luz = sun ? sun : GetComponent<Light>();
+        float t = 1f - Mathf.Exp(-3f * Time.unscaledDeltaTime);
+        if (luz != null)
+        {
+            luz.intensity = Mathf.Lerp(luz.intensity, intensidadPasoObjetivo, t);
+            luz.color = Color.Lerp(luz.color, colorPasoObjetivo, t);
+        }
+        if (controlarLuzAmbiente) RenderSettings.ambientLight = Color.Lerp(RenderSettings.ambientLight, ambientePasoObjetivo, t);
+    }
 
     void Awake()
     {
@@ -101,6 +123,11 @@ public class SunController : MonoBehaviour
         }
 
         EvaluarHoraAbsoluta(hora, out float intensidad, out Color color, out Color ambiente);
+        intensidadPasoObjetivo = intensidad;
+        colorPasoObjetivo = color;
+        ambientePasoObjetivo = ambiente;
+        if (luzPasoInicializada && Application.isPlaying) return;
+        luzPasoInicializada = true;
         if (luz != null)
         {
             luz.intensity = intensidad;
@@ -114,12 +141,21 @@ public class SunController : MonoBehaviour
 
     void EvaluarHoraAbsoluta(float hora, out float intensidad, out Color color, out Color ambiente)
     {
+        if (perfilPasoVientoHelado)
+        {
+            AmbientePasoVientoHelado.EvaluarHora(hora, out intensidad, out color, out ambiente);
+            float nubosidad = ClimasPasoVientoHelado.CoberturaLuz;
+            intensidad *= Mathf.Lerp(1f, .82f, nubosidad);
+            ambiente *= Mathf.Lerp(1f, .93f, nubosidad);
+            return;
+        }
+
         float amanecer = Mathf.Clamp(horaAmanecer, 0f, 23.96f);
         float manana = Mathf.Clamp(horaManana, amanecer + 0.01f, 23.97f);
         float mediodia = Mathf.Clamp(horaMediodia, manana + 0.01f, 23.98f);
         float atardecer = Mathf.Clamp(horaAtardecer, mediodia + 0.01f, 23.99f);
         float noche = Mathf.Clamp(horaNoche, atardecer + 0.01f, 24f);
-        float intensidadNoche = Mathf.Max(minIntensity, _initialIntensity * Mathf.Clamp(intensidadLuzNocturna, 0f, 0.2f));
+        float intensidadNoche = Mathf.Max(minIntensity, _initialIntensity * Mathf.Clamp(intensidadLuzNocturna, 0f, 4f));
         float intensidadAmanecer = Mathf.Max(minIntensity, _initialIntensity * 0.75f);
         float intensidadMediodia = Mathf.Max(minIntensity, _initialIntensity * middayIntensityFactor);
         float intensidadAtardecer = Mathf.Max(minIntensity, _initialIntensity * sunsetIntensityFactor);
@@ -186,6 +222,7 @@ public class SunController : MonoBehaviour
 
     IEnumerator ReproducirCicloDiario(float duracionOverride = -1f)
     {
+        luzPasoInicializada = false;
         Quaternion startRot = transform.localRotation;
         bool bloquearRotacion = Fijo;
         Quaternion dawnRot = _initialLocalRotation;
@@ -296,6 +333,7 @@ public class SunController : MonoBehaviour
 
     IEnumerator ResetRoutine(float duracionOverride)
     {
+        luzPasoInicializada = false;
         Quaternion startRot = transform.localRotation;
         Quaternion targetRot = _initialLocalRotation;
 

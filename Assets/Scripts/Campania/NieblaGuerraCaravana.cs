@@ -13,6 +13,8 @@ using UnityEngine.SceneManagement;
 public sealed class NieblaGuerraCaravana : MonoBehaviour
 {
     const string RutaShader = "NieblaGuerraCaravana";
+    const string RutaShaderBosqueArdiente = "NieblaGuerraCaravanaBosqueArdiente";
+    const string RutaShaderPasoVientoHelado = "NieblaGuerraCaravanaPasoVientoHelado";
     const int AnchoHistorial = 192;
     const int AltoHistorial = 128;
     const float IntervaloMinimoHuella = 1f / 15f;
@@ -44,6 +46,7 @@ public sealed class NieblaGuerraCaravana : MonoBehaviour
     Camera camaraCampania;
     NieblaGuerraCaravanaRender renderNiebla;
     Material materialNiebla;
+    int zonaShaderActual = int.MinValue;
     Texture2D texturaHistorial;
     byte[] pixelesHistorial;
 
@@ -178,19 +181,35 @@ public sealed class NieblaGuerraCaravana : MonoBehaviour
 
     void CrearRecursosSiHaceFalta()
     {
-        if (materialNiebla != null)
+        int zonaShader = ObtenerZonaActual();
+        if (zonaShader != IdsZonaCampania.BosqueAngustiante
+            && zonaShader != IdsZonaCampania.PasoVientoHelado)
+        {
+            zonaShader = 0;
+        }
+        if (materialNiebla != null && zonaShaderActual == zonaShader)
         {
             return;
         }
 
-        Shader shader = Resources.Load<Shader>(RutaShader);
+        string rutaShader = zonaShader == IdsZonaCampania.BosqueAngustiante
+            ? RutaShaderBosqueArdiente
+            : zonaShader == IdsZonaCampania.PasoVientoHelado
+                ? RutaShaderPasoVientoHelado
+                : RutaShader;
+        Shader shader = Resources.Load<Shader>(rutaShader);
         if (shader == null)
         {
             Debug.LogWarning(
                 "[NieblaGuerraCaravana] No se encontró el shader Resources/"
-                + RutaShader + ".shader.");
+                + rutaShader + ".shader.");
             enabled = false;
             return;
+        }
+
+        if (materialNiebla != null)
+        {
+            Destroy(materialNiebla);
         }
 
         materialNiebla = new Material(shader)
@@ -198,10 +217,21 @@ public sealed class NieblaGuerraCaravana : MonoBehaviour
             name = "Niebla de guerra - Instancia",
             hideFlags = HideFlags.DontSave
         };
+        zonaShaderActual = zonaShader;
         materialNiebla.SetFloat(IdFuerzaHistorial, 0.50f);
-        materialNiebla.SetFloat(IdOpacidad, 0f);
+        materialNiebla.SetFloat(IdOpacidad, opacidadSuavizada);
         materialNiebla.SetVector(IdParametrosBorde, new Vector4(0.085f, 0.045f, 1f, 0f));
         materialNiebla.SetVector(IdOndaBorde, new Vector4(1f, 0f, 0f, 0f));
+        if (texturaHistorial != null)
+        {
+            materialNiebla.SetTexture(IdTexturaHistorial, texturaHistorial);
+        }
+        if (boundsInicializados)
+        {
+            materialNiebla.SetVector(IdBoundsHistorial,
+                new Vector4(minimoHistorial.x, minimoHistorial.y,
+                    1f / tamanoHistorial.x, 1f / tamanoHistorial.y));
+        }
     }
 
     void ActualizarBordeVivo(float radio, float pasoMapa)

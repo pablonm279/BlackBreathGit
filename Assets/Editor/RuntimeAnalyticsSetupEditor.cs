@@ -123,6 +123,7 @@ public static class RuntimeAnalyticsSetupEditor
         changed |= AddUnique(settings.CustomDimensions01, "es");
         changed |= AddUnique(settings.CustomDimensions01, "en");
         changed |= AddUnique(settings.CustomDimensions01, "pt");
+        changed |= AddUnique(settings.CustomDimensions01, ChineseLocalization.Locale);
         changed |= AddUnique(settings.CustomDimensions02, "difficulty_0");
         changed |= AddUnique(settings.CustomDimensions02, "difficulty_1");
         changed |= AddUnique(settings.CustomDimensions02, "difficulty_2");

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -41,6 +40,7 @@ public class HombroConHombro : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
       int bonoDefensa = 2 + (NIVEL > 1 ? 1 : 0);
       int bonoAtaque = 2 + (NIVEL > 2 ? 1 : 0);
@@ -59,6 +59,7 @@ public class HombroConHombro : Habilidad
       string tituloEs = "Hombro con Hombro I";
       string tituloEn = "Shoulder to Shoulder I";
       string tituloPt = "Ombro a Ombro I";
+      string tituloZh = "并肩而立 I";
       if (NIVEL == 2) { tituloEs = "Hombro con Hombro II"; tituloEn = "Shoulder to Shoulder II"; }
       if (NIVEL == 3) { tituloEs = "Hombro con Hombro III"; tituloEn = "Shoulder to Shoulder III"; }
       if (NIVEL == 4) { tituloEs = "Hombro con Hombro IV a"; tituloEn = "Shoulder to Shoulder IV a"; }
@@ -67,6 +68,10 @@ public class HombroConHombro : Habilidad
       if (NIVEL == 3) { tituloPt = "Ombro a Ombro III"; }
       if (NIVEL == 4) { tituloPt = "Ombro a Ombro IV a"; }
       if (NIVEL == 5) { tituloPt = "Ombro a Ombro IV b"; }
+      if (NIVEL == 2) { tituloZh = "并肩而立 II"; }
+      if (NIVEL == 3) { tituloZh = "并肩而立 III"; }
+      if (NIVEL == 4) { tituloZh = "并肩而立 IV a"; }
+      if (NIVEL == 5) { tituloZh = "并肩而立 IV b"; }
 
       if (esIngles)
       {
@@ -103,6 +108,32 @@ public class HombroConHombro : Habilidad
           "Forms a compact defensive line with nearby allies.",
           lineas,
           proximaMejora);
+        return;
+      }
+
+      if (esChino)
+      {
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string ataqueZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+        string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+        string invulnerableZh = TerminoDescripcion(TerminoDescripcionId.Invulnerable, "无敌");
+        string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点", "ap");
+        string proxZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proxZh = "下一级：防御 +1。"; }
+          else if (NIVEL == 2) { proxZh = "下一级：攻击 +1。"; }
+          else if (NIVEL == 3) { proxZh = "选项A：获得 1 回合无敌。\n选项B：最大行动点 +1，持续 3 回合。"; }
+        }
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "自身及同列相邻的友军"),
+          LineaDescripcion("效果", $"获得 +{bonoDefensa} {defensaZh}，+{bonoAtaque} {ataqueZh}（持续 3 回合）。"),
+          LineaDescripcion("每个目标", $"获得 +1 {valentiaZh}。", 1)
+        };
+        if (daInvulnerable) { lineasZh.Add(LineaDescripcion("额外效果", $"变为{invulnerableZh}（持续 1 回合）。", 1)); }
+        if (daApMax) { lineasZh.Add(LineaDescripcion("额外效果", $"获得 +1 {apZh}（持续 3 回合）。", 1)); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloZh, "与附近的友军组成紧密的防御阵线。", lineasZh, proxZh);
         return;
       }
 

@@ -34,12 +34,12 @@ public class SequitoHerboristas : MonoBehaviour
 
     public void Actualizar()
     {
-        txtTituloBalsamoFort.text = TraducirLocal("Bálsamo Reforzante:\n", "Fortifying Balm:\n", "Bálsamo Fortalecedor:\n");
-        txtDescripcionBalsamoFort.text = TraducirLocal("Consumible: +2 TS Fortaleza durante el combate.", "Consumable: +2 Fortitude Save during combat.", "Consumível: +2 Fortitude durante o combate.");
-        txtTituloBalsamoReflej.text = TraducirLocal("Bálsamo Energizante:\n", "Energizing Balm:\n", "Bálsamo Energizante:\n");
-        txtDescripcionBalsamoReflej.text = TraducirLocal("Consumible: +2 TS Reflejos durante el combate.", "Consumable: +2 Reflex Save during combat.", "Consumível: +2 Reflexos durante o combate.");
-        txtTituloBalsamoMental.text = TraducirLocal("Bálsamo de Claridad:\n", "Balm of Clarity:\n", "Bálsamo de Clareza:\n");
-        txtDescripcionBalsamoMental.text = TraducirLocal("Consumible: +2 TS Mental durante el combate.", "Consumable: +2 Mental Save during combat.", "Consumível: +2 Mental durante o combate.");
+        txtTituloBalsamoFort.text = TraducirLocal("Bálsamo Reforzante:\n", "Fortifying Balm:\n", "Bálsamo Fortalecedor:\n", "强化药膏：\n");
+        txtDescripcionBalsamoFort.text = TraducirLocal("Consumible: +2 TS Fortaleza durante el combate.", "Consumable: +2 Fortitude Save during combat.", "Consumível: +2 Fortitude durante o combate.", "消耗品：战斗中坚韧豁免 +2。");
+        txtTituloBalsamoReflej.text = TraducirLocal("Bálsamo Energizante:\n", "Energizing Balm:\n", "Bálsamo Energizante:\n", "活力药膏：\n");
+        txtDescripcionBalsamoReflej.text = TraducirLocal("Consumible: +2 TS Reflejos durante el combate.", "Consumable: +2 Reflex Save during combat.", "Consumível: +2 Reflexos durante o combate.", "消耗品：战斗中反射豁免 +2。");
+        txtTituloBalsamoMental.text = TraducirLocal("Bálsamo de Claridad:\n", "Balm of Clarity:\n", "Bálsamo de Clareza:\n", "清明药膏：\n");
+        txtDescripcionBalsamoMental.text = TraducirLocal("Consumible: +2 TS Mental durante el combate.", "Consumable: +2 Mental Save during combat.", "Consumível: +2 Mental durante o combate.", "消耗品：战斗中心智豁免 +2。");
 
 
         txtDesc.text = TRADU.i.Traducir("Un grupo de especialistas en recolectar hierbas y crear con ellas bélsamos especiales para vender. \nAdemás, sus hierbas proporcionarán beneficios curativos a la caravana.\nPero quizás no sean demasiado cuidadosos al adentrarse en regiones peligrosas para recolectar hierbas.\n\n");
@@ -57,11 +57,16 @@ public class SequitoHerboristas : MonoBehaviour
         txstCantBalsamoMental.text = $"{cantBalsamoMental}/2 - {precioMental}";
     }
 
-    private string TraducirLocal(string espanol, string ingles, string portugues)
+    private string TraducirLocal(string espanol, string ingles, string portugues, string chino = null)
     {
         if (TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
         {
             return espanol;
+        }
+
+        if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return chino ?? ingles;
         }
 
         return TRADU.i.nIdioma == TRADU.IdiomaPortugues ? portugues : ingles;

@@ -2443,9 +2443,12 @@ void ControlarSiEsDescanso()
 
      string nombreUnidad = NombreUnidadParaLog(this);
      bool enIngles = IdiomaInglesActivo();
+     bool enChino = IdiomaChinoActivo();
      string motivoDescanso = enIngles
        ? nombreUnidad + " ends turn without spending AP"
-       : nombreUnidad + " termina el turno sin gastar AP";
+       : enChino
+         ? nombreUnidad + "结束回合时未消耗行动点"
+         : nombreUnidad + " termina el turno sin gastar AP";
      SumarValentia(2, motivoDescanso);
   }
 
@@ -2662,9 +2665,12 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     string nombreAtacante = NombreUnidadParaLog(this);
     string nombreVictima = NombreUnidadParaLog(victima);
     bool enIngles = IdiomaInglesActivo();
+    bool enChino = IdiomaChinoActivo();
     string motivoCritico = enIngles
       ? nombreAtacante + " lands a critical hit on " + nombreVictima
-      : nombreAtacante + " asesta un golpe crítico a " + nombreVictima;
+      : enChino
+        ? nombreAtacante + "对" + nombreVictima + "打出了一次暴击"
+        : nombreAtacante + " asesta un golpe crítico a " + nombreVictima;
     SumarValentia(1, motivoCritico);
   }
 
@@ -3089,18 +3095,26 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
 
     string tipoDanioTexto = ObtenerTextoTipoDanioLog(tipoDanio);
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool esChino = IdiomaChinoActivo();
     string mensaje;
 
     if (esDanioElementalExtra)
     {
       mensaje = esIngles
         ? $"<color=#d92b08>{nombreLog} takes {danio} {tipoDanioTexto} extra damage.</color>"
-        : $"<color=#d92b08>{nombreLog} recibe {danio} de daño elemental extra {tipoDanioTexto}.</color>";
+        : esChino
+          ? $"<color=#d92b08>{nombreLog} 受到 {danio} 点额外{tipoDanioTexto}伤害。</color>"
+          : $"<color=#d92b08>{nombreLog} recibe {danio} de daño elemental extra {tipoDanioTexto}.</color>";
     }
     else if (esIngles)
     {
       string bonusLogEn = bonusElemental > 0 ? $" (+{bonusElemental} elemental bonus)" : string.Empty;
       mensaje = $"<color=#d92b08>{nombreLog} takes {danio} {tipoDanioTexto} damage{bonusLogEn}.</color>";
+    }
+    else if (esChino)
+    {
+      string bonusLogZh = bonusElemental > 0 ? $"（+{bonusElemental} 元素加成）" : string.Empty;
+      mensaje = $"<color=#d92b08>{nombreLog} 受到 {danio} 点{tipoDanioTexto}伤害{bonusLogZh}。</color>";
     }
     else
     {
@@ -3166,6 +3180,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     {
       TRADU.IdiomaIngles => "Condemnation",
       TRADU.IdiomaPortugues => "Condenação",
+      TRADU.IdiomaChinoSimplificado => "定罪",
       _ => "Condena"
     };
   }
@@ -3725,9 +3740,12 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
       {
         string nombreUnidad = NombreUnidadParaLog(this);
         bool enIngles = IdiomaInglesActivo();
+        bool enChino = IdiomaChinoActivo();
         string motivoCritRecibido = enIngles
           ? nombreUnidad + " receives a critical hit"
-          : nombreUnidad + " recibe un golpe crítico";
+          : enChino
+            ? nombreUnidad + "受到了一次暴击"
+            : nombreUnidad + " recibe un golpe crítico";
         SumarValentia(-1, motivoCritRecibido);
       }
       
@@ -3952,13 +3970,16 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
           if (BattleManager.Instance != null)
           {
             bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+            bool esChino = IdiomaChinoActivo();
             string nombreAtacanteLog = uCausante != null
               ? (TRADU.i != null ? TRADU.i.Traducir(uCausante.uNombre) : uCausante.uNombre)
               : (TRADU.i != null ? TRADU.i.Traducir("Atacante") : "Atacante");
             string nombreObjetivoLog = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
             string mensaje = esIngles
               ? $"{nombreAtacanteLog} ignores {danioExtra} armor from {nombreObjetivoLog}."
-              : $"{nombreAtacanteLog} ignora {danioExtra} de armadura de {nombreObjetivoLog}.";
+              : esChino
+                ? $"{nombreAtacanteLog}无视了{nombreObjetivoLog}的 {danioExtra} 点护甲。"
+                : $"{nombreAtacanteLog} ignora {danioExtra} de armadura de {nombreObjetivoLog}.";
             BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(mensaje));
           }
         }
@@ -4150,11 +4171,14 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     if (BattleManager.Instance != null)
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esChino = IdiomaChinoActivo();
       string nombreDefensor = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
       string nombreAtacante = TRADU.i != null ? TRADU.i.Traducir(uCausante.uNombre) : uCausante.uNombre;
       string mensaje = esIngles
         ? $"{nombreDefensor} reflects {danioEspinas} damage to {nombreAtacante}."
-        : $"{nombreDefensor} refleja {danioEspinas} de daño a {nombreAtacante}.";
+        : esChino
+          ? $"{nombreDefensor}向{nombreAtacante}反弹了 {danioEspinas} 点伤害。"
+          : $"{nombreDefensor} refleja {danioEspinas} de daño a {nombreAtacante}.";
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(mensaje));
     }
 
@@ -4184,6 +4208,7 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
     if (BattleManager.Instance != null)
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+      bool esChino = IdiomaChinoActivo();
       string nombreObjetivo = TRADU.i != null ? TRADU.i.Traducir(uNombre) : uNombre;
       string estado = string.IsNullOrWhiteSpace(nombreEstado) ? (TRADU.i != null ? TRADU.i.Traducir("estado") : "estado") : (TRADU.i != null ? TRADU.i.Traducir(nombreEstado) : nombreEstado);
 
@@ -4193,13 +4218,17 @@ public virtual void OcasionoDanioaEnemigo(Unidad victima, int tipoDanio, bool es
         string nombreOrigen = TRADU.i != null ? TRADU.i.Traducir(origen.uNombre) : origen.uNombre;
         mensaje = esIngles
           ? $"{nombreObjetivo} resists {estado} from {nombreOrigen}."
-          : $"{nombreObjetivo} resiste {estado} de {nombreOrigen}.";
+          : esChino
+            ? $"{nombreObjetivo}抵抗了来自{nombreOrigen}的{estado}。"
+            : $"{nombreObjetivo} resiste {estado} de {nombreOrigen}.";
       }
       else
       {
         mensaje = esIngles
           ? $"{nombreObjetivo} resists {estado}."
-          : $"{nombreObjetivo} resiste {estado}.";
+          : esChino
+            ? $"{nombreObjetivo}抵抗了{estado}。"
+            : $"{nombreObjetivo} resiste {estado}.";
       }
 
       BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoEstado(mensaje));
@@ -4474,12 +4503,15 @@ public virtual void AcabaDeMatarUnidad(Unidad uVictima)
   string nombreAsesino = NombreUnidadParaLog(this);
   string nombreVictima = NombreUnidadParaLog(uVictima);
   bool enIngles = IdiomaInglesActivo();
+  bool enChino = IdiomaChinoActivo();
 
   string motivoAsesino = enIngles
     ? nombreAsesino + " defeats " + nombreVictima
-    : nombreAsesino + " derrota a " + nombreVictima;
+    : enChino
+      ? nombreAsesino + "击败了" + nombreVictima
+      : nombreAsesino + " derrota a " + nombreVictima;
   SumarValentia(2, motivoAsesino);
-  OtorgarExperienciaPorBajaSiCorresponde(uVictima, nombreAsesino, nombreVictima, enIngles);
+  OtorgarExperienciaPorBajaSiCorresponde(uVictima, nombreAsesino, nombreVictima, enIngles, enChino);
   ObtenerPersonajeCampania(this)?.SumarEnemigosEliminados();
 
   LadoManager ladoAliado = null;
@@ -4515,7 +4547,7 @@ public virtual void AcabaDeMatarUnidad(Unidad uVictima)
   }
 }
 
-private void OtorgarExperienciaPorBajaSiCorresponde(Unidad victima, string nombreAsesino, string nombreVictima, bool enIngles)
+private void OtorgarExperienciaPorBajaSiCorresponde(Unidad victima, string nombreAsesino, string nombreVictima, bool enIngles, bool enChino = false)
 {
   if (victima == null || CasillaPosicion == null || CasillaPosicion.lado != 2)
   {
@@ -4548,7 +4580,9 @@ private void OtorgarExperienciaPorBajaSiCorresponde(Unidad victima, string nombr
   {
     string logExp = enIngles
       ? $"{nombreAsesino} gains {expGanada} EXP for defeating {nombreVictima} (Tier {tierVictima})."
-      : $"{nombreAsesino} gana {expGanada} EXP por derrotar a {nombreVictima} (Tier {tierVictima}).";
+      : enChino
+        ? $"{nombreAsesino}击败{nombreVictima}（{tierVictima} 级），获得 {expGanada} 点经验。"
+        : $"{nombreAsesino} gana {expGanada} EXP por derrotar a {nombreVictima} (Tier {tierVictima}).";
     BattleManager.Instance.EscribirLog(CombatLogFormatter.EventoCuracion(logExp));
   }
 }
@@ -4642,6 +4676,11 @@ private bool IdiomaInglesActivo()
   return TRADU.i != null && TRADU.i.nIdioma == 2;
 }
 
+private bool IdiomaChinoActivo()
+{
+  return TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
+}
+
 private string NombreUnidadParaLog(Unidad unidad)
 {
   if (unidad == null)
@@ -4677,7 +4716,7 @@ public virtual void SumarValentia(int cant, string motivo = null, bool mostrarTe
 
   bool esGanancia = cambioReal > 0;
   int cambioAbs = Mathf.Abs(cambioReal);
-  string etiquetaValentia = " VAL";
+  string etiquetaValentia = IdiomaChinoActivo() ? " 勇气" : " VAL";
   string textoCambioValentia = (esGanancia ? "+" : "-") + cambioAbs + etiquetaValentia;
   Color colorTextoValentia = esGanancia ? ColorValentiaGanada : ColorValentiaPerdida;
   FloatingTextContext contextoTextoValentia = esGanancia ? FloatingTextContext.ValourGain : FloatingTextContext.ValourLoss;
@@ -5199,6 +5238,7 @@ public void UnidadMuere()
      bool caidoEraIAAliada = GetComponent<IAUnidad>() != null;
      int perdidaValentia = caidoEraIAAliada ? -1 : -3;
      bool enIngles = IdiomaInglesActivo();
+     bool enChino = IdiomaChinoActivo();
      string nombreCaido = NombreUnidadParaLog(this);
 
      foreach (Unidad aliado in BattleManager.Instance.ladoB.GetComponent<LadoManager>().unidadesLado)
@@ -5211,7 +5251,9 @@ public void UnidadMuere()
        string nombreAliado = NombreUnidadParaLog(aliado);
        string motivo = enIngles
          ? nombreAliado + " loses morale after " + nombreCaido + " falls"
-         : nombreAliado + " pierde ánimo al caer " + nombreCaido;
+         : enChino
+           ? nombreAliado + "目睹" + nombreCaido + "倒下而士气低落"
+           : nombreAliado + " pierde ánimo al caer " + nombreCaido;
        aliado.SumarValentia(perdidaValentia, motivo, mostrarTextoFlotante: false);
      }
 
@@ -6491,6 +6533,7 @@ void AcomodarSortingLayer()
     }
 
     bool enIngles = IdiomaInglesActivo();
+    bool enChino = IdiomaChinoActivo();
     Unidad aliadoBajaVal = aliadosNuevos.FirstOrDefault(a => a.ValentiaP_actual < -1f);
     if (aliadoBajaVal != null)
     {
@@ -6498,7 +6541,9 @@ void AcomodarSortingLayer()
       string nombreAliado = NombreUnidadParaLog(aliadoBajaVal);
       string motivo = enIngles
         ? nombreUnidad + " moves next to low-valour ally " + nombreAliado
-        : nombreUnidad + " se acerca al aliado de valentía baja " + nombreAliado;
+        : enChino
+          ? nombreUnidad + "移动到了低勇气友军" + nombreAliado + "旁边"
+          : nombreUnidad + " se acerca al aliado de valentía baja " + nombreAliado;
       SumarValentia(-1, motivo);
       bonusAcercamientoValentiaAplicadoTurno = true;
       return;
@@ -6511,7 +6556,9 @@ void AcomodarSortingLayer()
       string nombreAliado = NombreUnidadParaLog(aliadoAltaVal);
       string motivo = enIngles
         ? nombreUnidad + " moves next to high-valour ally " + nombreAliado
-        : nombreUnidad + " se acerca al aliado de valentía alta " + nombreAliado;
+        : enChino
+          ? nombreUnidad + "移动到了高勇气友军" + nombreAliado + "旁边"
+          : nombreUnidad + " se acerca al aliado de valentía alta " + nombreAliado;
       SumarValentia(1, motivo);
       bonusAcercamientoValentiaAplicadoTurno = true;
     }

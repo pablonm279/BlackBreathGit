@@ -481,6 +481,7 @@ public class MapDecorator : MonoBehaviour
 
         AplicarRelieveAPlano(planeMesh, runtimePlaneMesh, basePlaneVertices, planeCollider);
         AplicarRelieveAPlano(planeMeshExtension, runtimePlaneMeshExtension, basePlaneExtensionVertices, planeColliderExtension);
+        if (zonaId == 2) FondoPasoVientoHelado.ActualizarSueloAldea(GetComponent<AtributosZona>(), runtimePlaneMeshExtension);
         LimpiarParedVisualPrecipicioTerrenoSur();
         AjustarLlamasBosqueAlRelieve(zonaId);
     }
@@ -522,6 +523,11 @@ public class MapDecorator : MonoBehaviour
         return relieveSeed;
     }
 
+    // Si > 0: donde la malla principal esta a menos de este desnivel (m) de la extension, se prefiere la principal.
+    // Coincide con el empuje en profundidad con que se dibuja la extension (sin costuras visibles).
+    float umbralPrincipalSobreExtension;
+    public void PreferirPrincipalSobreExtension(float umbral) { umbralPrincipalSobreExtension = Mathf.Max(0f, umbral); }
+
     public bool TrySampleSurface(Vector3 worldPos, out Vector3 surfacePos, out Vector3 surfaceNormal, float normalOffset = 0f)
     {
         surfacePos = worldPos;
@@ -554,6 +560,18 @@ public class MapDecorator : MonoBehaviour
                 nearestDistance = hits[i].distance;
                 nearestHit = hits[i];
                 found = true;
+            }
+        }
+
+        if (found && umbralPrincipalSobreExtension > 0f && nearestHit.collider == planeColliderExtension)
+        {
+            for (int i = 0; i < hits.Length; i++)
+            {
+                if (hits[i].collider == planeCollider && nearestHit.point.y - hits[i].point.y <= umbralPrincipalSobreExtension)
+                {
+                    nearestHit = hits[i];
+                    break;
+                }
             }
         }
 
@@ -968,6 +986,14 @@ public class MapDecorator : MonoBehaviour
 
     public void OcultarDecoracionRemovibleSobreCamino(LineRenderer lr, bool forzar = false)
     {
+        var zona = GetComponent<AtributosZona>();
+        if (lr != null && zona != null && zona.ID == 1 && zona.bosqueardienteContenedorGameObjects != null)
+            zona.bosqueardienteContenedorGameObjects.GetComponent<AdornosBosqueArdiente>()
+                ?.RetirarSobreCamino(lr, CalcularRadioLimpiezaCamino(lr));
+        if (lr != null && zona != null && zona.ID == 2 && zona.pasovientoheladoContenedorGameObjects != null)
+            zona.pasovientoheladoContenedorGameObjects.GetComponent<AdornosPasoVientoHelado>()
+                ?.RetirarSobreCamino(lr, CalcularRadioLimpiezaCamino(lr), forzar);
+
         if (lr == null || lr.positionCount < 2 || decoracionesRemoviblesSobreCaminos.Count == 0)
         {
             return;
@@ -1236,6 +1262,8 @@ public class MapDecorator : MonoBehaviour
 
     bool PasaExclusiones(Vector3 p)
     {
+        if (!PasaMargenCornisaFrontal(p)) return false;
+
         if (EstaDentroSectorExcluido(p))
         {
             return false;
@@ -1295,6 +1323,16 @@ public class MapDecorator : MonoBehaviour
         }
 
         return true;
+    }
+
+    public bool PasaMargenCornisaFrontal(Vector3 p, float radio = 0f)
+    {
+        if (zonaRelieveActual != 2 || !precipicioTerrenoSurDisponible) return true;
+        float margen = 3f + Mathf.Max(0f, radio);
+        float lateral = Mathf.Max(0f, margenLateralPrecipicioTerrenoSur) + margen;
+        if (p.x < precipicioSurMinX - lateral || p.x > precipicioSurMaxX + lateral) return true;
+        float distanciaExterior = (p.z - precipicioSurBordeInteriorZ) * precipicioSurDireccionExteriorZ;
+        return distanciaExterior < -margen;
     }
 
     bool PasaAlturaMinimaDecoracion(Vector3 p)
@@ -1786,6 +1824,16 @@ public class MapDecorator : MonoBehaviour
             Renderer renderer = candidato.GetComponent<Renderer>();
             if (renderer != null)
                 renderer.sharedMaterial = material;
+            ParticleSystem niebla = candidato.GetComponent<ParticleSystem>();
+            if (nombreObjeto == "Clima_Niebla" && niebla != null)
+            {
+                var viento = niebla.velocityOverLifetime;
+                viento.enabled = true;
+                viento.space = ParticleSystemSimulationSpace.World;
+                viento.x = -0.06f;
+                viento.y = 0f;
+                viento.z = 0.015f;
+            }
         }
     }
 
@@ -1830,6 +1878,7 @@ public class MapDecorator : MonoBehaviour
         precipicioSurDireccionExteriorZ = centroSectorZ < centroTerrenoZ ? -1f : 1f;
         float bordeSector = precipicioSurDireccionExteriorZ < 0f ? precipicioSurMaxZ : precipicioSurMinZ;
         precipicioSurBordeInteriorZ = bordeSector + precipicioSurDireccionExteriorZ * offsetBordePrecipicioTerrenoSur;
+        Shader.SetGlobalVector("_PasoCornisaFrontal", new Vector4(precipicioSurBordeInteriorZ, precipicioSurDireccionExteriorZ, 0f, 0f));
         precipicioTerrenoSurDisponible = true;
     }
 
@@ -2077,7 +2126,8 @@ public class MapDecorator : MonoBehaviour
             return 0f;
 
         float distanciaExterior = (worldPos.z - precipicioSurBordeInteriorZ) * precipicioSurDireccionExteriorZ;
-        float mascaraCaida = distanciaExterior >= 0f ? 1f : 0f;
+        // Redondear la cornisa en una franja estrecha, manteniendo la caida total.
+        float mascaraCaida = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(-0.35f, 1.25f, distanciaExterior));
         float caida = Mathf.Max(8.5f, Mathf.Abs(caidaPrecipicioTerrenoSur));
 
         return -caida * mascaraCaida;
@@ -2310,6 +2360,9 @@ public class MapDecorator : MonoBehaviour
             VisualPolishRuntime.ApplyGeneratedCampaignVfxQualityScale(go);
         }
         if (rotarYRandom) go.transform.rotation = Quaternion.Euler(0f,UnityEngine.Random.Range(0f, 360f), 0f);
+        var zonaDecoracion = GetComponent<AtributosZona>();
+        if (zonaDecoracion != null && zonaDecoracion.ID == 2 && zonaDecoracion.pasovientoheladoContenedorGameObjects != null)
+            zonaDecoracion.pasovientoheladoContenedorGameObjects.GetComponent<AmbientePasoVientoHelado>()?.ArmonizarDecoracion(go);
         if (batchActualEsRellenoRemovible)
         {
             decoracionesRemoviblesSobreCaminos.Add(go);

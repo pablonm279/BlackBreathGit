@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
@@ -64,6 +63,7 @@ public class Asesinar : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int agilidadActual = statsUI.Agilidad;
@@ -90,6 +90,7 @@ public class Asesinar : Habilidad
     string tituloEs = "Asesinar I";
     string tituloEn = "Assassinate I";
     string tituloPt = "Assassinar I";
+    string tituloZh = "暗杀 I";
     if (NIVEL == 2) { tituloEs = "Asesinar II"; tituloEn = "Assassinate II"; }
     if (NIVEL == 3) { tituloEs = "Asesinar III"; tituloEn = "Assassinate III"; }
     if (NIVEL == 4) { tituloEs = "Asesinar IV a"; tituloEn = "Assassinate IV a"; }
@@ -98,6 +99,10 @@ public class Asesinar : Habilidad
     if (NIVEL == 3) { tituloPt = "Assassinar III"; }
     if (NIVEL == 4) { tituloPt = "Assassinar IV a"; }
     if (NIVEL == 5) { tituloPt = "Assassinar IV b"; }
+    if (NIVEL == 2) { tituloZh = "暗杀 II"; }
+    if (NIVEL == 3) { tituloZh = "暗杀 III"; }
+    if (NIVEL == 4) { tituloZh = "暗杀 IV a"; }
+    if (NIVEL == 5) { tituloZh = "暗杀 IV b"; }
 
     if (esIngles)
     {
@@ -128,6 +133,31 @@ public class Asesinar : Habilidad
         "A lethal attack that is stronger against isolated targets.",
         lineas,
         proximaMejora);
+      return;
+    }
+
+    if (esChino)
+    {
+      string ocultoZh = TerminoDescripcion(TerminoDescripcionId.Oculto, "隐匿", "Estado_oculto");
+      string oculto2Zh = TerminoDescripcion(TerminoDescripcionId.Oculto, "隐匿");
+      string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+      string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+      string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：基础伤害 +2。" : NIVEL == 2 ? "下一级：对孤立目标的攻击检定 +1。" : NIVEL == 3 ? "选项A：击杀时获得 2 点勇气。选项B：基础伤害 +3。" : null;
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "对孤立目标威力更强的致命一击。",
+        new[]
+        {
+          LineaDescripcion("目标", "1 名敌人"),
+          LineaDescripcion("需求", $"潜猎者处于{ocultoZh}状态。"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {agiZh} 点{danoZh}；对类人目标额外 +2 点伤害。"),
+          LineaDescripcion("攻击检定", $"1d20 + {agiZh}{bonusTirada}，对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+          LineaDescripcion("孤立目标", $"相邻格子内没有单位时：攻击检定 +{bonoAtaqueAislado}，最终伤害翻倍。"),
+          LineaDescripcion("击杀时", $"获得{oculto2Zh}；该技能在 1 回合后即可再次使用" + (NIVEL == 4 ? "；获得 2 点勇气。" : "。"))
+        },
+        proxZh);
       return;
     }
 

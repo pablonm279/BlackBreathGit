@@ -13,6 +13,11 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
     AtributosZona zona;
     Material humo, brasa, ceniza;
     GameObject raizParticulas;
+    readonly List<Light> lucesIncendio = new List<Light>(4);
+    GameObject raizLuces;
+    FondoBosqueArdiente fondo;
+    SunController solBosque;
+    bool iluminacionPreparada;
     float reloj;
     static readonly int RelojId = Shader.PropertyToID("_Reloj");
 
@@ -33,6 +38,9 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
         ambiente.RefinarMaterialLlamas(atributos.gameObject);
         ambiente.AjustarFocosAlSuelo();
         ambiente.PrepararAtmosfera();
+        ambiente.PrepararIluminacion();
+        ambiente.fondo = FondoBosqueArdiente.Preparar(atributos, ambiente.transform);
+        ambiente.ActualizarLuzAmbiente();
     }
 
     void PrepararMateriales()
@@ -148,9 +156,9 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
         var chispas = CrearSistema("Brasas de los incendios", brasa, 180, .045f, .09f, 2.5f, 4.8f);
         var humoLocal = CrearSistema("Humo que deriva entre arboles", humo, 50, .55f, 1.15f, 3.5f, 6);
         var cenizas = CrearSistema("Ceniza tenue del bosque", ceniza, 95, .025f, .055f, 9, 15);
-        ConfigurarMovimiento(chispas, new Vector3(.13f,.34f,.04f), new Vector3(.38f,.8f,.18f), .18f);
-        ConfigurarMovimiento(humoLocal, new Vector3(.11f,.055f,.015f), new Vector3(.22f,.12f,.055f), .08f);
-        ConfigurarMovimiento(cenizas, new Vector3(.08f,-.045f,.02f), new Vector3(.20f,-.015f,.08f), .09f);
+        ConfigurarMovimiento(chispas, new Vector3(-.22f,.34f,.055f), new Vector3(-.10f,.8f,.11f), .12f);
+        ConfigurarMovimiento(humoLocal, new Vector3(-.16f,.055f,.04f), new Vector3(-.08f,.12f,.08f), .085f);
+        ConfigurarMovimiento(cenizas, new Vector3(-.14f,-.045f,.035f), new Vector3(-.06f,-.015f,.07f), .075f);
         ConfigurarColor(chispas, new Color(1,.56f,.10f), new Color(.8f,.11f,.01f), .8f);
         ConfigurarColor(humoLocal, new Color(.29f,.265f,.235f), new Color(.24f,.245f,.25f), .045f);
         ConfigurarColor(cenizas, new Color(.62f,.58f,.51f), new Color(.38f,.35f,.30f), .30f);
@@ -163,6 +171,61 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
         rng = aleatorio;
         factorCalidad = factor;
         foreach (var ps in sistemasAmbiente) ps.Play(false);
+    }
+
+    void PrepararIluminacion()
+    {
+        if (!iluminacionPreparada)
+        {
+            iluminacionPreparada = true;
+            solBosque = GetComponentInChildren<SunController>(true);
+            if (solBosque != null)
+            {
+                // Conserva intensidades y horarios del inspector; reduce apenas el rosa de noche.
+                solBosque.nightColor = Color.Lerp(solBosque.nightColor, new Color(.49f, .53f, .59f), .18f);
+                solBosque.nightAmbientColor = Color.Lerp(solBosque.nightAmbientColor, new Color(.48f, .46f, .43f), .18f);
+                var luz = solBosque.sun != null ? solBosque.sun : solBosque.GetComponent<Light>();
+                if (luz != null) luz.shadowStrength = Mathf.Min(luz.shadowStrength, .78f);
+                solBosque.SetCampaignHour(CampaignManager.Instance != null ? CampaignManager.Instance.ObtenerHoraActual() : 8);
+            }
+        }
+        int calidad = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel()), 0, 2);
+        int cantidad = Mathf.Min(focos.Count, calidad == 0 ? 1 : calidad == 1 ? 2 : 4);
+        for (int i = 0; i < cantidad; i++)
+        {
+            if (i == lucesIncendio.Count)
+            {
+                if (raizLuces == null)
+                {
+                    raizLuces = new GameObject("Relleno cálido de incendios (Runtime)");
+                    raizLuces.transform.SetParent(transform, true);
+                }
+                var go = new GameObject("Luz cálida de incendio " + (i + 1));
+                go.transform.SetParent(raizLuces.transform, true);
+                var luz = go.AddComponent<Light>();
+                luz.type = LightType.Point; luz.color = new Color(1, .35f, .09f);
+                luz.range = 4.6f; luz.shadows = LightShadows.None;
+                luz.renderMode = LightRenderMode.ForceVertex;
+                luz.cullingMask = 1 << zona.TexturaTerreno.gameObject.layer;
+                lucesIncendio.Add(luz);
+            }
+            lucesIncendio[i].transform.position = focos[i * focos.Count / cantidad] + Vector3.up * .8f;
+        }
+        for (int i = 0; i < lucesIncendio.Count; i++) lucesIncendio[i].enabled = i < cantidad;
+    }
+
+    void ActualizarLuzAmbiente()
+    {
+        float hora = CampaignManager.Instance != null ? CampaignManager.Instance.ObtenerHoraActual() : 13;
+        float dia = Mathf.SmoothStep(0, 1, Mathf.InverseLerp(5, 9, hora))
+            * (1 - Mathf.SmoothStep(0, 1, Mathf.InverseLerp(17, 21, hora)));
+        for (int i = 0; i < lucesIncendio.Count; i++)
+            if (lucesIncendio[i] != null)
+                lucesIncendio[i].intensity = Mathf.Lerp(.95f, .65f, dia)
+                    * (1 + Mathf.Sin(reloj * .73f + i * 2.1f) * .075f + Mathf.Sin(reloj * 1.13f + i) * .025f);
+        if (humo != null) humo.SetColor("_Color", Color.Lerp(new Color(.72f, .67f, .65f), Color.white, dia));
+        if (ceniza != null) ceniza.SetColor("_Color", Color.Lerp(new Color(.63f, .61f, .60f), Color.white, dia));
+        if (fondo != null) fondo.Actualizar(reloj, dia);
     }
 
     System.Random rng;
@@ -215,7 +278,7 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
         velocity.y = new ParticleSystem.MinMaxCurve(minimo.y,maximo.y);
         velocity.z = new ParticleSystem.MinMaxCurve(minimo.z,maximo.z);
         var noise = ps.noise;
-        noise.enabled = true; noise.strength = turbulencia; noise.frequency = .35f; noise.scrollSpeed = .12f;
+        noise.enabled = true; noise.strength = turbulencia; noise.frequency = .28f; noise.scrollSpeed = .065f;
         noise.quality = ParticleSystemNoiseQuality.Low;
     }
 
@@ -243,9 +306,11 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
         if (dt <= 0 || raizParticulas == null) return;
         reloj += dt;
         foreach (var material in materiales) if (material != null) material.SetFloat(RelojId,reloj);
+        ActualizarLuzAmbiente();
         if (focos.Count == 0) return;
-        acumuladorBrasas += dt * Mathf.Min(24, focos.Count*1.5f) * factorCalidad;
-        acumuladorHumo += dt * Mathf.Min(4, focos.Count*.18f) * factorCalidad;
+        float rafaga = .84f + .16f * Mathf.Sin(reloj * .19f);
+        acumuladorBrasas += dt * Mathf.Min(24, focos.Count*1.5f) * factorCalidad * rafaga;
+        acumuladorHumo += dt * Mathf.Min(4, focos.Count*.18f) * factorCalidad * (.9f + .1f * Mathf.Sin(reloj * .11f));
         EmitirDesdeFocos(sistemasAmbiente[0], ref acumuladorBrasas, true);
         EmitirDesdeFocos(sistemasAmbiente[1], ref acumuladorHumo, false);
     }
@@ -265,6 +330,8 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
 
     void OnDisable()
     {
+        if (raizLuces != null) raizLuces.SetActive(false);
+        if (fondo != null) fondo.gameObject.SetActive(false);
         if (raizParticulas == null) return;
         foreach (var ps in sistemasAmbiente)
             if (ps != null) ps.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -273,11 +340,15 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
 
     void OnEnable()
     {
+        if (raizLuces != null) raizLuces.SetActive(true);
+        if (fondo != null) fondo.gameObject.SetActive(true);
         foreach (var ps in sistemasAmbiente) if (ps != null) ps.Play(false);
     }
 
     void OnDestroy()
     {
+        if (raizLuces != null) { if (Application.isPlaying) Destroy(raizLuces); else DestroyImmediate(raizLuces); }
+        if (fondo != null) { if (Application.isPlaying) Destroy(fondo.gameObject); else DestroyImmediate(fondo.gameObject); }
         foreach (var material in materiales)
             if (material != null) { if (Application.isPlaying) Destroy(material); else DestroyImmediate(material); }
     }

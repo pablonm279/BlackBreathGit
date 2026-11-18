@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -37,6 +36,7 @@ public class SiguesTu : Habilidad
    {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
       int duracionMarca = 3;
       int bonusDanioMarca = NIVEL > 2 ? 10 : 8;
@@ -51,6 +51,7 @@ public class SiguesTu : Habilidad
       string tituloEs = "Sigues Tu I";
       string tituloEn = "You Are Next I";
       string tituloPt = "Voce e o Próximo I";
+      string tituloZh = "轮到你了 I";
       if (NIVEL == 2) { tituloEs = "Sigues Tu II"; tituloEn = "You Are Next II"; }
       if (NIVEL == 3) { tituloEs = "Sigues Tu III"; tituloEn = "You Are Next III"; }
       if (NIVEL == 4) { tituloEs = "Sigues Tu IV a"; tituloEn = "You Are Next IV a"; }
@@ -59,6 +60,10 @@ public class SiguesTu : Habilidad
       if (NIVEL == 3) { tituloPt = "Voce e o Próximo III"; }
       if (NIVEL == 4) { tituloPt = "Voce e o Próximo IV a"; }
       if (NIVEL == 5) { tituloPt = "Voce e o Próximo IV b"; }
+      if (NIVEL == 2) { tituloZh = "轮到你了 II"; }
+      if (NIVEL == 3) { tituloZh = "轮到你了 III"; }
+      if (NIVEL == 4) { tituloZh = "轮到你了 IV a"; }
+      if (NIVEL == 5) { tituloZh = "轮到你了 IV b"; }
 
       if (esIngles)
       {
@@ -95,6 +100,31 @@ public class SiguesTu : Habilidad
           "The Knight points at an enemy, making attacks against it more effective.",
           lineas,
           proximaMejora);
+        return;
+      }
+
+      if (esChino)
+      {
+        string ataqueZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        string mentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智", "ic_mental");
+        string objetivoMarcadoZh = TerminoDescripcion(TerminoDescripcionId.MarcaSiguesTu, "已标记目标");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "下一级：对已标记目标的暴击 +10%。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：对已标记目标的伤害 +2。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：该减益不设豁免。\n选项B：减益持续时间 +2。"; }
+        }
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "1 名敌人"),
+          LineaDescripcion("效果", "标记目标（持续 3 回合）。"),
+          LineaDescripcion(objetivoMarcadoZh, $"骑士对该目标的下一次攻击获得 +5 {ataqueZh}，伤害 +{bonusDanioMarca}" + (bonusCritMarca > 0 ? $"，{criticoZh} +{bonusCritMarcaPorcentaje}%" : string.Empty) + "。", 1)
+        };
+        if (sinSalvacion) { lineasZh.Add(LineaDescripcion("减益", $"{ataqueZh} -2（持续 {durDebuff} 回合）；无豁免。")); }
+        else { lineasZh.Add(LineaDescripcion("敌方豁免", $"{mentalZh} 豁免，对抗难度 {dcSalvacion}")); lineasZh.Add(LineaDescripcion("豁免失败", $"胆怯：{ataqueZh} -2（持续 {durDebuff} 回合）。", 1)); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloZh, "骑士锁定一名敌人，令针对它的攻击更加有效。", lineasZh, proximaMejoraZh);
         return;
       }
 

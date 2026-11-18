@@ -43,6 +43,7 @@ public class BombaDeHumo : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
       int radioZona = NIVEL == 5 ? 2 : 1;
       int duracionHumo = NIVEL == 4 ? 3 : 2;
@@ -55,6 +56,7 @@ public class BombaDeHumo : Habilidad
       string tituloEs = "Bomba de Humo I";
       string tituloEn = "Smoke Bomb I";
       string tituloPt = "Bomba de Fumaca I";
+      string tituloZh = "烟雾弹 I";
       if (NIVEL == 2) { tituloEs = "Bomba de Humo II"; tituloEn = "Smoke Bomb II"; }
       if (NIVEL == 3) { tituloEs = "Bomba de Humo III"; tituloEn = "Smoke Bomb III"; }
       if (NIVEL == 4) { tituloEs = "Bomba de Humo IV a"; tituloEn = "Smoke Bomb IV a"; }
@@ -63,6 +65,10 @@ public class BombaDeHumo : Habilidad
       if (NIVEL == 3) { tituloPt = "Bomba de Fumaca III"; }
       if (NIVEL == 4) { tituloPt = "Bomba de Fumaca IV a"; }
       if (NIVEL == 5) { tituloPt = "Bomba de Fumaca IV b"; }
+      if (NIVEL == 2) { tituloZh = "烟雾弹 II"; }
+      if (NIVEL == 3) { tituloZh = "烟雾弹 III"; }
+      if (NIVEL == 4) { tituloZh = "烟雾弹 IV a"; }
+      if (NIVEL == 5) { tituloZh = "烟雾弹 IV b"; }
 
       if (esIngles)
       {
@@ -90,6 +96,27 @@ public class BombaDeHumo : Habilidad
             LineaDescripcion("Duration", $"{duracionHumo} turns")
           },
           proximaMejora);
+        return;
+      }
+
+      if (esChino)
+      {
+        string ocultoZh = TerminoDescripcion(TerminoDescripcionId.Oculto, "隐匿", "Estado_oculto");
+        string atkZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+        string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        string areaZh = radioZona == 1 ? "目标格及其相邻格" : $"目标格及其周围 {radioZona} 格范围内的所有格子";
+        string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：冷却时间 -1。" : NIVEL == 2 ? "下一级：行动点消耗 -1。" : NIVEL == 3 ? "选项A：持续时间 +1 回合。选项B：范围半径变为 2。" : null;
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "释放烟雾，使进入其中的单位隐匿起来。",
+          new[]
+          {
+            LineaDescripcion("目标", "1 个格子"),
+            LineaDescripcion("效果", $"在{areaZh}生成烟雾。"),
+            LineaDescripcion("进入时", $"单位获得{ocultoZh}，{atkZh} +2，{critZh} +5%。"),
+            LineaDescripcion("持续时间", $"{duracionHumo} 回合")
+          },
+          proxZh);
         return;
       }
 

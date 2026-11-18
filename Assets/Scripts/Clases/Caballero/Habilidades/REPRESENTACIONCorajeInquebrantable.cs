@@ -41,6 +41,16 @@ public class REPRESENTACIONCorajeInquebrantable : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("不屈之勇", "被动：骑士在战斗中永不动摇。", new[]
+        {
+          LineaDescripcion("效果", $"{valentiaZh}不会低于 0。")
+        }, costoSuperior: string.Empty);
+        return;
+      }
+
       if (TRADU.i != null && TRADU.i.nIdioma == 3)
       {
         string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia", "Valentía");

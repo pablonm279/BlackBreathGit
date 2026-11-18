@@ -90,10 +90,17 @@ public class Escapar : Habilidad
     costoAP = costoActual;
     bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool enPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool enChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
     if (enIngles)
     {
       txtDescripcion = "Spend " + costoActual + " AP to flee the battle in shame.";
+      return;
+    }
+
+    if (enChino)
+    {
+      txtDescripcion = "消耗 " + costoActual + " 点行动点，可耻地逃离战斗。";
       return;
     }
 
@@ -133,12 +140,15 @@ public class Escapar : Habilidad
 
     bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool enPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool enChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     string nombreUnidad = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
     string mensaje = enIngles
       ? nombreUnidad + " flees the battle in shame."
       : enPortugues
         ? nombreUnidad + " foge da batalha envergonhado."
-        : nombreUnidad + " huye avergonzado de la batalla.";
+        : enChino
+          ? nombreUnidad + "羞愧地逃离了战斗。"
+          : nombreUnidad + " huye avergonzado de la batalla.";
     battleManager?.EscribirLog(CombatLogFormatter.EventoValour(mensaje));
 
     if (eraUnidadActiva)
@@ -191,6 +201,7 @@ public class Escapar : Habilidad
 
     bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool enPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool enChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     string nombreEscapa = TRADU.i != null ? TRADU.i.Traducir(scEstaUnidad.uNombre) : scEstaUnidad.uNombre;
 
     foreach (Unidad aliado in new List<Unidad>(aliados))
@@ -205,7 +216,9 @@ public class Escapar : Habilidad
         ? nombreAliado + " loses morale after " + nombreEscapa + " flees"
         : enPortugues
           ? nombreAliado + " perde animo quando " + nombreEscapa + " foge"
-          : nombreAliado + " pierde animo al ver huir a " + nombreEscapa;
+          : enChino
+            ? nombreAliado + "看到" + nombreEscapa + "逃跑而士气低落"
+            : nombreAliado + " pierde animo al ver huir a " + nombreEscapa;
       aliado.SumarValentia(-1, motivo, mostrarTextoFlotante: false);
     }
   }

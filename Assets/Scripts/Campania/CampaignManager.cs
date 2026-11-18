@@ -127,6 +127,12 @@ public class CampaignManager : MonoBehaviour
   [SerializeField] private bool debugPermitirZonaBosque = false;
   [SerializeField] private bool debugPermitirZonaPasoVientoHelado = false;
   [SerializeField] private bool debugPermitirZonaNedukazal = false;
+  public bool DebugPermiteZona(int zonaId) => zonaId switch
+  {
+    2 => debugPermitirZonaPasoVientoHelado,
+    3 => debugPermitirZonaNedukazal,
+    _ => false
+  };
   [SerializeField] private bool debugIniciarConEstadosCaravana = false;
   [SerializeField] private bool debugForzarCombateFinalBosqueAlIniciar = false;
   [SerializeField] private bool debugForzarCombateJefeGulekGulAlIniciar = false;
@@ -705,26 +711,32 @@ public class CampaignManager : MonoBehaviour
       case TipoHighlightNodoCampania.Asentamiento:
         if (idioma == TRADU.IdiomaIngles) { return "Settlement discovered"; }
         if (idioma == TRADU.IdiomaPortugues) { return "Assentamento descoberto"; }
+        if (idioma == TRADU.IdiomaChinoSimplificado) { return "发现定居点"; }
         return "Asentamiento descubierto";
       case TipoHighlightNodoCampania.Ritual:
         if (idioma == TRADU.IdiomaIngles) { return "Ritual detected"; }
         if (idioma == TRADU.IdiomaPortugues) { return "Ritual detectado"; }
+        if (idioma == TRADU.IdiomaChinoSimplificado) { return "发现仪式"; }
         return "Ritual detectado";
       case TipoHighlightNodoCampania.Incendio:
         if (idioma == TRADU.IdiomaIngles) { return "The flames spread!"; }
         if (idioma == TRADU.IdiomaPortugues) { return "As chamas se espalham!"; }
+        if (idioma == TRADU.IdiomaChinoSimplificado) { return "火焰蔓延开来！"; }
         return "¡Las llamas se esparcen!";
       case TipoHighlightNodoCampania.AtajoSuperficie:
         if (idioma == TRADU.IdiomaIngles) { return "Shortcut found!"; }
         if (idioma == TRADU.IdiomaPortugues) { return "Atalho encontrado!"; }
+        if (idioma == TRADU.IdiomaChinoSimplificado) { return "发现捷径！"; }
         return "¡Atajo encontrado!";
       case TipoHighlightNodoCampania.AtajoSubterraneo:
         if (idioma == TRADU.IdiomaIngles) { return "Underground shortcut"; }
         if (idioma == TRADU.IdiomaPortugues) { return "Atalho subterrâneo"; }
+        if (idioma == TRADU.IdiomaChinoSimplificado) { return "地下捷径"; }
         return "Atajo subterráneo";
       case TipoHighlightNodoCampania.MisionSalvamento:
         if (idioma == TRADU.IdiomaIngles) { return "Rescue Mission"; }
         if (idioma == TRADU.IdiomaPortugues) { return "Missão de Salvamento"; }
+        if (idioma == TRADU.IdiomaChinoSimplificado) { return "救援任务"; }
         return "Misión Salvamento";
       default:
         return string.Empty;
@@ -1207,6 +1219,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         return TextoCargaCampania;
       case TRADU.IdiomaPortugues:
         return "Carregando...";
+      case TRADU.IdiomaChinoSimplificado:
+        return "加载中...";
       default:
         return "Loading...";
     }
@@ -1583,6 +1597,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => "-Positive Feeling: the Caravan starts with +15 Hope.",
         TRADU.IdiomaPortugues => "-Sensação Positiva: a Caravana começa com +15 de Esperança.",
+        TRADU.IdiomaChinoSimplificado => "-积极情绪：车队开始时 +15 希望。",
         _ => "-Sensación Positiva: la Caravana comienza con +15 Esperanza."
       });
     }
@@ -1593,6 +1608,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => "-Negative Feeling: the Caravan starts with -10 Hope.",
         TRADU.IdiomaPortugues => "-Sensação Negativa: a Caravana começa com -10 de Esperança.",
+        TRADU.IdiomaChinoSimplificado => "-消极情绪：车队开始时 -10 希望。",
         _ => "-Sensación Negativa: la Caravana comienza con -10 Esperanza."
       });
     }
@@ -1613,6 +1629,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => "-Tailwind: the Black Breath starts 5 h farther ahead.",
         TRADU.IdiomaPortugues => "-Vento a Favor: o Hálito Negro começa 5 h mais adiante.",
+        TRADU.IdiomaChinoSimplificado => "-顺风：黑息的起始距离额外拉开5小时。",
         _ => "-Viento a favor: el Aliento Negro comienza 5 h más adelante."
       });
     }
@@ -1624,6 +1641,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => "-Headwind: the Black Breath starts 10 h farther behind.",
         TRADU.IdiomaPortugues => "-Vento Contrário: o Hálito Negro começa 10 h mais atrás.",
+        TRADU.IdiomaChinoSimplificado => "-逆风：黑息的起始距离缩短10小时。",
         _ => "-Viento en contra: el Aliento Negro comienza 10 h más atrás."
       });
     }
@@ -1658,6 +1676,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => $"-The noticeable presence of the Black Breath unsettles the Caravan. -{perdidaEsperanza} Hope",
         TRADU.IdiomaPortugues => $"-A presença perceptível do Hálito Negro provoca incerteza na Caravana. -{perdidaEsperanza} Esperança",
+        TRADU.IdiomaChinoSimplificado => $"-黑息的明显存在使车队感到不安。-{perdidaEsperanza} 希望",
         _ => $"-La presencia notable del Aliento Negro al viajar provoca incertidumbre en la Caravana. -{perdidaEsperanza} Esperanza"
       };
     }
@@ -1668,6 +1687,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => $"-The heavy presence of the Black Breath frightens the Caravan. -{perdidaEsperanza} Hope",
         TRADU.IdiomaPortugues => $"-A forte presença do Hálito Negro provoca medo na Caravana. -{perdidaEsperanza} Esperança",
+        TRADU.IdiomaChinoSimplificado => $"-黑息的强烈存在令车队感到恐惧。-{perdidaEsperanza} 希望",
         _ => $"-La gran presencia del Aliento Negro provoca temor en la Caravana. -{perdidaEsperanza} Esperanza"
       };
     }
@@ -1676,6 +1696,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => $"-The Black Breath is fatal to the civilians. -{perdidaEsperanza} Hope, -{perdidaCiviles} Civilians",
       TRADU.IdiomaPortugues => $"-O Hálito Negro é fatal para os Civis. -{perdidaEsperanza} Esperança, -{perdidaCiviles} Civis",
+      TRADU.IdiomaChinoSimplificado => $"-黑息对平民而言是致命的。-{perdidaEsperanza} 希望，-{perdidaCiviles} 平民",
       _ => $"-El Aliento Negro resulta fatal para los Civiles. -{perdidaEsperanza} Esperanza, -{perdidaCiviles} Civiles"
     };
   }
@@ -1712,6 +1733,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => "-A peaceful night renews the Caravan's spirits. +5 Hope.",
         TRADU.IdiomaPortugues => "-Uma noite pacífica renova o ânimo da Caravana. +5 Esperança.",
+        TRADU.IdiomaChinoSimplificado => "-平静的夜晚振奋了车队的精神。+5 希望。",
         _ => "-Una noche pacífica renueva el ánimo de la Caravana. +5 Esperanza."
       });
       return;
@@ -1721,6 +1743,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => "-A turbulent night unsettles the Caravan. -10 Hope.",
       TRADU.IdiomaPortugues => "-Uma noite turbulenta abala a Caravana. -10 Esperança.",
+      TRADU.IdiomaChinoSimplificado => "-动荡的夜晚令车队不安。-10 希望。",
       _ => "-Una noche turbulenta inquieta a la Caravana. -10 Esperanza."
     });
   }
@@ -1749,6 +1772,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => $"-{personaje.sNombre} fails Fortitude DC 10 and becomes Sick for {horasEnfermo} h.",
         TRADU.IdiomaPortugues => $"-{personaje.sNombre} falha em Fortitude CD 10 e fica Doente por {horasEnfermo} h.",
+        TRADU.IdiomaChinoSimplificado => $"-{personaje.sNombre} 未通过坚韧检定（难度10），获得患病，持续{horasEnfermo}小时。",
         _ => $"-{personaje.sNombre} falla Fortaleza DC 10 y obtiene Enfermo por {horasEnfermo} h."
       });
     }
@@ -1769,6 +1793,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => "-As the Caravan rests, mirages engulf the roads. Familiar places no longer seem to be what they were.",
       TRADU.IdiomaPortugues => "-Enquanto a Caravana descansa, miragens cobrem os caminhos. Lugares conhecidos já não parecem ser o que eram.",
+      TRADU.IdiomaChinoSimplificado => "-车队休整期间，海市蜃楼笼罩了道路。熟悉的地方似乎已不再是原来的样子。",
       _ => "-Mientras la Caravana descansa, espejismos cubren los caminos. Los lugares conocidos ya no parecen ser lo que eran."
     });
   }
@@ -1826,6 +1851,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => $"-{personaje.sNombre} passes Mental DC 13 and becomes Blessed for 96 h.",
         TRADU.IdiomaPortugues => $"-{personaje.sNombre} passa em Mental CD 13 e fica Abençoado por 96 h.",
+        TRADU.IdiomaChinoSimplificado => $"-{personaje.sNombre} 通过心智检定（难度13），获得祝福状态，持续96小时。",
         _ => $"-{personaje.sNombre} supera Mental DC 13 y obtiene Bendecido por 96 h."
       });
     }
@@ -1842,6 +1868,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         TRADU.IdiomaPortugues => singular
           ? $"-Diante da Corrupção Insuportável da região, {nombres} falha em um teste de Fortitude CD 8 e fica Corrompido."
           : $"-Diante da Corrupção Insuportável da região, {nombres} falham em um teste de Fortitude CD 8 e ficam Corrompidos.",
+        TRADU.IdiomaChinoSimplificado => $"-面对该区域难耐的腐蚀，{nombres}未通过坚韧检定（难度8），陷入腐蚀状态。",
         _ => singular
           ? $"-Ante la Corrupción Insoportable de la región, {nombres} falla una prueba de Fortaleza DC 8 y queda Corrupto."
           : $"-Ante la Corrupción Insoportable de la región, {nombres} fallan una prueba de Fortaleza DC 8 y quedan Corruptos."
@@ -1923,6 +1950,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => "OMEN",
       TRADU.IdiomaPortugues => "PRESSÁGIO",
+      TRADU.IdiomaChinoSimplificado => "预兆",
       _ => "PRESAGIO"
     };
 
@@ -1945,6 +1973,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => " and ",
       TRADU.IdiomaPortugues => " e ",
+      TRADU.IdiomaChinoSimplificado => "和",
       _ => " y "
     };
     return string.Join(", ", nombres.GetRange(0, nombres.Count - 1))
@@ -2768,7 +2797,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       ? (dias == 1 ? "day" : "days")
       : idioma == TRADU.IdiomaPortugues
         ? (dias == 1 ? "dia" : "dias")
-        : (dias == 1 ? "día" : "días");
+        : idioma == TRADU.IdiomaChinoSimplificado
+          ? "天"
+          : (dias == 1 ? "día" : "días");
     if (dias > 0)
     {
       string duracion = dias + " " + etiquetaDia;
@@ -2830,6 +2861,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       TRADU.IdiomaIngles => encendidas
         ? "The torches have been lit."
         : "The torches have been extinguished.",
+      TRADU.IdiomaChinoSimplificado => encendidas
+        ? "火把已被点燃。"
+        : "火把已被熄灭。",
       _ => encendidas
         ? "Las antorchas han sido prendidas."
         : "Las antorchas han sido apagadas."
@@ -3873,6 +3907,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return false;
     }
 
+    if (TooltipNodos.Instance != null)
+    {
+      UIFadeSlideUtility.HideImmediate(TooltipNodos.Instance.tooltipObject);
+    }
+
     EnviarExploradores(destino);
     return true;
   }
@@ -3891,7 +3930,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       motivo = LocExploradores(
         "-No se pueden enviar exploradores mientras la caravana esta ocupada.",
         "-Scouts cannot be sent while the caravan is busy.",
-        "-Nao e possivel enviar exploradores enquanto a caravana esta ocupada.");
+        "-Nao e possivel enviar exploradores enquanto a caravana esta ocupada.",
+        "-车队正在忙碌时无法派出斥候。");
       return false;
     }
 
@@ -3900,7 +3940,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       motivo = LocExploradores(
         "-Resuelve la interaccion actual antes de enviar exploradores.",
         "-Resolve the current interaction before sending scouts.",
-        "-Resolva a interacao atual antes de enviar exploradores.");
+        "-Resolva a interacao atual antes de enviar exploradores.",
+        "-请先处理完当前的互动，再派出斥候。");
       return false;
     }
 
@@ -3910,7 +3951,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       motivo = LocExploradores(
         "-Solo puedes enviar exploradores a un nodo adyacente.",
         "-Scouts can only be sent to an adjacent node.",
-        "-Exploradores so podem ser enviados a um nodo adjacente.");
+        "-Exploradores so podem ser enviados a um nodo adjacente.",
+        "-只能向相邻的节点派出斥候。");
       return false;
     }
 
@@ -3919,7 +3961,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       motivo = LocExploradores(
         "-Los exploradores solo pueden avanzar por caminos continuos.",
         "-Scouts can only advance through continuous paths.",
-        "-Exploradores so podem avancar por caminhos continuos.");
+        "-Exploradores so podem avancar por caminhos continuos.",
+        "-斥候只能沿连续的路径前进。");
       return false;
     }
 
@@ -3933,7 +3976,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       motivo = LocExploradores(
         "-Ese destino esta fuera de la distancia de vision.",
         "-That destination is outside vision range.",
-        "-Esse destino esta fora da distancia de visao.");
+        "-Esse destino esta fora da distancia de visao.",
+        "-该目的地超出了视野范围。");
       return false;
     }
 
@@ -3942,7 +3986,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       motivo = LocExploradores(
         "-Ese destino ya fue revelado. Solo puedes enviar exploradores a nodos desconocidos.",
         "-That destination has already been revealed. Scouts can only be sent to unknown nodes.",
-        "-Esse destino ja foi revelado. Exploradores so podem ser enviados a nodos desconhecidos.");
+        "-Esse destino ja foi revelado. Exploradores so podem ser enviados a nodos desconhecidos.",
+        "-该目的地已经被揭示。斥候只能派往未知的节点。");
       return false;
     }
 
@@ -3951,7 +3996,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       motivo = LocExploradores(
         "-Enviar exploradores requiere al menos 30 Civiles disponibles y 50 Oro.",
         "-Sending scouts requires at least 30 available Civilians and 50 Gold.",
-        "-Enviar exploradores requer pelo menos 30 Civis disponiveis e 50 de Ouro.");
+        "-Enviar exploradores requer pelo menos 30 Civis disponiveis e 50 de Ouro.",
+        "-派出斥候需要至少30名可用平民和50金币。");
       return false;
     }
 
@@ -3979,7 +4025,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     EscribirLog(LocExploradores(
       "-Los exploradores se dirigen al destino.",
       "-The scouts head toward the destination.",
-      "-Os exploradores seguem para o destino."), true);
+      "-Os exploradores seguem para o destino.",
+      "-斥候正前往目的地。"), true);
     yield return new WaitForSecondsRealtime(RetrasoInicioEnvioExploradoresSegundos);
 
     OcultarInterfazCampaniaParaExploradores();
@@ -4063,11 +4110,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       resultado.titulo = LocExploradores(
         "Exito critico de exploradores",
         "Critical scout success",
-        "Sucesso critico dos exploradores");
+        "Sucesso critico dos exploradores",
+        "斥候大获成功");
       resultado.descripcion = LocExploradores(
         "Revelaron el destino, volvieron todos y trajeron recursos.",
         "They revealed the destination, all returned, and they brought supplies back.",
-        "Eles revelaram o destino, todos retornaram e trouxeram recursos.");
+        "Eles revelaram o destino, todos retornaram e trouxeram recursos.",
+        "他们揭示了目的地，全员平安归来，并带回了资源。");
       return resultado;
     }
 
@@ -4081,11 +4130,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       resultado.titulo = LocExploradores(
         "Exito de exploradores",
         "Scout success",
-        "Sucesso dos exploradores");
+        "Sucesso dos exploradores",
+        "斥候成功");
       resultado.descripcion = LocExploradores(
         "Revelaron el destino y volvieron todos.",
         "They revealed the destination and all returned.",
-        "Eles revelaram o destino e todos retornaram.");
+        "Eles revelaram o destino e todos retornaram.",
+        "他们揭示了目的地，并全员归来。");
       return resultado;
     }
 
@@ -4098,11 +4149,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       resultado.titulo = LocExploradores(
         "Fallo critico de exploradores",
         "Critical scout failure",
-        "Falha critica dos exploradores");
+        "Falha critica dos exploradores",
+        "斥候惨败");
       resultado.descripcion = LocExploradores(
         "Los exploradores se perdieron y no regresaron.",
         "The scouts were lost and did not return.",
-        "Os exploradores se perderam e nao retornaram.");
+        "Os exploradores se perderam e nao retornaram.",
+        "斥候迷失了方向，未能归来。");
       return resultado;
     }
 
@@ -4115,11 +4168,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     resultado.titulo = LocExploradores(
       "Fallo de exploradores",
       "Scout failure",
-      "Falha dos exploradores");
+      "Falha dos exploradores",
+      "斥候失败");
     resultado.descripcion = LocExploradores(
       "No llegaron al destino y volvieron con bajas.",
       "They failed to reach the destination and returned with casualties.",
-      "Eles nao chegaram ao destino e retornaram com baixas.");
+      "Eles nao chegaram ao destino e retornaram com baixas.",
+      "他们未能抵达目的地，并带着伤亡归来。");
     return resultado;
   }
 
@@ -4232,14 +4287,16 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       string logExitoCritico = LocExploradores(
         "-Los exploradores regresan tras revelar el destino. Todos volvieron y trajeron recursos.",
         "-The scouts return after revealing the destination. Everyone made it back and they brought resources.",
-        "-Os exploradores retornam apos revelar o destino. Todos voltaram e trouxeram recursos.");
+        "-Os exploradores retornam apos revelar o destino. Todos voltaram e trouxeram recursos.",
+        "-斥候在揭示目的地后归来。全员平安返回，并带回了资源。");
 
       if (!string.IsNullOrEmpty(resultado.faccionReveladaNombre))
       {
         logExitoCritico += " " + LocExploradores(
           "Enemigos avistados: ",
           "Enemies sighted: ",
-          "Inimigos avistados: ") + resultado.faccionReveladaNombre + ".";
+          "Inimigos avistados: ",
+          "发现敌人：") + resultado.faccionReveladaNombre + ".";
       }
 
       return logExitoCritico;
@@ -4250,7 +4307,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return LocExploradores(
         "-Los exploradores regresan tras revelar el destino. Todos volvieron sanos y salvos.",
         "-The scouts return after revealing the destination. Everyone made it back safely.",
-        "-Os exploradores retornam apos revelar o destino. Todos voltaram em seguranca.");
+        "-Os exploradores retornam apos revelar o destino. Todos voltaram em seguranca.",
+        "-斥候在揭示目的地后归来。全员安全返回。");
     }
 
     if (resultado.critico)
@@ -4258,13 +4316,15 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       return LocExploradores(
         "-Los exploradores se perdieron y no regresaron.",
         "-The scouts were lost and did not return.",
-        "-Os exploradores se perderam e nao retornaram.");
+        "-Os exploradores se perderam e nao retornaram.",
+        "-斥候迷失了方向，未能归来。");
     }
 
     return LocExploradores(
       "-Los exploradores no llegaron al destino y regresaron con bajas.",
       "-The scouts failed to reach the destination and returned with casualties.",
-      "-Os exploradores nao chegaram ao destino e retornaram com baixas.");
+      "-Os exploradores nao chegaram ao destino e retornaram com baixas.",
+      "-斥候未能抵达目的地，并带着伤亡归来。");
   }
 
   void OcultarInterfazCampaniaParaExploradores()
@@ -4414,7 +4474,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
   }
 
-  string LocExploradores(string es, string en, string pt)
+  string LocExploradores(string es, string en, string pt, string zh = null)
   {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
     switch (idioma)
@@ -4423,6 +4483,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         return en;
       case TRADU.IdiomaPortugues:
         return pt;
+      case TRADU.IdiomaChinoSimplificado:
+        return !string.IsNullOrEmpty(zh) ? zh : en;
       default:
         return es;
     }
@@ -5284,6 +5346,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     scMapaManager.ResetearYGenerarSiguienteZona();
     scMapaManager.AlinearNodosAlSueloActual();
     scMapaManager.scContenedordeNodos.RecolectarNodos();
+    scMapaManager.AplicarMaterialesCaminosZona();
 
     Dictionary<string, Nodo> nodosPorClave = new Dictionary<string, Nodo>();
     foreach (Nodo nodo in scMapaManager.scContenedordeNodos.listTodosNodos)
@@ -6691,6 +6754,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         case 2:
           valueCantdescansos.text = diasSuministros == 1 ? "<i>1 rest</i>" : $"<i>{diasSuministros} rests</i>";
           break;
+        case TRADU.IdiomaChinoSimplificado:
+          valueCantdescansos.text = $"<i>{diasSuministros} 次休整</i>";
+          break;
         default:
           valueCantdescansos.text = diasSuministros == 1 ? "<i>1 descanso</i>" : $"<i>{diasSuministros} descansos</i>";
           break;
@@ -6855,6 +6921,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => "Distance: " + distanciaFormateada,
       TRADU.IdiomaPortugues => "Distância: " + distanciaFormateada,
+      TRADU.IdiomaChinoSimplificado => "距离：" + distanciaFormateada,
       _ => "Distancia: " + distanciaFormateada
     };
   }
@@ -7747,6 +7814,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         return "-The uncomfortable trip through the shortcut has caused unease among the civilians.";
       case TRADU.IdiomaPortugues:
         return "-A viagem desconfortável pelo atalho provocou mal-estar nos civis.";
+      case TRADU.IdiomaChinoSimplificado:
+        return "-穿越捷径的颠簸旅程让平民们感到不安。";
       default:
         return "-El viaje incómodo por el atajo ha provocado malestar en los civiles.";
     }
@@ -7881,6 +7950,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         return "-Traveling through snow wears down the caravan. -" + perdidaEsperanza + " Hope";
       case TRADU.IdiomaPortugues:
         return "-Viajar pela neve desgasta a caravana. -" + perdidaEsperanza + " Esperança";
+      case TRADU.IdiomaChinoSimplificado:
+        return "-在雪地中跋涉消耗了车队的意志。-" + perdidaEsperanza + " 希望";
       default:
         return "-Viajar con nieve desgasta a la caravana. -" + perdidaEsperanza + " Esperanza";
     }
@@ -8399,6 +8470,17 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         ? $"Emboscada inimiga: {detalleEmboscadaEnemiga}"
         : $"Emboscada aliada: {detalleEmboscadaAliada}";
       return $"<color={color}>{textoPt} {detalleResultadoPt} | 1d100: {tirada}.</color>";
+    }
+
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string textoZh = emboscadaEnemiga
+        ? "-车队遭到了伏击。"
+        : "-你伏击了敌人。";
+      string detalleResultadoZh = emboscadaEnemiga
+        ? $"敌方伏击：{detalleEmboscadaEnemiga}"
+        : $"我方伏击：{detalleEmboscadaAliada}";
+      return $"<color={color}>{textoZh} {detalleResultadoZh} | 1d100：{tirada}。</color>";
     }
 
     string textoEs = emboscadaEnemiga
@@ -9607,6 +9689,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " finds a good deal at the Trading Post. +" + oroGanado + " Gold.",
           TRADU.IdiomaPortugues => pers.sNombre + " encontra um bom negócio no Posto Comercial. +" + oroGanado + " de Ouro.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 在贸易站找到了一笔好买卖。+" + oroGanado + " 金币。",
           _ => pers.sNombre + " consigue un gran trato en el Puesto Comercial. +" + oroGanado + " Oro."
         };
         EscribirLog("-" + mensajeAhorrista);
@@ -9620,6 +9703,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " wastes coin at the Trading Post. -" + oroPerdido + " Gold.",
           TRADU.IdiomaPortugues => pers.sNombre + " desperdiça moedas no Posto Comercial. -" + oroPerdido + " de Ouro.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 在贸易站挥霍了钱财。-" + oroPerdido + " 金币。",
           _ => pers.sNombre + " despilfarra en el Puesto Comercial. -" + oroPerdido + " Oro."
         };
         EscribirLog("-" + mensajeDespilfarrador);
@@ -9649,6 +9733,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " is uplifted by the Sanctuary. Gains High Morale for 4 days.",
           TRADU.IdiomaPortugues => pers.sNombre + " se fortalece no Santuário. Recebe Moral Alta por 4 dias.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 在圣所中得到鼓舞，获得高昂士气，持续4天。",
           _ => pers.sNombre + " se fortalece en el Santuario. Obtiene Alta Moral por 4 días."
         };
         EscribirLog("-" + mensajeFe);
@@ -9661,6 +9746,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " rejects the Sanctuary. Gains Low Morale for 3 days.",
           TRADU.IdiomaPortugues => pers.sNombre + " rejeita o Santuário. Recebe Moral Baixa por 3 dias.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 拒绝踏入圣所，获得低落士气，持续3天。",
           _ => pers.sNombre + " rechaza el Santuario. Obtiene Baja Moral por 3 días."
         };
         EscribirLog("-" + mensajePagano);
@@ -9682,12 +9768,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => "the Burning Forest",
         TRADU.IdiomaPortugues => "a Floresta Ardente",
+        TRADU.IdiomaChinoSimplificado => "燃烧森林",
         _ => "Bosque Ardiente"
       },
       2 => idiomaTrait switch
       {
         TRADU.IdiomaIngles => "the Windfrost Pass",
         TRADU.IdiomaPortugues => "o Paso de Vientohelado",
+        TRADU.IdiomaChinoSimplificado => "冻风隘口",
         _ => "Paso de Vientohelado"
       },
       3 => "Nedukazal",
@@ -9708,6 +9796,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " embraces the new region. Gains High Morale for 4 days.",
           TRADU.IdiomaPortugues => pers.sNombre + " abraça a nova região. Recebe Moral Alta por 4 dias.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 欣然拥抱这片新区域，获得高昂士气，持续4天。",
           _ => pers.sNombre + " abraza la nueva región. Obtiene Alta Moral por 4 días."
         };
         EscribirLog("-" + mensajeAventurero);
@@ -9720,6 +9809,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " dreads the new region. Gains Low Morale for 3 days.",
           TRADU.IdiomaPortugues => pers.sNombre + " teme a nova região. Recebe Moral Baixa por 3 dias.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 对这片新区域心生畏惧，获得低落士气，持续3天。",
           _ => pers.sNombre + " teme la nueva región. Obtiene Baja Moral por 3 días."
         };
         EscribirLog("-" + mensajeArrastrado);
@@ -9732,6 +9822,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " dreads " + nombreZona + ". Gains Low Morale for 6 days.",
           TRADU.IdiomaPortugues => pers.sNombre + " detesta " + nombreZona + ". Recebe Moral Baixa por 6 dias.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 十分厌恶" + nombreZona + "，获得低落士气，持续6天。",
           _ => pers.sNombre + " detesta " + nombreZona + ". Obtiene Baja Moral por 6 días."
         };
         EscribirLog("-" + mensajeDetesta);
@@ -9762,6 +9853,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " profits from the settlement. +" + oroGanado + " Gold.",
           TRADU.IdiomaPortugues => pers.sNombre + " aproveita o assentamento. +" + oroGanado + " de Ouro.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 在定居点里获利颇丰。+" + oroGanado + " 金币。",
           _ => pers.sNombre + " saca provecho del asentamiento. +" + oroGanado + " Oro."
         };
         EscribirLog("-" + mensajeTrabajador);
@@ -9775,6 +9867,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " drinks away the stop. Gains Fatigue and spends 10 Gold.",
           TRADU.IdiomaPortugues => pers.sNombre + " bebe demais na parada. Recebe Fadiga e gasta 10 de Ouro.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 在停留期间贪杯，获得疲劳并花费10金币。",
           _ => pers.sNombre + " se entrega a la bebida en la parada. Obtiene Fatiga y gasta 10 Oro."
         };
         EscribirLog("-" + mensajeBeodo);
@@ -9787,6 +9880,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " wins over the locals. +5 Civilians.",
           TRADU.IdiomaPortugues => pers.sNombre + " convence os moradores. +5 Civis.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 说服了当地居民。+5 平民。",
           _ => pers.sNombre + " convence a los lugareños. +5 Civiles."
         };
         EscribirLog("-" + mensajeConvincente);
@@ -9799,6 +9893,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " withdraws from settlement life. Gains Low Morale for 2 days.",
           TRADU.IdiomaPortugues => pers.sNombre + " se retrai da vida no assentamento. Recebe Moral Baixa por 2 dias.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 远离定居点的生活，获得低落士气，持续2天。",
           _ => pers.sNombre + " se incomoda con la vida del asentamiento. Obtiene Baja Moral por 2 días."
         };
         EscribirLog("-" + mensajeHermitano);
@@ -9811,6 +9906,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => pers.sNombre + " thrives in the settlement. Gains High Morale for 3 days.",
           TRADU.IdiomaPortugues => pers.sNombre + " se anima no assentamento. Recebe Moral Alta por 3 dias.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + " 在定居点里如鱼得水，获得高昂士气，持续3天。",
           _ => pers.sNombre + " se siente en casa en el asentamiento. Obtiene Alta Moral por 3 días."
         };
         EscribirLog("-" + mensajeCitadino);
@@ -9845,6 +9941,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => pers.sNombre + " is already known by the people. +15 Civilians join the Caravan.",
       TRADU.IdiomaPortugues => pers.sNombre + " ja e conhecido pelo povo. +15 Civis se juntam à Caravana.",
+      TRADU.IdiomaChinoSimplificado => pers.sNombre + " 早已为当地人所熟知。+15 名平民加入车队。",
       _ => pers.sNombre + " ya es conocido por la gente. +15 Civiles se suman a la Caravana."
     };
     EscribirLog("-" + mensajeHeroeLocal);
@@ -9995,12 +10092,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => pers.sNombre + " receives a random consumable: " + nombreItem + ".",
         TRADU.IdiomaPortugues => pers.sNombre + " recebe um consumível aleatório: " + nombreItem + ".",
+        TRADU.IdiomaChinoSimplificado => pers.sNombre + " 获得了一件随机消耗品：" + nombreItem + "。",
         _ => pers.sNombre + " recibe un consumible aleatorio: " + nombreItem + "."
       }
       : idiomaTrait switch
       {
         TRADU.IdiomaIngles => pers.sNombre + " inherits " + nombreItem + ".",
         TRADU.IdiomaPortugues => pers.sNombre + " herda " + nombreItem + ".",
+        TRADU.IdiomaChinoSimplificado => pers.sNombre + " 继承了" + nombreItem + "。",
         _ => pers.sNombre + " hereda " + nombreItem + "."
       };
     EscribirLog("-" + mensajeHerencia);
@@ -10023,6 +10122,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => pers.sNombre + " dies for good. -20 Hope.",
       TRADU.IdiomaPortugues => pers.sNombre + " morre de vez. -20 de Esperança.",
+      TRADU.IdiomaChinoSimplificado => pers.sNombre + " 永远地死去了。-20 希望。",
       _ => pers.sNombre + " muere para siempre. -20 Esperanza."
     };
     EscribirLog("-" + mensajeHeroeLocal);
@@ -10059,6 +10159,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => pers.sNombre + ", the Caravan Protector, dies. -25 Hope.",
       TRADU.IdiomaPortugues => pers.sNombre + ", Protetor da Caravana, morre. -25 de Esperança.",
+      TRADU.IdiomaChinoSimplificado => pers.sNombre + "，车队守护者，去世了。-25 希望。",
       _ => pers.sNombre + ", Protector de la Caravana, muere. -25 Esperanza."
     };
     EscribirLog("-" + mensajeLider);
@@ -10067,6 +10168,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => "The Protector's death demoralizes the caravan. Everyone gains Low Morale for 4 days.",
       TRADU.IdiomaPortugues => "A morte do Protetor desmoraliza a caravana. Todos recebem Moral Baixa por 4 dias.",
+      TRADU.IdiomaChinoSimplificado => "守护者的死讯让车队士气低落。所有人获得低落士气，持续4天。",
       _ => "La muerte del Protector desmoraliza a la caravana. Todos obtienen Baja Moral por 4 días."
     };
     EscribirLog("-" + mensajeMoral);
@@ -10087,6 +10189,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => pers.sNombre + " collects 50 Gold from the caravan contract.",
         TRADU.IdiomaPortugues => pers.sNombre + " recebe 50 de Ouro pelo contrato com a caravana.",
+        TRADU.IdiomaChinoSimplificado => pers.sNombre + " 依照与车队的契约收取了50金币。",
         _ => pers.sNombre + " cobra 50 de Oro por su contrato con la caravana."
       };
       EscribirLog("-" + mensajeContrato);
@@ -10098,6 +10201,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => pers.sNombre + " cannot be paid. Gains Low Morale for 3 days.",
       TRADU.IdiomaPortugues => pers.sNombre + " não pode ser pago. Recebe Moral Baixa por 3 dias.",
+      TRADU.IdiomaChinoSimplificado => pers.sNombre + " 未能获得报酬，获得低落士气，持续3天。",
       _ => pers.sNombre + " no puede cobrar. Obtiene Baja Moral por 3 días."
     };
     EscribirLog("-" + mensajeSinOro);
@@ -10125,6 +10229,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => pers.sNombre + " inspires Serria. +25 Work Value.",
         TRADU.IdiomaPortugues => pers.sNombre + " inspira Serria. +25 de Valor de Trabalho.",
+        TRADU.IdiomaChinoSimplificado => pers.sNombre + " 激励了塞里亚。+25 劳动价值。",
         _ => pers.sNombre + " inspira a Serria. +25 Valor de Trabajo."
       };
       EscribirLog("-" + mensajeEjemplo);
@@ -10152,6 +10257,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => pers.sNombre + " grows sluggish as caravan fatigue reaches 4. Gains Fatigue.",
         TRADU.IdiomaPortugues => pers.sNombre + " fica abatido quando a fadiga da caravana chega a 4. Recebe Fadiga.",
+        TRADU.IdiomaChinoSimplificado => pers.sNombre + " 随着车队疲劳达到4而变得懈怠，获得疲劳。",
         _ => pers.sNombre + " se viene abajo cuando la fatiga de la caravana llega a 4. Obtiene Fatiga."
       };
       EscribirLog("-" + mensajeFlojo);
@@ -10455,6 +10561,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => " (estimated)",
         TRADU.IdiomaPortugues => " (estimada)",
+        TRADU.IdiomaChinoSimplificado => "（预估）",
         _ => " (estimada)"
       }
       : string.Empty;
@@ -10462,6 +10569,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => "Travel Time: " + FormatearDuracionHoras(duracion, true) + marcaEstimacion,
       TRADU.IdiomaPortugues => "Duração: " + FormatearDuracionHoras(duracion, true) + marcaEstimacion,
+      TRADU.IdiomaChinoSimplificado => "旅行时间：" + FormatearDuracionHoras(duracion, true) + marcaEstimacion,
       _ => "Duración: " + FormatearDuracionHoras(duracion, true) + marcaEstimacion
     };
     return "<size=95%><color=#C8C8C8>" + texto + "</color></size>";
@@ -10574,6 +10682,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       {
         TRADU.IdiomaIngles => ", after a full day of rites and prayers, weakens the march of corruption. The Black Breath recedes by 4 h.",
         TRADU.IdiomaPortugues => ", após um dia inteiro de ritos e orações, enfraquece o avanço da corrupção. O Sopro Negro recua 4 h.",
+        TRADU.IdiomaChinoSimplificado => "，经过一整天的仪式与祈祷，压制了腐化的蔓延。黑息后退4小时。",
         _ => ", tras una jornada de ritos y oraciones, debilita la marcha de la corrupción. El Aliento Negro retrocede 4 h."
       };
       EscribirLog("-" + pers.sNombre + mensajeRitual);
@@ -10779,6 +10888,20 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         + esperanza + " Hope, +" + tierAlmenaras + " " + stackEs + " of " + nombreEstadoEn + ".";
     }
 
+    if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string nombreEstadoZh = estado switch
+      {
+        TipoEstadoCaravana.Inspiracion => "鼓舞",
+        TipoEstadoCaravana.Presteza => "迅捷",
+        TipoEstadoCaravana.Compromiso => "尽责",
+        _ => "警戒"
+      };
+
+      return "-塞里亚的烽火在远处的群山之上清晰可见，光芒明亮，指引着车队的目的地："
+        + esperanza + " 希望，+" + tierAlmenaras + " 层" + nombreEstadoZh + "。";
+    }
+
     string nombreEstadoPt = estado switch
     {
       TipoEstadoCaravana.Inspiracion => "Inspiração",
@@ -10806,6 +10929,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   void ActualizarTierAlientoNegro()
   {
     float cercaniaAliento = EstadoAlientoNegro - posicionCaravana * HorasPorPasoMapa;
+    float tierAnterior = TierAlientoNegro;
 
     if (cercaniaAliento < 20f)
     {
@@ -10834,7 +10958,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     }
 
-    RefrescarVfxClimaCalor();
+    if (tierAnterior != TierAlientoNegro)
+    {
+      RefrescarVfxClimaCalor();
+    }
 
   }
   #endregion
@@ -11112,6 +11239,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return BueyesActuales;
   }
   private int CargaMaxActual;
+  private int cargaTextoCache = int.MinValue;
+  private int capacidadTextoCache = int.MinValue;
   public int GetCapacidadDeCargaActual()
   {
     int cargaPorBuey = 25 + Mathf.Max(0, mejoraCaravanaAlforjas - 1);
@@ -11156,13 +11285,22 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
   {
     int cargaActual = (GetMaterialesActuales() * 3) + GetSuministrosActuales();
 
-    if (cargaActual > GetCapacidadDeCargaActual()) { valueCargaLlevada.color = new Color(0.8f, 0.2f, 0.2f); }
-    else { valueCargaLlevada.color = new Color(0.35f, 0.7f, 0.3f); }
-    valueCargaMax.text = "/" + CargaMaxActual + ")";
-    valueCargaLlevada.text = "(" + cargaActual + "";
+    int capacidadActual = GetCapacidadDeCargaActual();
 
-    if (cargaActual > CargaMaxActual) { alertaCarga.SetActive(true); }
-    else { alertaCarga.SetActive(false); }
+    // Se llama cada frame desde Update: solo se reconstruyen textos/color si cambian los valores.
+    if (cargaActual != cargaTextoCache || capacidadActual != capacidadTextoCache)
+    {
+      cargaTextoCache = cargaActual;
+      capacidadTextoCache = capacidadActual;
+      valueCargaLlevada.color = cargaActual > capacidadActual
+        ? new Color(0.8f, 0.2f, 0.2f)
+        : new Color(0.35f, 0.7f, 0.3f);
+      valueCargaMax.text = "/" + CargaMaxActual + ")";
+      valueCargaLlevada.text = "(" + cargaActual + "";
+    }
+
+    bool hayAlertaCarga = cargaActual > CargaMaxActual;
+    if (alertaCarga.activeSelf != hayAlertaCarga) { alertaCarga.SetActive(hayAlertaCarga); }
 
 
     return cargaActual;
@@ -11170,8 +11308,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   public bool SeLlevaDemasiadaCarga()
   {
-    if (GetCargaLlevadaActual() > GetCapacidadDeCargaActual()) { return true; }
-    return false;
+    // GetCargaLlevadaActual ya recalcula CargaMaxActual; evita repetir el cálculo de capacidad.
+    return GetCargaLlevadaActual() > CargaMaxActual;
   }
 
   private void ActualizarAdvertenciaSobrecarga()
@@ -11193,6 +11331,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     {
       TRADU.IdiomaIngles => "The caravan is overloaded.",
       TRADU.IdiomaPortugues => "A caravana está sobrecarregada.",
+      TRADU.IdiomaChinoSimplificado => "车队超载了。",
       _ => "La caravana está sobrecargada."
     };
 
@@ -11288,6 +11427,11 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           if (diasSuministros != 1)
           { valueCantdescansos.text = $"<i>{(int)diasSuministros} rests</i>"; }
           else { valueCantdescansos.text = $"<i>{(int)diasSuministros} rest</i>"; }
+          break;
+        }
+      case TRADU.IdiomaChinoSimplificado: //Chino
+        {
+          valueCantdescansos.text = $"<i>{(int)diasSuministros} 次休整</i>";
           break;
         }
 
@@ -11800,6 +11944,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           {
             TRADU.IdiomaIngles => $"They are currently Agitated(4): -{PerdidaEsperanzaViajarAgitado} Hope, and a few Oxen may die if you travel.",
             TRADU.IdiomaPortugues => $"Atualmente estão Agitados(4), -{PerdidaEsperanzaViajarAgitado} Esperança, e alguns Bois podem morrer se você viajar.",
+            TRADU.IdiomaChinoSimplificado => $"当前状态为焦躁(4)，若继续赶路，-{PerdidaEsperanzaViajarAgitado} 希望，且可能有少数驮牛死亡。",
             _ => $"Actualmente están Agitados(4), -{PerdidaEsperanzaViajarAgitado} Esperanza, pocos Bueyes podrán morir si viajas."
           };
           break;
@@ -11953,6 +12098,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         {
           TRADU.IdiomaIngles => "Snow: only Rest or Guard activities are allowed. -15% Gatherings, -20% Ambush, -15% travel speed. Traveling costs -3 Hope per map section.",
           TRADU.IdiomaPortugues => "Neve: permite apenas Descansar ou Guarda. -15% Coletas, -20% Emboscada, -15% velocidade de viagem. Viajar custa -3 Esperança por trecho do mapa.",
+          TRADU.IdiomaChinoSimplificado => "降雪：只能进行休息或警戒活动。采集 -15%，伏击 -20%，移动速度 -15%。每经过一个地图区段消耗 -3 希望。",
           _ => "Nieve: solo permite Descansar o Guardia. -15% Recolecciones, -20% Emboscada, -15% velocidad de viaje. Viajar da -3 Esperanza por tramo del mapa."
         };
         textClimaTooltip.text = descripcionNieve;
@@ -11972,6 +12118,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           {
             TRADU.IdiomaIngles => "Fog: -15% Vision, -20% Gatherings, -10% Exploration, -20% Ambush.",
             TRADU.IdiomaPortugues => "Névoa: -15% Visão, -20% Coletas, -10% Exploração, -20% Emboscada.",
+            TRADU.IdiomaChinoSimplificado => "迷雾：视野 -15%，采集 -20%，探索 -10%，伏击 -20%。",
             _ => "Niebla: -15% Visión, -20% Recolecciones, -10% Exploración, -20% Emboscada."
           };
           break;
@@ -13160,8 +13307,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (configuracionTutorial)
     {
       pers1.LimpiarRasgos();
-      pers1.AgregarRasgo(PersonajeTraitCatalog.TraitHeroeLocal);
-      AplicarTraitHeroeLocalInicialSiCorresponde(pers1);
     }
     else
     {
@@ -13914,6 +14059,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
 
     List<PersonajeTraitDefinition> disponibles = PersonajeTraitCatalog.ObtenerTraitsDisponiblesAlCrear();
+    if (DebeUsarConfiguracionTutorial())
+    {
+      disponibles.RemoveAll(definicion => definicion != null && definicion.Id == PersonajeTraitCatalog.TraitHeroeLocal);
+    }
     if (disponibles.Count == 0)
     {
       return;

@@ -857,7 +857,8 @@ public class BattleIntroController : MonoBehaviour
     MostrarTextoIntro(ObtenerTextoIdioma(
       "ESPACIO: Saltar intro",
       "SPACE: Skip intro",
-      "ESPAÇO: Pular introdução"));
+      "ESPAÇO: Pular introdução",
+      "空格键：跳过介绍"));
   }
 
   private void MostrarTextoUbicarHeroe(Unidad heroe)
@@ -942,7 +943,7 @@ public class BattleIntroController : MonoBehaviour
       etiquetaDespliegueManual.richText = true;
     }
 
-    string instruccion = ObtenerTextoIdioma("UBICA A", "PLACE", "POSICIONE");
+    string instruccion = ObtenerTextoIdioma("UBICA A", "PLACE", "POSICIONE", "部署");
     etiquetaDespliegueManual.text = $"<size=76%>{instruccion}</size>  <b>{nombre}</b>";
     panelDespliegueManual.SetActive(true);
     panelDespliegueManual.transform.SetAsLastSibling();
@@ -1028,7 +1029,8 @@ public class BattleIntroController : MonoBehaviour
     textoMensajeEmboscada.text = ObtenerTextoIdioma(
       "Has emboscado al enemigo",
       "You have ambushed the enemy",
-      "Voc\u00EA emboscou o inimigo");
+      "Voc\u00EA emboscou o inimigo",
+      "\u4F60\u5DF2\u4F0F\u51FB\u654C\u4EBA");
     panelMensajeEmboscada.SetActive(true);
     panelMensajeEmboscada.transform.SetAsLastSibling();
   }
@@ -1076,7 +1078,8 @@ public class BattleIntroController : MonoBehaviour
       tmp.text = ObtenerTextoIdioma(
         "\u00A1Comienza la batalla!",
         "The battle begins!",
-        "A batalha come\u00E7a!");
+        "A batalha come\u00E7a!",
+        "\u6218\u6597\u5F00\u59CB\uFF01");
     }
 
     textoComienzaBatalla.SetActive(false);
@@ -1307,11 +1310,12 @@ public class BattleIntroController : MonoBehaviour
     }
   }
 
-  private static string ObtenerTextoIdioma(string espanol, string ingles, string portugues)
+  private static string ObtenerTextoIdioma(string espanol, string ingles, string portugues, string chino = null)
   {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
     if (idioma == 2) { return ingles; }
     if (idioma == 3) { return portugues; }
+    if (idioma == TRADU.IdiomaChinoSimplificado) { return string.IsNullOrEmpty(chino) ? ingles : chino; }
     return espanol;
   }
 

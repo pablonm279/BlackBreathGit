@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -77,6 +76,25 @@ public class CorteDaga : Habilidad
             LineaDescripcion("Target", ObjetivoMeleeUnitarioIngles),
             LineaDescripcion("Effect", $"On hit, deals {rangoDanio} + {fuerza} as {danioCortante}."),
             LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%.")
+          },
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{fuerzaActual}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          "匕首斩",
+          "用匕首斩击一名目标。",
+          new[]
+          {
+            LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+            LineaDescripcion("效果", $"命中时，造成 {rangoDanio} + {fuerzaZh} 点{danoZh}。"),
+            LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada} 对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentaje}%。")
           },
           mostrarIconoMelee: true);
         return;

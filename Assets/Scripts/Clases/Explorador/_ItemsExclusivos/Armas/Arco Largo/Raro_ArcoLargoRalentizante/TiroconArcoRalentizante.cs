@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -120,6 +119,27 @@ public class TiroconArcoRalentizante : Habilidad
             LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
             LineaDescripcion("Cost", $"1 {flecha}")
           });
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string agilidadZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{stats.Agilidad}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+        string fortalezaZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+        string ralentizadoZh = TerminoDescripcion(TerminoDescripcionId.Ralentizado, "减速");
+        string flechaZh = TerminoDescripcion(TerminoDescripcionId.Flecha, "箭");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("减速弓箭射击", "射出一支可能减速目标的重箭。", new[]
+        {
+          LineaDescripcion("目标", "1 名敌人或障碍物"),
+          LineaDescripcion("效果", $"命中时，造成 {rangoDanio} + {agilidadZh} 点{danoZh}；单位需进行一次坚韧豁免。"),
+          LineaDescripcion("豁免", $"{fortalezaZh}，对抗难度 12", 1),
+          LineaDescripcion("豁免失败", $"{ralentizadoZh}（持续 2 回合）。", 1),
+          LineaDescripcion("攻击检定", $"1d20 + {agilidadZh}{bonusTirada} 对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentaje}%。"),
+          LineaDescripcion("消耗", $"1 支{flechaZh}")
+        });
         return;
       }
 

@@ -53,6 +53,26 @@ public class REPRESENTACIONVistaLejana : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "伤害 +5%。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "攻击 +1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：暴击率 +5%。\n选项B：防御 +1。"; }
+        }
+        string buffZh = $"攻击 +{ataque}，伤害 +{danioPorcentaje}%";
+        if (critico) { buffZh += $"，{criticoZh} +5%"; }
+        if (defensa) { buffZh += $"，{defensaZh} +1"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"远眺 {SufijoNivel()}", "被动：从后排位置发起弓箭攻击时获得强化。",
+          new[] { LineaDescripcion("触发", "在最后一列开始回合。"), LineaDescripcion("增益", buffZh) }, proximaMejoraZh, costoSuperior: string.Empty);
+        return;
+      }
+
       if (esPortugues)
       {
         string criticoTermino = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");

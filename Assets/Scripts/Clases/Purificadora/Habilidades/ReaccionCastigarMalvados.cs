@@ -26,6 +26,10 @@ public class ReaccionCastigarMalvados : Reaccion
     {
       descripcion = "Reaction: Each time this unit damages an enemy, it must pass a Mental saving throw or suffer damage and lose its remaining AP.";
     }
+    else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      descripcion = "反应：该单位每次对敌人造成伤害时，都必须通过一次心智豁免，否则将受到伤害并失去剩余的行动点。";
+    }
     else if (TRADU.i.nIdioma == 3)
     {
       descripcion = "Reacao: Cada vez que esta unidade causar dano a um inimigo, ela deve passar em uma resistencia Mental ou sofrer dano e perder seu AP restante.";

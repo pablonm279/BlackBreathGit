@@ -70,6 +70,10 @@ public class EdgePanCameraZ : MonoBehaviour
     private float zoomVelocidadActual;
     private float zoomVisualActual;
 
+    // Lectura para que los fondos acompañen la misma perspectiva sin modificar el control.
+    public float ZoomVisualActual => zoomVisualActual;
+    public Quaternion RotacionZoom => Quaternion.Euler(zoomVisualActual * zoomInPitchUp, 0f, 0f);
+
 #if UNITY_EDITOR
     private bool diagnosticoViajeAnterior;
     private bool diagnosticoTieneMuestra;

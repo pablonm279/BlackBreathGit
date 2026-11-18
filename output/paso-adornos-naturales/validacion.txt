@@ -1,0 +1,9 @@
+OK: los adornos nuevos se retiran al limpiar un camino.
+OK: regeneración determinista, RNG, posiciones, tipos, revelado y conexiones de nodos intactos. Tiempo: 554,8 ms.
+Rama caída semienterrada: 15
+Lajas de pizarra con líquenes: 14
+Sauce enano seco: 17
+Enebro rastrero escarchado: 12
+Total de adornos: 88; naturales nuevos: 58
+OK: sin colliders, shaders válidos, caminos y centros de nodos despejados (también los ocultos).
+Detalles a menos de medio paso de un nodo: 39

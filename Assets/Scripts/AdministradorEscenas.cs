@@ -896,30 +896,35 @@ public class AdministradorEscenas : MonoBehaviour
       "Corrupto" => idioma switch
       {
         TRADU.IdiomaIngles => "Corrupted",
+        TRADU.IdiomaChinoSimplificado => "腐化者",
         TRADU.IdiomaPortugues => "Corrompidos",
         _ => "Corruptos"
       },
       "Nomuerto" => idioma switch
       {
         TRADU.IdiomaIngles => "Undead",
+        TRADU.IdiomaChinoSimplificado => "不死者",
         TRADU.IdiomaPortugues => "Mortos-vivos",
         _ => "Nomuertos"
       },
       "Bestia" => idioma switch
       {
         TRADU.IdiomaIngles => "Beasts",
+        TRADU.IdiomaChinoSimplificado => "野兽",
         TRADU.IdiomaPortugues => "Bestas",
         _ => "Bestias"
       },
       "Criatura" => idioma switch
       {
         TRADU.IdiomaIngles => "Creatures",
+        TRADU.IdiomaChinoSimplificado => "生物",
         TRADU.IdiomaPortugues => "Criaturas",
         _ => "Criaturas"
       },
       "Demonio" => idioma switch
       {
         TRADU.IdiomaIngles => "Demons",
+        TRADU.IdiomaChinoSimplificado => "恶魔",
         TRADU.IdiomaPortugues => "Demônios",
         _ => "Demonios"
       },
@@ -934,30 +939,35 @@ public class AdministradorEscenas : MonoBehaviour
       "Corrupto" => idioma switch
       {
         TRADU.IdiomaIngles => "Hatred of the Corrupted",
+        TRADU.IdiomaChinoSimplificado => "对腐化者的憎恨",
         TRADU.IdiomaPortugues => "Ódio aos Corrompidos",
         _ => "Odia a Corruptos"
       },
       "Nomuerto" => idioma switch
       {
         TRADU.IdiomaIngles => "Hatred of the Undead",
+        TRADU.IdiomaChinoSimplificado => "对不死者的憎恨",
         TRADU.IdiomaPortugues => "Ódio aos Mortos-vivos",
         _ => "Odia a Nomuertos"
       },
       "Bestia" => idioma switch
       {
         TRADU.IdiomaIngles => "Hatred of Beasts",
+        TRADU.IdiomaChinoSimplificado => "对野兽的憎恨",
         TRADU.IdiomaPortugues => "Ódio às Bestas",
         _ => "Odia a Bestias"
       },
       "Criatura" => idioma switch
       {
         TRADU.IdiomaIngles => "Hatred of Creatures",
+        TRADU.IdiomaChinoSimplificado => "对生物的憎恨",
         TRADU.IdiomaPortugues => "Ódio às Criaturas",
         _ => "Odia a Criaturas"
       },
       "Demonio" => idioma switch
       {
         TRADU.IdiomaIngles => "Hatred of Demons",
+        TRADU.IdiomaChinoSimplificado => "对恶魔的憎恨",
         TRADU.IdiomaPortugues => "Ódio aos Demônios",
         _ => "Odia a Demonios"
       },
@@ -977,6 +987,7 @@ public class AdministradorEscenas : MonoBehaviour
     string motivo = idiomaTrait switch
     {
       TRADU.IdiomaIngles => pers.sNombre + " is shaken by the sight of " + categoria + ".",
+      TRADU.IdiomaChinoSimplificado => pers.sNombre + "因目睹" + categoria + "而心生动摇。",
       TRADU.IdiomaPortugues => pers.sNombre + " se abala ao encarar " + categoria + ".",
       _ => pers.sNombre + " se estremece ante " + categoria + "."
     };
@@ -1049,6 +1060,7 @@ public class AdministradorEscenas : MonoBehaviour
       string motivoValiente = idiomaTrait switch
       {
         TRADU.IdiomaIngles => pers.sNombre + " enters battle emboldened.",
+        TRADU.IdiomaChinoSimplificado => pers.sNombre + "带着无畏之心投入战斗。",
         TRADU.IdiomaPortugues => pers.sNombre + " entra no combate encorajado.",
         _ => pers.sNombre + " entra al combate envalentonado."
       };
@@ -1064,6 +1076,7 @@ public class AdministradorEscenas : MonoBehaviour
         string motivoCobarde = idiomaTrait switch
         {
           TRADU.IdiomaIngles => pers.sNombre + " falters at the start of battle.",
+          TRADU.IdiomaChinoSimplificado => pers.sNombre + "在战斗伊始动摇了。",
           TRADU.IdiomaPortugues => pers.sNombre + " vacila no começo do combate.",
           _ => pers.sNombre + " vacila al comenzar el combate."
         };

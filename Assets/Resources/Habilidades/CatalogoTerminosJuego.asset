@@ -20,6 +20,7 @@ MonoBehaviour:
     descripcionEn: 'The <b>Strength</b> Attribute of the character using the selected
       ability.'
     descripcionPt: 'O Atributo <b>Força</b> do personagem que usa a habilidade selecionada.'
+    descripcionZh: '使用该技能的角色所拥有的 <b>力量</b> 属性。'
   - id: agility
     colorHex: '#7fa35a'
     descripcionEs: El Atributo <b>Agilidad</b> del personaje que realiza la habilidad
@@ -28,6 +29,7 @@ MonoBehaviour:
       ability.'
     descripcionPt: 'O Atributo <b>Agilidade</b> do personagem que usa a habilidade
       selecionada.'
+    descripcionZh: '使用该技能的角色所拥有的 <b>敏捷</b> 属性。'
   - id: power
     colorHex: '#2aa6c8'
     descripcionEs: El Atributo <b>Poder</b> del personaje que realiza la habilidad
@@ -35,6 +37,7 @@ MonoBehaviour:
     descripcionEn: 'The <b>Power</b> Attribute of the character using the selected
       ability.'
     descripcionPt: 'O Atributo <b>Poder</b> do personagem que usa a habilidade selecionada.'
+    descripcionZh: '使用该技能的角色所拥有的 <b>威力</b> 属性。'
   - id: mental-save
     colorHex: '#c9a8e0'
     descripcionEs: Atributo que determina la capacidad de la unidad de resistir efectos
@@ -43,6 +46,7 @@ MonoBehaviour:
       effects.'
     descripcionPt: 'Atributo que determina a capacidade da unidade de resistir a
       efeitos <b>Mentais</b>.'
+    descripcionZh: '决定单位抵抗 <b>心智</b> 类效果能力的属性。'
   - id: fortitude-save
     colorHex: '#e0c090'
     descripcionEs: 'Atributo que determina la capacidad de la unidad de resistir
@@ -51,12 +55,14 @@ MonoBehaviour:
       effects.'
     descripcionPt: 'Atributo que determina a capacidade da unidade de resistir a
       efeitos <b>Físicos</b>.'
+    descripcionZh: '决定单位抵抗 <b>物理</b> 类效果能力的属性。'
   - id: reflex-save
     colorHex: '#a3e0c2'
     descripcionEs: 'Atributo que determina la capacidad de la unidad de reaccionar
       rápido.'
     descripcionEn: 'Attribute that determines the unit''s ability to react quickly.'
     descripcionPt: 'Atributo que determina a capacidade da unidade de reagir rapidamente.'
+    descripcionZh: '决定单位快速反应能力的属性。'
   - id: divine-damage
     colorHex: '#e8cf7a'
     descripcionEs: 'Daño divino, al causar golpe crítico puede aplicar <b>Condenado</b>
@@ -65,6 +71,7 @@ MonoBehaviour:
       to the enemy.'
     descripcionPt: 'Dano divino; ao causar golpe crítico pode aplicar <b>Condenado</b>
       no inimigo.'
+    descripcionZh: '神圣伤害，造成暴击时可能对敌人施加 <b>定罪</b>。'
   - id: fire-damage
     colorHex: '#e0987a'
     descripcionEs: 'Daño fuego, al causar golpe crítico puede aplicar <b>Ardiendo</b>
@@ -73,6 +80,7 @@ MonoBehaviour:
       the enemy.'
     descripcionPt: 'Dano de fogo; ao causar golpe crítico pode aplicar <b>Ardendo</b>
       no inimigo.'
+    descripcionZh: '火焰伤害，造成暴击时可能对敌人施加 <b>燃烧</b>。'
   - id: cold-damage
     colorHex: '#8ecbe0'
     descripcionEs: 'Daño frío, al causar golpe crítico puede aplicar <b>Congelado</b>
@@ -81,6 +89,7 @@ MonoBehaviour:
       the enemy.'
     descripcionPt: 'Dano de frio; ao causar golpe crítico pode aplicar <b>Congelado</b>
       no inimigo.'
+    descripcionZh: '冰霜伤害，造成暴击时可能对敌人施加 <b>冻结</b>。'
   - id: lightning-damage
     colorHex: '#e0d67a'
     descripcionEs: 'Daño rayo, al causar golpe crítico puede aplicar <b>Aturdido</b>
@@ -89,6 +98,7 @@ MonoBehaviour:
       to the enemy.'
     descripcionPt: 'Dano de raio; ao causar golpe crítico pode aplicar <b>Atordoado</b>
       no inimigo.'
+    descripcionZh: '闪电伤害，造成暴击时可能对敌人施加 <b>眩晕</b>。'
   - id: acid-damage
     colorHex: '#a8d67a'
     descripcionEs: 'Daño ácido, al causar golpe crítico puede agregar acumulaciones
@@ -97,6 +107,7 @@ MonoBehaviour:
       that reduce the target''s armor.'
     descripcionPt: 'Dano ácido; ao causar golpe crítico pode adicionar acúmulos
       de <b>Ácido</b> que reduzem a armadura do alvo.'
+    descripcionZh: '酸性伤害，造成暴击时可能叠加 <b>酸性</b> 层数，降低目标的护甲。'
   - id: arcane-damage
     colorHex: '#b98ee0'
     descripcionEs: 'Daño arcano, al causar golpe crítico puede agregar acumulaciones
@@ -105,6 +116,7 @@ MonoBehaviour:
       stacks to the target.'
     descripcionPt: 'Dano arcano; ao causar golpe crítico pode adicionar acúmulos
       de <b>Resistências Reduzidas</b> no alvo.'
+    descripcionZh: '奥术伤害，造成暴击时可能对目标叠加 <b>抗性降低</b> 层数。'
   - id: slashing-damage
     colorHex: '#b9c6cc'
     descripcionEs: 'Daño cortante, al causar golpe crítico puede agregar acumulaciones
@@ -113,6 +125,7 @@ MonoBehaviour:
       to the target.'
     descripcionPt: 'Dano cortante; ao causar golpe crítico pode adicionar acúmulos
       de <b>Sangramento</b> no alvo.'
+    descripcionZh: '斩击伤害，造成暴击时可能对目标叠加 <b>流血</b> 层数。'
   - id: piercing-damage
     colorHex: '#b9c6cc'
     descripcionEs: 'Daño perforante, al causar golpe crítico ignora la Armadura
@@ -120,6 +133,7 @@ MonoBehaviour:
     descripcionEn: 'Piercing damage; on a critical hit it ignores the enemy''s Armor.'
     descripcionPt: 'Dano perfurante; ao causar golpe crítico ignora a Armadura do
       inimigo.'
+    descripcionZh: '穿刺伤害，造成暴击时无视敌人的护甲。'
   - id: bludgeoning-damage
     colorHex: '#b9c6cc'
     descripcionEs: 'Daño contundente, al causar golpe crítico puede reducir
@@ -128,11 +142,13 @@ MonoBehaviour:
       AP.'
     descripcionPt: 'Dano contundente; ao causar golpe crítico pode reduzir o AP
       do alvo.'
+    descripcionZh: '钝击伤害，造成暴击时可能降低目标的行动点。'
   - id: true-damage
     colorHex: '#b9c6cc'
     descripcionEs: 'Daño verdadero. ignora armadura y resistencias.'
     descripcionEn: 'True damage. Ignores armor and resistances.'
     descripcionPt: 'Dano verdadeiro. Ignora armadura e resistências.'
+    descripcionZh: '真实伤害。无视护甲与抗性。'
   - id: poison
     colorHex: '#a8d67a'
     descripcionEs: 'Veneno, cada turno inflige daño según sus acumulaciones. El objetivo
@@ -142,11 +158,13 @@ MonoBehaviour:
     descripcionPt: 'Veneno; a cada turno inflige dano de acordo com seus acúmulos.
       O alvo pode se curar completamente com uma Salvação de Fortitude, ou piorar
       se falhar.'
+    descripcionZh: '中毒，每回合根据层数造成伤害。目标可通过一次坚韧豁免完全治愈，若豁免失败则会加重。'
   - id: armor-penetration
     colorHex: '#b9c6cc'
     descripcionEs: Al golpear, ignora hasta X puntos de Armadura del objetivo.
     descripcionEn: 'On hit, ignores up to X points of the target''s Armor.'
     descripcionPt: 'Ao acertar, ignora até X pontos de Armadura do alvo.'
+    descripcionZh: '命中时，无视目标最多 X 点护甲。'
   - id: critical-hit
     colorHex: '#b9c6cc'
     descripcionEs: 'Un Golpe crítico garantiza el impacto en el objetivo, aumenta
@@ -155,6 +173,7 @@ MonoBehaviour:
       its damage, and depending on the damage type, may have additional effects.'
     descripcionPt: 'Um Golpe Crítico garante o impacto no alvo, aumenta seu dano
       e, dependendo do tipo de dano, pode ter efeitos adicionais.'
+    descripcionZh: '暴击必定命中目标，提高伤害，并根据伤害类型可能附带额外效果。'
   - id: d20-roll
     colorHex: '#e0b567'
     descripcionEs: 'Tirada de dado que se usa en Ataques y Salvaciones; un resultado
@@ -164,12 +183,14 @@ MonoBehaviour:
     descripcionPt: 'Rolagem de d20 usada em Tiradas de Ataque e Salvações; um resultado
       natural muito baixo pode ser Falha Crítica, e um muito alto pode ser Golpe
       Crítico.'
+    descripcionZh: '用于攻击和豁免检定的掷骰；极低的原始结果可能是大失败，极高的结果可能是暴击。'
   - id: fumble
     colorHex: '#b9c6cc'
     descripcionEs: Chances de fallo crítico del ataque, además reduce 1 PA.
     descripcionEn: 'Chance of a critical failure on the attack, which also costs
       1 extra AP.'
     descripcionPt: 'Chance de falha crítica no ataque, que também custa 1 AP extra.'
+    descripcionZh: '攻击出现大失败的概率，同时额外消耗 1 点行动点。'
   - id: valour
     colorHex: '#b9c6cc'
     descripcionEs: 'El Valor determina distintos beneficios/penalizaciones que los
@@ -178,6 +199,7 @@ MonoBehaviour:
       will get in battle as their Valour changes.'
     descripcionPt: 'A Valentia determina diversos benefícios/penalidades que os
       personagens obtêm em batalha conforme seu valor muda.'
+    descripcionZh: '勇气值决定角色在战斗中随其数值变化获得的各种加成/惩罚。'
   - id: defense
     colorHex: '#b9c6cc'
     descripcionEs: 'Valor que debe superar el ataque enemigo para impactar. Cada
@@ -186,6 +208,7 @@ MonoBehaviour:
       received in a turn reduces it until the next turn.'
     descripcionPt: 'Valor que o ataque inimigo precisa superar para acertar. Cada
       ataque recebido em um turno a reduz até o próximo turno.'
+    descripcionZh: '敌方攻击必须超过的数值才能命中。每回合每受到一次攻击，该值都会降低，直到下一回合恢复。'
   - id: attack
     colorHex: '#b9c6cc'
     descripcionEs: Valor que se suma a la Tirada de Ataque (1d20), si supera la Defensa
@@ -194,6 +217,7 @@ MonoBehaviour:
       Defense, a hit occurs.'
     descripcionPt: 'Valor somado à Tirada de Ataque (1d20); se superar a Defesa
       inimiga, ocorre um acerto.'
+    descripcionZh: '加到攻击检定（1d20）上的数值，若超过敌方防御则命中。'
   - id: ap
     colorHex: '#c2387a'
     descripcionEs: 'Puntos de Acción. Se recargan al máximo al empezar el turno
@@ -202,6 +226,7 @@ MonoBehaviour:
       turn and are spent according to the cost of each ability/movement.'
     descripcionPt: 'Pontos de Ação. Recarregam ao máximo no início do próprio turno
       e são gastos de acordo com o custo de cada habilidade/movimento.'
+    descripcionZh: '行动点。在自己的回合开始时恢复至上限，并根据每个技能/移动的消耗而减少。'
   - id: barrier
     colorHex: '#b9c6cc'
     descripcionEs: 'Absorbe daño entrante antes que la vida, punto por punto,
@@ -210,6 +235,7 @@ MonoBehaviour:
       depleted.'
     descripcionPt: 'Absorve o dano recebido antes da vida, ponto a ponto, até se
       esgotar.'
+    descripcionZh: '在生命值之前逐点吸收所受到的伤害，直至耗尽。'
   - id: fervor
     colorHex: '#b9c6cc'
     descripcionEs: 'Recurso de la Purificadora. Cada punto otorga Barrera y bono
@@ -218,6 +244,7 @@ MonoBehaviour:
       bonus.'
     descripcionPt: 'Recurso da Purificadora. Cada ponto concede Barreira e bônus
       de dano Divino.'
+    descripcionZh: '净化者的资源。每一点都会赋予屏障并提供神圣伤害加成。'
   - id: evasion
     colorHex: '#b9c6cc'
     descripcionEs: 'Cada acumulación otorga Defensa. Se pierde por completo apenas
@@ -226,16 +253,19 @@ MonoBehaviour:
       the unit takes damage.'
     descripcionPt: 'Cada acúmulo concede Defesa. É perdido por completo assim que
       a unidade sofre dano.'
+    descripcionZh: '每层都会提供防御加成。单位一旦受到伤害就会完全失去该效果。'
   - id: weakness
     colorHex: '#b9c6cc'
     descripcionEs:
     descripcionEn:
     descripcionPt:
+    descripcionZh:
   - id: debuff
     colorHex: '#b9c6cc'
     descripcionEs: 'Efectos negativos varios aplicado sobre una unidad. '
     descripcionEn: 'Various negative effects applied to a unit.'
     descripcionPt: 'Vários efeitos negativos aplicados a uma unidade.'
+    descripcionZh: '施加在单位身上的各种负面效果。'
   - id: armor
     colorHex: '#b9c6cc'
     descripcionEs: 'Reduce el daño físico plano recibido. Se desgasta con cada
@@ -244,6 +274,7 @@ MonoBehaviour:
       physical hit received.'
     descripcionPt: 'Reduz o dano físico plano recebido. Se desgasta a cada golpe
       físico sofrido.'
+    descripcionZh: '降低所受到的固定数值物理伤害。每次受到物理打击都会被削减。'
   - id: reaction
     colorHex: '#b9c6cc'
     descripcionEs: 'Efecto que se dispara solo, en respuesta a un evento de combate:
@@ -252,6 +283,7 @@ MonoBehaviour:
       event: missing an attack, taking damage, dying, damaging an enemy, etc.'
     descripcionPt: 'Um efeito que se dispara sozinho, em resposta a um evento de
       combate: errar um ataque, sofrer dano, morrer, causar dano a um inimigo, etc.'
+    descripcionZh: '在特定战斗事件发生时自动触发的效果：如攻击未命中、受到伤害、死亡、对敌人造成伤害等。'
   - id: impulse
     colorHex: '#b9c6cc'
     descripcionEs: 'Cada acumulación abarata en 1 PA el costo del próximo movimiento
@@ -260,6 +292,7 @@ MonoBehaviour:
       swap by 1.'
     descripcionPt: 'Cada acúmulo reduz em 1 o custo em AP do próximo movimento ou
       troca de casa.'
+    descripcionZh: '每层都会使下一次移动或换位所需的行动点消耗降低 1 点。'
   - id: reactive-mark
     colorHex:
     descripcionEs: 'Marca que vigila una acción concreta del objetivo marcado
@@ -268,6 +301,7 @@ MonoBehaviour:
       and triggers an automatic effect when it happens.'
     descripcionPt: 'Uma marca que vigia uma ação específica do alvo marcado e dispara
       um efeito automático quando ela ocorre.'
+    descripcionZh: '监视被标记目标某个具体动作的标记，一旦该动作发生就会自动触发效果。'
   - id: burning
     colorHex:
     descripcionEs: 'Cada turno inflige daño de Fuego según sus acumulaciones,
@@ -276,6 +310,7 @@ MonoBehaviour:
       decrease by 1. It is removed upon taking Cold damage.'
     descripcionPt: 'A cada turno inflige dano de Fogo de acordo com seus acúmulos,
       que depois diminuem em 1. É removido ao receber dano de Frio.'
+    descripcionZh: '每回合根据层数造成火焰伤害，随后层数减少 1。受到冰冷伤害时会被清除。'
   - id: ward-trap
     colorHex:
     descripcionEs: Trampa colocada en el tablero que, al ser pisada por un aliado,
@@ -284,11 +319,13 @@ MonoBehaviour:
       when stepped on by an ally.'
     descripcionPt: 'Uma armadilha colocada no tabuleiro que concede um efeito protetor
       ao ser pisada por um aliado.'
+    descripcionZh: '放置在战场上的陷阱，被友军踩到时会赋予一个保护效果。'
   - id: passive
     colorHex:
     descripcionEs: Habilidad siempre activa, sin necesidad de usarla manualmente.
     descripcionEn: 'An ability that is always active, with no need to use it manually.'
     descripcionPt: 'Uma habilidade sempre ativa, sem necessidade de uso manual.'
+    descripcionZh: '始终生效的技能，无需手动使用。'
   - id: intrinsic
     colorHex: '#8f8f8f'
     descripcionEs: Habilidades iniciales garantizadas para todos los personajes de
@@ -296,6 +333,7 @@ MonoBehaviour:
     descripcionEn: 'Guaranteed starting abilities for every character of this class.'
     descripcionPt: 'Habilidades iniciais garantidas para todos os personagens desta
       classe.'
+    descripcionZh: '该职业所有角色一开始就保证拥有的技能。'
   - id: affliction
     colorHex:
     descripcionEs: 'Categoría que agrupa efectos negativos de daño sostenido
@@ -304,6 +342,7 @@ MonoBehaviour:
       as Bleed, Poison, or Burning.'
     descripcionPt: 'Categoria que agrupa efeitos negativos de dano ao longo do
       tempo, como Sangramento, Veneno ou Ardendo.'
+    descripcionZh: '归类持续性负面伤害效果的类别，例如流血、中毒或燃烧。'
   - id: black-breath
     colorHex:
     descripcionEs: 'Amenaza de la campaña que persigue a la caravana. Cuanto más
@@ -315,6 +354,7 @@ MonoBehaviour:
     descripcionPt: 'Uma ameaça da campanha que persegue a caravana. Quanto mais
       perto ela está, maior a perda de Esperança e civis, e menor a chance de certos
       eventos favoráveis.'
+    descripcionZh: '追赶车队的战役级威胁。它越逼近，希望和平民的损失就越大，某些有利事件的出现概率也越低。'
   - id: divine-echo
     colorHex:
     descripcionEs: 'Trampa amistosa de la Purificadora: cura y da Valentía al
@@ -326,6 +366,7 @@ MonoBehaviour:
     descripcionPt: 'Armadilha amigável da Purificadora: cura e concede Valentia
       ao aliado que a pisa, ou causa dano Divino que ignora armadura ao inimigo
       que a pisa.'
+    descripcionZh: '净化者的友方陷阱：治疗踩到它的友军并赋予勇气，或对踩到它的敌人造成无视护甲的神圣伤害。'
   - id: arrow
     colorHex:
     descripcionEs: Recurso del Explorador. Cada disparo con arco consume una unidad;
@@ -334,6 +375,7 @@ MonoBehaviour:
       those abilities can''t be used.'
     descripcionPt: 'Recurso do Explorador. Cada disparo com arco consome uma unidade;
       sem flechas, essas habilidades não podem ser usadas.'
+    descripcionZh: '探索者的资源。每次弓箭射击都会消耗一支；没有箭矢时，相关技能将无法使用。'
   - id: hidden
     colorHex:
     descripcionEs: 'Vuelve a la unidad inalcanzable para habilidades hostiles y la
@@ -345,6 +387,7 @@ MonoBehaviour:
     descripcionPt: 'Torna a unidade inalcançável por habilidades hostis e a oculta
       do lado inimigo. É perdido ao sofrer dano ou, em sua forma mais fraca, também
       ao atacar.'
+    descripcionZh: '使单位无法被敌对技能选为目标，并对敌方隐藏。受到伤害时会失去该效果；在较弱的形式下，攻击时也会失去。'
   - id: prey-mark
     colorHex:
     descripcionEs: 'El Explorador marca a un enemigo por varios turnos: gana bonos
@@ -355,6 +398,7 @@ MonoBehaviour:
     descripcionPt: 'O Explorador marca um inimigo por vários turnos: ganha bônus
       de ataque e crítico contra ele, ao custo de uma penalidade contra outros
       alvos.'
+    descripcionZh: '探索者标记一名敌人若干回合：对其获得攻击和暴击加成，但对其他目标会受到惩罚。'
   - id: slowed
     colorHex:
     descripcionEs: 'Debuff temporal: reduce el AP máximo, la Salvación de Reflejos,
@@ -363,6 +407,7 @@ MonoBehaviour:
       Defense, and Attack.'
     descripcionPt: 'Debuff temporário: reduz o AP máximo, a Salvação de Reflexos,
       a Defesa e o Ataque do alvo.'
+    descripcionZh: '临时减益：降低目标的最大行动点、反射豁免、防御和攻击。'
   - id: bleed
     colorHex:
     descripcionEs: 'Cada turno reduce la vida máxima del objetivo según sus
@@ -372,6 +417,7 @@ MonoBehaviour:
       which then decrease by 1. It also blocks part of the healing received.'
     descripcionPt: 'A cada turno reduz o HP máximo do alvo de acordo com seus
       acúmulos, que depois diminuem em 1. Também bloqueia parte da cura recebida.'
+    descripcionZh: '每回合根据层数降低目标的最大生命值，随后层数减少 1。同时会阻挡部分所受到的治疗。'
   - id: terrified
     colorHex:
     descripcionEs: 'Debuff temporal: reduce el Ataque, el AP máximo y la Salvación
@@ -380,11 +426,13 @@ MonoBehaviour:
       Mental Save.'
     descripcionPt: 'Debuff temporário: reduz o Ataque, o AP máximo e a Salvação
       Mental do alvo.'
+    descripcionZh: '临时减益：降低目标的攻击、最大行动点和心智豁免。'
   - id: invulnerable
     colorHex:
     descripcionEs: 'Mientras dura, la unidad no recibe ningún daño.'
     descripcionEn: 'While it lasts, the unit takes no damage at all.'
     descripcionPt: 'Enquanto durar, a unidade não recebe nenhum dano.'
+    descripcionZh: '持续期间，该单位不会受到任何伤害。'
   - id: healing
     colorHex:
     descripcionEs: 'Restaura vida. El Sangrado bloquea parte de la curación recibida,
@@ -393,6 +441,7 @@ MonoBehaviour:
       and overusing magical healing reduces its effectiveness.'
     descripcionPt: 'Restaura vida. O Sangramento bloqueia parte da cura recebida,
       e abusar da cura mágica reduz sua eficácia.'
+    descripcionZh: '恢复生命值。流血会阻挡部分所受到的治疗，而过度使用魔法治疗会降低其效果。'
   - id: magical-healing
     colorHex:
     descripcionEs: 'La curación mágica genera residuos de tejido, que progresivamente
@@ -401,6 +450,7 @@ MonoBehaviour:
       the effectiveness of subsequent magical healing in the same combat.'
     descripcionPt: 'A cura mágica gera resíduos de tecido, reduzindo progressivamente
       a eficácia das curas mágicas posteriores no mesmo combate.'
+    descripcionZh: '魔法治疗会产生组织残留，逐渐降低同一场战斗中后续魔法治疗的效果。'
   - id: you-are-next-mark
     colorHex:
     descripcionEs: 'Marca del Caballero: mientras dure, sus próximos ataques contra
@@ -410,6 +460,7 @@ MonoBehaviour:
       used.'
     descripcionPt: 'Marca do Cavaleiro: enquanto durar, seus próximos ataques contra
       esse alvo ganham um forte bônus de ataque e dano, e é consumida ao ser usada.'
+    descripcionZh: '骑士的标记：持续期间，对该目标的下一次攻击将获得大幅攻击和伤害加成，使用后即消耗。'
   - id: provoked
     colorHex:
     descripcionEs: 'Fuerza a la unidad provocada a dirigir sus habilidades hostiles
@@ -418,17 +469,20 @@ MonoBehaviour:
       at whoever provoked it.'
     descripcionPt: 'Força a unidade provocada a direcionar suas habilidades hostis
       apenas contra quem a provocou.'
+    descripcionZh: '强制被嘲讽的单位只能将其敌对技能用于嘲讽它的目标。'
   - id: sore
     colorHex:
     descripcionEs: 'Debuff del Duelista: reduce el daño causado y el Ataque del
       objetivo.'
     descripcionEn: 'Duelist debuff: reduces the target''s damage dealt and Attack.'
     descripcionPt: 'Debuff do Duelista: reduz o dano causado e o Ataque do alvo.'
+    descripcionZh: '决斗者的减益：降低目标造成的伤害和攻击。'
   - id: staggering
     colorHex:
     descripcionEs: 'Debuff: reduce el AP máximo y la Defensa del objetivo.'
     descripcionEn: 'Debuff: reduces the target''s max AP and Defense.'
     descripcionPt: 'Debuff: reduz o AP máximo e a Defesa do alvo.'
+    descripcionZh: '减益：降低目标的最大行动点和防御。'
   - id: exposed-vulnerability
     colorHex:
     descripcionEs: 'Buff acumulable del Duelista: reduce el umbral de crítico
@@ -437,6 +491,7 @@ MonoBehaviour:
       against that target and increases the critical damage it takes.'
     descripcionPt: 'Buff acumulável do Duelista: reduz o limiar de crítico necessário
       contra esse alvo e aumenta o dano crítico que ele recebe.'
+    descripcionZh: '决斗者的可叠加增益：降低对该目标所需的暴击阈值，并提高其受到的暴击伤害。'
   - id: dancing
     colorHex:
     descripcionEs: 'Buff del Duelista que se obtiene al matar a un enemigo en el
@@ -445,11 +500,13 @@ MonoBehaviour:
       increases Attack and damage dealt, to chain kills together.'
     descripcionPt: 'Buff do Duelista obtido ao matar um inimigo no próprio turno:
       aumenta o Ataque e o dano causado, para encadear abates.'
+    descripcionZh: '决斗者在自己回合击杀敌人后获得的增益：提高攻击和造成的伤害，便于连续击杀。'
   - id: arcane-resistance
     colorHex:
     descripcionEs: 'Reduce de forma plana el daño Arcano recibido.'
     descripcionEn: 'Flatly reduces Arcane damage taken.'
     descripcionPt: 'Reduz de forma direta o dano Arcano recebido.'
+    descripcionZh: '固定降低所受到的奥术伤害。'
   - id: energy-tier
     colorHex:
     descripcionEs: 'Nivel de energía acumulada del Canalizador. Cada nivel otorga
@@ -458,6 +515,7 @@ MonoBehaviour:
       more damage, critical range, and max AP.'
     descripcionPt: 'Nível de energia acumulada do Canalizador. Cada nível concede
       mais dano, alcance de crítico e AP máximo.'
+    descripcionZh: '引导者积累的能量等级。每提升一级都会增加伤害、暴击范围和最大行动点。'
   - id: energy-residue
     colorHex:
     descripcionEs: 'Trampa amistosa que deja el Canalizador al conectar un crítico.
@@ -467,6 +525,7 @@ MonoBehaviour:
       enemy who steps on it.'
     descripcionPt: 'Armadilha amigável deixada pelo Canalizador ao acertar um crítico.
       Cura e fortalece o aliado que a pisa, ou causa dano ao inimigo que a pisa.'
+    descripcionZh: '引导者打出暴击时留下的友方陷阱。治疗并强化踩到它的友军，或对踩到它的敌人造成伤害。'
   - id: gathering
     colorHex:
     descripcionEs: 'Estado de canalización: al empezar su turno, el Canalizador
@@ -477,6 +536,7 @@ MonoBehaviour:
     descripcionPt: 'Estado de canalização: no início do seu turno, o Canalizador
       avança um nível de Energia, a menos que sofra dano e falhe em uma Salvação
       Mental.'
+    descripcionZh: '引导状态：回合开始时，引导者会提升一级能量，除非受到伤害并且心智豁免失败。'
   - id: stunned
     colorHex:
     descripcionEs: 'Pone los Puntos de Acción del objetivo en 0, haciéndole
@@ -485,6 +545,7 @@ MonoBehaviour:
       turn, and reduces their Defense while it lasts.'
     descripcionPt: 'Zera os Pontos de Ação do alvo, fazendo-o perder o turno, e
       reduz sua Defesa enquanto durar.'
+    descripcionZh: '使目标的行动点归零，令其失去本回合，并在持续期间降低其防御。'
   - id: resistances
     colorHex:
     descripcionEs: 'Conjunto de valores (Fuego, Hielo, Rayo, Ácido, Arcano, Necrótico,
@@ -493,6 +554,7 @@ MonoBehaviour:
       Divine) that flatly reduce damage of their corresponding type.'
     descripcionPt: 'Conjunto de valores (Fogo, Frio, Raio, Ácido, Arcano, Necrótico,
       Divino) que reduzem de forma direta o dano do tipo correspondente.'
+    descripcionZh: '一组数值（火焰、冰霜、闪电、酸蚀、奥术、死灵、神圣），分别固定降低对应类型的伤害。'
   - id: arcane-manifestation
     colorHex:
     descripcionEs: 'Habilidad del Canalizador que exige cierto nivel de Energía:
@@ -504,6 +566,7 @@ MonoBehaviour:
     descripcionPt: 'Habilidade do Canalizador que exige um certo nível de Energia:
       coloca um obstáculo no tabuleiro e concede bônus próprios crescentes de acordo
       com o nível.'
+    descripcionZh: '需要一定能量等级的引导者技能：在战场上放置一个障碍物，并根据等级提供不断增强的自身加成。'
   - id: arcane-siphon
     colorHex:
     descripcionEs: 'Habilidad hostil del Canalizador: si el objetivo falla una Salvación
@@ -515,3 +578,4 @@ MonoBehaviour:
     descripcionPt: 'Habilidade hostil do Canalizador: se o alvo falhar em uma Salvação
       Mental, sofre dano Arcano recorrente a cada turno, potencializado pelos Resíduos
       Energéticos em campo.'
+    descripcionZh: '引导者的敌对技能：若目标心智豁免失败，将在其后每回合持续受到奥术伤害，场上的能量残留会强化该效果。'

@@ -45,11 +45,19 @@ public class NucleoInestable : Habilidad
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
         if (esIngles)
         {
             txtDescripcion = "<color=#5dade2><b>Unstable Core</b></color>\n\n" +
                 "<i>(Passive) The mantle's core soaks up some of the strain of channeling too much power. +2 Defense, +1 Max AP.</i>";
+            return;
+        }
+
+        if (esChino)
+        {
+            txtDescripcion = "<color=#5dade2><b>不稳定核心</b></color>\n\n" +
+                "<i>（被动）斗篷的核心会吸收一部分因引导过多能量而产生的负担。防御 +2，最大行动点 +1。</i>";
             return;
         }
 

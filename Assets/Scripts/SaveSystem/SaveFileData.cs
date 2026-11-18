@@ -28,11 +28,10 @@ public class SaveFileData
 
   public void AsegurarDisplayName()
   {
-    if (!string.IsNullOrWhiteSpace(displayName))
-    {
-      return;
-    }
-
+    // Se recalcula siempre (no solo si está vacío) para que el nombre de la partida guardada
+    // refleje el idioma actualmente elegido por el jugador, incluso si la partida se guardó en
+    // otro idioma. La fecha original se conserva porque ObtenerFechaLocalGuardado() la lee de
+    // savedAtUtc, no de la hora actual.
     displayName = ConstruirDisplayName(ObtenerFechaLocalGuardado());
   }
 
@@ -64,7 +63,9 @@ public class SaveFileData
 
   private static string ObtenerEtiquetaEtapa(int idioma)
   {
-    return idioma == TRADU.IdiomaIngles ? "Stage" : "Etapa";
+    if (idioma == TRADU.IdiomaIngles) { return "Stage"; }
+    if (idioma == TRADU.IdiomaChinoSimplificado) { return "阶段"; }
+    return "Etapa";
   }
 
   private static string ObtenerNombreRegion(int zonaId, int idioma)
@@ -88,6 +89,17 @@ public class SaveFileData
         IdsZonaCampania.PasoVientoHelado => "Passagem do Vento Gelado",
         IdsZonaCampania.Nedukazal => "Nedukazal",
         _ => "Regiao desconhecida"
+      };
+    }
+
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+      return zonaId switch
+      {
+        IdsZonaCampania.BosqueAngustiante => "燃烧之森",
+        IdsZonaCampania.PasoVientoHelado => "冻风隘口",
+        IdsZonaCampania.Nedukazal => "内杜卡赞",
+        _ => "未知地区"
       };
     }
 

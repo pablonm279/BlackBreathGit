@@ -1,0 +1,1 @@
+OK: preview de 5 climas conserva tipo real, hora, RNG global y activacion de raices. Sin colliders nuevos.

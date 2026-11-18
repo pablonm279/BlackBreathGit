@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
 using System.Collections.Generic;
 
 public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
@@ -642,6 +641,8 @@ public class UIEstadoCuadro : MonoBehaviour, ICanvasRaycastFilter
         return "Accumulated: ";
       case TRADU.IdiomaPortugues:
         return "Acumulado: ";
+      case TRADU.IdiomaChinoSimplificado:
+        return "累计：";
       default:
         return "Acumulado: ";
     }

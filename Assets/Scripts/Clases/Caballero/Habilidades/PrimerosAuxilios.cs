@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -41,6 +40,7 @@ public class PrimerosAuxilios : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
       string dadoCuracion = NIVEL == 1 ? "1d8" : "1d12";
       string rangoCuracion = NIVEL == 1 ? $"{CuracionBase} + 1-8 por AP" : $"{CuracionBase} + 1-12 por AP";
@@ -57,6 +57,7 @@ public class PrimerosAuxilios : Habilidad
       string tituloEs = "Primeros Auxilios I";
       string tituloEn = "First Aid I";
       string tituloPt = "Primeiros Socorros I";
+      string tituloZh = "急救 I";
       if (NIVEL == 2) { tituloEs = "Primeros Auxilios II"; tituloEn = "First Aid II"; }
       if (NIVEL == 3) { tituloEs = "Primeros Auxilios III"; tituloEn = "First Aid III"; }
       if (NIVEL == 4) { tituloEs = "Primeros Auxilios IV a"; tituloEn = "First Aid IV a"; }
@@ -65,6 +66,10 @@ public class PrimerosAuxilios : Habilidad
       if (NIVEL == 3) { tituloPt = "Primeiros Socorros III"; }
       if (NIVEL == 4) { tituloPt = "Primeiros Socorros IV a"; }
       if (NIVEL == 5) { tituloPt = "Primeiros Socorros IV b"; }
+      if (NIVEL == 2) { tituloZh = "急救 II"; }
+      if (NIVEL == 3) { tituloZh = "急救 III"; }
+      if (NIVEL == 4) { tituloZh = "急救 IV a"; }
+      if (NIVEL == 5) { tituloZh = "急救 IV b"; }
 
       if (esIngles)
       {
@@ -97,6 +102,34 @@ public class PrimerosAuxilios : Habilidad
           "Treats one ally, scaling with current AP.",
           lineas,
           proximaMejora);
+        return;
+      }
+
+      if (esChino)
+      {
+        string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+        string curacionZh = TerminoDescripcion(TerminoDescripcionId.Curacion, "生命值");
+        string sangradoZh = TerminoDescripcion(TerminoDescripcionId.Sangrado, "流血", "Estado_sangrano");
+        string venenoZh = TerminoDescripcion(TerminoDescripcionId.Veneno, "中毒", "veneno");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "下一级：每点行动点治疗量从 1-8 提升到 1-12。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：每场战斗使用次数 +1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：基础治疗量 +4。\n选项B：启用其战役转移效果。"; }
+        }
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "自身或 1 名友军"),
+          LineaDescripcion("效果", $"恢复 {CuracionBase} + （{curacionPorAP} × 当前{apZh}）点{curacionZh}；消耗全部当前行动点。"),
+          LineaDescripcion("移除", $"{sangradoZh}与{venenoZh}。", 1),
+          LineaDescripcion("使用次数", $"每场战斗 {usos} 次")
+        };
+        if (trasladaCampania)
+        {
+          lineasZh.Add(LineaDescripcion("战役", "启用其战役转移效果。"));
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloZh, "根据当前行动点治疗一名友军。", lineasZh, proximaMejoraZh);
         return;
       }
 

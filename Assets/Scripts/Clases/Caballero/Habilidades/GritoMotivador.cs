@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -45,6 +44,7 @@ public class GritoMotivador : Habilidad
       ActualizarParametrosPorNivel();
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
       int buffDanio = NIVEL > 1 ? 15 : 10;
       int valorAliados = 1;
@@ -54,6 +54,7 @@ public class GritoMotivador : Habilidad
       string tituloEs = "Grito Motivador I";
       string tituloEn = "War Cry I";
       string tituloPt = "Grito Motivador I";
+      string tituloZh = "战吼 I";
       if (NIVEL == 2) { tituloEs = "Grito Motivador II"; tituloEn = "War Cry II"; }
       if (NIVEL == 3) { tituloEs = "Grito Motivador III"; tituloEn = "War Cry III"; }
       if (NIVEL == 4) { tituloEs = "Grito Motivador IV a"; tituloEn = "War Cry IV a"; }
@@ -62,6 +63,10 @@ public class GritoMotivador : Habilidad
       if (NIVEL == 3) { tituloPt = "Grito Motivador III"; }
       if (NIVEL == 4) { tituloPt = "Grito Motivador IV a"; }
       if (NIVEL == 5) { tituloPt = "Grito Motivador IV b"; }
+      if (NIVEL == 2) { tituloZh = "战吼 II"; }
+      if (NIVEL == 3) { tituloZh = "战吼 III"; }
+      if (NIVEL == 4) { tituloZh = "战吼 IV a"; }
+      if (NIVEL == 5) { tituloZh = "战吼 IV b"; }
 
       if (esIngles)
       {
@@ -94,6 +99,29 @@ public class GritoMotivador : Habilidad
           "A commanding shout that empowers allies.",
           lineas,
           proximaMejora);
+        return;
+      }
+
+      if (esChino)
+      {
+        string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+        string valentiaSinIconoZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "下一级：友军伤害加成 +5%。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：冷却时间从 4 降为 3。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：骑士每有一名友军受影响，就获得 +2 勇气。\n选项B：敌人在 1 回合内造成的伤害 -10%。"; }
+        }
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", afectaEnemigos ? "所有单位" : "所有友军"),
+          LineaDescripcion("效果", $"友军获得 +{buffDanio}% 伤害（持续 3 回合）。"),
+          LineaDescripcion("其他友军", $"获得 +{valorAliados} {valentiaZh}。", 1)
+        };
+        if (NIVEL == 4) { lineasZh.Add(LineaDescripcion("骑士", $"每有一名友军受影响，就获得 +2 {valentiaSinIconoZh}。", 1)); }
+        if (afectaEnemigos) { lineasZh.Add(LineaDescripcion("敌人", $"造成的伤害 -10%（持续 {duracionDebuffEnemigos} 回合）；无豁免。", 1)); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloZh, "一声号令，激励全体友军。", lineasZh, proximaMejoraZh);
         return;
       }
 
@@ -393,6 +421,8 @@ public class GritoMotivador : Habilidad
           ? nombreObjetivo + " is emboldened by War Cry"
           : (TRADU.i != null && TRADU.i.nIdioma == 3)
             ? nombreObjetivo + " se encoraja com Grito Motivador"
+          : (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+            ? nombreObjetivo + " 因战吼而士气高昂"
           : nombreObjetivo + " se envalentona por Grito Motivador";
         objetivo.SumarValentia(1, motivoValentia, mostrarTextoFlotante: false);
        }

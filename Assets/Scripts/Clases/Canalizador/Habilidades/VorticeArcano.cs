@@ -43,11 +43,19 @@ public class VorticeArcano : Habilidad
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
         if (esIngles)
         {
             txtDescripcion = "<color=#5dade2><b>Arcane Vortex</b></color>\n\n" +
                 "<i>(Passive) The gauntlet starts every battle already humming with power: begins combat with 1 Energy Tier.</i>";
+            return;
+        }
+
+        if (esChino)
+        {
+            txtDescripcion = "<color=#5dade2><b>奥术漩涡</b></color>\n\n" +
+                "<i>（被动）护手在每场战斗开始时便已蓄势待发：战斗开始时便拥有 1 层能量等级。</i>";
             return;
         }
 

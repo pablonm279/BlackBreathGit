@@ -42,12 +42,31 @@ public class REPRESENTACIONUltimoPaso : Habilidad
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaPortugues;
         string colorEncabezado = "#44d3ec";
         string colorValor = "#ffffff";
-        string titulo = esIngles ? "Last Step" : esPortugues ? "Ultimo Passo" : "Ultimo Paso";
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
+        string titulo = esIngles ? "Last Step" : esChino ? "最后一步" : esPortugues ? "Ultimo Passo" : "Ultimo Paso";
         string subtitulo = esIngles
             ? "Passive: triggers once per battle below half HP."
-            : esPortugues
-                ? "Passiva: ativa uma vez por batalha abaixo de metade do HP."
-                : "Pasiva: se activa una vez por combate bajo mitad de HP.";
+            : esChino
+                ? "被动：生命值低于一半时，每场战斗触发一次。"
+                : esPortugues
+                    ? "Passiva: ativa uma vez por batalha abaixo de metade do HP."
+                    : "Pasiva: se activa una vez por combate bajo mitad de HP.";
+        if (esChino)
+        {
+            string evaZh = TerminoDescripcion(TerminoDescripcionId.Evasion, "闪避", "Estado_evasion");
+            string barZh = TerminoDescripcion(TerminoDescripcionId.Barrera, "屏障", "Estado_barrera");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                titulo,
+                "被动：生命值降至一半时保护佩戴者。",
+                new[]
+                {
+                    LineaDescripcion("触发", "每场战斗中首次生命值降至 50% 或以下时。"),
+                    LineaDescripcion("效果", $"{evaZh} +{BonusEvasion}，{barZh} +{BarreraOtorgada}（持续 1 回合）。"),
+                    LineaDescripcion("限制", "每场战斗一次。")
+                },
+                costoSuperior: string.Empty);
+            return;
+        }
         if (esIngles)
         {
             string evasion = TerminoDescripcion(TerminoDescripcionId.Evasion, "Evasion", "Estado_evasion");

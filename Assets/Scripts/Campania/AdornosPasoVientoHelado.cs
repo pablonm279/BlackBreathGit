@@ -1,0 +1,346 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+// Geometría decorativa en medidas de mundo. Nunca agrega colliders ni consume el RNG de campaña.
+[DisallowMultipleComponent]
+public sealed partial class AdornosPasoVientoHelado : MonoBehaviour
+{
+    struct Adorno { public GameObject objeto; public Vector3 centro; public float radio; public Vector3 eje; public float semilargo, semiancho; }
+    struct Tramo { public Vector3 a, b; public float margen; }
+    readonly List<Adorno> adornos = new List<Adorno>();
+    readonly List<Mesh> mallas = new List<Mesh>();
+    readonly List<Tramo> caminos = new List<Tramo>();
+    readonly List<Vector3> nodos = new List<Vector3>();
+    readonly HashSet<LineRenderer> lineasRevisadas = new HashSet<LineRenderer>();
+    [SerializeField] bool generarAfloramientos = false;
+    AtributosZona zona;
+    MapDecorator decorador;
+    GameObject raiz;
+    Material material;
+    Material materialHierba;
+    System.Random rng;
+    Bounds terreno;
+    float paso;
+
+    public int CantidadAdornos => adornos.Count;
+
+    public static IEnumerator Generar(AtributosZona atributos)
+    {
+        if (atributos == null || atributos.ID != 2 || atributos.TexturaTerreno == null
+            || atributos.pasovientoheladoContenedorGameObjects == null) yield break;
+        var contenedor = atributos.pasovientoheladoContenedorGameObjects;
+        var generador = contenedor.GetComponent<AdornosPasoVientoHelado>();
+        if (generador == null) generador = contenedor.AddComponent<AdornosPasoVientoHelado>();
+        yield return generador.Construir(atributos);
+    }
+
+    IEnumerator Construir(AtributosZona atributos)
+    {
+        Limpiar();
+        zona = atributos;
+        decorador = atributos.GetComponent<MapDecorator>();
+        if (decorador == null) yield break;
+        var shader = Resources.Load<Shader>("PasoVientoHeladoDetalles");
+        if (shader == null) yield break;
+        material = new Material(shader) { name = "Nieve y piedra del Paso (Runtime)", hideFlags = HideFlags.DontSave };
+        var shaderHierba = Resources.Load<Shader>("PasoVientoHeladoVegetacion");
+        if (shaderHierba != null)
+        {
+            materialHierba = new Material(shaderHierba) { name = "Matas secas al viento (Runtime)", hideFlags = HideFlags.DontSave };
+            materialHierba.SetFloat("_RespuestaViento",2.2f); materialHierba.SetFloat("_Glossiness",0);
+            materialHierba.SetFloat("_UsarColorVertices",1f);
+        }
+        raiz = new GameObject("Ventisqueros, hielo y hitos del Paso (Runtime)");
+        // Evita heredar la escala no uniforme de la raíz de campaña.
+        raiz.transform.SetParent(transform, true);
+        terreno = zona.TexturaTerreno.bounds;
+        raiz.transform.position = terreno.center;
+        paso = CampaignManager.Instance != null && CampaignManager.Instance.scMapaManager != null
+            ? Mathf.Clamp(CampaignManager.Instance.scMapaManager.ObtenerPasoMapa(), 3f, 12f) : 5f;
+        rng = new System.Random(unchecked(decorador.GetReliefSeed() ^ (zona.FASE * 19349663) ^ 0x58a193));
+        RecolectarExclusiones();
+        int calidad = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel()), 0, 2);
+        int cantidad = Mathf.Clamp(Mathf.RoundToInt(terreno.size.x * terreno.size.z / (paso * paso * 1.4f)), 36, 100);
+        if (calidad == 0) cantidad = Mathf.RoundToInt(cantidad * .65f);
+        for (int i = 0; i < cantidad; i++)
+        {
+            int tipo = i % 10;
+            // Sin manchas blancas (ventisqueros/placas de hielo) ni picos (agujas/hitos). Los afloramientos de pizarra
+            // tambien se leen como cumulos blancos: solo se generan si se activa el flag.
+            if (!generarAfloramientos || (tipo != 6 && tipo != 7)) continue;
+            float radio = paso * (tipo < 6 ? Rango(.24f, .46f) : Rango(.15f, .27f));
+            if (BuscarLugar(radio, out var centro))
+            {
+                if (tipo < 4) CrearParche(centro, radio, false);
+                else if (tipo < 6) { CrearParche(centro, radio, true); CrearGrieta(centro, radio); }
+                else CrearGrupoPiedras(centro, radio, tipo == 9, tipo == 8);
+            }
+            if (i % 4 == 3) yield return null;
+        }
+        // Detalles bajos y dispersos: sin picos, sin manchas blancas ni senales de rutas ocultas.
+        int grupos = Mathf.Clamp(Mathf.RoundToInt(terreno.size.x*terreno.size.z/(paso*paso*7)),8,20);
+        if (calidad == 0) grupos = Mathf.RoundToInt(grupos*.65f);
+        for (int i = 0; i < grupos; i++)
+        {
+            float radio = paso*Rango(.12f,.22f);
+            if (BuscarLugar(radio,out var centro))
+            {
+                CrearPedregal(centro,radio);
+                if (i%3 != 0 && materialHierba != null) CrearMata(centro,radio);
+            }
+            if (i%3 == 2) yield return null;
+        }
+        yield return GenerarDetallesNaturales(calidad);
+    }
+
+    void RecolectarExclusiones()
+    {
+        caminos.Clear(); nodos.Clear();
+        // Incluye rutas y nodos todavía ocultos: los adornos no anticipan ni invaden su revelado.
+        foreach (var nodo in Object.FindObjectsByType<Nodo>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            nodos.Add(nodo.transform.position);
+        foreach (var camino in Object.FindObjectsByType<CaminoMesh>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            var linea = camino.GetComponent<LineRenderer>();
+            if (linea == null) continue;
+            var escala = linea.transform.lossyScale;
+            float margen = camino.GetWidth() * Mathf.Max(Mathf.Abs(escala.x), Mathf.Abs(escala.z)) * 1.1f + paso * .12f;
+            for (int i = 1; i < linea.positionCount; i++)
+                caminos.Add(new Tramo { a = Punto(linea, i - 1), b = Punto(linea, i), margen = margen });
+        }
+    }
+
+    bool BuscarLugar(float radio, out Vector3 centro)
+    {
+        centro = Vector3.zero;
+        for (int intento = 0; intento < 35; intento++)
+        {
+            var candidato = new Vector3(Rango(terreno.min.x + radio, terreno.max.x - radio), terreno.center.y,
+                Rango(terreno.min.z + radio, terreno.max.z - radio));
+            if (!decorador.PasaMargenCornisaFrontal(candidato, radio)) continue;
+            if (!decorador.TrySampleSurface(candidato, out candidato, out var normal) || normal.y < .86f) continue;
+            // Conserva los precipicios, el lago y la grieta principal sin rellenarlos.
+            if (candidato.y < zona.TexturaTerreno.transform.position.y - .65f) continue;
+            bool libre = true;
+            foreach (var nodo in nodos)
+                if (DistanciaXZ(nodo, candidato) < radio + paso * .35f) { libre = false; break; }
+            if (!libre) continue;
+            foreach (var tramo in caminos)
+                if (DistanciaSegmentoXZ(candidato, tramo.a, tramo.b) < radio + tramo.margen) { libre = false; break; }
+            if (!libre) continue;
+            foreach (var adorno in adornos)
+                if (DistanciaXZ(adorno.centro, candidato) < radio + adorno.radio + paso * .12f) { libre = false; break; }
+            if (!libre) continue;
+            // Rechaza también acumulaciones que sobresaldrían del borde del desfiladero.
+            foreach (var direccion in new[] { Vector3.right, Vector3.left, Vector3.forward, Vector3.back })
+                if (!decorador.TrySampleSurface(candidato + direccion * radio, out var borde, out _)
+                    || Mathf.Abs(borde.y - candidato.y) > .55f) { libre = false; break; }
+            if (libre) { centro = candidato; return true; }
+        }
+        return false;
+    }
+
+    void CrearParche(Vector3 centro, float radio, bool hielo)
+    {
+        const int lados = 16, anillos = 4;
+        var vertices = new List<Vector3>(); var colores = new List<Color>(); var indices = new List<int>();
+        float giro = Rango(-.14f, .14f), fase = Rango(0, 6.28f);
+        float alto = hielo ? .025f : radio * Rango(.12f, .23f);
+        Color claro = hielo ? new Color(.42f,.58f,.66f,.78f) : new Color(.66f,.73f,.79f,1);
+        Color oscuro = hielo ? new Color(.29f,.42f,.50f,.72f) : new Color(.52f,.62f,.70f,1);
+        vertices.Add(Superficie(centro) - centro + Vector3.up * alto); colores.Add(claro);
+        for (int anillo = 1; anillo <= anillos; anillo++)
+        for (int j = 0; j < lados; j++)
+        {
+            float t = anillo / (float)anillos, angulo = j * Mathf.PI * 2 / lados;
+            float irregularidad = .84f + Mathf.Sin(angulo * 3 + fase) * .10f + Mathf.Cos(angulo * 5 - fase) * .06f;
+            var offset = Quaternion.Euler(0, giro * Mathf.Rad2Deg + 14f, 0)
+                * new Vector3(Mathf.Cos(angulo) * radio * t * irregularidad, 0, Mathf.Sin(angulo) * radio * t * .57f);
+            float altura = alto * Mathf.Pow(1 - t, 1.5f) * (1 + Mathf.Sin(angulo + fase) * .22f);
+            vertices.Add(Superficie(centro + offset) - centro + Vector3.up * altura);
+            var color = Color.Lerp(claro, oscuro, t * .65f);
+            color.a = anillo == anillos ? 0 : claro.a;
+            colores.Add(color);
+        }
+        for (int j = 0; j < lados; j++) Triangulo(indices, 0, 1 + (j + 1) % lados, 1 + j);
+        for (int anillo = 0; anillo < anillos - 1; anillo++)
+        for (int j = 0; j < lados; j++)
+        {
+            int a = 1 + anillo * lados + j, b = 1 + anillo * lados + (j + 1) % lados;
+            Triangulo(indices, a, b, a + lados); Triangulo(indices, b, b + lados, a + lados);
+        }
+        CrearObjeto(hielo ? "Placa de hielo irregular" : "Ventisquero de nieve", centro, radio, vertices, colores, indices);
+    }
+
+    void CrearGrieta(Vector3 centro, float radio)
+    {
+        var vertices = new List<Vector3>(); var colores = new List<Color>(); var indices = new List<int>();
+        var oscuro = new Color(.17f,.30f,.38f,.65f);
+        for (int i = 0; i < 7; i++)
+        {
+            float t = i / 6f;
+            var posicion = centro + Quaternion.Euler(0,14f,0) * new Vector3((t - .5f) * radio * 1.2f, 0, Rango(-.12f,.12f) * radio);
+            float ancho = Mathf.Sin(t * Mathf.PI) * radio * .018f;
+            vertices.Add(Superficie(posicion + Vector3.forward * ancho) - centro);
+            vertices.Add(Superficie(posicion - Vector3.forward * ancho) - centro);
+            colores.Add(oscuro); colores.Add(oscuro);
+            if (i > 0) { int a = (i - 1) * 2; Triangulo(indices, a, a + 2, a + 1); Triangulo(indices, a + 1, a + 2, a + 3); }
+        }
+        CrearObjeto("Fisura fina del hielo", centro + Vector3.up * .01f, radio * .7f, vertices, colores, indices);
+    }
+
+    void CrearGrupoPiedras(Vector3 centro, float radio, bool hito, bool cristales)
+    {
+        var vertices = new List<Vector3>(); var colores = new List<Color>(); var indices = new List<int>();
+        int cantidad = hito ? 4 : cristales ? 5 : rng.Next(3, 6);
+        float altura = 0;
+        for (int i = 0; i < cantidad; i++)
+        {
+            float tam = hito ? radio * (.68f - i * .12f) : radio * Rango(.24f,.36f);
+            var offset = hito ? Vector3.up * altura : new Vector3(Rango(-radio*.5f,radio*.5f),0,Rango(-radio*.4f,radio*.4f));
+            offset.y += Superficie(centro + offset).y - centro.y;
+            float alto = cristales ? tam * Rango(2.2f,2.8f) : tam * Rango(.42f,.58f);
+            AgregarPiedra(vertices, colores, indices, offset, tam, alto, cristales);
+            if (hito) altura += alto * .85f;
+        }
+        CrearObjeto(hito ? "Hito de piedras nevadas" : cristales ? "Agujas de hielo" : "Afloramiento de pizarra",
+            centro, radio, vertices, colores, indices);
+    }
+
+    void CrearPedregal(Vector3 centro, float radio)
+    {
+        var vertices = new List<Vector3>(); var colores = new List<Color>(); var indices = new List<int>();
+        for (int i = 0; i < 6; i++)
+        {
+            var offset = new Vector3(Rango(-radio*.65f,radio*.65f),0,Rango(-radio*.45f,radio*.45f));
+            offset.y = Superficie(centro+offset).y-centro.y;
+            float tam = radio*Rango(.12f,.28f);
+            AgregarPiedra(vertices,colores,indices,offset,tam,tam*Rango(.22f,.40f),false,false);
+        }
+        CrearObjeto("Fragmentos de pizarra barridos por el viento",centro,radio,vertices,colores,indices);
+    }
+
+    void CrearMata(Vector3 centro, float radio)
+    {
+        var vertices = new List<Vector3>(); var colores = new List<Color>();
+        var indices = new List<int>(); var uv = new List<Vector2>();
+        for (int i = 0; i < 9; i++)
+        {
+            var baseTallo = Superficie(centro+new Vector3(Rango(-radio*.5f,radio*.5f),0,Rango(-radio*.35f,radio*.35f)))-centro;
+            float alto = Rango(.18f,.38f), ancho = Rango(.012f,.025f), giro = Rango(0,Mathf.PI);
+            var lateral = new Vector3(Mathf.Cos(giro),0,Mathf.Sin(giro))*ancho;
+            int inicio = vertices.Count;
+            for (int j = 0; j < 3; j++)
+            {
+                float t = j*.5f;
+                var p = baseTallo+Vector3.up*(alto*t)+new Vector3(-alto*.28f,0,alto*.06f)*(t*t);
+                vertices.Add(p-lateral*(1-t*.8f)); vertices.Add(p+lateral*(1-t*.8f));
+                uv.Add(new Vector2(0,t)); uv.Add(new Vector2(1,t));
+                Color color = Color.Lerp(new Color(.20f,.18f,.14f),new Color(.38f,.38f,.33f),t);
+                colores.Add(color); colores.Add(color);
+                if (j == 0) continue;
+                int a = inicio+(j-1)*2; Triangulo(indices,a,a+2,a+1); Triangulo(indices,a+1,a+2,a+3);
+            }
+        }
+        var go = CrearObjeto("Mata seca escarchada",centro,radio,vertices,colores,indices);
+        go.GetComponent<MeshFilter>().sharedMesh.SetUVs(0,uv);
+        go.GetComponent<MeshRenderer>().sharedMaterial = materialHierba;
+    }
+
+    void AgregarPiedra(List<Vector3> vertices, List<Color> colores, List<int> indices, Vector3 centro, float radio, float alto, bool hielo, bool nevado = true)
+    {
+        int inicio = vertices.Count;
+        float fase = Rango(0, Mathf.PI*2);
+        Color baseColor = hielo ? new Color(.39f,.55f,.64f,.9f) : new Color(.30f,.35f,.40f,1);
+        Color cima = hielo ? new Color(.61f,.73f,.81f,.9f) : new Color(.62f,.70f,.77f,1);
+        if (!hielo && !nevado) { baseColor = new Color(.24f,.28f,.31f,1); cima = new Color(.38f,.42f,.44f,1); }
+        for (int anillo = 0; anillo < 2; anillo++)
+        for (int i = 0; i < 6; i++)
+        {
+            float angulo = fase + i * Mathf.PI / 3;
+            float r = radio * Rango(.88f,1.04f) * (anillo == 0 ? 1 : hielo ? .16f : .62f);
+            vertices.Add(centro + new Vector3(Mathf.Cos(angulo)*r, anillo == 0 ? -.035f : alto * Rango(.92f,1.04f), Mathf.Sin(angulo)*r*.75f));
+            colores.Add(anillo == 0 ? baseColor : Color.Lerp(baseColor, cima, Rango(.6f,.9f)));
+        }
+        vertices.Add(centro + Vector3.up * alto * 1.08f); colores.Add(cima);
+        for (int i = 0; i < 6; i++)
+        {
+            int a = inicio + i, b = inicio + (i+1)%6;
+            Triangulo(indices,a,b+6,b); Triangulo(indices,a,a+6,b+6);
+            Triangulo(indices,inicio+12,b+6,a+6);
+        }
+    }
+
+    GameObject CrearObjeto(string nombre, Vector3 centro, float radio, List<Vector3> vertices, List<Color> colores, List<int> indices)
+    {
+        var go = new GameObject(nombre) { layer = zona.TexturaTerreno.gameObject.layer };
+        go.transform.SetParent(raiz.transform, false); go.transform.position = centro;
+        var mesh = new Mesh { name = nombre + " (Runtime)", hideFlags = HideFlags.DontSave };
+        mesh.SetVertices(vertices); mesh.SetColors(colores); mesh.SetTriangles(indices, 0);
+        mesh.RecalculateNormals(); mesh.RecalculateBounds();
+        go.AddComponent<MeshFilter>().sharedMesh = mesh;
+        var renderer = go.AddComponent<MeshRenderer>(); renderer.sharedMaterial = material;
+        renderer.shadowCastingMode = ShadowCastingMode.Off; renderer.receiveShadows = true;
+        mallas.Add(mesh); adornos.Add(new Adorno { objeto = go, centro = centro, radio = radio });
+        return go;
+    }
+
+    public void RetirarSobreCamino(LineRenderer linea, float margen, bool forzar = false)
+    {
+        if (zona == null || zona.ID != 2 || linea == null) return;
+        if (!forzar && !lineasRevisadas.Add(linea)) return;
+        lineasRevisadas.Add(linea);
+        foreach (var adorno in adornos)
+        {
+            if (adorno.objeto == null || !adorno.objeto.activeSelf) continue;
+            for (int i = 1; i < linea.positionCount; i++)
+                if (adorno.semiancho > 0
+                    ? DistanciaTroncoCamino(adorno, Punto(linea,i-1), Punto(linea,i)) < margen + adorno.semiancho
+                    : DistanciaSegmentoXZ(adorno.centro, Punto(linea,i-1), Punto(linea,i)) < margen + adorno.radio)
+                { adorno.objeto.SetActive(false); break; }
+        }
+    }
+
+    Vector3 Superficie(Vector3 punto) => decorador.TrySampleSurface(punto, out var suelo, out _) ? suelo + Vector3.up * .018f : punto;
+    float Rango(float min, float max) => Mathf.Lerp(min, max, (float)rng.NextDouble());
+    static void Triangulo(List<int> indices, int a, int b, int c) { indices.Add(a); indices.Add(b); indices.Add(c); }
+    static Vector3 Punto(LineRenderer linea, int i) => linea.useWorldSpace ? linea.GetPosition(i) : linea.transform.TransformPoint(linea.GetPosition(i));
+    static float DistanciaXZ(Vector3 a, Vector3 b) => Vector2.Distance(new Vector2(a.x,a.z), new Vector2(b.x,b.z));
+    static float DistanciaSegmentoXZ(Vector3 p, Vector3 a, Vector3 b)
+    {
+        var inicio = new Vector2(a.x,a.z); var segmento = new Vector2(b.x-a.x,b.z-a.z); var punto = new Vector2(p.x,p.z);
+        float t = segmento.sqrMagnitude > .0001f ? Mathf.Clamp01(Vector2.Dot(punto-inicio,segmento)/segmento.sqrMagnitude) : 0;
+        return Vector2.Distance(punto, inicio + segmento*t);
+    }
+
+    static float DistanciaTroncoCamino(Adorno adorno, Vector3 a, Vector3 b)
+    {
+        var inicio = adorno.centro - adorno.eje * adorno.semilargo;
+        var fin = adorno.centro + adorno.eje * adorno.semilargo;
+        var u = new Vector2(fin.x - inicio.x, fin.z - inicio.z);
+        var v = new Vector2(b.x - a.x, b.z - a.z);
+        var w = new Vector2(a.x - inicio.x, a.z - inicio.z);
+        float cruz = u.x * v.y - u.y * v.x;
+        if (Mathf.Abs(cruz) > .0001f)
+        {
+            float t = (w.x * v.y - w.y * v.x) / cruz;
+            float s = (w.x * u.y - w.y * u.x) / cruz;
+            if (t >= 0 && t <= 1 && s >= 0 && s <= 1) return 0;
+        }
+        return Mathf.Min(Mathf.Min(DistanciaSegmentoXZ(inicio, a, b), DistanciaSegmentoXZ(fin, a, b)),
+            Mathf.Min(DistanciaSegmentoXZ(a, inicio, fin), DistanciaSegmentoXZ(b, inicio, fin)));
+    }
+
+    void Limpiar()
+    {
+        if (raiz != null) { raiz.SetActive(false); Liberar(raiz); }
+        foreach (var mesh in mallas) Liberar(mesh);
+        if (material != null) Liberar(material);
+        if (materialHierba != null) Liberar(materialHierba);
+        adornos.Clear(); mallas.Clear(); lineasRevisadas.Clear();
+    }
+    static void Liberar(Object recurso) { if (recurso == null) return; if (Application.isPlaying) Destroy(recurso); else DestroyImmediate(recurso); }
+    void OnDestroy() => Limpiar();
+}

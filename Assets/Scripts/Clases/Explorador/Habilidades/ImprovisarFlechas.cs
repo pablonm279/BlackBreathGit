@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -100,6 +99,42 @@ public class ImprovisarFlechas : Habilidad
             LineaDescripcion("Buff", $"{buff} ({duracionBuff} turns)")
           },
           proximaMejora);
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string tituloZh = "临时制箭 I";
+        if (NIVEL == 2) { tituloZh = "临时制箭 II"; }
+        if (NIVEL == 3) { tituloZh = "临时制箭 III"; }
+        if (NIVEL == 4) { tituloZh = "临时制箭 IV a"; }
+        if (NIVEL == 5) { tituloZh = "临时制箭 IV b"; }
+
+        string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+        string flechasZh = TerminoDescripcion(TerminoDescripcionId.Flecha, "箭");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        string penetracionZh = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "护甲穿透", "IconoArmadura");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "固定箭矢数量 +1。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "增益中的暴击率 +5%。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：固定箭矢数量 +1。\n选项B：增益中的伤害 +15%。"; }
+        }
+
+        string buffZh = $"{criticoZh} +{criticoPorcentaje}%，{penetracionZh} +{buffPenetracion}";
+        if (sumaDanioNivel5) { buffZh += "，伤害 +15%"; }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "将剩余的行动点转化为箭矢，并获得短暂的战斗强化。",
+          new[]
+          {
+            LineaDescripcion("目标", "自身"),
+            LineaDescripcion("效果", $"获得等同于当前{apZh}的数量 + {flechasFijas} 支{flechasZh}；当前行动点归零。"),
+            LineaDescripcion("增益", $"{buffZh}（持续 {duracionBuff} 回合）")
+          },
+          proximaMejoraZh);
         return;
       }
 

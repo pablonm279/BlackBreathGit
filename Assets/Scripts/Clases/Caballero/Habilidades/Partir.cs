@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -51,6 +50,7 @@ public class Partir : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int fuerzaActual = statsUI.Fuerza;
@@ -68,6 +68,7 @@ public class Partir : Habilidad
       string tituloEs = "Partir I";
       string tituloEn = "Cleave I";
       string tituloPt = "Partir I";
+      string tituloZh = "劈砍 I";
       if (NIVEL == 2) { tituloEs = "Partir II"; tituloEn = "Cleave II"; }
       if (NIVEL == 3) { tituloEs = "Partir III"; tituloEn = "Cleave III"; }
       if (NIVEL == 4) { tituloEs = "Partir IV a"; tituloEn = "Cleave IV a"; }
@@ -76,6 +77,10 @@ public class Partir : Habilidad
       if (NIVEL == 3) { tituloPt = "Partir III"; }
       if (NIVEL == 4) { tituloPt = "Partir IV a"; }
       if (NIVEL == 5) { tituloPt = "Partir IV b"; }
+      if (NIVEL == 2) { tituloZh = "劈砍 II"; }
+      if (NIVEL == 3) { tituloZh = "劈砍 III"; }
+      if (NIVEL == 4) { tituloZh = "劈砍 IV a"; }
+      if (NIVEL == 5) { tituloZh = "劈砍 IV b"; }
 
       int pifiaPorcentaje = 10;
       int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
@@ -130,6 +135,46 @@ public class Partir : Habilidad
           "A powerful execution strike that may terrify every enemy on kill.",
           lineas,
           proximaMejora,
+          mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{fuerzaActual}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string danoCortanteZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string mentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智", "ic_mental");
+        string aterrorizadoZh = TerminoDescripcion(TerminoDescripcionId.Aterrorizado, "惊恐", "Estado_debuff");
+        string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点", "ap");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "下一级：伤害 +4。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：攻击检定加成 +2。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：击杀时豁免难度 +2。\n选项B：暴击 +5%。"; }
+        }
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{danoCortanteZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{ataqueTxt}，对抗{defensaZh}。大失败：{pifiaPorcentaje}%。{criticoZh}：{criticoPorcentaje}%。", 1)
+        };
+        if (penetracionArmadura > 0)
+        {
+          string penetracionZh = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "护甲穿透", "IconoArmadura");
+          lineasZh.Add(LineaDescripcion("穿透", $"{penetracionZh}：{penetracionArmadura}"));
+        }
+        lineasZh.Add(LineaDescripcion("击杀时", "所有敌人进行一次心智豁免。"));
+        lineasZh.Add(LineaDescripcion("豁免", $"{mentalZh} 豁免，对抗难度 {dcMiedo}", 1));
+        lineasZh.Add(LineaDescripcion("豁免失败", $"陷入{aterrorizadoZh}，持续 2 回合：攻击 -2，{apZh} -1，心智豁免 -2。", 1));
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "一记强力的处决斩击，击杀目标时可能使所有敌人陷入惊恐。",
+          lineasZh,
+          proximaMejoraZh,
           mostrarIconoMelee: true);
         return;
       }

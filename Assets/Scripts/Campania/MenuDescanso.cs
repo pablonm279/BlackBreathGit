@@ -571,6 +571,8 @@ public class MenuDescanso : MonoBehaviour
         return "-During the rest, the scouts found a hidden route.";
       case TRADU.IdiomaPortugues:
         return "-Durante o descanso, os exploradores encontraram uma rota oculta.";
+      case TRADU.IdiomaChinoSimplificado:
+        return "-休整期间，斥候发现了一条隐秘的路线。";
       default:
         return "-Durante el descanso los exploradores han encontrado una ruta oculta.";
     }
@@ -825,6 +827,7 @@ public class MenuDescanso : MonoBehaviour
         {
           TRADU.IdiomaIngles => "-The civilians traded goods at the Trading Post and generated " + oroGenerado + " Gold, which they donated to the Caravan.",
           TRADU.IdiomaPortugues => "-Os civis trocaram mercadorias no Posto Comercial e geraram " + oroGenerado + " de Ouro, que doaram para a Caravana.",
+          TRADU.IdiomaChinoSimplificado => "-平民在贸易站交换了货物，获得了 " + oroGenerado + " 金币，并将其捐赠给了车队。",
           _ => "-Los civiles intercambiaron bienes en el Puesto Comercial y han generado " + oroGenerado + " Oro, que han donado a la Caravana."
         };
 
@@ -840,6 +843,7 @@ public class MenuDescanso : MonoBehaviour
       {
         TRADU.IdiomaIngles => "-Resting in the Sanctuary blesses all characters for 96 h.",
         TRADU.IdiomaPortugues => "-Descansar no Santuário abençoa todos os personagens por 96 h.",
+        TRADU.IdiomaChinoSimplificado => "-在圣所休整会为所有角色赋予持续96小时的祝福。",
         _ => "-Descansar en el Santuario bendice a todos los personajes por 96 h."
       };
 
@@ -930,6 +934,7 @@ public class MenuDescanso : MonoBehaviour
       {
         TRADU.IdiomaIngles => " keeps the protective circles burning while the Caravan sleeps. As the rest ends, the Black Breath recedes by 5 h.",
         TRADU.IdiomaPortugues => " mantém os círculos de proteção acesos enquanto a Caravana dorme. Ao fim do descanso, o Sopro Negro recua 5 h.",
+        TRADU.IdiomaChinoSimplificado => "会让防护法阵在车队沉睡时持续燃烧。休整结束时，黑息会后退5小时。",
         _ => " mantiene encendidos los círculos de protección mientras la Caravana duerme. Al concluir el descanso, el Aliento Negro retrocede 5 h."
       };
       CampaignManager.Instance.EscribirLog("-" + purificadoraRitualDescanso.sNombre + mensajeRitualDescanso);
@@ -1382,6 +1387,14 @@ public class MenuDescanso : MonoBehaviour
       suministros += MetaprogresionManager.Instance.SerriaTierGranjas * 15;
       txtResMision.text = $"+25 Hope\n+{suministros} Supplies\n+20 Materials\n+200 Gold\n+1 Explorer or Stalker";
 
+    }
+    else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      descIngles.SetActive(false);
+      descEsp.SetActive(true);
+      int suministros = 30;
+      suministros += MetaprogresionManager.Instance.SerriaTierGranjas * 15;
+      txtResMision.text = $"+25 希望\n+{suministros} 补给\n+20 材料\n+200 金币\n+1 探路者或潜猎者";
     }
 
 

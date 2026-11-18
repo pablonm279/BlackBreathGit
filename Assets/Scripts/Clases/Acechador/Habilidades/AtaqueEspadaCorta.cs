@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -59,6 +58,7 @@ public class AtaqueEspadaCorta : Habilidad
   {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int fuerzaActual = statsUI.Fuerza;
@@ -108,6 +108,26 @@ public class AtaqueEspadaCorta : Habilidad
           "Short sword attack. Slashes one target.",
           lineas,
           mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{fuerzaActual}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{danoZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada}，对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentaje}%。")
+        };
+        if (nivelMaestria > 0)
+        {
+          lineasZh.Add(LineaDescripcion("被动", $"短剑精通（等级 {nivelMaestria}）。"));
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("短剑斩击", "短剑攻击。斩击一名目标。", lineasZh, mostrarIconoMelee: true);
         return;
       }
 
@@ -209,6 +229,10 @@ public class AtaqueEspadaCorta : Habilidad
       {
         txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano.</i>\n\n";
       }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        txtDescripcion += "\n\n<i>短剑精通提供：攻击 +1，伤害 +2。</i>\n\n";
+      }
       }
       else if (NivelMaestria == 2)
       {
@@ -226,6 +250,10 @@ public class AtaqueEspadaCorta : Habilidad
       if (TRADU.i.nIdioma == 3)
       {
         txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +5% Critico.</i>\n\n";
+      }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        txtDescripcion += "\n\n<i>短剑精通提供：攻击 +1，伤害 +2，暴击 +5%。</i>\n\n";
       }
       }
       else if (NivelMaestria == 3)
@@ -246,6 +274,10 @@ public class AtaqueEspadaCorta : Habilidad
       {
         txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +2 Dano +5% Critico, +10% Dano Critico.</i>\n\n";
       }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        txtDescripcion += "\n\n<i>短剑精通提供：攻击 +1，伤害 +2，暴击 +5%，暴击伤害 +10%。</i>\n\n";
+      }
       }
       else if (NivelMaestria == 4)
       {
@@ -265,6 +297,10 @@ public class AtaqueEspadaCorta : Habilidad
       {
         txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +1 Ataque +4 Dano +10% Critico, +10% Dano Critico.</i>\n\n";
       }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        txtDescripcion += "\n\n<i>短剑精通提供：攻击 +1，伤害 +4，暴击 +10%，暴击伤害 +10%。</i>\n\n";
+      }
       }
       else if (NivelMaestria == 5)
       {
@@ -283,6 +319,10 @@ public class AtaqueEspadaCorta : Habilidad
       if (TRADU.i.nIdioma == 3)
       {
         txtDescripcion += "\n\n<i>Maestria com Espada Curta adiciona: +2 Ataque +4 Dano +5% Critico, +10% Dano Critico.</i>\n\n";
+      }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        txtDescripcion += "\n\n<i>短剑精通提供：攻击 +2，伤害 +4，暴击 +5%，暴击伤害 +10%。</i>\n\n";
       }
       }
       ActualizarDescripcion();

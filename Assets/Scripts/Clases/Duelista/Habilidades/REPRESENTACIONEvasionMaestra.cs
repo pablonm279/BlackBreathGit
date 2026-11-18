@@ -105,6 +105,43 @@ public class REPRESENTACIONEvasionMaestra : Habilidad
                 proximaMejora);
             return;
         }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+            string ap2Zh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点");
+            string impZh = TerminoDescripcion(TerminoDescripcionId.Impulso, "冲劲");
+            string evaZh = TerminoDescripcion(TerminoDescripcionId.Evasion, "闪避", "Estado_evasion");
+            string refxZh = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "反射", "ic_Reflejos");
+            string tambZh = TerminoDescripcion(TerminoDescripcionId.Tambaleando, "踉跄");
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null
+                : NIVEL < 2 ? "触发时额外获得 +1 冲劲。"
+                : NIVEL == 2 ? "触发时额外获得 +1 闪避。"
+                : NIVEL == 3 ? "选项A：每回合次数 +1。选项B：可用反射豁免抵抗踉跄。"
+                : null;
+            var lZh = new System.Collections.Generic.List<LineaDescripcionNormalizada>
+            {
+                LineaDescripcion("控制", $"免费的战斗内切换开关。当前状态：{(ActivaEnCombate ? "启用" : "禁用")}。"),
+                LineaDescripcion("触发", "闪避一次近战攻击。"),
+                LineaDescripcion("效果", $"后退 1 格，且攻击者失去其剩余的全部{apZh}。"),
+                LineaDescripcion("移动", "若该格已被占用，则尝试后方对角格；绝不会进入布有陷阱的格子。"),
+                LineaDescripcion("限制", $"每回合 {usosPorTurno} 次。")
+            };
+            if (daImpulso) lZh.Add(LineaDescripcion("获得", $"+1 {impZh}。"));
+            if (daEvasion) lZh.Add(LineaDescripcion("获得", $"+1 {evaZh}。"));
+            if (aplicaTambaleando)
+            {
+                lZh.Add(LineaDescripcion("豁免", $"攻击者进行{refxZh}豁免，对抗难度 10。", 1));
+                lZh.Add(LineaDescripcion("豁免失败", $"获得{tambZh}：最大{ap2Zh} -1，{defZh} -2（持续 1 回合）。", 1));
+            }
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "精妙闪避 " + sufijoNivel,
+                "被动：闪避一次近战攻击会打断攻击者并拉开距离。",
+                lZh,
+                proxZh,
+                costoSuperior: string.Empty);
+            return;
+        }
         if(esPortugues){string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string ap2=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP");string imp=TerminoDescripcion(TerminoDescripcionId.Impulso,"Impulso");string eva=TerminoDescripcion(TerminoDescripcionId.Evasion,"Evasão","Estado_evasion");string refx=TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos,"Reflexos","ic_Reflejos");string tamb=TerminoDescripcion(TerminoDescripcionId.Tambaleando,"Cambaleante");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 Impulso ao ativar.":NIVEL==2?"Próximo nível: +1 Evasão ao ativar.":NIVEL==3?"Opção A: +1 uso por turno. Opção B: salvaguarda de Reflexos para Cambaleante.":null;var l=new System.Collections.Generic.List<LineaDescripcionNormalizada>{LineaDescripcion("Controle",$"Alternância gratuita em combate. Estado atual: {(ActivaEnCombate?"Ativa":"Desativada")}."),LineaDescripcion("Ativação","Desvia de um ataque corpo a corpo."),LineaDescripcion("Efeito",$"Recua 1 casa e o atacante perde todo o {ap} restante."),LineaDescripcion("Movimento","Se estiver ocupada, tenta as diagonais traseiras; nunca entra em casas com armadilhas."),LineaDescripcion("Limite",$"{usosPorTurno} uso{(usosPorTurno==1?"":"s")} por turno.")};if(daImpulso)l.Add(LineaDescripcion("Ganho",$"+1 {imp}."));if(daEvasion)l.Add(LineaDescripcion("Ganho",$"+1 {eva}."));if(aplicaTambaleando){l.Add(LineaDescripcion("Salvaguarda",$"{refx} do atacante vs CD 10.",1));l.Add(LineaDescripcion("Falha",$"Recebe {tamb}: -1 {ap2} máximo, -2 {def} (1 turno).",1));}txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Evasão Mestra "+sufijoNivel,"Passiva: desviar de um ataque corpo a corpo interrompe o atacante e cria distância.",l,prox,costoSuperior:string.Empty);return;}
         {string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string ap2=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP");string imp=TerminoDescripcion(TerminoDescripcionId.Impulso,"Impulso");string eva=TerminoDescripcion(TerminoDescripcionId.Evasion,"Evasión","Estado_evasion");string refx=TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos,"Reflejos","ic_Reflejos");string tamb=TerminoDescripcion(TerminoDescripcionId.Tambaleando,"Tambaleante");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 Impulso al activarse.":NIVEL==2?"Próximo nivel: +1 Evasión al activarse.":NIVEL==3?"Opción A: +1 uso por turno. Opción B: salvación de Reflejos para Tambaleante.":null;var l=new System.Collections.Generic.List<LineaDescripcionNormalizada>{LineaDescripcion("Control",$"Alternancia gratuita en combate. Estado actual: {(ActivaEnCombate?"Activa":"Desactivada")}."),LineaDescripcion("Activación","Esquiva un ataque cuerpo a cuerpo."),LineaDescripcion("Efecto",$"Retrocede 1 casilla y el atacante pierde todo el {ap} restante."),LineaDescripcion("Movimiento","Si está ocupada, intenta las diagonales traseras; nunca entra en casillas con trampas."),LineaDescripcion("Límite",$"{usosPorTurno} uso{(usosPorTurno==1?"":"s")} por turno.")};if(daImpulso)l.Add(LineaDescripcion("Obtiene",$"+1 {imp}."));if(daEvasion)l.Add(LineaDescripcion("Obtiene",$"+1 {eva}."));if(aplicaTambaleando){l.Add(LineaDescripcion("Salvación",$"{refx} del atacante vs CD 10.",1));l.Add(LineaDescripcion("Salvación fallida",$"Obtiene {tamb}: -1 {ap2} máximo, -2 {def} (1 turno).",1));}txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Evasión Maestra "+sufijoNivel,"Pasiva: esquivar un ataque cuerpo a cuerpo interrumpe al atacante y crea distancia.",l,prox,costoSuperior:string.Empty);return;}
 

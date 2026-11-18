@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -99,6 +98,37 @@ public class Purificacion : Habilidad
             LineaDescripcion("Successful save", $"Suffers {danioMinConFervor}-{danioMaxConFervor} damage.", 1),
             LineaDescripcion("Failed save", $"Suffers {danioMinConFervor * 2}-{danioMaxConFervor * 2} damage and gains {ardiendo}.", 1),
             LineaDescripcion("On cast", $"{fervorSinValor} becomes 0.")
+          });
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string tituloZh = "净化 I";
+        if (NIVEL == 2) { tituloZh = "净化 II"; }
+        if (NIVEL == 3) { tituloZh = "净化 III"; }
+        if (NIVEL == 4) { tituloZh = "净化 IV a"; }
+        if (NIVEL == 5) { tituloZh = "净化 IV b"; }
+
+        string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+        string fervorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, $"你的当前狂热（{fervorActual}）");
+        string fervorSinValorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, "狂热");
+        string reflejosZh = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "反射豁免", "ic_Reflejos");
+        string danioDivinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino");
+        string ardiendoZh = TerminoDescripcion(TerminoDescripcionId.Ardiendo, "燃烧（2）", "Estado_ardiendo");
+        string formulaNormalizadaZh = $"（3-7 + {poderZh} / 2）× （1 + {fervorZh}）";
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          $"消耗当前{fervorSinValorZh}，释放一场大范围的神圣涤荡。",
+          new[]
+          {
+            LineaDescripcion("目标", "所选大范围区域内的所有敌人"),
+            LineaDescripcion("效果", $"造成 {formulaNormalizadaZh} 点{danioDivinoZh}；每个目标进行一次{reflejosZh}。"),
+            LineaDescripcion("豁免", $"反射豁免，对抗难度 9 + {poderZh}。", 1),
+            LineaDescripcion("豁免成功", $"受到 {danioMinConFervor}-{danioMaxConFervor} 点伤害。", 1),
+            LineaDescripcion("豁免失败", $"受到 {danioMinConFervor * 2}-{danioMaxConFervor * 2} 点伤害，并获得{ardiendoZh}。", 1),
+            LineaDescripcion("使用时", $"{fervorSinValorZh}归零。")
           });
         return;
       }

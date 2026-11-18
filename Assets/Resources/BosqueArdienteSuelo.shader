@@ -50,6 +50,8 @@ Shader "Campania/Bosque Ardiente/Suelo"
             float2 p = IN.worldPos.xz - _OrigenTerreno.xz;
             p = mul(float2x2(.8,-.6,.6,.8),p);
             float macro = ruido(p*.16);
+            // Manchones amplios de suelo quemado: evitan que el detalle fino forme una alfombra uniforme.
+            float deposito = ruido(p*.075+float2(13.1,27.4));
             float2 q = p + (float2(ruido(p*.23+3.7), ruido(p*.23+18.1))-.5)*2.6;
             float detalle = ruidoFiltrado(q*3.7+11.3);
             float grano = ruidoFiltrado(q*7.5);
@@ -73,6 +75,18 @@ Shader "Campania/Bosque Ardiente/Suelo"
             normalDetalle = normalDetalle*.75 + normalGrano.xy*.35;
             baseColor *= lerp(.74,1.22,detalle)*lerp(.79,1.19,grano)*lerp(.90,1.10,polvo);
             baseColor = lerp(baseColor, tex2D(_MainTex,IN.uv_MainTex).rgb*_Color.rgb, _UsarTextura);
+            // Conserva también la textura procedural del inspector, con una variación mineral discreta.
+            float depositoCeniza = smoothstep(.46,.72,deposito) * (1-carbon*.55);
+            baseColor *= lerp(.94,1.10,depositoCeniza);
+            baseColor = lerp(baseColor, baseColor*half3(1.07,1.025,.94), smoothstep(.35,.68,macro)*.32);
+            // Escamas y astillas menudas: se funden al alejar para conservar la lectura del mapa.
+            float2 celda = floor(q*4.2), local = frac(q*4.2)-.5;
+            float azar = frac(sin(dot(celda,float2(127.1,311.7)))*43758.5453);
+            float2 astilla = mul(float2x2(.8,-.6,.6,.8),local);
+            float huella = max(length(ddx(q*4.2)),length(ddy(q*4.2)));
+            float fragmento = (1-smoothstep(.28,.48,length(astilla*float2(1,3.8))))
+                * smoothstep(.72,.9,azar) * (1-smoothstep(.35,1,huella));
+            baseColor = lerp(baseColor,baseColor*half3(1.42,1.31,1.15),fragmento*.45);
             o.Albedo = lerp(baseColor, _Carbon.rgb*.65, cicatriz*.18)*.432;
             o.Specular = 0;
             o.Gloss = 0;
@@ -80,7 +94,7 @@ Shader "Campania/Bosque Ardiente/Suelo"
             float pulso = .8+.2*sin(_Reloj*1.15+macro*19);
             o.Emission = half3(.38,.048,.003)*cicatriz*calor*pulso;
             // Microrrelieve optico; no modifica malla, colliders, rutas ni alturas de nodos.
-            o.Normal = normalize(float3(normalDetalle*.12,1));
+            o.Normal = normalize(float3(normalDetalle*.17,1));
             o.Alpha = 1;
         }
         ENDCG

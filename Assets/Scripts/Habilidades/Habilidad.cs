@@ -4,7 +4,6 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -97,13 +96,15 @@ public abstract class Habilidad : MonoBehaviour
     "restaura", "restauran", "restore", "restores", "cura", "curan", "heal", "heals",
     "recupera", "recuperan", "recover", "recovers", "otorga", "otorgan", "concede", "conceden",
     "grant", "grants", "gana", "ganan", "gain", "gains", "regenera", "regeneran", "regenerate", "regenerates",
-    "concedem", "ganha", "ganham"
+    "concedem", "ganha", "ganham",
+    "恢复", "治疗", "获得", "赋予", "提升", "增加", "再生"
   };
 
   private static readonly string[] PalabrasClavePerjuicio =
   {
     "sufre", "sufren", "suffer", "suffers", "pierde", "pierden", "lose", "loses",
-    "daño", "daños", "damage", "dano", "danos", "sofre", "sofrem", "perde", "perdem"
+    "daño", "daños", "damage", "dano", "danos", "sofre", "sofrem", "perde", "perdem",
+    "受到", "损失", "遭受", "伤害", "降低", "减少"
   };
 
   // Orden: frases de varias palabras antes que sus palabras sueltas, para que la alternancia del
@@ -113,38 +114,38 @@ public abstract class Habilidad : MonoBehaviour
   // IdTermino es el id canonico que se busca en CatalogoTerminosJuego (coincide con TerminoDescripcionId).
   private static readonly (string NombreGrupo, string Patron, string IdTermino, string ColorPorDefecto)[] TerminosColoreadosDescripcion =
   {
-    ("armorPen", @"\bArmor Penetration\b|\bPenetraci[oó]n de Armadura\b|\bPenetra[cç][aã]o de Armadura\b", "armor-penetration", ColorConceptoJuego),
-    ("trueDamage", @"\bTrue damage\b|\bDa[nñ]o Verdadero\b|\bDano Verdadeiro\b", "true-damage", ColorConceptoJuego),
-    ("criticalHit", @"\bCritical Hit\b|\bGolpe Cr[ií]tico\b", "critical-hit", ColorConceptoJuego),
-    ("fumble", @"\bFumble\b|\bPifia\b|\bFalha [Cc]r[ií]tica\b", "fumble", ColorConceptoJuego),
-    ("strength", @"\bStrength\b|\bFuerza\b|\bForça\b", "strength", ColorAtributoFuerza),
-    ("agility", @"\bAgility\b|\bAgilidad\b|\bAgilidade\b", "agility", ColorAtributoAgilidad),
-    ("power", @"\bPower\b|\bPoder\b", "power", ColorAtributoPoder),
-    ("salvacionMental", @"\bMental\b", "mental-save", ColorSalvacionMental),
-    ("salvacionFortaleza", @"\bFortitude\b|\bFortaleza\b", "fortitude-save", ColorSalvacionFortaleza),
-    ("salvacionReflejos", @"\bReflex\b|\bReflejos\b|\bReflexos\b", "reflex-save", ColorSalvacionReflejos),
-    ("valour", @"\bValour\b|\bValent[ií]a\b", "valour", ColorConceptoJuego),
-    ("defense", @"\bDefense\b|\bDefensa\b|\bDefesa\b", "defense", ColorConceptoJuego),
-    ("attack", @"\bAttack\b|\bAtaque\b", "attack", ColorConceptoJuego),
-    ("ap", @"\bAP\b", "ap", ColorPuntosAccion),
-    ("barrier", @"\bBarrier\b|\bBarrera\b", "barrier", ColorConceptoJuego),
-    ("fervor", @"\bFervor\b", "fervor", ColorConceptoJuego),
-    ("evasion", @"\bEvasion\b|\bEvasi[oó]n\b|\bEvas[aã]o\b", "evasion", ColorConceptoJuego),
-    ("weakness", @"\bWeakness\b|\bDebilidad\b|\bFraqueza\b", "weakness", ColorConceptoJuego),
-    ("debuff", @"\bDebuff\b", "debuff", ColorConceptoJuego),
-    ("armor", @"\bArmor\b|\bArmadura\b", "armor", ColorConceptoJuego),
-    ("reaction", @"\bReaction\b|\bReacci[oó]n\b|\bRea[cç][aã]o\b", "reaction", ColorConceptoJuego),
-    ("impulse", @"\bImpulse\b|\bImpulso\b", "impulse", ColorConceptoJuego),
-    ("divine", @"\bDivine\b|\bDivino\b|\bDivina\b", "divine-damage", "#e8cf7a"),
-    ("fire", @"\bFire\b|\bFuego\b|\bFogo\b", "fire-damage", "#e0987a"),
-    ("cold", @"\bCold\b|\bFr[ií]o\b|\bFria\b", "cold-damage", "#8ecbe0"),
-    ("lightning", @"\bLightning\b|\bRayo\b|\bRel[aâ]mpago\b", "lightning-damage", "#e0d67a"),
-    ("acid", @"\bAcid\b|\b[AÁ]cido\b|\b[AÁ]cida\b", "acid-damage", "#a8d67a"),
-    ("arcane", @"\bArcane\b|\bArcano\b|\bArcana\b", "arcane-damage", "#b98ee0"),
-    ("slashing", @"\bSlashing\b|\bCortante\b", "slashing-damage", ColorConceptoJuego),
-    ("piercing", @"\bPiercing\b|\bPerforante\b", "piercing-damage", ColorConceptoJuego),
-    ("bludgeoning", @"\bBludgeoning\b|\bContundente\b", "bludgeoning-damage", ColorConceptoJuego),
-    ("poison", @"\bPoison\b|\bVeneno\b", "poison", "#a8d67a"),
+    ("armorPen", @"\bArmor Penetration\b|\bPenetraci[oó]n de Armadura\b|\bPenetra[cç][aã]o de Armadura\b|护甲穿透", "armor-penetration", ColorConceptoJuego),
+    ("trueDamage", @"\bTrue damage\b|\bDa[nñ]o Verdadero\b|\bDano Verdadeiro\b|真实伤害", "true-damage", ColorConceptoJuego),
+    ("criticalHit", @"\bCritical Hit\b|\bGolpe Cr[ií]tico\b|暴击命中", "critical-hit", ColorConceptoJuego),
+    ("fumble", @"\bFumble\b|\bPifia\b|\bFalha [Cc]r[ií]tica\b|大失败", "fumble", ColorConceptoJuego),
+    ("strength", @"\bStrength\b|\bFuerza\b|\bForça\b|力量", "strength", ColorAtributoFuerza),
+    ("agility", @"\bAgility\b|\bAgilidad\b|\bAgilidade\b|敏捷", "agility", ColorAtributoAgilidad),
+    ("power", @"\bPower\b|\bPoder\b|威力", "power", ColorAtributoPoder),
+    ("salvacionMental", @"\bMental\b|心智", "mental-save", ColorSalvacionMental),
+    ("salvacionFortaleza", @"\bFortitude\b|\bFortaleza\b|坚韧", "fortitude-save", ColorSalvacionFortaleza),
+    ("salvacionReflejos", @"\bReflex\b|\bReflejos\b|\bReflexos\b|反射", "reflex-save", ColorSalvacionReflejos),
+    ("valour", @"\bValour\b|\bValent[ií]a\b|勇气", "valour", ColorConceptoJuego),
+    ("defense", @"\bDefense\b|\bDefensa\b|\bDefesa\b|防御", "defense", ColorConceptoJuego),
+    ("attack", @"\bAttack\b|\bAtaque\b|攻击", "attack", ColorConceptoJuego),
+    ("ap", @"\bAP\b|行动点", "ap", ColorPuntosAccion),
+    ("barrier", @"\bBarrier\b|\bBarrera\b|屏障", "barrier", ColorConceptoJuego),
+    ("fervor", @"\bFervor\b|狂热", "fervor", ColorConceptoJuego),
+    ("evasion", @"\bEvasion\b|\bEvasi[oó]n\b|\bEvas[aã]o\b|闪避", "evasion", ColorConceptoJuego),
+    ("weakness", @"\bWeakness\b|\bDebilidad\b|\bFraqueza\b|弱点", "weakness", ColorConceptoJuego),
+    ("debuff", @"\bDebuff\b|减益", "debuff", ColorConceptoJuego),
+    ("armor", @"\bArmor\b|\bArmadura\b|护甲", "armor", ColorConceptoJuego),
+    ("reaction", @"\bReaction\b|\bReacci[oó]n\b|\bRea[cç][aã]o\b|反应", "reaction", ColorConceptoJuego),
+    ("impulse", @"\bImpulse\b|\bImpulso\b|冲劲", "impulse", ColorConceptoJuego),
+    ("divine", @"\bDivine\b|\bDivino\b|\bDivina\b|神圣", "divine-damage", "#e8cf7a"),
+    ("fire", @"\bFire\b|\bFuego\b|\bFogo\b|火焰", "fire-damage", "#e0987a"),
+    ("cold", @"\bCold\b|\bFr[ií]o\b|\bFria\b|冰霜", "cold-damage", "#8ecbe0"),
+    ("lightning", @"\bLightning\b|\bRayo\b|\bRel[aâ]mpago\b|闪电", "lightning-damage", "#e0d67a"),
+    ("acid", @"\bAcid\b|\b[AÁ]cido\b|\b[AÁ]cida\b|酸性", "acid-damage", "#a8d67a"),
+    ("arcane", @"\bArcane\b|\bArcano\b|\bArcana\b|奥术", "arcane-damage", "#b98ee0"),
+    ("slashing", @"\bSlashing\b|\bCortante\b|斩击", "slashing-damage", ColorConceptoJuego),
+    ("piercing", @"\bPiercing\b|\bPerforante\b|穿刺", "piercing-damage", ColorConceptoJuego),
+    ("bludgeoning", @"\bBludgeoning\b|\bContundente\b|钝击", "bludgeoning-damage", ColorConceptoJuego),
+    ("poison", @"\bPoison\b|\bVeneno\b|中毒", "poison", "#a8d67a"),
   };
 
   private static readonly Regex RegexTerminosCombinado = new Regex(
@@ -648,25 +649,30 @@ public abstract class Habilidad : MonoBehaviour
     string atributoEscalaEs = null,
     string atributoEscalaEn = null,
     int valorAtributoEscala = 0,
-    string atributoEscalaPt = null)
+    string atributoEscalaPt = null,
+    bool esChino = false,
+    string atributoEscalaZh = null)
   {
     string tipoEs = "Fortaleza";
     string tipoEn = "Fortitude";
     string tipoPt = "Fortitude";
+    string tipoZh = "坚韧";
     if (tipo == TipoSalvacionDescripcion.Reflejos)
     {
       tipoEs = "Reflejos";
       tipoEn = "Reflex";
       tipoPt = "Reflexos";
+      tipoZh = "反射";
     }
     else if (tipo == TipoSalvacionDescripcion.Mental)
     {
       tipoEs = "Mental";
       tipoEn = "Mental";
       tipoPt = "Mental";
+      tipoZh = "心智";
     }
 
-    bool esPortugues = !esIngles && TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaPortugues;
+    bool esPortugues = !esIngles && !esChino && TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaPortugues;
     bool usaEscalado = !string.IsNullOrEmpty(atributoEscalaEs) && !string.IsNullOrEmpty(atributoEscalaEn);
     if (usaEscalado)
     {
@@ -674,6 +680,12 @@ public abstract class Habilidad : MonoBehaviour
       if (esIngles)
       {
         return $"<b>Save:</b> {tipoEn}. Target rolls 1d20 + {tipoEn} vs DC {dcBase} + {atributoEscalaEn} ({valorAtributoEscala}) = {dcTotal}";
+      }
+
+      if (esChino)
+      {
+        string atributoChino = string.IsNullOrEmpty(atributoEscalaZh) ? atributoEscalaEn : atributoEscalaZh;
+        return $"<b>豁免：</b>{tipoZh}。目标掷 1d20 + {tipoZh} 对抗难度 {dcBase} + {atributoChino}（{valorAtributoEscala}）= {dcTotal}";
       }
 
       if (esPortugues)
@@ -688,6 +700,11 @@ public abstract class Habilidad : MonoBehaviour
     if (esIngles)
     {
       return $"<b>Save:</b> {tipoEn}. Target rolls 1d20 + {tipoEn} vs DC {dcBase}";
+    }
+
+    if (esChino)
+    {
+      return $"<b>豁免：</b>{tipoZh}。目标掷 1d20 + {tipoZh} 对抗难度 {dcBase}";
     }
 
     if (esPortugues)
@@ -1846,9 +1863,15 @@ public abstract class Habilidad : MonoBehaviour
     int porcentaje = Mathf.RoundToInt(Mathf.Clamp01(probabilidad) * 100f);
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaPortugues;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     if (esIngles)
     {
       return $"{porcentaje}% success chance";
+    }
+
+    if (esChino)
+    {
+      return $"{porcentaje}% \u6210\u529f\u7387";
     }
 
     if (esPortugues)

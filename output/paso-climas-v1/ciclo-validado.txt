@@ -1,0 +1,1 @@
+OK: desactivar oculta visuales nuevos y restaura renderers/emisiones originales. Reactivar evita duplicados y reanuda sistemas. Aurora fuera de dibujo al estar despejado. Clima, hora, radio de vision y RNG conservados.

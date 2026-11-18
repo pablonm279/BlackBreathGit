@@ -1,0 +1,20 @@
+#ifndef PASO_VIENTO_HELADO_CIELO
+#define PASO_VIENTO_HELADO_CIELO
+float PasoHashCielo(float2 p) { return frac(sin(dot(p,float2(127.1,311.7)))*43758.5453); }
+float PasoRuidoCielo(float2 p)
+{
+    float2 a=floor(p),f=frac(p);f=f*f*(3-2*f);
+    return lerp(lerp(PasoHashCielo(a),PasoHashCielo(a+float2(1,0)),f.x),lerp(PasoHashCielo(a+float2(0,1)),PasoHashCielo(a+1),f.x),f.y);
+}
+fixed3 PasoCieloVelado(sampler2D imagen,float2 uv,float luz,fixed3 tinte)
+{
+    fixed3 c=tex2D(imagen,uv).rgb;
+    // Nubes asimetricas interrumpen las cumbres repetidas sin deformar ni mover la cordillera.
+    float nube=PasoRuidoCielo(uv*float2(5.1,8.7)+float2(17.3-_Time.y*.0015,43.1));
+    float velo=smoothstep(.27,.73,nube)*.55+(1-smoothstep(.12,.70,uv.y))*.25;
+    fixed3 bruma=fixed3(.31,.39,.49);
+    float gris=dot(c,float3(.299,.587,.114));
+    c=lerp(c,gris*fixed3(.91,.98,1.08),.22);
+    return lerp(c*.76,bruma,saturate(velo))*tinte*luz*.90;
+}
+#endif

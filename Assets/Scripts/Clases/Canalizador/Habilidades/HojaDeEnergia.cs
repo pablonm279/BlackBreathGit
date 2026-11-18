@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -54,6 +53,7 @@ public class HojaDeEnergia : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int fuerzaActual = statsUI.Fuerza;
@@ -70,6 +70,7 @@ public class HojaDeEnergia : Habilidad
     string tituloEs = "Hoja Energetica I";
     string tituloEn = "Energy Blade I";
     string tituloPt = "Lamina Energetica I";
+    string tituloZh = "能量之刃 I";
     if (NIVEL == 2) { tituloEs = "Hoja Energetica II"; tituloEn = "Energy Blade II"; }
     if (NIVEL == 3) { tituloEs = "Hoja Energetica III"; tituloEn = "Energy Blade III"; }
     if (NIVEL == 4) { tituloEs = "Hoja Energetica IV a"; tituloEn = "Energy Blade IV a"; }
@@ -78,6 +79,10 @@ public class HojaDeEnergia : Habilidad
     if (NIVEL == 3) { tituloPt = "Lamina Energetica III"; }
     if (NIVEL == 4) { tituloPt = "Lamina Energetica IV a"; }
     if (NIVEL == 5) { tituloPt = "Lamina Energetica IV b"; }
+    if (NIVEL == 2) { tituloZh = "能量之刃 II"; }
+    if (NIVEL == 3) { tituloZh = "能量之刃 III"; }
+    if (NIVEL == 4) { tituloZh = "能量之刃 IV a"; }
+    if (NIVEL == 5) { tituloZh = "能量之刃 IV b"; }
 
     string bonusAtaqueEs = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
     string bonusAtaqueEn = bonusAtaqueNivel >= 0 ? $" + {bonusAtaqueNivel}" : $" - {Mathf.Abs(bonusAtaqueNivel)}";
@@ -115,6 +120,39 @@ public class HojaDeEnergia : Habilidad
           LineaDescripcion("Effort", $"Up to {esforzable} AP.")
         },
         proximaMejora,
+        mostrarIconoMelee: true);
+      return;
+    }
+
+    if (esChino)
+    {
+      string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{fuerzaActual}）");
+      string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danioVerdaderoZh = TerminoDescripcion(TerminoDescripcionId.DanioVerdadero, "真实伤害");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string fortalezaZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+      string sangradoTerminoZh = TerminoDescripcion(TerminoDescripcionId.Sangrado, "流血", "Estado_sangrano");
+      string resistenciasZh = TerminoDescripcion(TerminoDescripcionId.Resistencias, "所有抗性", "Estado_resreducidas");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "伤害 +2。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "移除攻击检定 -1 的惩罚。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：区域宽度 +1。\n选项B：流血 +1，额外抗性 -2。"; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "挥动一柄凝聚的能量之刃横扫正面。",
+        new[]
+        {
+          LineaDescripcion("目标", $"{ancho} 格宽的正面区域"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanioEs} + {fuerzaZh} 点{danioVerdaderoZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada}，对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentajeNormalizado}%。"),
+          LineaDescripcion("豁免", $"{fortalezaZh} 豁免，对抗难度 12。", 1),
+          LineaDescripcion("豁免失败", $"叠加 {sangrado} 层{sangradoTerminoZh}；{resistenciasZh} -{reduccionRes}。", 1),
+          LineaDescripcion("努力施为", $"最多消耗 {esforzable} 点行动点。")
+        },
+        proximaMejoraZh,
         mostrarIconoMelee: true);
       return;
     }

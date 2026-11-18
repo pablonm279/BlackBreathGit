@@ -268,6 +268,35 @@ public class REPRESENTACIONEcosDivinos : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string pasivaZh = TerminoDescripcion(TerminoDescripcionId.Pasiva, "被动");
+        string ecoDivinoZh = TerminoDescripcion(TerminoDescripcionId.EcoDivino, "神圣回响");
+        string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+        string fervorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, "狂热");
+        string danioDivinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL <= 2) { proximaMejoraZh = "伤害与治疗 +2。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：治疗量 +5。\n选项B：伤害 +5。"; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"神圣回响 {SufijoNivel()}",
+          $"{pasivaZh}：每回合生成一个{ecoDivinoZh}。",
+          new[]
+          {
+            LineaDescripcion("效果", $"每回合在战场任意一侧的随机格子上生成 1 个{ecoDivinoZh}。"),
+            LineaDescripcion("接触时", ""),
+            LineaDescripcion("友军", $"恢复 {rangoAliados} 点生命值，并获得 +1 {valentiaZh}；若是净化者本人，还额外获得 +1 {fervorZh}。", 1),
+            LineaDescripcion("敌人", $"受到 {rangoEnemigos} 点{danioDivinoZh}。", 1)
+          },
+          proximaMejoraZh,
+          costoSuperior: "");
+        return;
+      }
+
       if (TRADU.i != null && TRADU.i.nIdioma == 3)
       {
         string passiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Passiva");

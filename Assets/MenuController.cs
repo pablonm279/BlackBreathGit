@@ -24,6 +24,7 @@ public class MenuController : MonoBehaviour
     public GameObject logoIngles;
     public GameObject logoEspaniol;
     public GameObject logoPortugues;
+    public GameObject logoChino;
     public GameObject disclaimerIngles;
    
     public GameObject Opciones;
@@ -107,8 +108,9 @@ public class MenuController : MonoBehaviour
 
     public void CambiarIdioma(int n)
     {
-        int idioma = (n == TRADU.IdiomaPortugues) ? TRADU.IdiomaPortugues
-            : (n == TRADU.IdiomaIngles ? TRADU.IdiomaIngles : TRADU.IdiomaEspanol);
+        int idioma = n == TRADU.IdiomaChinoSimplificado ? TRADU.NormalizarIdioma(n)
+            : (n == TRADU.IdiomaPortugues ? TRADU.IdiomaPortugues
+            : (n == TRADU.IdiomaIngles ? TRADU.IdiomaIngles : TRADU.IdiomaEspanol));
             print("cambiar idioma "+idioma);
         PlayerPrefs.SetInt("nIdioma", idioma);
         PlayerPrefs.Save();
@@ -125,18 +127,31 @@ public class MenuController : MonoBehaviour
     public void AplicarVersionesIdioma()
     {
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
-        bool usarIngles = idioma == TRADU.IdiomaIngles;
-        bool usarPortugues = idioma == TRADU.IdiomaPortugues;
+        idioma = TRADU.NormalizarIdioma(idioma);
 
         GameObject logoActivo = logoEspaniol;
-        if (usarIngles && logoIngles != null) { logoActivo = logoIngles; }
-        else if (usarPortugues && logoPortugues != null) { logoActivo = logoPortugues; }
 
-       
-      
-      
-        ReiniciarVersionesIdioma(logoActivo, logoEspaniol, logoIngles, logoPortugues);
-        
+        if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            if (logoChino != null)
+            {
+                logoActivo = logoChino;
+            }
+            else if (logoIngles != null)
+            {
+                logoActivo = logoIngles;
+            }
+        }
+        else if (idioma == TRADU.IdiomaIngles && logoIngles != null)
+        {
+            logoActivo = logoIngles;
+        }
+        else if (idioma == TRADU.IdiomaPortugues && logoPortugues != null)
+        {
+            logoActivo = logoPortugues;
+        }
+
+        ReiniciarVersionesIdioma(logoActivo, logoEspaniol, logoIngles, logoPortugues, logoChino);
     }
 
     private static void ReiniciarVersionesIdioma(GameObject activo, params GameObject[] versiones)
@@ -459,10 +474,7 @@ public class MenuController : MonoBehaviour
         }
 
         int idioma = PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaIngles);
-        if (idioma != TRADU.IdiomaEspanol && idioma != TRADU.IdiomaIngles && idioma != TRADU.IdiomaPortugues)
-        {
-            idioma = TRADU.IdiomaIngles;
-        }
+        idioma = TRADU.NormalizarIdioma(idioma);
 
         TRADU.i.nIdioma = idioma;
         TRADU.i.CancelInvoke(nameof(TRADU.TraducirTodosTextosSegunIdioma));

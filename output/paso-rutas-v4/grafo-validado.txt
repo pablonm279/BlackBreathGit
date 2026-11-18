@@ -1,0 +1,1 @@
+OK: 80 franjas visuales reconstruidas; conexiones, destinos, tipos, costes, recorrido, accesos a aldeas y puntos de LineRenderer intactos; reloj y RNG intactos.

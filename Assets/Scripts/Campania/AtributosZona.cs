@@ -343,6 +343,34 @@ public static class TexturaProceduralSueloZona
       }
    }
 
+   // Normales de relieve generadas junto al albedo del Paso (dunas, sastrugi y costras de viento).
+   static readonly Dictionary<Texture2D, Texture2D> normalesPasoPorTextura = new Dictionary<Texture2D, Texture2D>();
+
+   public static Texture2D ObtenerNormalesPasoVientoHelado(Texture2D albedo)
+   {
+      return albedo != null && normalesPasoPorTextura.TryGetValue(albedo, out Texture2D normales) ? normales : null;
+   }
+
+   // Equivale al smoothstep de shader (Mathf.SmoothStep interpola valores, no bordes).
+   static float Escalon(float borde0, float borde1, float x)
+   {
+      float t = Mathf.Clamp01((x - borde0) / (borde1 - borde0));
+      return t * t * (3f - 2f * t);
+   }
+
+   static float MuestrearBilineal(float[] rejilla, int n, float u, float v)
+   {
+      float x = Mathf.Clamp01(u) * (n - 1);
+      float y = Mathf.Clamp01(v) * (n - 1);
+      int x0 = Mathf.Min((int)x, n - 2);
+      int y0 = Mathf.Min((int)y, n - 2);
+      float fx = x - x0;
+      float fy = y - y0;
+      float a = Mathf.Lerp(rejilla[y0 * n + x0], rejilla[y0 * n + x0 + 1], fx);
+      float b = Mathf.Lerp(rejilla[(y0 + 1) * n + x0], rejilla[(y0 + 1) * n + x0 + 1], fx);
+      return Mathf.Lerp(a, b, fy);
+   }
+
    static Texture2D CrearTexturaPasoVientoHelado(int seed, int size, TexturaProceduralPasoVientoHeladoConfig config)
    {
       if (config == null)
@@ -352,9 +380,35 @@ public static class TexturaProceduralSueloZona
 
       Texture2D textura = CrearTexturaVacia("TexturaProcedural_PasoVientoHelado", size);
       Color32[] pixels = new Color32[size * size];
+      float[] alturas = new float[size * size];
 
       float seedA = (seed & 0x7fffffff) * 0.00037f;
       float seedB = ((seed >> 8) & 0x7fffffff) * 0.00053f;
+
+      // Capas de baja frecuencia (dunas, zonas con sastrugi, roca expuesta) en rejilla gruesa:
+      // evita millones de muestras de ruido extra sin perder detalle visible.
+      const int rejillaN = 257;
+      float[] dunas = new float[rejillaN * rejillaN];
+      float[] zonaSastrugi = new float[rejillaN * rejillaN];
+      float[] roca = new float[rejillaN * rejillaN];
+      for (int gy = 0; gy < rejillaN; gy++)
+      {
+         float v = gy / (float)(rejillaN - 1);
+         for (int gx = 0; gx < rejillaN; gx++)
+         {
+            float u = gx / (float)(rejillaN - 1);
+            float wx = RuidoFirmado(u * 3.3f + seedA, v * 3.3f - seedB) * 0.06f;
+            float wy = RuidoFirmado(u * 3.1f - seedB, v * 3.1f + seedA) * 0.06f;
+            float duna = Mathf.PerlinNoise((u + wx) * 2.6f + seedB * 0.3f, (v + wy) * 3.6f - seedA * 0.3f) * 0.62f
+               + Mathf.PerlinNoise((u + wx) * 6.2f - seedA, (v + wy) * 8.4f + seedB) * 0.38f;
+            dunas[gy * rejillaN + gx] = duna;
+            zonaSastrugi[gy * rejillaN + gx] = Escalon(0.34f, 0.68f,
+               Mathf.PerlinNoise((u + wx) * 4.4f + seedB * 0.7f, (v + wy) * 5.6f - seedA * 0.7f));
+            roca[gy * rejillaN + gx] = Mathf.PerlinNoise((u + wx) * 9.5f - seedA * 1.3f, (v + wy) * 12.5f + seedB * 1.1f);
+         }
+      }
+
+      Color rocaPizarra = new Color(0.30f, 0.34f, 0.39f, 1f);
 
       for (int y = 0; y < size; y++)
       {
@@ -362,8 +416,8 @@ public static class TexturaProceduralSueloZona
          for (int x = 0; x < size; x++)
          {
             float nx = x / (float)(size - 1);
-            float warpX = RuidoFirmado(nx * config.escalaWarpX + seedA, ny * config.escalaWarpX - seedB) * config.intensidadWarp;
-            float warpY = RuidoFirmado(nx * config.escalaWarpY - seedB, ny * config.escalaWarpY + seedA) * config.intensidadWarp;
+            float warpX = RuidoFirmado(nx * config.escalaWarpX + seedA, ny * config.escalaWarpX - seedB) * config.intensidadWarp * 0.18f;
+            float warpY = RuidoFirmado(nx * config.escalaWarpY - seedB, ny * config.escalaWarpY + seedA) * config.intensidadWarp * 0.18f;
             float ux = nx + warpX;
             float uy = ny + warpY;
 
@@ -374,27 +428,100 @@ public static class TexturaProceduralSueloZona
 
             Color color = Color.Lerp(config.nieveBase, config.nieveClara, Mathf.InverseLerp(0.15f, 0.85f, nieveFina) * config.intensidadNieveClara);
 
-            float pesoGris = Mathf.SmoothStep(0.46f, 0.86f, manchasGrandes) * config.intensidadGris;
+            float pesoGris = Escalon(0.50f, 0.78f, manchasGrandes) * config.intensidadGris * 0.75f;
             color = Color.Lerp(color, config.grisCompactado, pesoGris);
 
-            float pesoHielo = Mathf.SmoothStep(0.58f, 0.91f, hieloMedio) * config.intensidadHielo;
+            float pesoHielo = Mathf.Clamp01(Escalon(0.55f, 0.85f, hieloMedio) * config.intensidadHielo * 2.2f);
             color = Color.Lerp(color, config.hieloLavado, pesoHielo);
 
-            float pesoVeta = Mathf.SmoothStep(0.72f, 0.95f, vetaLarga) * config.intensidadVetas;
+            float pesoVeta = Mathf.SmoothStep(0.72f, 0.95f, vetaLarga) * config.intensidadVetas * 0.45f;
             color = Color.Lerp(color, config.sombraSuave, pesoVeta);
+
+            // Relieve esculpido por el viento: dunas amplias + crestas finas alargadas en la direccion del viento (u).
+            float duna = MuestrearBilineal(dunas, rejillaN, nx, ny);
+            float zona = MuestrearBilineal(zonaSastrugi, rejillaN, nx, ny);
+            float ruidoRoca = MuestrearBilineal(roca, rejillaN, nx, ny);
+            // Las crestas usan solo una ondulacion suave (el warp de la config las enroscaba en anillos).
+            float crestaU = nx + RuidoFirmado(nx * 2.1f + seedA, ny * 2.1f - seedB) * 0.02f;
+            float crestaV = ny + RuidoFirmado(nx * 1.7f - seedB, ny * 1.7f + seedA) * 0.012f;
+            float cresta = 1f - Mathf.Abs(Mathf.PerlinNoise(crestaU * 24f + seedB, crestaV * 105f - seedA) * 2f - 1f);
+            cresta = cresta * cresta;
+
+            float pesoRoca = Escalon(0.72f, 0.82f, ruidoRoca) * Mathf.Lerp(0.55f, 1f, nieveFina);
+            // Solo el detalle fino entra en las normales: las pendientes suaves de las dunas se cuantizan en 8 bits y forman bandas.
+            // Rizos de viento finos y ondulaciones medias en toda la superficie (no solo en las zonas de sastrugi).
+            // Dos escalas de rizo mezcladas por zonas, y un tono de gran escala, para que el suelo no sea uniforme.
+            float rizoFino = 1f - Mathf.Abs(Mathf.PerlinNoise(crestaU * 11f + seedA * 2f, crestaV * 150f + seedB) * 2f - 1f);
+            float rizoAncho = 1f - Mathf.Abs(Mathf.PerlinNoise(crestaU * 7f - seedA, crestaV * 62f + seedB * 1.3f) * 2f - 1f);
+            float mezclaRizo = Escalon(0.38f, 0.62f, Mathf.PerlinNoise(nx * 3.1f + seedB, ny * 4.3f - seedA));
+            float ondaFina = Mathf.Lerp(rizoFino, rizoAncho, mezclaRizo);
+            float tonoMacro = Mathf.PerlinNoise(nx * 1.25f + seedA * 1.7f, ny * 1.9f - seedB * 1.3f);
+            ondaFina *= ondaFina;
+            float ondaMedia = Mathf.PerlinNoise(crestaU * 9f - seedB, crestaV * 34f + seedA);
+            float pesoZona = Mathf.Lerp(0.35f, 1f, zona);
+            float altura = cresta * pesoZona * 0.20f + ondaFina * 0.09f + ondaMedia * 0.07f + (nieveFina - 0.5f) * 0.05f + pesoRoca * 0.10f;
+
+            // Luz horneada: crestas y dunas altas mas claras, fondos y costras en sombra azulada.
+            float sombra = Mathf.Clamp01((duna - 0.5f) * 2.2f + 0.5f);
+            color *= Mathf.Lerp(0.74f, 1.10f, sombra) * (1f + (tonoMacro - 0.5f) * 0.34f);
+            color *= 1f + (cresta - 0.5f) * pesoZona * 0.07f;
+            color *= 1f + (ondaFina - 0.4f) * 0.08f + (ondaMedia - 0.5f) * 0.12f;
+            color = Color.Lerp(color, new Color(color.r * 0.88f, color.g * 0.95f, color.b * 1.04f, 1f), 1f - sombra);
+
+            // Pizarra expuesta, con borde nevado irregular.
+            color = Color.Lerp(color, rocaPizarra * Mathf.Lerp(0.92f, 1.12f, nieveFina), pesoRoca * 0.65f);
 
             float grano = (nieveFina - 0.5f) * config.intensidadGrano;
             color.r = Mathf.Clamp01(color.r + grano);
             color.g = Mathf.Clamp01(color.g + grano);
             color.b = Mathf.Clamp01(color.b + grano);
 
+            alturas[y * size + x] = altura;
             pixels[y * size + x] = color;
          }
       }
 
       textura.SetPixels32(pixels);
       textura.Apply(true, true);
+      normalesPasoPorTextura[textura] = CrearNormalesDesdeAlturas(alturas, size);
       return textura;
+   }
+
+   static Texture2D CrearNormalesDesdeAlturas(float[] alturas, int size)
+   {
+      int salida = Mathf.Max(128, size / 2);
+      Texture2D normales = new Texture2D(salida, salida, TextureFormat.RGBA32, true, true)
+      {
+         name = "NormalesProcedurales_PasoVientoHelado",
+         wrapMode = TextureWrapMode.Repeat,
+         filterMode = FilterMode.Trilinear,
+         anisoLevel = 4
+      };
+      Color32[] pixels = new Color32[salida * salida];
+      float paso = size / (float)salida;
+      // Pendiente por texel: 14 equivale a un relieve legible con la textura de 2048; escala con la resolucion.
+      float fuerza = 17f * (size / 2048f);
+
+      for (int y = 0; y < salida; y++)
+      {
+         int sy = Mathf.Min(size - 2, Mathf.Max(1, Mathf.RoundToInt(y * paso)));
+         for (int x = 0; x < salida; x++)
+         {
+            int sx = Mathf.Min(size - 2, Mathf.Max(1, Mathf.RoundToInt(x * paso)));
+            float dx = (alturas[sy * size + sx + 1] - alturas[sy * size + sx - 1]) * 0.5f;
+            float dy = (alturas[(sy + 1) * size + sx] - alturas[(sy - 1) * size + sx]) * 0.5f;
+            Vector3 n = new Vector3(-dx * fuerza, -dy * fuerza, 1f).normalized;
+            pixels[y * salida + x] = new Color32(
+               (byte)Mathf.RoundToInt((n.x * 0.5f + 0.5f) * 255f),
+               (byte)Mathf.RoundToInt((n.y * 0.5f + 0.5f) * 255f),
+               (byte)Mathf.RoundToInt((n.z * 0.5f + 0.5f) * 255f),
+               255);
+         }
+      }
+
+      normales.SetPixels32(pixels);
+      normales.Apply(true, false);
+      return normales;
    }
 
    static Texture2D CrearTexturaBosqueAngustiante(int seed, int size, TexturaProceduralBosqueAngustianteConfig config)
@@ -685,6 +812,18 @@ public class AtributosZona : MonoBehaviour
    public GameObject pasovientoheladoContenedorGameObjects;
    public GameObject nedukazalContenedorGameObjects;
 
+   public MaterialesCaminosZona ObtenerMaterialesCaminosZona()
+   {
+      GameObject contenedor = ID switch
+      {
+         1 => bosqueardienteContenedorGameObjects,
+         2 => pasovientoheladoContenedorGameObjects,
+         3 => nedukazalContenedorGameObjects,
+         _ => null
+      };
+      return contenedor != null ? contenedor.GetComponent<MaterialesCaminosZona>() : null;
+   }
+
    public GameObject BosqueAngustiante_ArbolQuemado1;
    public GameObject BosqueAngustiante_ArbolQuemado2;
    public GameObject BosqueAngustiante_ArbolQuemado3;
@@ -701,6 +840,8 @@ public class AtributosZona : MonoBehaviour
    public GameObject PasoVientoHelado_Arbol2;
    public GameObject PasoVientoHelado_Mancha2;
    public GameObject PasoVientoHelado_Manchahielo;
+   [SerializeField] bool generarManchasHieloPaso = false; // Manchas blancas de hielo: desactivadas para el look actual
+   [SerializeField] bool generarRocasNevadasPaso = false; // Rocas nevosas blancas (Piedra 3/4/5/6): desactivadas para el look actual
    public GameObject PasoVientoHelado_Maleza1;
    public GameObject PasoVientoHelado_Piedra1;
    public GameObject PasoVientoHelado_Piedra2;
@@ -957,6 +1098,7 @@ public class AtributosZona : MonoBehaviour
           kOverride: 20);
 
       AmbienteBosqueArdiente.Preparar(this, usarTexturaProceduralBosqueAngustiante);
+      yield return AdornosBosqueArdiente.Generar(this);
 
       if (admin != null)
       {
@@ -1030,6 +1172,7 @@ public class AtributosZona : MonoBehaviour
       yield return new WaitForSecondsRealtime(0.5f);
 
       AplicarTexturaProceduralPasoVientoHelado();
+      AmbientePasoVientoHelado.Preparar(this);
       ConfigurarExclusionHieloPasoVientoHelado(true);
       ConfigurarPrimerPuntoCentricoPasoVientoHelado(true);
 
@@ -1070,6 +1213,8 @@ public class AtributosZona : MonoBehaviour
        kOverride: 20);
 
 
+      if (generarManchasHieloPaso)
+      {
       yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Manchahielo,
         cantidad: 10,
@@ -1079,7 +1224,10 @@ public class AtributosZona : MonoBehaviour
         distNodoOverride: 0.93f,
         rOverride: 13.85f,
         kOverride: 20);
-      yield return scMapDecorator.GenerarAsyncCR(
+      }
+      if (generarManchasHieloPaso)
+      {
+        yield return scMapDecorator.GenerarAsyncCR(
         PasoVientoHelado_Mancha2,
         cantidad: 0,
         sectorno: 3,
@@ -1087,10 +1235,11 @@ public class AtributosZona : MonoBehaviour
         distNodoOverride: 0.15f,
         rOverride: 7.85f,
         kOverride: 20);
+      }
 
       yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Maleza1,
-         cantidad: 1150,
+         cantidad: 380,
          sectorno: 3,
          distCaminoOverride: 0.12f,
          distNodoOverride: 0.85f,
@@ -1099,7 +1248,7 @@ public class AtributosZona : MonoBehaviour
 
       yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Maleza1,
-         cantidad: 1450,
+         cantidad: 420,
          sectorno: 3,
          distCaminoOverride: 0.1f,
          distNodoOverride: 0.8f,
@@ -1133,7 +1282,9 @@ public class AtributosZona : MonoBehaviour
         rOverride: 10.8f,
         kOverride: 20);
 
-      yield return scMapDecorator.GenerarAsyncCR(
+      if (generarRocasNevadasPaso)
+      {
+        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra3,
          cantidad: 10,
          sectorno: 3,
@@ -1141,8 +1292,11 @@ public class AtributosZona : MonoBehaviour
          distNodoOverride: 2.10f,
          rOverride: 17.8f,
          kOverride: 20);
+      }
 
-      yield return scMapDecorator.GenerarAsyncCR(
+      if (generarRocasNevadasPaso)
+      {
+        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra4,
          cantidad: 14,
          sectorno: 3,
@@ -1150,8 +1304,11 @@ public class AtributosZona : MonoBehaviour
          distNodoOverride: 1.75f,
          rOverride: 18.8f,
          kOverride: 20);
+      }
 
-      yield return scMapDecorator.GenerarAsyncCR(
+      if (generarRocasNevadasPaso)
+      {
+        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra5,
          cantidad: 20,
          sectorno: 3,
@@ -1159,8 +1316,11 @@ public class AtributosZona : MonoBehaviour
          distNodoOverride: 1.70f,
          rOverride: 14.8f,
          kOverride: 20);
+      }
 
-      yield return scMapDecorator.GenerarAsyncCR(
+      if (generarRocasNevadasPaso)
+      {
+        yield return scMapDecorator.GenerarAsyncCR(
          PasoVientoHelado_Piedra6,
          cantidad: 13,
          sectorno: 3,
@@ -1168,6 +1328,7 @@ public class AtributosZona : MonoBehaviour
          distNodoOverride: 1.95f,
          rOverride: 16.8f,
          kOverride: 20);
+      }
 
       yield return scMapDecorator.GenerarAsyncCR(
        PasoVientoHelado_grieta1,
@@ -1215,6 +1376,14 @@ public class AtributosZona : MonoBehaviour
         distNodoOverride: 2.5f,
         rOverride: 50.8f,
         kOverride: 20);
+
+      yield return AdornosPasoVientoHelado.Generar(this);
+      // Los caminos se crean antes de conocer la zona: reaplica el estilo nevado del Paso cuando ya existen todos.
+      foreach (CaminoMesh camino in FindObjectsByType<CaminoMesh>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+      {
+         if (camino != null && camino.gameObject.scene == gameObject.scene) camino.ReaplicarVisual();
+      }
+      pasovientoheladoContenedorGameObjects.GetComponent<AmbientePasoVientoHelado>()?.AjustarApoyoSombras();
 
       if (admin != null)
       {

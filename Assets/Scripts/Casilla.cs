@@ -669,7 +669,7 @@ public class Casilla : MonoBehaviour
 
   void Start()
   {
-    BattleManager.Instance.OnRondaNueva += BattleManager_OnRondaNueva;
+    // El handler de OnRondaNueva estaba vacio y nunca se desuscribia; se evita retener la casilla en el evento.
     if (MarcaMeleeAtraviesa != null)
     {
       MarcaMeleeAtraviesa.SetActive(false);

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
@@ -91,6 +90,38 @@ public class Enmendar : Habilidad
             LineaDescripcion("Cost", consumeFervor ? "1 Fervor" : "None")
           },
           proximaMejora);
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string tituloZh = "修补 I";
+        if (NIVEL == 2) { tituloZh = "修补 II"; }
+        if (NIVEL == 3) { tituloZh = "修补 III"; }
+        if (NIVEL == 4) { tituloZh = "修补 IV a"; }
+        if (NIVEL == 5) { tituloZh = "修补 IV b"; }
+
+        string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+        string fervorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, $"当前狂热（{fervorActual}）");
+        string curacionMagicaZh = TerminoDescripcion(TerminoDescripcionId.CuracionMagica, "魔法治疗");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "下一级：固定治疗量 +1。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：固定治疗量 +2。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：不再需要或消耗狂热。\n选项B：保留狂热的需求与消耗。"; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "治疗一名友军，效果随威力和当前狂热提升。",
+          new[]
+          {
+            LineaDescripcion("目标", "1 名友军"),
+            LineaDescripcion("效果", $"作为{curacionMagicaZh}恢复 4-18{bonusPlanoTexto} + {poderZh} + {fervorZh} 点生命值。"),
+            LineaDescripcion("消耗", consumeFervor ? "1 点狂热" : "无")
+          },
+          proximaMejoraZh);
         return;
       }
 

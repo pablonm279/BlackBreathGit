@@ -274,6 +274,27 @@ public class REPRESENTACIONDeterminacion : Habilidad
       return;
     }
 
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string valentiaResumenZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气");
+      string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+      string valentiaSinIconoZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气");
+      string ataqueZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "下一级：士气高昂时还会获得所有豁免 +1。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "下一级：亢奋时还会获得攻击 +1。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：战斗开始时获得 5 点勇气。\n选项B：每点勇气提供的伤害加成变为 +7%。"; }
+      }
+      var lineasZh = new List<LineaDescripcionNormalizada> { LineaDescripcion("效果", $"每点{valentiaZh}提供 +{danoPorValentia}% 伤害。") };
+      if (NIVEL >= 2) { lineasZh.Add(LineaDescripcion("士气高昂时", "还会获得所有豁免 +1。")); }
+      if (NIVEL >= 3) { lineasZh.Add(LineaDescripcion("亢奋时", $"还会获得 +1 {ataqueZh}。")); }
+      if (NIVEL == 4) { lineasZh.Add(LineaDescripcion("战斗开始", $"以 5 点{valentiaSinIconoZh}开始战斗。")); }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"决心 {SufijoNivel()}", $"被动：根据当前{valentiaResumenZh}提升伤害。", lineasZh, proximaMejoraZh, costoSuperior: string.Empty);
+      return;
+    }
+
     if (TRADU.i != null && TRADU.i.nIdioma == 3)
     {
       string valentiaResumo = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia");
@@ -382,6 +403,12 @@ public class REPRESENTACIONDeterminacion : Habilidad
       if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: Motivado tambem concede +1 Resistencias.</color>"; }
       if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: Euforico tambem concede +1 Ataque.</color>"; }
       if (NIVEL == 3) { return "<color=#dfea02>Opcao A: comeca a batalha com 5 Valentia.\nOpcao B: +7% dano por ponto de Valentia.</color>"; }
+    }
+    else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      if (NIVEL < 2) { return "<color=#dfea02>下一级：士气高昂时还会获得所有豁免 +1。</color>"; }
+      if (NIVEL == 2) { return "<color=#dfea02>下一级：亢奋时还会获得攻击 +1。</color>"; }
+      if (NIVEL == 3) { return "<color=#dfea02>选项A：战斗开始时获得 5 点勇气。\n选项B：每点勇气伤害加成变为 +7%。</color>"; }
     }
     else
     {

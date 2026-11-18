@@ -464,6 +464,8 @@ public abstract class Bitacora : MonoBehaviour
                 return nombreSeguro + " has shown improvement in their skills.";
             case TRADU.IdiomaPortugues:
                 return nombreSeguro + " demonstrou melhora em suas habilidades.";
+            case TRADU.IdiomaChinoSimplificado:
+                return (nombreSeguro == "Alguien" ? "\u67D0\u4EBA" : nombreSeguro) + " \u7684\u80FD\u529B\u6709\u6240\u63D0\u5347\u3002";
             default:
                 return nombreSeguro + " ha mostrado mejor\u00EDa en sus habilidades.";
         }
@@ -477,6 +479,8 @@ public abstract class Bitacora : MonoBehaviour
                 return "Underground threats";
             case TRADU.IdiomaPortugues:
                 return "Amea\u00E7as subterr\u00E2neas";
+            case TRADU.IdiomaChinoSimplificado:
+                return "\u5730\u4E0B\u5A01\u80C1";
             default:
                 return "Amenazas del subsuelo";
         }
@@ -973,6 +977,8 @@ public abstract class Bitacora : MonoBehaviour
                 return ObtenerTextoIngles(id);
             case TRADU.IdiomaPortugues:
                 return ObtenerTextoPortugues(id);
+            case TRADU.IdiomaChinoSimplificado:
+                return ObtenerTextoChino(id);
             default:
                 return ObtenerTextoEspanol(id);
         }
@@ -1083,6 +1089,42 @@ public abstract class Bitacora : MonoBehaviour
             case TextoBitacoraId.NodoRitual: return "A caravana chegou a um local ritual.";
             case TextoBitacoraId.NodoSalvamento: return "A caravana chegou a um ponto de resgate.";
             default: return "A caravana chegou a outro trecho da estrada.";
+        }
+    }
+
+    private static string ObtenerTextoChino(TextoBitacoraId id)
+    {
+        switch (id)
+        {
+            case TextoBitacoraId.EtiquetaDia: return "天";
+            case TextoBitacoraId.EtiquetaRonda: return "轮次";
+            case TextoBitacoraId.SinRegistros: return "暂无记录。";
+            case TextoBitacoraId.RecursoEsperanza: return "希望";
+            case TextoBitacoraId.RecursoOro: return "金币";
+            case TextoBitacoraId.RecursoMateriales: return "材料";
+            case TextoBitacoraId.RecursoSuministros: return "补给";
+            case TextoBitacoraId.CaravanaDescanso: return "车队休整了一番。";
+            case TextoBitacoraId.ResumenVictoria: return "战胜了{0}。";
+            case TextoBitacoraId.ResumenDerrota: return "败于{0}。";
+            case TextoBitacoraId.CayoCompaneroSingular: return "{0}倒下了。";
+            case TextoBitacoraId.CayoCompaneroPlural: return "{0}倒下了。";
+            case TextoBitacoraId.ConectorLista: return "和";
+            case TextoBitacoraId.FaccionEnemigaGenerica: return "敌人";
+            case TextoBitacoraId.NodoBatalla: return "车队抵达了一处战场。";
+            case TextoBitacoraId.NodoEvento: return "车队抵达了一处兴趣点。";
+            case TextoBitacoraId.NodoClaro: return "车队抵达了一片林间空地。";
+            case TextoBitacoraId.NodoAsentamiento: return "车队抵达了一处定居点。";
+            case TextoBitacoraId.NodoRecursos: return "车队抵达了一处资源区域。";
+            case TextoBitacoraId.NodoPuestoComercial: return "车队抵达了一处贸易站。";
+            case TextoBitacoraId.NodoViajeros: return "车队在路上遇到了旅人。";
+            case TextoBitacoraId.NodoBatallaElite: return "车队抵达了一处危险的前线。";
+            case TextoBitacoraId.NodoBatallaFinal: return "车队抵达了决战之地。";
+            case TextoBitacoraId.NodoAtaqueCaravana: return "车队进入了一片暴露的区域。";
+            case TextoBitacoraId.NodoSubterraneo: return "大地在车队脚下裂开了。";
+            case TextoBitacoraId.NodoSantuario: return "车队抵达了一处圣所。";
+            case TextoBitacoraId.NodoRitual: return "车队抵达了一处仪式场地。";
+            case TextoBitacoraId.NodoSalvamento: return "车队抵达了一处救援点。";
+            default: return "车队抵达了道路的新路段。";
         }
     }
 

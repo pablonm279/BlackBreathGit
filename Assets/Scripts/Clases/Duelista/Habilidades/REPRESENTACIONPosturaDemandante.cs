@@ -43,13 +43,33 @@ public class REPRESENTACIONPosturaDemandante : Habilidad
         string colorTitulo = "#5dade2";
         string colorEncabezado = "#44d3ec";
 
-        string titulo = esIngles ? "Demanding Stance" : esPortugues ? "Postura Demandante" : "Postura Demandante";
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
+        string titulo = esIngles ? "Demanding Stance" : esChino ? "强硬架势" : esPortugues ? "Postura Demandante" : "Postura Demandante";
         string subtitulo = esIngles
             ? "Heavy hits leave the Duelist staggered for a turn."
-            : esPortugues
-                ? "Golpes pesados deixam a Duelista cambaleando por um turno."
-                : "Los golpes fuertes dejan a la Duelista tambaleando por un turno.";
+            : esChino
+                ? "受到重击会使决斗者踉跄一回合。"
+                : esPortugues
+                    ? "Golpes pesados deixam a Duelista cambaleando por um turno."
+                    : "Los golpes fuertes dejan a la Duelista tambaleando por un turno.";
 
+        if (esChino)
+        {
+            string tambZh = TerminoDescripcion(TerminoDescripcionId.Tambaleando, "踉跄");
+            string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                titulo,
+                "被动：受到重击会使决斗者踉跄。",
+                new[]
+                {
+                    LineaDescripcion("触发", "受到超过最大生命值 20% 的一次打击。"),
+                    LineaDescripcion("效果", $"获得{tambZh}：最大{apZh} -1，{defZh} -2（持续 1 回合）。"),
+                    LineaDescripcion("限制", "每回合一次。")
+                },
+                costoSuperior: string.Empty);
+            return;
+        }
         if (esIngles)
         {
             string tambaleando = TerminoDescripcion(TerminoDescripcionId.Tambaleando, "Staggering");

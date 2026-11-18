@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -55,6 +54,7 @@ public class CorteHorizontal : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int fuerzaActual = statsUI.Fuerza;
@@ -87,6 +87,7 @@ public class CorteHorizontal : Habilidad
       string tituloEs = "Corte Horizontal I";
       string tituloEn = "Horizontal Slash I";
       string tituloPt = "Corte Horizontal I";
+      string tituloZh = "横斩 I";
       if (NIVEL == 2) { tituloEs = "Corte Horizontal II"; tituloEn = "Horizontal Slash II"; }
       if (NIVEL == 3) { tituloEs = "Corte Horizontal III"; tituloEn = "Horizontal Slash III"; }
       if (NIVEL == 4) { tituloEs = "Corte Horizontal IV a"; tituloEn = "Horizontal Slash IV a"; }
@@ -95,6 +96,10 @@ public class CorteHorizontal : Habilidad
       if (NIVEL == 3) { tituloPt = "Corte Horizontal III"; }
       if (NIVEL == 4) { tituloPt = "Corte Horizontal IV a"; }
       if (NIVEL == 5) { tituloPt = "Corte Horizontal IV b"; }
+      if (NIVEL == 2) { tituloZh = "横斩 II"; }
+      if (NIVEL == 3) { tituloZh = "横斩 III"; }
+      if (NIVEL == 4) { tituloZh = "横斩 IV a"; }
+      if (NIVEL == 5) { tituloZh = "横斩 IV b"; }
 
       if (esIngles)
       {
@@ -125,6 +130,33 @@ public class CorteHorizontal : Habilidad
           },
           proximaMejora,
           mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{fuerzaActual}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string danoCortanteZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string fortalezaZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+        string sangradoZh = TerminoDescripcion(TerminoDescripcionId.Sangrado, "流血", "Estado_sangrano");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        string proxZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proxZh = "伤害 +2。"; }
+          else if (NIVEL == 2) { proxZh = "攻击检定加成 +1。"; }
+          else if (NIVEL == 3) { proxZh = "选项A：移除原有的勇气消耗。\n选项B：豁免难度 +1，流血 +1。"; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloZh, "挥动巨剑横扫正面区域，可能造成流血。", new[]
+        {
+          LineaDescripcion("目标", "正面 3 格宽区域内的所有单位和障碍物"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{danoCortanteZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{ataqueTxt}，对抗{defensaZh}。大失败：{pifiaPorcentaje}%。{criticoZh}：{criticoPorcentaje}%。", 1),
+          LineaDescripcion("豁免", $"{fortalezaZh} 豁免，对抗难度 {dcSangrado}", 1),
+          LineaDescripcion("豁免失败", $"叠加 +{sangradoAplicado} 层{sangradoZh}。", 1)
+        }, proxZh, mostrarIconoMelee: true);
         return;
       }
 

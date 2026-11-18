@@ -52,6 +52,12 @@ public class CaminoMesh : MonoBehaviour
     private const float ReworkEndpointInsetMin = 0.42f;
     private const float ReworkEndpointInsetVisualWidthScale = 0.52f;
     private const float ReworkEndpointCapFade = 0.12f;
+    private const float PasoWidthFactor = 0.90f;
+    private const float PasoWidthEndScale = 0.65f;
+    private const float PasoEdgeVariation = 0.11f;
+    private const float PasoCenterWander = 0.024f;
+    private const float PasoEndpointInset = 0.40f;
+    private const float PasoEndpointCapFade = 0.18f;
     private static readonly float[] ReworkCrossSection = { -1f, -0.72f, 0f, 0.72f, 1f };
 
     Mesh _mesh;
@@ -68,6 +74,8 @@ public class CaminoMesh : MonoBehaviour
     MeshRenderer _footprintsMr;
     Material _displayMaterial;
     Material _displaySourceMaterial;
+    bool _displayPreservaMaterial;
+    bool _displayConfiguradoComoPaso;
     Material _underlayMaterial;
     Material _underlaySourceMaterial;
     Material _rutsMaterial;
@@ -166,9 +174,14 @@ public class CaminoMesh : MonoBehaviour
         if (targetMesh == null || ptsLocal == null || ptsLocal.Count < 2)
             return;
 
-        float endpointInset = Mathf.Max(
-            ReworkEndpointInsetMin,
-            width * ReworkWidthScale * ReworkEndpointInsetVisualWidthScale);
+        // Paso: huella rustica, con bordes irregulares; solo modifica la franja visual.
+        bool paso = EsPasoVientoHelado();
+        float anchoRework = ReworkWidthScale * (paso ? PasoWidthFactor : 1f);
+        float endpointInset = paso
+            ? PasoEndpointInset
+            : Mathf.Max(
+                ReworkEndpointInsetMin,
+                width * ReworkWidthScale * ReworkEndpointInsetVisualWidthScale);
         ptsLocal = TrimVisualEndpoints(ptsLocal, endpointInset);
         if (ptsLocal.Count < 2)
         {
@@ -218,15 +231,15 @@ public class CaminoMesh : MonoBehaviour
                 normal = normal.sqrMagnitude <= 0.0001f ? Vector3.up : -normal;
 
             float endpointEnvelope = EvaluateIrregularityEnvelope(distance, totalDistance);
-            float widthScale = EvaluateWidthScale(distance, totalDistance);
-            float edgeNoise = EvaluateEdgeNoise(distance, edgePhase) * ReworkEdgeVariation * endpointEnvelope;
-            float centerNoise = EvaluateCenterNoise(distance, centerPhase) * ReworkCenterWander * endpointEnvelope;
-            float halfWidth = width * ReworkWidthScale * widthScale * 0.5f;
+            float widthScale = EvaluateWidthScale(distance, totalDistance, paso ? PasoWidthEndScale : WidthEndScale);
+            float edgeNoise = EvaluateEdgeNoise(distance, edgePhase) * (paso ? PasoEdgeVariation : ReworkEdgeVariation) * endpointEnvelope;
+            float centerNoise = EvaluateCenterNoise(distance, centerPhase) * (paso ? PasoCenterWander : ReworkCenterWander) * endpointEnvelope;
+            float halfWidth = width * anchoRework * widthScale * 0.5f;
             float distanceToEndpoint = Mathf.Min(distance, totalDistance - distance);
             float endpointVisibility = Mathf.SmoothStep(
                 0f,
                 1f,
-                Mathf.InverseLerp(0f, ReworkEndpointCapFade, distanceToEndpoint));
+                Mathf.InverseLerp(0f, paso ? PasoEndpointCapFade : ReworkEndpointCapFade, distanceToEndpoint));
             Vector3 center = ptsLocal[i] + side * centerNoise;
 
             for (int rail = 0; rail < railCount; rail++)
@@ -610,15 +623,15 @@ public class CaminoMesh : MonoBehaviour
         targetMesh.RecalculateBounds();
     }
 
-    static float EvaluateWidthScale(float distance, float totalDistance)
+    static float EvaluateWidthScale(float distance, float totalDistance, float endScale = WidthEndScale)
     {
         if (totalDistance <= 0.0001f)
-            return WidthEndScale;
+            return endScale;
 
         float t = distance / totalDistance;
         float taperDistance = Mathf.Min(0.65f, totalDistance * WidthTaperSpan);
-        float taperIn = Mathf.SmoothStep(WidthEndScale, 1f, Mathf.Clamp01(distance / taperDistance));
-        float taperOut = Mathf.SmoothStep(WidthEndScale, 1f, Mathf.Clamp01((totalDistance - distance) / taperDistance));
+        float taperIn = Mathf.SmoothStep(endScale, 1f, Mathf.Clamp01(distance / taperDistance));
+        float taperOut = Mathf.SmoothStep(endScale, 1f, Mathf.Clamp01((totalDistance - distance) / taperDistance));
         float centerBoost = 1f + Mathf.Sin(t * Mathf.PI) * WidthCenterBoost;
         return Mathf.Min(taperIn, taperOut) * centerBoost;
     }
@@ -788,16 +801,29 @@ public class CaminoMesh : MonoBehaviour
         _footprintsMr.sharedMaterial = _rutsMaterial;
     }
 
-    void UpdateDisplayMaterial(Material source)
+    void UpdateDisplayMaterial(Material source, bool preservarMaterial)
     {
-        if (_displayMaterial != null && _displaySourceMaterial == source)
+        // El Paso conserva los estados del material fuente sobre nieve compactada.
+        bool esPaso = usarReworkVisual && EsPasoVientoHelado();
+        if (esPaso) preservarMaterial = false;
+        // Si la zona cambio desde que se configuro el material, hay que reconstruirlo.
+        if (_displaySourceMaterial == source && _displayPreservaMaterial == preservarMaterial && _displayConfiguradoComoPaso == esPaso
+            && (_displayMaterial != null || preservarMaterial && _mr.sharedMaterial == source))
             return;
 
         ReleaseDisplayMaterial();
         _displaySourceMaterial = source;
+        _displayPreservaMaterial = preservarMaterial;
+        _displayConfiguradoComoPaso = esPaso;
         if (source == null)
         {
             _mr.sharedMaterial = null;
+            return;
+        }
+
+        if (preservarMaterial)
+        {
+            _mr.sharedMaterial = source;
             return;
         }
 
@@ -869,16 +895,38 @@ public class CaminoMesh : MonoBehaviour
         if (material.HasProperty("_MacroVariation"))
             material.SetFloat("_MacroVariation", 0.08f);
 
+        if (EsPasoVientoHelado())
+        {
+            bool aldea = SourceUsesVillageRoadAlbedo(source);
+            material.SetFloat("_SnowAmount", aldea ? 0.30f : 0.60f);
+            material.SetFloat("_EdgeFeather", 0.38f);
+            material.SetFloat("_EdgeBreakup", 0.32f);
+            material.SetFloat("_RutStrength", _caminoRecorrido ? 0.25f : 0.12f);
+            material.SetFloat("_MacroVariation", 0.045f);
+            material.SetFloat("_RoadStructure", 0f);
+            material.SetFloat("_PasoRusticRoad", 1f);
+            material.SetFloat("_SettlementRoad", aldea ? 1f : 0f);
+            // Desatura el tinte original sin perder las señales de selección/tipo.
+            Color tinte = source.HasProperty("_Color") ? source.GetColor("_Color") : Color.white;
+            material.SetColor("_Color", Color.Lerp(Color.white, tinte, 0.32f));
+            material.SetColor("_BiomeTint", new Color(0.64f, 0.71f, 0.78f, 1f));
+        }
+
         ConfigureTransparentSurface(material);
         material.renderQueue = ReworkRenderQueue;
     }
 
     bool SourceUsesVillageRoadAlbedo(Material source)
     {
-        return source != null
-            && _villageRoadAlbedo != null
-            && source.HasProperty("_MainTex")
-            && source.GetTexture("_MainTex") == _villageRoadAlbedo;
+        if (source == null || !source.HasProperty("_MainTex")) return false;
+        var textura = source.GetTexture("_MainTex");
+        if (_villageRoadAlbedo != null && textura == _villageRoadAlbedo) return true;
+        if (!EsPasoVientoHelado() || textura == null) return false;
+        // Los materiales de estado conservan la textura de la variante regional de aldeas.
+        var materiales = CampaignManager.Instance.scAtributosZona.ObtenerMaterialesCaminosZona();
+        return materiales != null && materiales.caminoAAldea != null
+            && materiales.caminoAAldea.HasProperty("_MainTex")
+            && textura == materiales.caminoAAldea.GetTexture("_MainTex");
     }
 
     static Color ObtenerTinteBioma()
@@ -891,6 +939,12 @@ public class CaminoMesh : MonoBehaviour
         if (zona == 2) return new Color(0.42f, 0.48f, 0.50f, 1f);
         if (zona == 3) return new Color(0.31f, 0.29f, 0.27f, 1f);
         return new Color(0.46f, 0.35f, 0.23f, 1f);
+    }
+
+    static bool EsPasoVientoHelado()
+    {
+        return CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null
+            && CampaignManager.Instance.scAtributosZona.ID == 2;
     }
 
     void UpdateUnderlayMaterial(Material source)
@@ -1192,7 +1246,8 @@ public class CaminoMesh : MonoBehaviour
         if (_displayMaterial != null && _displayMaterial.HasProperty("_CaminoRecorrido"))
             _displayMaterial.SetFloat("_CaminoRecorrido", _caminoRecorrido ? 1f : 0f);
         if (_displayMaterial != null && _displayMaterial.HasProperty("_RutStrength"))
-            _displayMaterial.SetFloat("_RutStrength", _caminoRecorrido ? 0.24f : 0.08f);
+            _displayMaterial.SetFloat("_RutStrength", EsPasoVientoHelado()
+                ? (_caminoRecorrido ? 0.25f : 0.12f) : (_caminoRecorrido ? 0.24f : 0.08f));
 
         if (_rutsMr != null) _rutsMr.enabled = !usarReworkVisual && _visible && _caminoRecorrido;
         if (_footprintsMr != null) _footprintsMr.enabled = !usarReworkVisual && _visible && _caminoRecorrido;
@@ -1203,10 +1258,10 @@ public class CaminoMesh : MonoBehaviour
         _visibleParaDecoracion = visible;
     }
 
-    public void SetMaterial(Material material)
+    public void SetMaterial(Material material, bool preservarMaterial = false)
     {
         if (_mr == null) _mr = GetComponent<MeshRenderer>();
-        UpdateDisplayMaterial(material);
+        UpdateDisplayMaterial(material, preservarMaterial);
         if (usarReworkVisual)
         {
             DisableLegacyLayers();
@@ -1217,6 +1272,19 @@ public class CaminoMesh : MonoBehaviour
             UpdateRutsMaterial(material);
         }
         ClearMaterialPropertyOverrides();
+    }
+
+    public void ReaplicarVisual()
+    {
+        var linea = GetComponent<LineRenderer>();
+        var fuente = _displaySourceMaterial != null ? _displaySourceMaterial : linea != null ? linea.sharedMaterial : null;
+        bool preservar = _displayPreservaMaterial;
+        // Algunas lineas (raiz del intro/outro) ocultan su malla a proposito: no volver a habilitarla.
+        bool mallaOculta = _mr != null && !_mr.enabled;
+        ReleaseDisplayMaterial();
+        SetMaterial(fuente, preservar);
+        RebuildFromLine();
+        if (mallaOculta && _mr != null) _mr.enabled = false;
     }
 
     public MeshRenderer GetMeshRenderer() => _mr;

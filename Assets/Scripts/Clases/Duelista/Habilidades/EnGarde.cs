@@ -83,6 +83,29 @@ public class EnGarde : Habilidad
                 proximaMejora);
             return;
         }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string evaZh = TerminoDescripcion(TerminoDescripcionId.Evasion, "闪避", "Estado_evasion");
+            string atkZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+            string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null
+                : NIVEL < 2 ? "闪避 +1。"
+                : NIVEL == 2 ? "伤害 +5%。"
+                : NIVEL == 3 ? "选项A：强硬架势在生命值高于 10% 时也能触发。选项B：冷却 -1。"
+                : null;
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "戒备架势 " + sufijoNivel,
+                "摆出一个提升攻势与闪避的技巧性架势。",
+                new[]
+                {
+                    LineaDescripcion("目标", "自身"),
+                    LineaDescripcion("效果", $"+{bonusEvasion} {evaZh}，伤害 +{bonusDanio}%，{critZh} +{bonusCriticoPorcentaje}%，且 {atkZh} +{bonusAtaque}（最多持续 3 回合）。"),
+                    LineaDescripcion("结束条件", "受到伤害时。"),
+                    LineaDescripcion($"<color={ColorPosturaDemandante}>强硬架势：</color>", $"生效期间，当受到的一次打击超过最大生命值的 {umbralPosturaDemandante}% 时触发。")
+                },
+                proxZh);
+            return;
+        }
         if(esPortugues){string eva=TerminoDescripcion(TerminoDescripcionId.Evasion,"Evasão","Estado_evasion");string atk=TerminoDescripcion(TerminoDescripcionId.Ataque,"Ataque");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 Evasão.":NIVEL==2?"Próximo nível: +5% de dano.":NIVEL==3?"Opção A: Postura Demandante ativa acima de 10% do HP máximo. Opção B: -1 de recarga.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("En Garde "+sufijoNivel,"Adota uma postura técnica que melhora o ataque e a evasão.",new[]{LineaDescripcion("Alvo","A própria Duelista"),LineaDescripcion("Efeito",$"+{bonusEvasion} {eva}, +{bonusDanio}% de dano, +{bonusCriticoPorcentaje}% {crit} e +{bonusAtaque} {atk} (até 3 turnos)."),LineaDescripcion("Termina","Ao sofrer dano."),LineaDescripcion($"<color={ColorPosturaDemandante}>Postura Demandante:</color>",$"Enquanto estiver ativa, dispara quando um golpe causa mais de {umbralPosturaDemandante}% do HP máximo.")},prox);return;}
         {string eva=TerminoDescripcion(TerminoDescripcionId.Evasion,"Evasión","Estado_evasion");string atk=TerminoDescripcion(TerminoDescripcionId.Ataque,"Ataque");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 Evasión.":NIVEL==2?"Próximo nivel: +5% de daño.":NIVEL==3?"Opción A: Postura Demandante se activa por encima del 10% del HP máximo. Opción B: -1 de enfriamiento.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("En Garde "+sufijoNivel,"Adopta una postura técnica que mejora el ataque y la evasión.",new[]{LineaDescripcion("Objetivo","La propia Duelista"),LineaDescripcion("Efecto",$"+{bonusEvasion} {eva}, +{bonusDanio}% de daño, +{bonusCriticoPorcentaje}% {crit} y +{bonusAtaque} {atk} (hasta 3 turnos)."),LineaDescripcion("Termina","Al recibir daño."),LineaDescripcion($"<color={ColorPosturaDemandante}>Postura Demandante:</color>",$"Mientras está activa, se dispara cuando un golpe inflige más del {umbralPosturaDemandante}% del HP máximo.")},prox);return;}
 

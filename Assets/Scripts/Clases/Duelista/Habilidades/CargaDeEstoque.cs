@@ -133,6 +133,38 @@ public class CargaDeEstoque : Habilidad
                 mostrarIconoMelee: true);
             return;
         }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string tituloZh = "刺剑冲锋 I";
+            if (NIVEL == 2) { tituloZh = "刺剑冲锋 II"; }
+            if (NIVEL == 3) { tituloZh = "刺剑冲锋 III"; }
+            if (NIVEL == 4) { tituloZh = "刺剑冲锋 IV a"; }
+            if (NIVEL == 5) { tituloZh = "刺剑冲锋 IV b"; }
+
+            string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+            string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null
+                : NIVEL < 2 ? "伤害 +3。"
+                : NIVEL == 2 ? "可以穿过友军。"
+                : NIVEL == 3 ? "选项A：行动点消耗 -1。选项B：每前进一格伤害 +2。"
+                : null;
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                tituloZh,
+                "冲向同一行中的敌人并将其贯穿。",
+                new List<LineaDescripcionNormalizada>
+                {
+                    LineaDescripcion("目标", "同一行的所有敌人"),
+                    LineaDescripcion("效果", $"移动到最前排，并对每个目标造成 {rangoDanio} + {agiZh} + 每前进一格 {danioPorCasillaActual} 点{danoZh}。"),
+                    LineaDescripcion("路径", NIVEL > 2 ? "可以穿过友军，但不能穿过障碍物。" : "不能穿过友军或障碍物。"),
+                    LineaDescripcion("攻击检定", $"1d20 + {agiZh}{bonusTirada} + 每前进一格 {bonusAtaquePorCasilla} 对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+                    LineaDescripcion("耗力", $"最多 {esforzable} 点行动点。")
+                },
+                proxZh,
+                mostrarIconoMelee: true);
+            return;
+        }
         if(esPortugues){string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidade ({agilidadActual})");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +3 de dano.":NIVEL==2?"Próximo nível: pode atravessar aliados.":NIVEL==3?"Opção A: -1 de custo de AP. Opção B: +2 de dano por casa avançada.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Avança através de inimigos na mesma fileira.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","Todos os inimigos em 1 fileira"),LineaDescripcion("Efeito",$"Move-se para a coluna frontal e ataca cada alvo, causando {rangoDanio} + {agi} + {danioPorCasillaActual} por casa avançada como {dano}."),LineaDescripcion("Trajeto",NIVEL>2?"Pode atravessar aliados, mas não obstáculos.":"Não pode atravessar aliados nem obstáculos."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {agi}{bonusTirada} + {bonusAtaquePorCasilla} por casa avançada vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
         {string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidad ({agilidadActual})");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +3 de daño.":NIVEL==2?"Próximo nivel: puede atravesar aliados.":NIVEL==3?"Opción A: -1 de costo de AP. Opción B: +2 de daño por casilla avanzada.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Carga a través de los enemigos de la misma fila.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","Todos los enemigos en 1 fila"),LineaDescripcion("Efecto",$"Se mueve a la columna frontal y ataca a cada objetivo, infligiendo {rangoDanio} + {agi} + {danioPorCasillaActual} por casilla avanzada como {dano}."),LineaDescripcion("Trayecto",NIVEL>2?"Puede atravesar aliados, pero no obstáculos.":"No puede atravesar aliados ni obstáculos."),LineaDescripcion("Tirada de Ataque",$"1d20 + {agi}{bonusTirada} + {bonusAtaquePorCasilla} por casilla avanzada vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
 

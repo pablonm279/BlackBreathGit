@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -85,6 +84,7 @@ public class AtaqueEspadaCortaArcana : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
       int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
       int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
@@ -99,8 +99,8 @@ public class AtaqueEspadaCortaArcana : Habilidad
           ? $"<color={colorFuerza}>Forca ({stats.Fuerza})</color>"
           : $"<color={colorFuerza}>Fuerza ({stats.Fuerza})</color>";
       int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
-      string titulo = esIngles ? "Arcane Short Sword Slash" : esPortugues ? "Corte de Espada Curta Arcana" : "Corte de Espada Corta Arcana";
-      string subtitulo = esIngles ? "Melee cut with extra Arcane damage." : esPortugues ? "Corte corpo a corpo com dano Arcano extra." : "Corte melee con dano Arcano extra.";
+      string titulo = esIngles ? "Arcane Short Sword Slash" : esPortugues ? "Corte de Espada Curta Arcana" : esChino ? "奥术短剑斩击" : "Corte de Espada Corta Arcana";
+      string subtitulo = esIngles ? "Melee cut with extra Arcane damage." : esPortugues ? "Corte corpo a corpo com dano Arcano extra." : esChino ? "附加额外奥术伤害的近战斩击。" : "Corte melee con dano Arcano extra.";
       if (esIngles)
       {
         string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
@@ -121,6 +121,26 @@ public class AtaqueEspadaCortaArcana : Habilidad
         txtDescripcion = ConstruirDescripcionNormalizadaIngles(titulo, $"A short sword attack infused with {arcanoResumen} energy.", lineas, mostrarIconoMelee: true);
         return;
       }
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{stats.Fuerza}）");
+        string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string cortZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string arcZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害", "dano_arcano");
+        string arc2Zh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害");
+        string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        var lZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{cortZh}，额外附加 1-4 点{arcZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada}，对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+          LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Critico, "暴击时"), $"{arc2Zh}提升为 1-8。")
+        };
+        if (nivelMaestria > 0) lZh.Add(LineaDescripcion("被动", $"短剑精通（等级 {nivelMaestria}）。"));
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "蕴含奥术能量的短剑攻击。", lZh, mostrarIconoMelee: true);
+        return;
+      }
+
       if (esPortugues)
       {
         string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,$"Força ({stats.Fuerza})"); string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string cort=TerminoDescripcion(TerminoDescripcionId.DanioCortante,"dano Cortante","dano_cortante"); string arc=TerminoDescripcion(TerminoDescripcionId.DanioArcano,"dano Arcano","dano_arcano"); string arc2=TerminoDescripcion(TerminoDescripcionId.DanioArcano,"dano Arcano"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); var l=new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} + {forca} como {cort}, mais 1-4 de {arc}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {forca}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Critico,"Acerto crítico"),$"O {arc2} passa a ser 1-8.")}; if(nivelMaestria>0)l.Add(LineaDescripcion("Passiva",$"Maestria com Espada Curta (Nível {nivelMaestria}).")); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Um ataque com espada curta imbuído de energia arcana.",l,mostrarIconoMelee:true); return;

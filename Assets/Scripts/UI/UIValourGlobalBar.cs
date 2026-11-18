@@ -200,7 +200,8 @@ public class UIValourGlobalBar : MonoBehaviour
     float pctClamped = Mathf.Clamp(pct, 0f, 100f);
     float normalizado = pctClamped * 0.01f;
     Color colorActual = ObtenerColorValour(pctClamped);
-    bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool enIngles = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaIngles;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
     if (barra != null)
     {
@@ -238,15 +239,15 @@ public class UIValourGlobalBar : MonoBehaviour
 
     if (txtEstado != null)
     {
-      string prefijo = enIngles ? "Global Valour: " : "Valentía Global: ";
-      txtEstado.text = prefijo + ObtenerTramoValour(pctClamped, enIngles);
+      string prefijo = esChino ? "全局勇气：" : (enIngles ? "Global Valour: " : "Valentía Global: ");
+      txtEstado.text = prefijo + ObtenerTramoValour(pctClamped, enIngles, esChino);
       AplicarEstiloTextoContraste(txtEstado, normalizado);
     }
 
     TextMeshProUGUI textoBonus = ObtenerTextoBonusActual();
     if (textoBonus != null)
     {
-      textoBonus.text = ObtenerTextoBonusActualValour(pctClamped, enIngles);
+      textoBonus.text = ObtenerTextoBonusActualValour(pctClamped, enIngles, esChino);
 
       bool esBueno = pctClamped >= 70f;
       bool esMalo = pctClamped < 40f;
@@ -282,38 +283,42 @@ public class UIValourGlobalBar : MonoBehaviour
     return txtBonusActual;
   }
 
-  private string ObtenerTextoBonusActualValour(float pct, bool enIngles)
+  private string ObtenerTextoBonusActualValour(float pct, bool enIngles, bool esChino)
   {
     if (pct >= 90f)
     {
+      if (esChino) { return "加成：+15% 伤害，+1 最大行动点"; }
       return enIngles ? "Bonus: +15% Damage, +1 Max AP" : "Bonus: +15% Daño, +1 PA Max";
     }
 
     if (pct >= 70f)
     {
+      if (esChino) { return "加成：+1 最大行动点"; }
       return enIngles ? "Bonus: +1 Max AP" : "Bonus: +1 PA Max";
     }
 
     if (pct < 15f)
     {
+      if (esChino) { return "惩罚：心智豁免，否则逃跑"; }
       return enIngles ? "Penalty: Mental Save or flee" : "Penalidad: TS Mental o huye";
     }
 
     if (pct < 40f)
     {
+      if (esChino) { return "惩罚：心智豁免，否则犹疑"; }
       return enIngles ? "Penalty: Mental Save or Doubting" : "Penalidad: TS Mental o Dudando";
     }
 
-    return enIngles ? "" : "";
+    return "";
   }
 
-  private string ObtenerTramoValour(float pct, bool enIngles)
+  private string ObtenerTramoValour(float pct, bool enIngles, bool esChino)
   {
-    if (pct >= 90f) { return enIngles ? "Very High" : "Muy Alta"; }
-    if (pct >= 70f) { return enIngles ? "High" : "Alta"; }
-    if (pct < 15f) { return enIngles ? "Very Low" : "Muy Baja"; }
-    if (pct < 40f) { return enIngles ? "Low" : "Baja"; }
-    return enIngles ? "Mid" : "Media";
+    if (pct >= 90f) { return esChino ? "极高" : (enIngles ? "Very High" : "Muy Alta"); }
+    if (pct >= 70f) { return esChino ? "高" : (enIngles ? "High" : "Alta"); }
+    if (pct < 15f) { return esChino ? "极低" : (enIngles ? "Very Low" : "Muy Baja"); }
+    if (pct < 40f) { return esChino ? "低" : (enIngles ? "Low" : "Baja"); }
+    return esChino ? "中" : (enIngles ? "Mid" : "Media");
   }
 
   private Color ObtenerColorValour(float pct)

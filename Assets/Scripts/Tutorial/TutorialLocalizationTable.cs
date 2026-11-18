@@ -30,6 +30,12 @@ public class TutorialLocalizationTable : ScriptableObject
     }
 
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+      return ChineseLocalization.Get(key, !string.IsNullOrEmpty(entry.en) ? entry.en
+        : (!string.IsNullOrEmpty(entry.es) ? entry.es : key));
+    }
+
     if (idioma == TRADU.IdiomaIngles && !string.IsNullOrEmpty(entry.en))
     {
       return entry.en;

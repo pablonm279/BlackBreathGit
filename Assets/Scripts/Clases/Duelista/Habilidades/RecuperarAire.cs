@@ -90,6 +90,38 @@ public class RecuperarAire : Habilidad
                 proximaMejora);
             return;
         }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string tituloZh = "喘息 I";
+            if (NIVEL == 2) { tituloZh = "喘息 II"; }
+            if (NIVEL == 3) { tituloZh = "喘息 III"; }
+            if (NIVEL == 4) { tituloZh = "喘息 IV a"; }
+            if (NIVEL == 5) { tituloZh = "喘息 IV b"; }
+
+            string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string curaZh = TerminoDescripcion(TerminoDescripcionId.Curacion, "治疗");
+            string impZh = TerminoDescripcion(TerminoDescripcionId.Impulso, "冲劲");
+            string valZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+            string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null
+                : NIVEL < 2 ? "防御 +1。"
+                : NIVEL == 2 ? "治疗量 +1-10。"
+                : NIVEL == 3 ? "选项A：冲劲 +1。选项B：勇气 +1。"
+                : null;
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                tituloZh,
+                "在后排恢复状态，为下一回合做准备。",
+                new[]
+                {
+                    LineaDescripcion("目标", "自身"),
+                    LineaDescripcion("要求", "必须处于后排。"),
+                    LineaDescripcion("效果", $"作为{curaZh}恢复 {rangoCuracion} 点生命值；获得 +{impulso} {impZh} 和 +{valentia} {valZh}。"),
+                    LineaDescripcion("增益", $"最大{apZh} +{apMax}（持续 2 回合），{defensa} {defZh}（直到下一回合）。"),
+                    LineaDescripcion("使用", "结束本回合。")
+                },
+                proxZh);
+            return;
+        }
         if(esPortugues){string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string cura=TerminoDescripcion(TerminoDescripcionId.Curacion,"cura");string imp=TerminoDescripcion(TerminoDescripcionId.Impulso,"Impulso");string val=TerminoDescripcion(TerminoDescripcionId.Valentia,"Valentia","Valentía");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 Defesa.":NIVEL==2?"Próximo nível: +1-10 de cura.":NIVEL==3?"Opção A: +1 Impulso. Opção B: +1 Valentia.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Recupera-se na coluna traseira e se prepara para o próximo turno.",new[]{LineaDescripcion("Alvo","A própria Duelista"),LineaDescripcion("Requisito","Coluna traseira."),LineaDescripcion("Efeito",$"Restaura {rangoCuracion} HP como {cura}; recebe +{impulso} {imp} e +{valentia} {val}."),LineaDescripcion("Bônus",$"+{apMax} {ap} máximo (2 turnos), {defensa} {def} até o próximo turno."),LineaDescripcion("Uso","Encerra o turno.")},prox);return;}
         {string ap=TerminoDescripcion(TerminoDescripcionId.PuntosAccion,"AP","ap");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string cura=TerminoDescripcion(TerminoDescripcionId.Curacion,"curación");string imp=TerminoDescripcion(TerminoDescripcionId.Impulso,"Impulso");string val=TerminoDescripcion(TerminoDescripcionId.Valentia,"Valentía","Valentía");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 Defensa.":NIVEL==2?"Próximo nivel: +1-10 de curación.":NIVEL==3?"Opción A: +1 Impulso. Opción B: +1 Valentía.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Se recupera en la columna trasera y se prepara para el siguiente turno.",new[]{LineaDescripcion("Objetivo","La propia Duelista"),LineaDescripcion("Requisito","Columna trasera."),LineaDescripcion("Efecto",$"Restaura {rangoCuracion} HP como {cura}; obtiene +{impulso} {imp} y +{valentia} {val}."),LineaDescripcion("Bonificación",$"+{apMax} {ap} máximo (2 turnos), {defensa} {def} hasta el próximo turno."),LineaDescripcion("Uso","Termina el turno.")},prox);return;}
 

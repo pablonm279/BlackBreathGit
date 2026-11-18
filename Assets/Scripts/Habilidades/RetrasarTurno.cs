@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 
@@ -31,10 +30,14 @@ public class RetrasarTurno : Habilidad
       tipoDanio = 0; 
 
 
-      txtDescripcion = "Retrasa tu acción este turno. Pasas al final de la cola."; 
+      txtDescripcion = "Retrasa tu acción este turno. Pasas al final de la cola.";
       if (TRADU.i.nIdioma == 2) //agrega la traduccion a ingles
       {
           txtDescripcion = "Delay your action this turn. You move to the end of the queue.";
+      }
+      else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+          txtDescripcion = "延迟你本回合的行动。你将移动到行动队列的末尾。";
       }
 
       imHab = Resources.Load<Sprite>("imHab/Retrasar_Turno");

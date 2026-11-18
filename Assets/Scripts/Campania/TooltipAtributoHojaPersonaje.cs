@@ -85,13 +85,14 @@ public class TooltipAtributoHojaPersonaje : MonoBehaviour
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaPortugues;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
     if (atributo == TipoAtributo.Personalizado)
     {
-      return ObtenerTextoPersonalizado(esIngles, esPortugues);
+      return ObtenerTextoPersonalizado(esIngles, esPortugues, esChino);
     }
 
-    return ObtenerTextoAtributo(esIngles, esPortugues);
+    return ObtenerTextoAtributo(esIngles, esPortugues, esChino);
   }
 
   Personaje ObtenerPersonajeContexto()
@@ -143,8 +144,17 @@ public class TooltipAtributoHojaPersonaje : MonoBehaviour
     return etiquetaNivel + nivel + " " + etiquetaExp + experienciaActual + "/" + experienciaNecesaria;
   }
 
-  string ObtenerTextoPersonalizado(bool esIngles, bool esPortugues)
+  string ObtenerTextoPersonalizado(bool esIngles, bool esPortugues, bool esChino = false)
   {
+    if (esChino)
+    {
+      string textoBaseZh = !string.IsNullOrWhiteSpace(textoPersonalizadoES)
+        ? textoPersonalizadoES
+        : textoPersonalizadoEN;
+      return ChineseLocalization.GetDisplayText(textoBaseZh,
+        !string.IsNullOrWhiteSpace(textoPersonalizadoEN) ? textoPersonalizadoEN : textoBaseZh);
+    }
+
     if (esIngles)
     {
       return string.IsNullOrWhiteSpace(textoPersonalizadoEN) ? textoPersonalizadoES : textoPersonalizadoEN;
@@ -167,7 +177,7 @@ public class TooltipAtributoHojaPersonaje : MonoBehaviour
     return textoPersonalizadoES;
   }
 
-  string ObtenerTextoAtributo(bool esIngles, bool esPortugues)
+  string ObtenerTextoAtributo(bool esIngles, bool esPortugues, bool esChino = false)
   {
     switch (atributo)
     {
@@ -176,117 +186,157 @@ public class TooltipAtributoHojaPersonaje : MonoBehaviour
           ? "Determines Attack and Damage of Melee abilities. It also increases maximum life."
           : esPortugues
             ? "Determina o Ataque e o Dano de habilidades de Corpo a Corpo. Além disso, aumenta a vida máxima."
-            : "Determina Ataque y Daño de habilidades Cuerpo a Cuerpo. Además aumenta la vida máxima.";
+            : esChino
+              ? "决定近战技能的攻击和伤害。此外还会提升最大生命值。"
+              : "Determina Ataque y Daño de habilidades Cuerpo a Cuerpo. Además aumenta la vida máxima.";
       case TipoAtributo.Agilidad:
         return esIngles
           ? "Determines Attack and Damage of Ranged abilities. It also increases Initiative."
           : esPortugues
             ? "Determina o Ataque e o Dano de habilidades de Alcance. Além disso, aumenta a Iniciativa."
-            : "Determina Ataque y Daño de habilidades de Rango. Además aumenta la iniciativa.";
+            : esChino
+              ? "决定远程技能的攻击和伤害。此外还会提升先攻。"
+              : "Determina Ataque y Daño de habilidades de Rango. Además aumenta la iniciativa.";
       case TipoAtributo.Poder:
         return esIngles
           ? "Determines Attack and Damage of Magic abilities. It also increases elemental resistances."
           : esPortugues
             ? "Determina o Ataque e o Dano de habilidades Mágicas. Além disso, aumenta as resistências elementais."
-            : "Determina Ataque y Daño de habilidades Mágicas. Además aumenta las resistencias elementales.";
+            : esChino
+              ? "决定魔法技能的攻击和伤害。此外还会提升元素抗性。"
+              : "Determina Ataque y Daño de habilidades Mágicas. Además aumenta las resistencias elementales.";
       case TipoAtributo.Iniciativa:
         return esIngles
           ? "After a roll, determines turn order at the start of combat."
           : esPortugues
             ? "Determina, após uma rolagem, a ordem dos turnos no início do combate."
-            : "Determina, tras una tirada, el orden del turno al comienzo del combate.";
+            : esChino
+              ? "通过一次检定，决定战斗开始时的回合顺序。"
+              : "Determina, tras una tirada, el orden del turno al comienzo del combate.";
       case TipoAtributo.PA:
         return esIngles
           ? "Quantity of Action Points available each turn."
           : esPortugues
             ? "Quantidade de Pontos de Ação disponíveis a cada turno."
-            : "Cantidad de Puntos de Acción disponibles cada Turno.";
+            : esChino
+              ? "每回合可用的行动点数量。"
+              : "Cantidad de Puntos de Acción disponibles cada Turno.";
       case TipoAtributo.Valentia:
         return esIngles
           ? "Maximum Valour Points."
           : esPortugues
             ? "Quantidade máxima de Pontos de Valentia."
-            : "Cantidad de Puntos de Valentía máximos.";
+            : esChino
+              ? "最大勇气值。"
+              : "Cantidad de Puntos de Valentía máximos.";
       case TipoAtributo.Armadura:
         return esIngles
           ? "Each point reduces 1 point of physical damage taken."
           : esPortugues
             ? "Cada ponto reduz 1 ponto de dano físico sofrido."
-            : "Cada punto reduce 1 punto de daño físico sufrido.";
+            : esChino
+              ? "每点可减少1点受到的物理伤害。"
+              : "Cada punto reduce 1 punto de daño físico sufrido.";
       case TipoAtributo.Defensa:
         return esIngles
           ? "Reduces the chance of being hit in combat."
           : esPortugues
             ? "Reduz a chance de ser atingido em combate."
-            : "Reduce las chances de ser golpeado en combate.";
+            : esChino
+              ? "降低在战斗中被击中的几率。"
+              : "Reduce las chances de ser golpeado en combate.";
       case TipoAtributo.TSReflejos:
         return esIngles
           ? "Saving Throw against environmental threats."
           : esPortugues
             ? "Teste de Salvaguarda contra ameaças do ambiente."
-            : "Tirada de Salvación contra amenazas del entorno.";
+            : esChino
+              ? "对抗环境威胁的豁免检定。"
+              : "Tirada de Salvación contra amenazas del entorno.";
       case TipoAtributo.TSFortaleza:
         return esIngles
           ? "Saving Throw against physical afflictions."
           : esPortugues
             ? "Teste de Salvaguarda contra afecções do corpo."
-            : "Tirada de Salvación contra afecciones del cuerpo.";
+            : esChino
+              ? "对抗身体伤害的豁免检定。"
+              : "Tirada de Salvación contra afecciones del cuerpo.";
       case TipoAtributo.TSMental:
         return esIngles
           ? "Saving Throw against mental afflictions."
           : esPortugues
             ? "Teste de Salvaguarda contra afecções da mente."
-            : "Tirada de Salvación contra afecciones de la mente.";
+            : esChino
+              ? "对抗精神伤害的豁免检定。"
+              : "Tirada de Salvación contra afecciones de la mente.";
       case TipoAtributo.ResFuego:
         return esIngles
           ? "Reduces incoming Fire damage."
           : esPortugues
             ? "Reduz o dano de Fogo recebido."
-            : "Reduce el daño Fuego recibido.";
+            : esChino
+              ? "降低受到的火焰伤害。"
+              : "Reduce el daño Fuego recibido.";
       case TipoAtributo.ResRayo:
         return esIngles
           ? "Reduces incoming Electric damage."
           : esPortugues
             ? "Reduz o dano Elétrico recebido."
-            : "Reduce el daño Eléctrico recibido.";
+            : esChino
+              ? "降低受到的闪电伤害。"
+              : "Reduce el daño Eléctrico recibido.";
       case TipoAtributo.ResHielo:
         return esIngles
           ? "Reduces incoming Frost damage."
           : esPortugues
             ? "Reduz o dano de Frio recebido."
-            : "Reduce el daño Frío recibido.";
+            : esChino
+              ? "降低受到的冰霜伤害。"
+              : "Reduce el daño Frío recibido.";
       case TipoAtributo.ResArcano:
         return esIngles
           ? "Reduces incoming Arcane damage."
           : esPortugues
             ? "Reduz o dano Arcano recebido."
-            : "Reduce el daño Arcano recibido.";
+            : esChino
+              ? "降低受到的奥术伤害。"
+              : "Reduce el daño Arcano recibido.";
       case TipoAtributo.ResAcido:
         return esIngles
           ? "Reduces incoming Acid damage."
           : esPortugues
             ? "Reduz o dano de Ácido recebido."
-            : "Reduce el daño Ácido recibido.";
+            : esChino
+              ? "降低受到的酸性伤害。"
+              : "Reduce el daño Ácido recibido.";
       case TipoAtributo.ResNecro:
         return esIngles
           ? "Reduces incoming Necrotic damage."
           : esPortugues
             ? "Reduz o dano Necrótico recebido."
-            : "Reduce el daño Necrótico recibido.";
+            : esChino
+              ? "降低受到的死灵伤害。"
+              : "Reduce el daño Necrótico recibido.";
       case TipoAtributo.ResDivino:
         return esIngles
           ? "Reduces incoming Divine damage."
           : esPortugues
             ? "Reduz o dano Divino recebido."
-            : "Reduce el daño Divine recibido.";
+            : esChino
+              ? "降低受到的神圣伤害。"
+              : "Reduce el daño Divine recibido.";
       case TipoAtributo.Vida:
         return esIngles
           ? "Maximum Life points."
           : esPortugues
             ? "Quantidade máxima de Vida."
-            : "Cantidad máxima de Vida.";
+            : esChino
+              ? "最大生命值。"
+              : "Cantidad máxima de Vida.";
       default:
-        return esIngles ? textoPersonalizadoEN : esPortugues ? textoPersonalizadoPT : textoPersonalizadoES;
+        return esChino
+          ? (!string.IsNullOrWhiteSpace(textoPersonalizadoEN) ? textoPersonalizadoEN : textoPersonalizadoES)
+          : esIngles ? textoPersonalizadoEN : esPortugues ? textoPersonalizadoPT : textoPersonalizadoES;
     }
   }
 

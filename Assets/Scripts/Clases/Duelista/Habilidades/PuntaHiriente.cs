@@ -138,6 +138,46 @@ public class PuntaHiriente : Habilidad
                 mostrarIconoMelee: true);
             return;
         }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string tituloZh = "刺痛之尖 I";
+            if (NIVEL == 2) { tituloZh = "刺痛之尖 II"; }
+            if (NIVEL == 3) { tituloZh = "刺痛之尖 III"; }
+            if (NIVEL == 4) { tituloZh = "刺痛之尖 IV a"; }
+            if (NIVEL == 5) { tituloZh = "刺痛之尖 IV b"; }
+
+            string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, "力量");
+            string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, "敏捷");
+            string mixZh = $"{fuerzaZh}/{agiZh}（{atributoMixtoActual}）";
+            string agiSZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string fortZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+            string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+            string provZh = TerminoDescripcion(TerminoDescripcionId.Provocado, "被嘲讽");
+            string doloridoZh = TerminoDescripcion(TerminoDescripcionId.Adolorido, "酸痛");
+            string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null
+                : NIVEL < 2 ? "攻击检定 +1。"
+                : NIVEL == 2 ? "豁免难度 +1。"
+                : NIVEL == 3 ? "选项A：护甲穿透 +3。选项B：酸痛持续时间 +1 回合。"
+                : null;
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                tituloZh,
+                "刺痛目标，并可能削弱其攻势。",
+                new List<LineaDescripcionNormalizada>
+                {
+                    LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+                    LineaDescripcion("效果", $"命中时，造成 {rangoDanio} 点{danoZh}，并施加{provZh}（持续 2 回合）。"),
+                    LineaDescripcion("攻击检定", $"1d20 + {mixZh}{bonusTirada} 对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+                    LineaDescripcion("穿透", $"护甲穿透：{penetracion}。"),
+                    LineaDescripcion("豁免", $"目标进行{fortZh}豁免，对抗难度 {dcBase} + {agiSZh}（{dcTotal}）。", 1),
+                    LineaDescripcion("豁免失败", $"施加{doloridoZh}：伤害 -10%，攻击 -2（持续 {duracionAdolorido} 回合）。", 1),
+                    LineaDescripcion("耗力", $"最多 {esforzable} 点行动点。")
+                },
+                proxZh,
+                mostrarIconoMelee: true);
+            return;
+        }
         if(esPortugues){string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Força");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade");string mix=$"{forca}/{agi} ({atributoMixtoActual})";string agiS=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidade ({agilidadActual})");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortitude","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante");string prov=TerminoDescripcion(TerminoDescripcionId.Provocado,"Provocado");string dor=TerminoDescripcion(TerminoDescripcionId.Adolorido,"Dolorido");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 na Rolagem de Ataque.":NIVEL==2?"Próximo nível: +1 CD da salvaguarda.":NIVEL==3?"Opção A: +3 Penetração de Armadura. Opção B: +1 turno de duração de Dolorido.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Provoca o alvo e pode reduzir seu ataque.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} como {dano} e aplica {prov} (2 turnos)."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetração",$"Penetração de Armadura: {penetracion}."),LineaDescripcion("Salvaguarda",$"{fort} do alvo vs CD {dcBase} + {agiS} ({dcTotal}).",1),LineaDescripcion("Falha",$"Aplica {dor}: -10% de dano e -2 Ataque ({duracionAdolorido} turnos).",1),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
         {string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Fuerza");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidad");string mix=$"{fuerza}/{agi} ({atributoMixtoActual})";string agiS=TerminoDescripcion(TerminoDescripcionId.Agilidad,$"Agilidad ({agilidadActual})");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortaleza","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante");string prov=TerminoDescripcion(TerminoDescripcionId.Provocado,"Provocado");string dol=TerminoDescripcion(TerminoDescripcionId.Adolorido,"Adolorido");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 a la Tirada de Ataque.":NIVEL==2?"Próximo nivel: +1 CD de salvación.":NIVEL==3?"Opción A: +3 Penetración de Armadura. Opción B: +1 turno de duración de Adolorido.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Provoca al objetivo y puede reducir su ataque.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} como {dano} y aplica {prov} (2 turnos)."),LineaDescripcion("Tirada de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetración",$"Penetración de Armadura: {penetracion}."),LineaDescripcion("Salvación",$"{fort} del objetivo vs CD {dcBase} + {agiS} ({dcTotal}).",1),LineaDescripcion("Salvación fallida",$"Aplica {dol}: -10% de daño y -2 Ataque ({duracionAdolorido} turnos).",1),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
 

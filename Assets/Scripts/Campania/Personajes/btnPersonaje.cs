@@ -50,6 +50,16 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
   public void SeleccionarPJ()
   {
+    TutorialDirector tutorial = TutorialDirector.Instance;
+    if (tutorial != null && tutorial.IsRunning
+      && tutorial.ActiveDefinition != null
+      && tutorial.ActiveDefinition.tutorialId == TutorialDirector.DefaultTutorialId
+      && tutorial.CurrentStepId == "postbatalla2"
+      && (personajeRepresentado == null || personajeRepresentado.IDClase != 4))
+    {
+      return;
+    }
+
     TutorialEvents.Emit("ui.pjpostbat1_presionado", gameObject);
     
     if (Time.frameCount - ultimoFrameArrastre <= 1)
@@ -357,6 +367,10 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
          if (TRADU.i.nIdioma == 3) //Poertu
         {
           txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<size=90%><color=#B8860B>" + prefijoClase + "Nv." + ((int)personajeRepresentado.fNivelActual) + "</color></size>";
+        }
+        if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado) //Chino
+        {
+          txtPersonajeRepresentado.text = personajeRepresentado.sNombre + "\n<size=90%><color=#B8860B>" + prefijoClase + "Lv." + ((int)personajeRepresentado.fNivelActual) + "</color></size>";
         }
 
 

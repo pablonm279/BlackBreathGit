@@ -88,9 +88,9 @@ public class Nodo : MonoBehaviour
   const float MultiplicadorAnchoContinuacionVision = 0.507f;
   const string NombreLineaContinuacionVision = "LineaVisionCorta";
   const string NombreLineaRecortadaVision = "LineaVisionRecortada";
-  const float PulsoNodoMovibleVelocidad = 3.7f;
-  const float PulsoNodoMovibleEscalaMax = 1.26f;
-  const float PulsoNodoMovibleEscalaMaxHover = 1.31f;
+  const float PulsoNodoMovibleVelocidad = 1.6f;
+  const float PulsoNodoMovibleEscalaMax = 1.08f;
+  const float PulsoNodoMovibleEscalaMaxHover = 1.12f;
   const float PulsoNodoMovibleGlowColorBlend = 0.16f;
   const float OscurecimientoNodoInaccesible = 0.30f;
   const float BrilloNodoAccesible = 0.90f;
@@ -137,7 +137,16 @@ public class Nodo : MonoBehaviour
   private Material materialAtajoSubterraneoVisual;
   private Material materialCaminoHintVisual;
   private Material materialCaminoHintPasoVientoHeladoVisual;
+  private bool usarMaterialCaminoHintZona;
+  private MaterialesCaminosZona materialesCaminosZonaActual;
   public Material materialAtajoSuperficieVisual;
+
+  struct MaterialesCaminosOriginales
+  {
+    public Material original, marcado, usado, atajo, hint, lento, aldea, atajoSuperficie;
+  }
+  MaterialesCaminosOriginales materialesCaminosOriginales;
+  bool materialesCaminosOriginalesCapturados;
 
   // Lógica movimiento
   public float velocidadMovimiento = 4f;
@@ -298,9 +307,59 @@ public class Nodo : MonoBehaviour
 
   void Awake()
   {
+    CapturarMaterialesCaminosOriginales();
     bloqueFadeVision = new MaterialPropertyBlock();
     bloquePulsoMovimiento = new MaterialPropertyBlock();
     bloqueNodoInaccesible = new MaterialPropertyBlock();
+  }
+
+  void CapturarMaterialesCaminosOriginales()
+  {
+    if (materialesCaminosOriginalesCapturados) return;
+    materialesCaminosOriginales = new MaterialesCaminosOriginales
+    {
+      original = MaterialCaminoOriginal,
+      marcado = MaterialCaminoMarcado,
+      usado = MaterialCaminoUsado,
+      atajo = MaterialAtajo,
+      hint = MaterialCaminoHint,
+      lento = caminoLento,
+      aldea = caminoAAldea,
+      atajoSuperficie = materialAtajoSuperficieVisual
+    };
+    materialesCaminosOriginalesCapturados = true;
+  }
+
+  public void AplicarMaterialesZona(MaterialesCaminosZona materiales)
+  {
+    CapturarMaterialesCaminosOriginales();
+    materialesCaminosZonaActual = materiales;
+    Material atajoAnterior = MaterialAtajo;
+    Material hintAnterior = MaterialCaminoHint;
+    Material originalAnterior = MaterialCaminoOriginal;
+
+    MaterialCaminoOriginal = materiales != null && materiales.caminoOriginal != null ? materiales.caminoOriginal : materialesCaminosOriginales.original;
+    MaterialCaminoMarcado = materiales != null && materiales.caminoMarcado != null ? materiales.caminoMarcado : materialesCaminosOriginales.marcado;
+    MaterialCaminoUsado = materiales != null && materiales.caminoUsado != null ? materiales.caminoUsado : materialesCaminosOriginales.usado;
+    MaterialAtajo = materiales != null && materiales.atajoSubterraneo != null ? materiales.atajoSubterraneo : materialesCaminosOriginales.atajo;
+    MaterialCaminoHint = materiales != null && materiales.caminoHint != null ? materiales.caminoHint : materialesCaminosOriginales.hint;
+    usarMaterialCaminoHintZona = materiales != null && materiales.caminoHint != null;
+    caminoLento = materiales != null && materiales.caminoLento != null ? materiales.caminoLento : materialesCaminosOriginales.lento;
+    caminoAAldea = materiales != null && materiales.caminoAAldea != null ? materiales.caminoAAldea : materialesCaminosOriginales.aldea;
+    materialAtajoSuperficieVisual = materiales != null && materiales.atajoSuperficie != null ? materiales.atajoSuperficie : materialesCaminosOriginales.atajoSuperficie;
+
+    if (atajoAnterior != MaterialAtajo && materialAtajoSubterraneoVisual != null)
+    {
+      Destroy(materialAtajoSubterraneoVisual);
+      materialAtajoSubterraneoVisual = null;
+    }
+    if (hintAnterior != MaterialCaminoHint || originalAnterior != MaterialCaminoOriginal)
+    {
+      if (materialCaminoHintVisual != null) Destroy(materialCaminoHintVisual);
+      if (materialCaminoHintPasoVientoHeladoVisual != null) Destroy(materialCaminoHintPasoVientoHeladoVisual);
+      materialCaminoHintVisual = null;
+      materialCaminoHintPasoVientoHeladoVisual = null;
+    }
   }
 
   void Start()
@@ -373,6 +432,7 @@ public class Nodo : MonoBehaviour
       {
         TRADU.IdiomaIngles => "-The Caravan traveled overloaded. -10 Hope. Travel speed was reduced by 30%.",
         TRADU.IdiomaPortugues => "-A Caravana viajou sobrecarregada. -10 Esperança. A velocidade de viagem foi reduzida em 30%.",
+        TRADU.IdiomaChinoSimplificado => "-车队超载前行。-10 希望。移动速度降低了30%。",
         _ => "-La Caravana viajó con exceso de Carga. -10 Esperanza. La velocidad de viaje se redujo un 30%."
       };
       CampaignManager.Instance.EscribirLog(mensajeExcesoCarga);
@@ -939,7 +999,7 @@ public class Nodo : MonoBehaviour
     float anchoCamino = ObtenerAnchoVisualCamino(esCaminoDificil);
     if (esRutaRegularHaciaAldea)
     {
-      anchoCamino *= CaminoAAldeaAnchoMultiplicador;
+      anchoCamino *= EsZonaPasoVientoHelado() ? 1.20f : CaminoAAldeaAnchoMultiplicador;
     }
     if (esAtajoSuperficie)
     {
@@ -1006,6 +1066,16 @@ public class Nodo : MonoBehaviour
     OcultarRenderersLineaIntro(lineaGO);
     CrearSegmentosVisualesIntro(lineaGO.transform, lr);
     return lr;
+  }
+
+  public void EliminarLineaIntroCampania()
+  {
+    Transform lineaIntro = transform.Find(NombreLineaIntroCampania);
+    if (lineaIntro != null)
+    {
+      lineaIntro.gameObject.SetActive(false);
+      Destroy(lineaIntro.gameObject);
+    }
   }
 
   float CalcularLongitudIntroCampania()
@@ -1385,7 +1455,7 @@ public class Nodo : MonoBehaviour
     CaminoMesh caminoMesh = linea.GetComponent<CaminoMesh>();
     if (caminoMesh != null)
     {
-      caminoMesh.SetMaterial(material);
+      caminoMesh.SetMaterial(material, materialesCaminosZonaActual != null && materialesCaminosZonaActual.caminoOriginal != null);
     }
     else
     {
@@ -1433,6 +1503,7 @@ public class Nodo : MonoBehaviour
     foreach (Transform child in transform)
     {
       if (child.name.Contains("LineaCaminos")) destruir.Add(child.gameObject);
+      if (child.name.Contains(NombreLineaIntroCampania)) destruir.Add(child.gameObject);
       if (child.name.Contains(NombreLineaContinuacionVision)) destruir.Add(child.gameObject);
       if (child.name.Contains(NombreLineaRecortadaVision)) destruir.Add(child.gameObject);
       if (child.name.Contains(NombreLineaOutroCampania)) destruir.Add(child.gameObject);
@@ -3285,7 +3356,8 @@ if (esLaLider)
 
   private float ObtenerAnchoVisualCamino(bool esCaminoDificil)
   {
-    return lineWidth * (esCaminoDificil ? CaminoAnchoDificilMultiplicador : CaminoAnchoBaseMultiplicador) * CaminoAnchoGlobalMultiplicador;
+    float multiplicadorZona = materialesCaminosZonaActual != null ? materialesCaminosZonaActual.multiplicadorAnchoBase : 1f;
+    return lineWidth * (esCaminoDificil ? CaminoAnchoDificilMultiplicador : CaminoAnchoBaseMultiplicador) * CaminoAnchoGlobalMultiplicador * multiplicadorZona;
   }
 
   private static float CalcularDesvioCaminoSinuoso(float t, float frecuencia, float amplitud, float caos, float fase, float semilla)
@@ -3317,8 +3389,9 @@ if (esLaLider)
       return;
     }
 
-    Material materialVisual = ObtenerMaterialCaminoConVision(linea, mat);
     CaminoConexion conexion = ObtenerConexionSegunTransformLinea(linea);
+    bool preservarMaterial = MaterialCaminoConfiguradoEnZona(conexion, linea);
+    Material materialVisual = ObtenerMaterialCaminoConVision(linea, mat);
     bool recorrido = conexion != null && conexion.recorridoPorCaravana;
 
     var lr = linea.GetComponent<LineRenderer>();
@@ -3328,7 +3401,7 @@ if (esLaLider)
     if (caminoMesh != null)
     {
       caminoMesh.SetEstadoRecorrido(recorrido);
-      caminoMesh.SetMaterial(materialVisual);
+      caminoMesh.SetMaterial(materialVisual, preservarMaterial);
     }
     else
     {
@@ -3337,6 +3410,23 @@ if (esLaLider)
     }
 
     AjustarAnchoCaminoSegunEstado(linea);
+  }
+
+  bool MaterialCaminoConfiguradoEnZona(CaminoConexion conexion, Transform linea = null)
+  {
+    MaterialesCaminosZona zona = materialesCaminosZonaActual;
+    if (zona == null) return false;
+    if (linea != null && linea.name.Contains(NombreLineaContinuacionVision)) return zona.caminoHint != null;
+    if (conexion == null) return zona.caminoOriginal != null || zona.caminoMarcado != null || zona.caminoUsado != null;
+    if (conexion.estadoVisual == EstadoVisualCamino.Hint) return zona.caminoHint != null;
+    if (conexion.EsAtajoSubterraneo) return zona.atajoSubterraneo != null;
+    if (conexion.EsAtajoSuperficie) return zona.atajoSuperficie != null;
+    if (conexion.rutaHaciaAldea) return zona.caminoAAldea != null;
+    if (conexion.tipo == TipoCaminoCampania.Dificil) return zona.caminoLento != null;
+    if (conexion.estadoVisual == EstadoVisualCamino.Disponible && zona.caminoMarcado != null) return true;
+    if ((conexion.estadoVisual == EstadoVisualCamino.Inactivo || conexion.estadoVisual == EstadoVisualCamino.Recorrido)
+        && zona.caminoUsado != null) return true;
+    return zona.caminoOriginal != null;
   }
 
   Material ObtenerMaterialCaminoConVision(Transform linea, Material materialBase)
@@ -3378,8 +3468,32 @@ if (esLaLider)
       hideFlags = HideFlags.DontSave
     };
     variante.CopyPropertiesFromMaterial(materialBase);
+    bool materialBaseUsabaEmision = materialBase.IsKeywordEnabled("_EMISSION")
+      || (materialBase.HasProperty("_EmissionEnabled") && materialBase.GetFloat("_EmissionEnabled") > 0.5f);
+    if (!materialBaseUsabaEmision && variante.HasProperty("_EmissionColor"))
+    {
+      variante.SetColor("_EmissionColor", Color.black);
+    }
+    int colaMaterialBase = materialBase.renderQueue;
+    if (colaMaterialBase < 0 && materialBase.shader != null)
+    {
+      colaMaterialBase = materialBase.shader.renderQueue;
+    }
+    bool materialBaseUsabaAlpha = materialBase.IsKeywordEnabled("_ALPHATEST_ON")
+      || materialBase.IsKeywordEnabled("_ALPHABLEND_ON")
+      || materialBase.IsKeywordEnabled("_ALPHAPREMULTIPLY_ON")
+      || colaMaterialBase >= (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
+    variante.SetFloat("_UsarAlphaCorte", materialBaseUsabaAlpha ? 1f : 0f);
     variante.SetFloat("_CaminoRecorrido", recorrido ? 1f : 0f);
-    variante.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+    variante.SetFloat("_Mode", 1f);
+    variante.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+    variante.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+    variante.SetInt("_ZWrite", 1);
+    variante.SetOverrideTag("RenderType", "TransparentCutout");
+    variante.DisableKeyword("_ALPHABLEND_ON");
+    variante.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+    variante.EnableKeyword("_ALPHATEST_ON");
+    variante.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
     variantesMaterialVisionCamino[clave] = variante;
     return variante;
   }
@@ -3406,7 +3520,7 @@ if (esLaLider)
     float ancho = nodoOrigen.ObtenerAnchoVisualCamino(esCaminoDificil && !esCaminoAAldea);
     if (esCaminoAAldea)
     {
-      ancho *= CaminoAAldeaAnchoMultiplicador;
+      ancho *= EsZonaPasoVientoHelado() ? 1.20f : CaminoAAldeaAnchoMultiplicador;
     }
     if (esAtajoSuperficie)
     {
@@ -3469,6 +3583,11 @@ if (esLaLider)
 
   private Material ObtenerMaterialAtajoSubterraneoVisual()
   {
+    if (materialesCaminosZonaActual != null && materialesCaminosZonaActual.atajoSubterraneo != null)
+    {
+      return MaterialAtajo;
+    }
+
     PrepararMaterialAtajoSubterraneo();
     return materialAtajoSubterraneoVisual != null ? materialAtajoSubterraneoVisual : MaterialAtajo;
   }
@@ -3486,6 +3605,11 @@ if (esLaLider)
 
   private Material ObtenerMaterialCaminoHintVisual()
   {
+    if (usarMaterialCaminoHintZona)
+    {
+      return MaterialCaminoHint;
+    }
+
     if (EsZonaPasoVientoHelado())
     {
       return ObtenerMaterialCaminoHintPasoVientoHeladoVisual();
@@ -3516,8 +3640,8 @@ if (esLaLider)
     materialCaminoHintPasoVientoHeladoVisual.name = "Caminos Hint Paso Viento Helado (Runtime)";
     AplicarColorHintCamino(
       materialCaminoHintPasoVientoHeladoVisual,
-      new Color(0.55f, 0.03f, 0.42f, 0.98f),
-      new Color(1.15f, 0.08f, 0.78f, 1f));
+      new Color(0.42f, 0.68f, 0.82f, 0.94f),
+      new Color(0.12f, 0.26f, 0.34f, 1f));
 
     return materialCaminoHintPasoVientoHeladoVisual;
   }
@@ -3775,7 +3899,13 @@ if (esLaLider)
       return materialBase;
     }
 
-    string clave = materialBase.GetInstanceID() + "_" + estado + "_" + hover;
+    bool materialConfiguradoZona = MaterialCaminoConfiguradoEnZona(conexion);
+    if (!hover && materialConfiguradoZona)
+    {
+      return materialBase;
+    }
+
+    string clave = materialBase.GetInstanceID() + "_" + estado + "_" + hover + "_Zona_" + materialConfiguradoZona;
     if (variantesMaterialCamino.TryGetValue(clave, out Material variante) && variante != null)
     {
       return variante;
@@ -3785,7 +3915,13 @@ if (esLaLider)
     {
       name = materialBase.name + " " + estado + (hover ? " Hover" : "") + " (Runtime)"
     };
-    AplicarTinteEstadoCamino(variante, materialBase, estado, hover, conexion != null && conexion.EsAtajoSubterraneo);
+    AplicarTinteEstadoCamino(
+      variante,
+      materialBase,
+      estado,
+      hover,
+      conexion != null && conexion.EsAtajoSubterraneo,
+      materialConfiguradoZona);
     variantesMaterialCamino[clave] = variante;
     return variante;
   }
@@ -3812,10 +3948,21 @@ if (esLaLider)
       return caminoAAldea;
     }
 
+    if (conexion.tipo == TipoCaminoCampania.Dificil && caminoLento != null)
+    {
+      return caminoLento;
+    }
+
     return MaterialCaminoOriginal;
   }
 
-  static void AplicarTinteEstadoCamino(Material variante, Material materialBase, EstadoVisualCamino estado, bool hover, bool esAtajoSubterraneo)
+  static void AplicarTinteEstadoCamino(
+    Material variante,
+    Material materialBase,
+    EstadoVisualCamino estado,
+    bool hover,
+    bool esAtajoSubterraneo,
+    bool materialConfiguradoZona)
   {
     if (variante == null || materialBase == null)
     {
@@ -3825,20 +3972,20 @@ if (esLaLider)
     if (variante.HasProperty("_Color") && materialBase.HasProperty("_Color"))
     {
       Color color = materialBase.GetColor("_Color");
-      if (estado == EstadoVisualCamino.Disponible)
+      if (!materialConfiguradoZona && estado == EstadoVisualCamino.Disponible)
       {
         Color destinoDisponible = esAtajoSubterraneo
           ? new Color(0.24f, 0.15f, 0.09f, color.a)
           : new Color(1f, 0.93f, 0.68f, color.a);
         color = Color.Lerp(color, destinoDisponible, esAtajoSubterraneo ? 0.22f : 0.49f);
       }
-      else if (estado == EstadoVisualCamino.Inactivo)
+      else if (!materialConfiguradoZona && estado == EstadoVisualCamino.Inactivo)
       {
         float gris = color.grayscale;
         color = Color.Lerp(color, new Color(gris, gris, gris, color.a), 0.62f) * 0.42f;
         color.a = materialBase.GetColor("_Color").a;
       }
-      else if (estado == EstadoVisualCamino.Recorrido)
+      else if (!materialConfiguradoZona && estado == EstadoVisualCamino.Recorrido)
       {
         float grisClaro = Mathf.Lerp(color.grayscale, 1f, 0.32f);
         color = Color.Lerp(color, new Color(grisClaro, grisClaro, grisClaro, color.a), 0.72f);
@@ -3849,7 +3996,8 @@ if (esLaLider)
         Color destinoHover = esAtajoSubterraneo
           ? new Color(0.30f, 0.20f, 0.12f, color.a)
           : new Color(1f, 0.96f, 0.78f, color.a);
-        color = Color.Lerp(color, destinoHover, esAtajoSubterraneo ? 0.20f : 0.44f);
+        float intensidadHover = materialConfiguradoZona ? 0.12f : esAtajoSubterraneo ? 0.20f : 0.44f;
+        color = Color.Lerp(color, destinoHover, intensidadHover);
       }
 
       variante.SetColor("_Color", color);
@@ -3857,11 +4005,15 @@ if (esLaLider)
 
     if (variante.HasProperty("_EmissionColor"))
     {
-      Color emisionBase = materialBase.HasProperty("_EmissionColor")
+      bool emisionBaseActiva = materialBase.IsKeywordEnabled("_EMISSION")
+        || (materialBase.HasProperty("_EmissionEnabled") && materialBase.GetFloat("_EmissionEnabled") > 0.5f);
+      Color emisionBase = emisionBaseActiva && materialBase.HasProperty("_EmissionColor")
         ? materialBase.GetColor("_EmissionColor")
         : Color.black;
       Color colorBase = materialBase.HasProperty("_Color") ? materialBase.GetColor("_Color") : Color.white;
-      Color emision = estado == EstadoVisualCamino.Inactivo
+      Color emision = materialConfiguradoZona
+        ? emisionBase
+        : estado == EstadoVisualCamino.Inactivo
           ? emisionBase * 0.25f
           : estado == EstadoVisualCamino.Recorrido
           ? emisionBase + colorBase * 0.14f
@@ -3870,8 +4022,11 @@ if (esLaLider)
             : emisionBase;
       if (hover)
       {
-        emision += colorBase * 0.17f;
+        emision += colorBase * (materialConfiguradoZona ? 0.035f : 0.17f);
       }
+
+      if (!hover && estado != EstadoVisualCamino.Disponible)
+        emision *= estado == EstadoVisualCamino.Recorrido ? 0.78f : 0.65f;
 
       if (esAtajoSubterraneo)
       {
@@ -5551,6 +5706,8 @@ if (esLaLider)
         return "Mysterious Node: RBM to send 5 Scouts";
       case TRADU.IdiomaPortugues:
         return "Nó Misterioso: botão direito do mouse para enviar 5 Exploradores";
+      case TRADU.IdiomaChinoSimplificado:
+        return "神秘节点：右键点击派出5名斥候";
       default:
         return "Nodo Misterioso: boton derecho del mouse para enviar 5 Exploradores";
     }
@@ -5575,6 +5732,8 @@ if (esLaLider)
         return "<color=#91A3A8>Outside vision range.</color>";
       case TRADU.IdiomaPortugues:
         return "<color=#91A3A8>Fora do alcance de visao.</color>";
+      case TRADU.IdiomaChinoSimplificado:
+        return "<color=#91A3A8>超出视野范围。</color>";
       default:
         return "<color=#91A3A8>Fuera del alcance de vision.</color>";
     }

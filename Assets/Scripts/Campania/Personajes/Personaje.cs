@@ -1105,20 +1105,36 @@ public sealed class PersonajeTraitDefinition
 
     public string ObtenerNombre(int idioma)
     {
+        if (idioma == TRADU.IdiomaChinoSimplificado
+            && PersonajeTraitCatalog.TryGetZh(Id, out string nombreZh, out _)
+            && !string.IsNullOrWhiteSpace(nombreZh))
+        {
+            return nombreZh;
+        }
+
         return idioma switch
         {
             TRADU.IdiomaIngles => string.IsNullOrWhiteSpace(nombreEn) ? nombreEs : nombreEn,
             TRADU.IdiomaPortugues => string.IsNullOrWhiteSpace(nombrePtBr) ? nombreEs : nombrePtBr,
+            TRADU.IdiomaChinoSimplificado => string.IsNullOrWhiteSpace(nombreEn) ? nombreEs : nombreEn,
             _ => nombreEs
         };
     }
 
     public string ObtenerDescripcion(int idioma)
     {
+        if (idioma == TRADU.IdiomaChinoSimplificado
+            && PersonajeTraitCatalog.TryGetZh(Id, out _, out string descripcionZh)
+            && !string.IsNullOrWhiteSpace(descripcionZh))
+        {
+            return descripcionZh;
+        }
+
         return idioma switch
         {
             TRADU.IdiomaIngles => string.IsNullOrWhiteSpace(descripcionEn) ? descripcionEs : descripcionEn,
             TRADU.IdiomaPortugues => string.IsNullOrWhiteSpace(descripcionPtBr) ? descripcionEs : descripcionPtBr,
+            TRADU.IdiomaChinoSimplificado => string.IsNullOrWhiteSpace(descripcionEn) ? descripcionEs : descripcionEn,
             _ => descripcionEs
         };
     }
@@ -2163,6 +2179,110 @@ public static class PersonajeTraitCatalog
             "Concede +2 de Valentia aos aliados em combate. Se morrer permanentemente, -25 de Esperança.",
             TraitHeroeLocal)
     };
+
+    private static readonly Dictionary<int, (string nombre, string descripcion)> traduccionesZh = new Dictionary<int, (string, string)>
+    {
+        { TraitDulcesSuenos, ("甜美梦境", "休息时获得持续2天的士气高涨。") },
+        { TraitPesadillasRecurrentes, ("反复噩梦", "休息时获得持续1天的士气低落。") },
+        { TraitValiente, ("勇敢", "战斗开始时获得 +2 勇气。") },
+        { TraitCobarde, ("懦弱", "战斗开始时若心智豁免失败（DC 12），-2 勇气。") },
+        { TraitAvispado, ("机警", "不会被敌方伏击打得措手不及。") },
+        { TraitDistraido, ("心不在焉", "战斗开始时若心智豁免失败（DC 11），进入措手不及状态。") },
+        { TraitInteligente, ("聪慧", "获得的经验 +15%。") },
+        { TraitIngenuo, ("天真", "获得的经验 -15%。") },
+        { TraitIncansable, ("不知疲倦", "长时间战斗中不会疲劳。") },
+        { TraitFlojo, ("懒散", "车队疲劳达到4时，会获得疲劳。") },
+        { TraitOptimista, ("乐观", "触发事件为正面事件的几率 +5%。") },
+        { TraitPesimista, ("悲观", "触发事件为负面事件的几率 +5%。") },
+        { TraitCuidadoso, ("谨慎", "伏击几率 -3%。") },
+        { TraitRudioso, ("吵闹", "伏击几率 +3%。") },
+        { TraitResistente, ("强健", "战斗结束后若通过坚韧豁免（DC 13），治愈受伤状态。") },
+        { TraitEndeble, ("孱弱", "战斗中倒下时若坚韧豁免失败（DC 11），永久死亡。") },
+        { TraitHombrosFirmes, ("肩膀强健", "负重上限 +15。") },
+        { TraitSano, ("健康", "战役中治疗速度 +15%。") },
+        { TraitEnfermizo, ("体弱多病", "战役中治疗速度 -15%。") },
+        { TraitOdiaLaLluvia, ("厌恶下雨", "下雨或下雪时士气低落。") },
+        { TraitExperto, ("专家", "精通一项技能，该技能起始等级为3级。") },
+        { TraitDesganado, ("提不起劲", "更换活动时获得持续2天的士气低落。") },
+        { TraitOrganizado, ("井井有条", "车队升级花费 -5%。") },
+        { TraitAlmaFuerte, ("灵魂坚强", "处于黑息范围内时，战斗中会变得更强。") },
+        { TraitAlmaDebil, ("灵魂脆弱", "处于黑息范围内时，获得士气低落。") },
+        { TraitTemeCorruptos, ("对腐化者的恐惧", "若敌方阵容中有腐化者，战斗开始时 -2 勇气。") },
+        { TraitTemeNomuertos, ("对不死者的恐惧", "若敌方阵容中有不死者，战斗开始时 -2 勇气。") },
+        { TraitTemeBestias, ("对野兽的恐惧", "若敌方阵容中有野兽，战斗开始时 -2 勇气。") },
+        { TraitTemeCriaturas, ("对生物的恐惧", "若敌方阵容中有生物，战斗开始时 -2 勇气。") },
+        { TraitTemeDemonios, ("对恶魔的恐惧", "若敌方阵容中有恶魔，战斗开始时 -2 勇气。") },
+        { TraitOdiaCorruptos, ("对腐化者的憎恨", "若敌方阵容中有腐化者，获得 +10% 伤害和 +1 攻击。") },
+        { TraitOdiaNomuertos, ("对不死者的憎恨", "若敌方阵容中有不死者，获得 +10% 伤害和 +1 攻击。") },
+        { TraitOdiaBestias, ("对野兽的憎恨", "若敌方阵容中有野兽，获得 +10% 伤害和 +1 攻击。") },
+        { TraitOdiaCriaturas, ("对生物的憎恨", "若敌方阵容中有生物，获得 +10% 伤害和 +1 攻击。") },
+        { TraitOdiaDemonios, ("对恶魔的憎恨", "若敌方阵容中有恶魔，获得 +10% 伤害和 +1 攻击。") },
+        { TraitDuroDeMatar, ("难以杀死", "生命值降至20%以下时，本场战斗永久获得 +2 防御。") },
+        { TraitVengativo, ("复仇心切", "若同伴在战斗中倒下，获得狂怒。") },
+        { TraitIndividualista, ("特立独行", "战斗中不能与其交换位置。") },
+        { TraitColaborativo, ("乐于合作", "每场战斗可免费与该角色交换一次位置。") },
+        { TraitImpulsivo, ("冲动", "战斗初期表现强劲，但随后会逐渐疲软。") },
+        { TraitPaciente, ("耐心", "从第3轮次开始获得战斗加成。") },
+        { TraitEspirituAlegre, ("乐天之魂", "若以士气高涨状态开始战斗，会将其传染给友军。") },
+        { TraitEspirituNegativo, ("阴郁之魂", "若以士气低落状态开始战斗，会将其传染给友军。") },
+        { TraitCoordinado, ("沉稳可靠", "战斗中不会大失败。") },
+        { TraitTorpe, ("笨拙", "战斗中大失败范围 +1。") },
+        { TraitBrutal, ("狂暴", "-1 攻击，+10% 暴击几率。") },
+        { TraitClinico, ("精准冷静", "+2 攻击，-10% 伤害。") },
+        { TraitLoboSolitario, ("孤狼", "若战斗中独自一人，获得加成且不受全局勇气影响。") },
+        { TraitTrabajoEnEquipo, ("团队合作", "获得清明：每有一名友军存活，+1 心智豁免。") },
+        { TraitPuertasDeLaMuerte, ("鬼门关前", "受到致命一击时，保留5%生命值并获得持续1回合的无敌。") },
+        { TraitFragil, ("脆弱", "受到的伤害 +5%。") },
+        { TraitProtector, ("守护者", "在车队遭袭的战斗中获得战斗加成。") },
+        { TraitBajoPresion, ("不堪重负", "车队遭袭的战斗开始时 -2 勇气。") },
+        { TraitProtagonista, ("主角光环", "参与角色事件的几率更高。") },
+        { TraitPerfilBajo, ("低调", "参与角色事件的几率更低。") },
+        { TraitAhorrista, ("精打细算", "车队到访贸易站时获得 50-100 金币。") },
+        { TraitDespilfarrador, ("挥霍无度", "车队到访贸易站时损失 20-50 金币。") },
+        { TraitFeInquebrantable, ("信仰坚定", "到访圣所时获得持续4天的士气高涨。") },
+        { TraitPagano, ("异教徒", "到访圣所时获得持续3天的士气低落。") },
+        { TraitAventurero, ("冒险家", "进入新地区时获得持续4天的士气高涨。") },
+        { TraitArrastrado, ("被迫同行", "进入新地区时获得持续3天的士气低落。") },
+        { TraitConoceBosqueArdiente, ("熟知燃烧之森", "在燃烧之森：探索 +5%，伏击几率 -3%。") },
+        { TraitDetestaBosqueArdiente, ("厌恶燃烧之森", "进入燃烧之森时获得持续6天的士气低落。") },
+        { TraitConocePasoVientohelado, ("熟知冻风隘口", "在冻风隘口：探索 +5%，伏击几率 -3%。") },
+        { TraitDetestaPasoVientohelado, ("厌恶冻风隘口", "进入冻风隘口时获得持续6天的士气低落。") },
+        { TraitConoceNedukazal, ("熟知内杜卡赞", "在内杜卡赞：探索 +5%，伏击几率 -3%。") },
+        { TraitDetestaNedukazal, ("厌恶内杜卡赞", "进入内杜卡赞时获得持续6天的士气低落。") },
+        { TraitEsforzado, ("竭尽全力", "战斗中「竭力」不会附加减益。") },
+        { TraitMinimoEsfuerzo, ("敷衍了事", "战斗中无法使用「竭力」。") },
+        { TraitHolgazan, ("游手好闲", "不进行战役活动。") },
+        { TraitTrabajador, ("勤劳", "抵达定居点时获得 150-200 金币。") },
+        { TraitBeodo, ("酗酒", "抵达定居点时获得疲劳并花费 10 金币。") },
+        { TraitConvincente, ("能言善道", "抵达定居点时获得 5 名平民。") },
+        { TraitHeroeLocal, ("当地英雄", "为车队增加 15 名平民。若永久死亡，-20 希望。") },
+        { TraitAdmirado, ("备受爱戴", "赢得战斗时 +5 希望，倒下时 -15 希望。") },
+        { TraitMalaReputacion, ("名声不佳", "在定居点招募的平民 -2。") },
+        { TraitBuenaReputacion, ("声名远扬", "在定居点招募的平民 +2。") },
+        { TraitHermitano, ("隐士", "抵达定居点时获得持续2天的士气低落。") },
+        { TraitCitadino, ("都市之人", "抵达定居点时获得持续3天的士气高涨。") },
+        { TraitEjemploASeguir, ("楷模", "抵达塞里亚港时获得 +25 劳动价值。") },
+        { TraitFugaz, ("迅捷", "「逃离」仅消耗 1 点行动点。") },
+        { TraitTenaz, ("坚韧不屈", "拒绝逃离战斗（不会获得「逃离」技能）。") },
+        { TraitTactico, ("战术家", "逃生路线提前 1 回合出现，敌方增援延迟 1 回合抵达。") },
+        { TraitHerencia, ("家传之物", "初始携带一件本职业的武器或护甲，强化为 +1 或 +2。若该职业没有专属装备，则获得一件随机消耗品。") },
+        { TraitContrato, ("雇佣契约", "以契约形式为车队效力，因此需要报酬。每次休整会自动支付 50 金币；若无法支付，则获得持续3天的士气低落。") },
+        { TraitLiderCaravana, ("车队守护者", "战斗中为友军提供 +2 勇气。若永久死亡，-25 希望。") },
+    };
+
+    public static bool TryGetZh(int id, out string nombreZh, out string descripcionZh)
+    {
+        if (traduccionesZh.TryGetValue(id, out var traduccion))
+        {
+            nombreZh = traduccion.nombre;
+            descripcionZh = traduccion.descripcion;
+            return true;
+        }
+
+        nombreZh = null;
+        descripcionZh = null;
+        return false;
+    }
 
     private static readonly Dictionary<int, PersonajeTraitDefinition> definicionesPorId = CrearIndicePorId();
 

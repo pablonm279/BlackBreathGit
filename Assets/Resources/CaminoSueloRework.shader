@@ -15,6 +15,10 @@ Shader "GDD/Campania/CaminoSueloRework"
         _MacroVariation ("Macro Variation", Range(0, 0.3)) = 0.12
         _Glossiness ("Smoothness", Range(0, 1)) = 0.035
         _Metallic ("Metallic", Range(0, 1)) = 0
+        _SnowAmount ("Snow shoulders", Range(0, 1)) = 0
+        _RoadStructure ("Road structure (berms, ruts, hard edge)", Range(0, 1)) = 0
+        _PasoRusticRoad ("Huella rustica del Paso", Float) = 0
+        _SettlementRoad ("Piedra de asentamiento", Float) = 0
 
         [HideInInspector] _CaminoRecorrido ("Camino recorrido", Float) = 0
         [HideInInspector] _Mode ("Mode", Float) = 2
@@ -42,6 +46,7 @@ Shader "GDD/Campania/CaminoSueloRework"
         sampler2D _MainTex;
         sampler2D _BumpMap;
         sampler2D _EmissionMap;
+        sampler2D _PasoNieve;
         fixed4 _Color;
         fixed4 _EmissionColor;
         fixed4 _BiomeTint;
@@ -53,6 +58,9 @@ Shader "GDD/Campania/CaminoSueloRework"
         half _RutStrength;
         half _MacroVariation;
         half _CaminoRecorrido;
+        half _SnowAmount;
+        half _RoadStructure;
+        half _PasoRusticRoad, _SettlementRoad;
 
         // Valores globales actualizados por NieblaGuerraCaravana.
         float4 _CaminoVisionPantalla;
@@ -81,6 +89,28 @@ Shader "GDD/Campania/CaminoSueloRework"
             float c = frac(sin(dot(celda + float2(0, 1), float2(127.1, 311.7))) * 43758.5453);
             float d = frac(sin(dot(celda + float2(1, 1), float2(127.1, 311.7))) * 43758.5453);
             return lerp(lerp(a, b, fraccion.x), lerp(c, d, fraccion.x), fraccion.y);
+        }
+
+        float HashPiedra(float2 p) { return frac(sin(dot(p,float2(127.1,311.7)))*43758.5453); }
+        fixed3 PiedraIrregular(float2 uv, fixed3 nieve, float escarcha)
+        {
+            float2 celda=floor(uv),f=frac(uv),identidad=0;
+            float primera=100,segunda=100;
+            [unroll] for(int y=-1;y<=1;y++)
+            [unroll] for(int x=-1;x<=1;x++)
+            {
+                float2 vecino=float2(x,y),id=celda+vecino;
+                float2 centro=.20+.60*float2(HashPiedra(id),HashPiedra(id+19.7));
+                float2 delta=vecino+centro-f;float d=dot(delta,delta);
+                if(d<primera){segunda=primera;primera=d;identidad=id;}else segunda=min(segunda,d);
+            }
+            float junta=max(1-smoothstep(.018,.075,segunda-primera),smoothstep(.16,.34,primera)*.90);
+            float variacion=HashPiedra(identidad+31.1);
+            fixed3 piedra=lerp(fixed3(.23,.26,.28),fixed3(.43,.45,.41),variacion);
+            piedra*=.86+HashSuave(uv*17.3)*.23;
+            piedra*=lerp(.84,1.03,saturate((segunda-primera)*3));
+            piedra=lerp(piedra,fixed3(.13,.15,.16),junta*.78);
+            return lerp(piedra,nieve,escarcha);
         }
 
         void surf(Input entrada, inout SurfaceOutputStandard salida)
@@ -113,6 +143,54 @@ Shader "GDD/Campania/CaminoSueloRework"
             float centro = 1.0 - smoothstep(0.02, 0.34, abs(coordenadaAncho - 0.5));
             colorBase *= lerp(1.0, 0.94, centro * (0.35 + 0.35 * saturate(_CaminoRecorrido)));
 
+            // Nieve acumulada en los hombros y hielo compacto entre las rodadas.
+            float hombros = smoothstep(0.16, 0.43, abs(coordenadaAncho - 0.5));
+            float granoNieve = HashSuave(entrada.worldPos.xz * 14.0);
+            fixed3 nieve = lerp(fixed3(0.49, 0.57, 0.64), fixed3(0.66, 0.73, 0.79), hombros);
+            nieve *= lerp(0.94, 1.04, granoNieve) * _Color.rgb;
+            nieve *= 1.0 - rodadas * _RutStrength * desgasteRecorrido;
+            colorBase = lerp(colorBase, nieve, _SnowAmount);
+
+            // Calzada armada: perfil constante (berma clara, labio oscuro, centro compactado, rodadas).
+            float estructura = saturate(_RoadStructure);
+            float distBorde = abs(coordenadaAncho - 0.5) * 2.0;
+            float distRuidosa = distBorde + (ruidoBorde - 0.5) * 0.07;
+            float cuerpoCalzada = 1.0 - smoothstep(0.80, 0.97, distRuidosa);
+            float berma = smoothstep(0.52, 0.72, distRuidosa) * (1.0 - smoothstep(0.84, 0.96, distRuidosa));
+            float labio = smoothstep(0.86, 0.97, distRuidosa);
+            float cresta = 1.0 - smoothstep(0.0, 0.16, distBorde);
+            float lumaTextura = dot(textura.rgb, float3(0.299, 0.587, 0.114));
+            fixed3 calzada = fixed3(0.37, 0.43, 0.50);
+            calzada = lerp(calzada, fixed3(0.60, 0.66, 0.73), berma);
+            calzada = lerp(calzada, fixed3(0.20, 0.26, 0.33), labio * 0.70);
+            calzada *= 1.0 - rodadas * saturate(_RutStrength * 1.6) * desgasteRecorrido;
+            calzada *= lerp(1.0, 1.07, cresta);
+            calzada *= lerp(0.9, 1.1, saturate(lumaTextura * 1.6)) * lerp(0.95, 1.05, granoNieve) * _Color.rgb;
+            colorBase = lerp(colorBase, calzada, estructura);
+
+            float formaRustica=1;
+            if(_PasoRusticRoad>.5)
+            {
+                float grano=HashSuave(entrada.worldPos.xz*5.3);
+                float irregular=HashSuave(entrada.worldPos.xz*1.7);
+                fixed3 nievePisada=tex2D(_PasoNieve,entrada.worldPos.xz*.065).rgb*lerp(.78,.88,grano);
+                fixed3 tierra=lerp(fixed3(.28,.23,.19),fixed3(.39,.34,.28),ruidoMacro);
+                float desgaste=(.76+rodadas*.24)*lerp(.86,1,irregular);
+                colorBase=lerp(nievePisada,tierra,desgaste);
+                colorBase*=lerp(.93,1.02,grano);
+                float nieveCentro=smoothstep(.38,.74,irregular)*(.10+hombros*.20);
+                colorBase=lerp(colorBase,nievePisada,nieveCentro);
+                if(_SettlementRoad>.5)
+                {
+                    float escarcha=saturate(hombros*.28+smoothstep(.48,.75,irregular)*.16);
+                    colorBase=PiedraIrregular(float2(entrada.uv_MainTex.x*4.2,coordenadaAncho*5.1),nievePisada,escarcha);
+                }
+                colorBase*=_Color.rgb;
+                float bordeOrganico=distBorde+(irregular-.5)*.30;
+                formaRustica=(1-smoothstep(.57,.98,bordeOrganico))*mascaraBorde;
+                if(_SettlementRoad<.5) formaRustica*=lerp(.86,1,saturate(rodadas*.75+centro*.45))*lerp(.94,1,grano);
+            }
+
             float2 uvPantalla = entrada.screenPos.xy / max(entrada.screenPos.w, 0.0001);
             float2 radios = max(_CaminoVisionPantalla.zw, float2(0.0001, 0.0001));
             float distanciaVision = length((uvPantalla - _CaminoVisionPantalla.xy) / radios);
@@ -133,12 +211,15 @@ Shader "GDD/Campania/CaminoSueloRework"
             salida.Albedo = colorBase;
             salida.Normal = normalize(normal);
             salida.Metallic = min(_Metallic, 0.02);
-            salida.Smoothness = min(_Glossiness, 0.055);
+            salida.Smoothness = _PasoRusticRoad>.5 ? 0 : min(_Glossiness, 0.055);
             salida.Occlusion = lerp(1.0, 0.82, rodadas * 0.28);
             salida.Emission = tex2D(_EmissionMap, entrada.uv_EmissionMap).rgb
                 * _EmissionColor.rgb
                 * lerp(0.72, 1.0, mascaraBorde);
-            salida.Alpha = textura.a * _Color.a * mascaraBorde * visible * entrada.color.a;
+            // En modo estructurado la forma la define el perfil (no el alpha desflecado de la textura).
+            float alfaForma = lerp(textura.a * mascaraBorde, cuerpoCalzada * 0.94, estructura);
+            if(_PasoRusticRoad>.5) alfaForma=formaRustica;
+            salida.Alpha = alfaForma * _Color.a * visible * entrada.color.a;
         }
         ENDCG
     }

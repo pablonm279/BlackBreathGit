@@ -58,6 +58,10 @@ public class PrePartidaTooltip : MonoBehaviour, IPointerEnterHandler, IPointerEx
         string textoSeleccionado;
         switch (ObtenerIdiomaActual())
         {
+            case TRADU.IdiomaChinoSimplificado:
+                textoSeleccionado = ChineseLocalization.Get(textoEspanol,
+                    !string.IsNullOrWhiteSpace(textoIngles) ? textoIngles : textoEspanol);
+                break;
             case TRADU.IdiomaIngles:
                 textoSeleccionado = textoIngles;
                 break;
@@ -95,7 +99,7 @@ public class PrePartidaTooltip : MonoBehaviour, IPointerEnterHandler, IPointerEx
             ? TRADU.i.nIdioma
             : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
 
-        if (idioma != TRADU.IdiomaIngles && idioma != TRADU.IdiomaPortugues)
+        if (idioma != TRADU.IdiomaIngles && idioma != TRADU.IdiomaPortugues && idioma != TRADU.IdiomaChinoSimplificado)
         {
             return TRADU.IdiomaEspanol;
         }

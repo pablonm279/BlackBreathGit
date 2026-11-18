@@ -52,11 +52,19 @@ public class MedianocheFilo : Habilidad
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
         if (esIngles)
         {
             txtDescripcion = "<color=#5dade2><b>Midnight Edge</b></color>\n\n" +
                 "<i>(Passive) The blade remembers every duel it has ended. +1 Critical die, +5% damage.</i>";
+            return;
+        }
+
+        if (esChino)
+        {
+            txtDescripcion = "<color=#5dade2><b>午夜之刃</b></color>\n\n" +
+                "<i>（被动）这把剑记得它终结过的每一场决斗。暴击骰 +1，伤害 +5%。</i>";
             return;
         }
 

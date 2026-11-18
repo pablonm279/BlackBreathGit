@@ -15,6 +15,10 @@ public class MarcaMarcarPresa : Marca
     {
         descripcion = $"Marked: {TRADU.i.Traducir(quienMarco.uNombre)} has bonuses on single-target attacks against this enemy.";
     }
+    else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+        descripcion = $"已标记：{TRADU.i.Traducir(quienMarco.uNombre)} 对该敌人发起单体攻击时拥有加成。";
+    }
     else if (TRADU.i.nIdioma == 3)
     {
         descripcion = $"Marcado: {TRADU.i.Traducir(quienMarco.uNombre)} possui bonus em ataques de alvo unico contra este inimigo.";

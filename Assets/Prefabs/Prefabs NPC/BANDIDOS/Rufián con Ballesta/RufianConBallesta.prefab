@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2267341276981241871
 RectTransform:
   m_ObjectHideFlags: 0
@@ -241,6 +241,8 @@ GameObject:
   - component: {fileID: 1678664685221969079}
   - component: {fileID: 7996714464312373375}
   - component: {fileID: 2167969639434959831}
+  - component: {fileID: -3301817823958657406}
+  - component: {fileID: -8241932182709697063}
   m_Layer: 7
   m_Name: Image
   m_TagString: Untagged
@@ -320,6 +322,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!114 &-3301817823958657406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2383047622823427081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.85882354}
+  m_EffectDistance: {x: 0.157, y: 0.33}
+  m_UseGraphicAlpha: 1
+--- !u!225 &-8241932182709697063
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2383047622823427081}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3194716257158510271
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,6 +531,7 @@ GameObject:
   - component: {fileID: 626676684668864424}
   - component: {fileID: 15248220560719603}
   - component: {fileID: 1903733243410229230}
+  - component: {fileID: -757295162614134451}
   m_Layer: 7
   m_Name: Canvas
   m_TagString: Untagged
@@ -551,7 +581,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 390
   m_TargetDisplay: 0
 --- !u!114 &626676684668864424
 MonoBehaviour:
@@ -606,6 +636,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   invert: 1
+--- !u!114 &-757295162614134451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4366159538637586750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1eeb942031e6594ebe3996066c4653f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CanvasSortingOffset
+  offset: 10
 --- !u!1 &5662508880646372543
 GameObject:
   m_ObjectHideFlags: 0

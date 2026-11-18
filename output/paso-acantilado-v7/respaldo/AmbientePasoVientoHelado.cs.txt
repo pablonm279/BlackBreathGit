@@ -1,0 +1,560 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+// Ambiente visual exclusivo del Paso. No consume el RNG de encuentros ni modifica el reloj.
+[DisallowMultipleComponent]
+public sealed class AmbientePasoVientoHelado : MonoBehaviour
+{
+    static readonly float[] Horas = { 5f, 7f, 9f, 13f, 16.5f, 18.5f, 21f };
+    static readonly float[] Intensidades = { .18f, .38f, .78f, .86f, .74f, .40f, .18f };
+    static readonly Color[] Colores = {
+        new Color(.57f,.69f,.94f), new Color(1f,.79f,.72f), new Color(1f,.96f,.89f),
+        new Color(.95f,.98f,1f), new Color(1f,.91f,.79f), new Color(1f,.66f,.48f), new Color(.57f,.69f,.94f) };
+    static readonly Color[] Ambientes = {
+        new Color(.12f,.16f,.24f), new Color(.23f,.24f,.31f), new Color(.31f,.35f,.42f),
+        new Color(.34f,.38f,.45f), new Color(.30f,.32f,.40f), new Color(.24f,.23f,.32f), new Color(.12f,.16f,.24f) };
+
+    readonly List<Material> materiales = new List<Material>();
+    readonly Dictionary<MeshRenderer, Material> originales = new Dictionary<MeshRenderer, Material>();
+    readonly Dictionary<Light, Color> coloresRelleno = new Dictionary<Light, Color>();
+    readonly Dictionary<Light, float> intensidadesRelleno = new Dictionary<Light, float>();
+    readonly Dictionary<Material, Material> materialesDecoracion = new Dictionary<Material, Material>();
+    readonly Dictionary<MeshRenderer, Material[]> originalesDecoracion = new Dictionary<MeshRenderer, Material[]>();
+    readonly Dictionary<SpriteRenderer, Color> coloresSprites = new Dictionary<SpriteRenderer, Color>();
+    AtributosZona zona;
+    ParticleSystem nieve, ventisca;
+    Material materialNieve, materialVentisca;
+    Camera camara;
+    float luzParticulas = -1f;
+    float factorParticulas = 1f;
+    GameObject horizonte;
+    Material materialHorizonte;
+    Texture2D texturaHorizonte;
+    Mesh mallaHorizonte;
+    MeshFilter filtroPared;
+    Mesh paredOriginal, relievePared;
+    Material materialLago;
+    Transform relieveFondo;
+#if UNITY_EDITOR
+    // Solo para comparar franjas de luz por MCP sin avanzar el reloj ni simular viajes.
+    [System.NonSerialized] public float horaVistaPrevia = -1f;
+#endif
+    const float DistanciaHorizonte = 600f;
+    const float EmpujeExtensionMetros = 2.5f;
+    const int HorizonteAncho = 2048, HorizonteAlto = 384;
+
+    public static void EvaluarHora(float hora, out float intensidad, out Color color, out Color ambiente)
+    {
+        hora = Mathf.Repeat(hora, 24f);
+        int tramo = 0;
+        float t = 0;
+        if (hora >= Horas[0] && hora < Horas[Horas.Length - 1])
+        {
+            while (tramo < Horas.Length - 2 && hora >= Horas[tramo + 1]) tramo++;
+            t = Mathf.SmoothStep(0, 1, Mathf.InverseLerp(Horas[tramo], Horas[tramo + 1], hora));
+        }
+        intensidad = Mathf.Lerp(Intensidades[tramo], Intensidades[tramo + 1], t);
+        color = Color.Lerp(Colores[tramo], Colores[tramo + 1], t);
+        ambiente = Color.Lerp(Ambientes[tramo], Ambientes[tramo + 1], t);
+    }
+
+    public static void Preparar(AtributosZona atributos)
+    {
+        if (atributos == null || atributos.ID != 2 || atributos.pasovientoheladoContenedorGameObjects == null) return;
+        var raiz = atributos.pasovientoheladoContenedorGameObjects;
+        var ambiente = raiz.GetComponent<AmbientePasoVientoHelado>();
+        if (ambiente == null) ambiente = raiz.AddComponent<AmbientePasoVientoHelado>();
+        ambiente.zona = atributos;
+        ambiente.PrepararSuelo(atributos.TexturaTerreno);
+        ambiente.PrepararSuelo(atributos.TexturaTerrenoExtension);
+        ambiente.ConfigurarMuestreo(true);
+        ambiente.ArmonizarDecoracion(raiz);
+        ambiente.PrepararPared(raiz);
+        ambiente.PrepararLago(raiz);
+        var sol = raiz.GetComponentInChildren<SunController>(true);
+        if (sol != null)
+        {
+            sol.ConfigurarPasoVientoHelado();
+            var luz = sol.sun != null ? sol.sun : sol.GetComponent<Light>();
+            if (luz != null) luz.shadowStrength = .58f;
+            foreach (var relleno in raiz.GetComponentsInChildren<Light>(true))
+            {
+                if (relleno == luz || relleno.type != LightType.Directional || relleno.GetComponent<intensidadluzcaminos>() != null) continue;
+                if (!ambiente.coloresRelleno.ContainsKey(relleno))
+                {
+                    ambiente.coloresRelleno.Add(relleno, relleno.color);
+                    ambiente.intensidadesRelleno.Add(relleno, relleno.intensity);
+                }
+            }
+            sol.SetCampaignHour(CampaignManager.Instance != null ? CampaignManager.Instance.ObtenerHoraActual() : 8f);
+        }
+        ambiente.PrepararParticulas();
+        ambiente.PrepararHorizonte();
+        FondoPasoVientoHelado.Crear(atributos, ambiente.transform);
+        ambiente.relieveFondo = ambiente.transform.Find("Valle y contrafuertes del Paso");
+    }
+
+    void OnEnable() { if (horizonte != null) horizonte.SetActive(true); if (relieveFondo != null) relieveFondo.gameObject.SetActive(true); ConfigurarMuestreo(true); }
+    void OnDisable() { if (horizonte != null) horizonte.SetActive(false); if (relieveFondo != null) relieveFondo.gameObject.SetActive(false); ConfigurarMuestreo(false); }
+
+    // Mismo criterio que el render: la malla principal gana sobre la extension si estan casi a la misma altura.
+    void ConfigurarMuestreo(bool activo)
+    {
+        var decorador = zona != null ? zona.GetComponent<MapDecorator>() : null;
+        // Desnivel vertical equivalente al empuje en profundidad (sen del cabeceo de la camara ~0,66).
+        if (decorador != null) decorador.PreferirPrincipalSobreExtension(activo ? EmpujeExtensionMetros * .66f : 0f);
+    }
+
+    // La pared delantera comparte proyeccion y paleta con el suelo; la cornisa se apoya sobre su relieve real.
+    void PrepararPared(GameObject raiz)
+    {
+        var pared = raiz != null ? raiz.transform.Find("Pared") : null;
+        var renderer = pared != null ? pared.GetComponent<MeshRenderer>() : null;
+        if (renderer == null || renderer.sharedMaterial == null) return;
+        if (zona.TexturaTerreno == null || zona.TexturaTerreno.sharedMaterial == null || relievePared != null) return;
+        var material = new Material(zona.TexturaTerreno.sharedMaterial) { name = "Acantilado continuo del Paso (Runtime)", hideFlags = HideFlags.DontSave };
+        material.SetFloat("_EmpujeProfundidad", 0f);
+        materiales.Add(material);
+        // Para que OnDestroy devuelva el material original.
+        if (!originalesDecoracion.ContainsKey(renderer)) originalesDecoracion.Add(renderer, renderer.sharedMaterials);
+        renderer.sharedMaterial = material;
+        PrepararRelievePared(renderer);
+    }
+
+    // Solo cambia la malla visible; conserva intactos el terreno y los colliders de campaña.
+    void PrepararRelievePared(MeshRenderer renderer)
+    {
+        filtroPared = renderer.GetComponent<MeshFilter>();
+        if (filtroPared == null || relievePared != null) return;
+        paredOriginal = filtroPared.sharedMesh;
+        var v = paredOriginal.vertices;
+        if (v.Length != 121) return;
+        const int columnas = 128, filas = 24;
+        var vertices = new Vector3[(columnas + 1) * (filas + 1)];
+        var uv = new Vector2[vertices.Length];
+        var indices = new int[columnas * filas * 6];
+        var decorador = zona.GetComponent<MapDecorator>();
+        for (int x = 0; x <= columnas; x++)
+        {
+            float u = x / (float)columnas;
+            Vector3 pie = renderer.transform.TransformPoint(Vector3.Lerp(v[0], v[110], u));
+            Vector3 cima = renderer.transform.TransformPoint(Vector3.Lerp(v[10], v[120], u));
+            cima.z += (Mathf.PerlinNoise(cima.x * .24f, 19.7f) - .5f) * 1.8f;
+            if (decorador != null && decorador.TrySampleSurface(cima, out var apoyo, out _)) cima.y = apoyo.y - .10f;
+            for (int y = 0; y <= filas; y++)
+            {
+                float h = y / (float)filas;
+                Vector3 p;
+                if (h > .75f)
+                {
+                    float borde = (h - .75f) / .25f;
+                    p = cima + Vector3.forward * (borde * 1.8f);
+                    if (decorador != null && decorador.TrySampleSurface(p, out var suelo, out var normal))
+                        p = suelo - normal * .10f;
+                }
+                else p = Vector3.Lerp(pie, cima, Mathf.SmoothStep(0f, 1f, h / .75f));
+                float bloque = Mathf.PerlinNoise(p.x * .58f, p.y * .40f);
+                float fisura = Mathf.PerlinNoise(p.x * 2.1f, p.y * .12f);
+                if (h < .75f) p.z -= (bloque * .48f + fisura * .16f) * Mathf.Sin(h / .75f * Mathf.PI);
+                int i = x * (filas + 1) + y;
+                vertices[i] = renderer.transform.InverseTransformPoint(p);
+                uv[i] = new Vector2(u, h);
+                if (x == columnas || y == filas) continue;
+                int k = (x * filas + y) * 6, siguiente = i + filas + 1;
+                indices[k] = i; indices[k + 1] = siguiente; indices[k + 2] = i + 1;
+                indices[k + 3] = siguiente; indices[k + 4] = siguiente + 1; indices[k + 5] = i + 1;
+            }
+        }
+        relievePared = new Mesh { name = "Estratos del acantilado (Runtime)", hideFlags = HideFlags.DontSave };
+        relievePared.vertices = vertices; relievePared.uv = uv; relievePared.triangles = indices;
+        relievePared.RecalculateNormals(); relievePared.RecalculateBounds();
+        filtroPared.sharedMesh = relievePared;
+    }
+
+    void PrepararLago(GameObject raiz)
+    {
+        var lago = raiz.transform.Find("Lago congelado");
+        var renderer = lago != null ? lago.GetComponent<MeshRenderer>() : null;
+        var shader = Resources.Load<Shader>("PasoVientoHeladoLago");
+        if (renderer == null || shader == null || materialLago != null) return;
+        if (!originalesDecoracion.ContainsKey(renderer)) originalesDecoracion.Add(renderer, renderer.sharedMaterials);
+        materialLago = new Material(shader) { name = "Hielo y bruma del valle (Runtime)", hideFlags = HideFlags.DontSave };
+        materialLago.SetFloat("_Inicio", renderer.bounds.min.z);
+        materialLago.SetFloat("_Fin", renderer.bounds.max.z);
+        renderer.sharedMaterial = materialLago;
+        materiales.Add(materialLago);
+    }
+
+    // Fondo lejano (cielo + cordilleras) pegado a la camara: llena la franja que queda sobre el lago.
+    void PrepararHorizonte()
+    {
+        if (horizonte != null || zona == null || zona.TexturaTerreno == null) return;
+        var shader = Resources.Load<Shader>("PasoVientoHeladoHorizonte");
+        if (shader == null) return;
+        var cordillera = Resources.Load<Texture2D>("PasoVientoHeladoCordillera");
+        if (cordillera == null) texturaHorizonte = CrearTexturaHorizonte(zona.FASE * 7919 + 13);
+        materialHorizonte = new Material(shader) { name = "Horizonte del Paso (Runtime)", hideFlags = HideFlags.DontSave };
+        materialHorizonte.SetTexture("_MainTex", cordillera != null ? cordillera : texturaHorizonte);
+        Shader.SetGlobalTexture("_PasoCordillera", cordillera != null ? cordillera : texturaHorizonte);
+        Shader.SetGlobalTexture("_PasoNieve", Resources.Load<Texture2D>("PasoVientoHeladoNieve"));
+        Shader.SetGlobalTexture("_PasoPizarra", Resources.Load<Texture2D>("PasoVientoHeladoPizarra"));
+        Shader.SetGlobalFloat("_PasoBrumaInicio", zona.TexturaTerreno.bounds.max.z + 1f);
+        Shader.SetGlobalFloat("_PasoBrumaFin", zona.TexturaTerrenoExtension != null ? zona.TexturaTerrenoExtension.bounds.max.z - 1f : zona.TexturaTerreno.bounds.max.z + 18f);
+        materiales.Add(materialHorizonte);
+        mallaHorizonte = new Mesh { name = "Horizonte del Paso (Runtime)", hideFlags = HideFlags.DontSave };
+        mallaHorizonte.vertices = new[] { new Vector3(-.5f,-.5f,0), new Vector3(.5f,-.5f,0), new Vector3(-.5f,.5f,0), new Vector3(.5f,.5f,0) };
+        mallaHorizonte.uv = new[] { new Vector2(0,0), new Vector2(1,0), new Vector2(0,1), new Vector2(1,1) };
+        mallaHorizonte.triangles = new[] { 0, 2, 1, 2, 3, 1 };
+        mallaHorizonte.bounds = new Bounds(Vector3.zero, Vector3.one * 100000f);
+        horizonte = new GameObject("Horizonte del Paso (Runtime)") { layer = zona.TexturaTerreno.gameObject.layer, hideFlags = HideFlags.DontSave };
+        horizonte.AddComponent<MeshFilter>().sharedMesh = mallaHorizonte;
+        var renderer = horizonte.AddComponent<MeshRenderer>();
+        renderer.sharedMaterial = materialHorizonte;
+        renderer.shadowCastingMode = ShadowCastingMode.Off;
+        renderer.receiveShadows = false;
+        horizonte.SetActive(isActiveAndEnabled);
+        ActualizarHorizonte();
+    }
+
+    void ActualizarHorizonte()
+    {
+        if (horizonte == null) return;
+        if (camara == null || !camara.isActiveAndEnabled) camara = Camera.main;
+        if (camara == null) return;
+        float alto = 2f * DistanciaHorizonte * Mathf.Tan(camara.fieldOfView * .5f * Mathf.Deg2Rad);
+        float ancho = alto * camara.aspect;
+        float altoQuad = alto;
+        var t = horizonte.transform;
+        var cam = camara.transform;
+        // Anclado al borde superior de la pantalla.
+        t.SetPositionAndRotation(cam.position + cam.forward * DistanciaHorizonte + cam.up * (alto * .5f - altoQuad * .5f), cam.rotation);
+        t.localScale = new Vector3(ancho, altoQuad, 1f);
+        float scroll = Mathf.Clamp((cam.position.x - zona.TexturaTerreno.bounds.center.x) * .0008f, -.04f, .04f);
+        materialHorizonte.SetFloat("_Scroll", scroll);
+        Shader.SetGlobalFloat("_PasoScrollCielo", scroll);
+    }
+
+    static Texture2D CrearTexturaHorizonte(int seed)
+    {
+        var textura = new Texture2D(HorizonteAncho, HorizonteAlto, TextureFormat.RGBA32, true, false)
+        {
+            name = "Horizonte del Paso (Runtime)", wrapMode = TextureWrapMode.Repeat,
+            filterMode = FilterMode.Bilinear, hideFlags = HideFlags.DontSave
+        };
+        var pixeles = new Color32[HorizonteAncho * HorizonteAlto];
+        float sa = (seed & 0x3ff) * .37f, sb = ((seed >> 10) & 0x3ff) * .53f;
+        Color cieloAlto = new Color(.035f,.055f,.095f), cieloBajo = new Color(.16f,.22f,.30f), nieve = new Color(.52f,.62f,.73f);
+        // Capas de lejos a cerca: mas claras y neblinosas atras, mas oscuras adelante.
+        Color[] capa = { new Color(.17f,.23f,.32f), new Color(.11f,.16f,.23f), new Color(.07f,.10f,.15f) };
+        float[] cresta = { .74f, .64f, .55f }, amplitud = { .12f, .11f, .09f }, frecuencia = { 3.0f, 4.2f, 5.6f };
+        var alturas = new float[3];
+        for (int x = 0; x < HorizonteAncho; x++)
+        {
+            float angulo = x / (float) HorizonteAncho * Mathf.PI * 2f, cx = Mathf.Cos(angulo), cy = Mathf.Sin(angulo);
+            for (int l = 0; l < 3; l++)
+            {
+                float suma = 0, peso = 1, total = 0, f = frecuencia[l];
+                for (int o = 0; o < 3; o++)
+                {
+                    // Ruido en un circulo: el fondo se repite sin costura.
+                    float r = Mathf.PerlinNoise(cx * f + 50f * l + sa, cy * f + sb + o * 17.3f);
+                    suma += r * peso; total += peso; peso *= .42f; f *= 2.3f;
+                }
+                alturas[l] = cresta[l] + (suma / total - .5f) * 2.4f * amplitud[l];
+            }
+            for (int y = 0; y < HorizonteAlto; y++)
+            {
+                float v = y / (float) (HorizonteAlto - 1);
+                Color c = Color.Lerp(cieloBajo, cieloAlto, Mathf.Clamp01((v - .35f) / .65f));
+                for (int l = 0; l < 3; l++)
+                {
+                    if (v >= alturas[l]) continue;
+                    float profundidad = alturas[l] - v;
+                    // Nieve en manchas bajo la cresta (ruido suave en ambos ejes, sin rayas verticales).
+                    float parche = Mathf.PerlinNoise(cx * 2.0f + sa + l * 9f, cy * 2.0f + y * .011f + sb); // tileable en x
+                    float nevado = Mathf.Clamp01((parche - .38f - profundidad * 3.2f) * 3f) * (1f - l * .25f);
+                    // Roca con sombreado suave (caras iluminadas y en sombra).
+                    float cara = Mathf.Lerp(.78f, 1.15f, Mathf.PerlinNoise(cx * 6f + sb + l * 5f, cy * 6f + y * .06f + sa));
+                    Color m = capa[l] * cara;
+                    m = Color.Lerp(m, nieve, nevado * .7f);
+                    // Bruma hacia la base de cada capa.
+                    c = Color.Lerp(m, cieloBajo, Mathf.Clamp01(1f - v / .55f) * .35f + (2 - l) * .14f);
+                }
+                c.a = 1f;
+                pixeles[y * HorizonteAncho + x] = c;
+            }
+        }
+        textura.SetPixels32(pixeles);
+        textura.Apply(true, true);
+        return textura;
+    }
+
+    void PrepararSuelo(MeshRenderer renderer)
+    {
+        if (renderer == null || renderer.sharedMaterial == null || materiales.Contains(renderer.sharedMaterial)) return;
+        // La nieve es difusa; el material serializado tenía Metallic=1 y normales muy fuertes.
+        if (!originales.ContainsKey(renderer)) originales.Add(renderer, renderer.sharedMaterial);
+        var material = new Material(renderer.sharedMaterial) { name = "Nieve mate del Paso (Runtime)", hideFlags = HideFlags.DontSave };
+        materiales.Add(material);
+        if (material.HasProperty("_Metallic")) material.SetFloat("_Metallic", 0);
+        if (material.HasProperty("_Glossiness")) material.SetFloat("_Glossiness", .08f);
+        if (material.HasProperty("_SpecularHighlights")) material.SetFloat("_SpecularHighlights", 0);
+        if (material.HasProperty("_GlossyReflections")) material.SetFloat("_GlossyReflections", 0);
+        material.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
+        material.EnableKeyword("_GLOSSYREFLECTIONS_OFF");
+        if (material.HasProperty("_BumpScale")) material.SetFloat("_BumpScale", .42f);
+        // Relieve de dunas y crestas de viento generado junto a la textura procedural (si existe).
+        var albedo = material.HasProperty("_MainTex") ? material.GetTexture("_MainTex") as Texture2D : null;
+        var normales = TexturaProceduralSueloZona.ObtenerNormalesPasoVientoHelado(albedo);
+        if (normales != null && material.HasProperty("_BumpMap"))
+        {
+            material.SetTexture("_BumpMap", normales);
+            material.SetTextureScale("_BumpMap", Vector2.one);
+            material.SetTextureOffset("_BumpMap", Vector2.zero);
+            material.EnableKeyword("_NORMALMAP");
+            if (material.HasProperty("_BumpScale")) material.SetFloat("_BumpScale", .22f);
+        }
+        if (material.HasProperty("_Parallax")) material.SetFloat("_Parallax", .008f);
+        if (material.HasProperty("_Color")) material.SetColor("_Color", new Color(.94f,.97f,1f));
+        if (material.HasProperty("_EmissionColor")) material.SetColor("_EmissionColor", Color.black);
+        material.DisableKeyword("_EMISSION");
+        if (zona != null)
+        {
+            // La extension se dibuja un poco "hacia atras" en profundidad para que no se crucen las dos mallas del terreno.
+            var sombreadorExtension = Resources.Load<Shader>("PasoVientoHeladoTerrenoExtension");
+            if (sombreadorExtension != null)
+            {
+                var extension = new Material(sombreadorExtension) { name = "Nieve mate del Paso - extension (Runtime)", hideFlags = HideFlags.DontSave };
+                if (material.HasProperty("_MainTex")) extension.SetTexture("_MainTex", material.GetTexture("_MainTex"));
+                if (material.HasProperty("_BumpMap") && material.GetTexture("_BumpMap") != null) extension.SetTexture("_BumpMap", material.GetTexture("_BumpMap"));
+                extension.SetColor("_Color", material.GetColor("_Color"));
+                extension.SetFloat("_BumpScale", material.GetFloat("_BumpScale"));
+                extension.SetFloat("_Glossiness", .08f);
+                extension.SetFloat("_Metallic", 0f);
+                extension.SetFloat("_EmpujeProfundidad", renderer == zona.TexturaTerrenoExtension ? EmpujeExtensionMetros : 0f);
+                materiales.Add(extension);
+                renderer.sharedMaterial = extension;
+                return;
+            }
+        }
+        renderer.sharedMaterial = material;
+    }
+
+    public void ArmonizarDecoracion(GameObject decoracion)
+    {
+        if (zona == null || zona.ID != 2 || decoracion == null) return;
+        foreach (var renderer in decoracion.GetComponentsInChildren<MeshRenderer>(true))
+        {
+            if (originalesDecoracion.ContainsKey(renderer)) continue;
+            var fuentes = renderer.sharedMaterials;
+            var resultado = (Material[])fuentes.Clone();
+            bool cambio = false;
+            for (int i = 0; i < fuentes.Length; i++)
+            {
+                var fuente = fuentes[i];
+                if (fuente == null || !fuente.HasProperty("_Color") || materiales.Contains(fuente)
+                    || fuente.name.EndsWith("Paleta Paso (Runtime)", System.StringComparison.Ordinal)) continue;
+                // Conserva las señales y luces intencionales de efigies y poblados.
+                if (fuente.IsKeywordEnabled("_EMISSION") && fuente.HasProperty("_EmissionColor")
+                    && fuente.GetColor("_EmissionColor").maxColorComponent > .05f) continue;
+                if (!materialesDecoracion.TryGetValue(fuente, out var refinado))
+                {
+                    refinado = new Material(fuente) { name = fuente.name + " Paleta Paso (Runtime)", hideFlags = HideFlags.DontSave };
+                    refinado.SetColor("_Color", EnfriarColor(fuente.GetColor("_Color")));
+                    if (refinado.HasProperty("_Metallic")) refinado.SetFloat("_Metallic", 0);
+                    refinado.DisableKeyword("_METALLICGLOSSMAP");
+                    if (refinado.HasProperty("_GlossMapScale")) refinado.SetFloat("_GlossMapScale", Mathf.Min(refinado.GetFloat("_GlossMapScale"), .08f));
+                    if (refinado.HasProperty("_Glossiness")) refinado.SetFloat("_Glossiness", Mathf.Min(refinado.GetFloat("_Glossiness"), .08f));
+                    if (refinado.HasProperty("_BumpScale")) refinado.SetFloat("_BumpScale", Mathf.Min(refinado.GetFloat("_BumpScale"), .5f));
+                    materialesDecoracion.Add(fuente, refinado); materiales.Add(refinado);
+                }
+                resultado[i] = refinado; cambio = true;
+            }
+            if (cambio) { originalesDecoracion.Add(renderer, fuentes); renderer.sharedMaterials = resultado; }
+        }
+        foreach (var sprite in decoracion.GetComponentsInChildren<SpriteRenderer>(true))
+        {
+            if (coloresSprites.ContainsKey(sprite)) continue;
+            coloresSprites.Add(sprite, sprite.color);
+            sprite.color = EsSombra(sprite) ? new Color(.10f,.15f,.20f, Mathf.Min(sprite.color.a, .22f)) : EnfriarColor(sprite.color);
+        }
+    }
+
+    static Color EnfriarColor(Color color)
+    {
+        var gris = new Color(color.grayscale, color.grayscale, color.grayscale, color.a);
+        var neutro = Color.Lerp(color, gris, .28f);
+        return new Color(neutro.r * .85f, neutro.g * .92f, neutro.b * .98f, color.a);
+    }
+
+    static bool EsSombra(SpriteRenderer sprite)
+    {
+        return sprite.sprite != null && (sprite.sprite.name == "Shadow_Blob_1024"
+            || sprite.sprite.texture != null && sprite.sprite.texture.name == "Shadow_Blob_1024");
+    }
+
+    public void AjustarApoyoSombras()
+    {
+        if (zona == null || zona.ID != 2) return;
+        var decorador = zona.GetComponent<MapDecorator>();
+        if (decorador == null) return;
+        // Una pasada al finalizar: los prefabs ya terminaron de ajustar su escala y anclaje.
+        foreach (var par in coloresSprites)
+        {
+            var sprite = par.Key;
+            if (sprite == null || !EsSombra(sprite)) continue;
+            if (!decorador.TrySampleSurface(sprite.transform.position, out var suelo, out var normal)) continue;
+            sprite.transform.position = suelo + normal * .012f;
+            if (Vector3.Dot(sprite.transform.forward, normal) < 0) normal = -normal;
+            sprite.transform.rotation = Quaternion.FromToRotation(sprite.transform.forward, normal) * sprite.transform.rotation;
+        }
+    }
+
+    void PrepararParticulas()
+    {
+        if (nieve != null || zona.TexturaTerreno == null) return;
+        var shader = Resources.Load<Shader>("PasoVientoHeladoAmbiente");
+        if (shader == null) return;
+        materialNieve = new Material(shader) { name = "Nieve fina del Paso (Runtime)", hideFlags = HideFlags.DontSave };
+        materialVentisca = new Material(shader) { name = "Nieve rasante del Paso (Runtime)", hideFlags = HideFlags.DontSave };
+        materiales.Add(materialNieve);
+        materiales.Add(materialVentisca);
+        materialNieve.SetColor("_Color", new Color(.82f,.91f,1f,.42f));
+        materialVentisca.SetColor("_Color", new Color(.70f,.84f,.94f,.12f));
+        int calidad = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel()), 0, 2);
+        float factor = calidad == 0 ? .45f : calidad == 1 ? .7f : 1f;
+        factorParticulas = factor;
+        nieve = CrearParticulas("Copos al viento", materialNieve, 180, .025f, .055f, 10f * factor, 7f, new Vector3(-.34f,-.18f,.085f), 2f);
+        ventisca = CrearParticulas("Nieve barrida sobre el suelo", materialVentisca, 70, .45f, 1.1f, 5f * factor, 5f, new Vector3(-1.1f,.015f,.25f), .18f);
+        camara = Camera.main;
+        ActualizarPosicion();
+        nieve.Play(false);
+        ventisca.Play(false);
+    }
+
+    ParticleSystem CrearParticulas(string nombre, Material material, int maximo, float minTam, float maxTam, float tasa, float vida, Vector3 viento, float alto)
+    {
+        var go = new GameObject(nombre) { layer = zona.TexturaTerreno.gameObject.layer };
+        go.transform.SetParent(transform, true);
+        var ps = go.AddComponent<ParticleSystem>();
+        ps.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+        ps.useAutoRandomSeed = false;
+        ps.randomSeed = (uint) (maximo * 137 + 19);
+        var main = ps.main;
+        main.playOnAwake = false;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.scalingMode = ParticleSystemScalingMode.Shape;
+        main.maxParticles = maximo;
+        main.startSize = new ParticleSystem.MinMaxCurve(minTam, maxTam);
+        main.startLifetime = vida;
+        main.startSpeed = 0;
+        var emission = ps.emission; emission.rateOverTime = tasa;
+        var shape = ps.shape; shape.shapeType = ParticleSystemShapeType.Box;
+        shape.scale = new Vector3(12f, alto, 10f);
+        var velocidad = ps.velocityOverLifetime;
+        velocidad.enabled = true; velocidad.space = ParticleSystemSimulationSpace.World;
+        velocidad.x = viento.x; velocidad.y = viento.y; velocidad.z = viento.z;
+        var color = ps.colorOverLifetime; color.enabled = true;
+        var gradiente = new Gradient();
+        gradiente.SetKeys(new[] { new GradientColorKey(Color.white,0), new GradientColorKey(Color.white,1) },
+            new[] { new GradientAlphaKey(0,0), new GradientAlphaKey(1,.2f), new GradientAlphaKey(.7f,.65f), new GradientAlphaKey(0,1) });
+        color.color = gradiente;
+        var renderer = ps.GetComponent<ParticleSystemRenderer>();
+        renderer.sharedMaterial = material;
+        renderer.shadowCastingMode = ShadowCastingMode.Off;
+        renderer.receiveShadows = false;
+        return ps;
+    }
+
+    void ActualizarPosicion()
+    {
+        if (nieve == null || zona == null || zona.TexturaTerreno == null) return;
+        var bounds = zona.TexturaTerreno.bounds;
+        Vector3 centro = bounds.center;
+        if (camara == null || !camara.isActiveAndEnabled) camara = Camera.main;
+        if (camara != null)
+        {
+            var plano = new Plane(Vector3.up, centro);
+            var rayo = camara.ViewportPointToRay(new Vector3(.5f,.5f,0));
+            if (plano.Raycast(rayo, out float distancia)) centro = rayo.GetPoint(distancia);
+        }
+        centro.x = Mathf.Clamp(centro.x, bounds.min.x, bounds.max.x);
+        centro.z = Mathf.Clamp(centro.z, bounds.min.z, bounds.max.z);
+        var decorador = zona.GetComponent<MapDecorator>();
+        if (decorador != null && decorador.TrySampleSurface(centro, out var suelo, out _)) centro.y = suelo.y;
+        nieve.transform.position = centro + Vector3.up * 1.6f;
+        ventisca.transform.position = centro + Vector3.up * .16f;
+    }
+
+    void Update()
+    {
+        ActualizarPosicion();
+        if (materialNieve == null) return;
+        float hora = CampaignManager.Instance != null ? CampaignManager.Instance.ObtenerHoraActual() : 12f;
+#if UNITY_EDITOR
+        if (horaVistaPrevia >= 0f) hora = Mathf.Repeat(horaVistaPrevia, 24f);
+#endif
+        EvaluarHora(hora, out float intensidad, out _, out _);
+        float dia = Mathf.InverseLerp(.18f, .86f, intensidad);
+        float luz = Mathf.Lerp(.28f, 1f, dia);
+        float t = 1f - Mathf.Exp(-3f * Time.unscaledDeltaTime);
+        luzParticulas = luzParticulas < 0f ? luz : Mathf.Lerp(luzParticulas, luz, t);
+        materialNieve.SetFloat("_Luz", luzParticulas);
+        materialVentisca.SetFloat("_Luz", luzParticulas);
+        Color tinte = Color.Lerp(new Color(.40f,.53f,.78f), Color.white, dia);
+        float ocaso = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(16f, 18.5f, hora)) * (1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(18.5f, 21f, hora)));
+        float alba = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(5f, 7f, hora)) * (1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(7f, 9f, hora)));
+        tinte = Color.Lerp(tinte, new Color(1f,.77f,.66f), ocaso * .48f + alba * .28f);
+        float luzCielo = Mathf.Lerp(.16f, .74f, dia);
+        Shader.SetGlobalFloat("_PasoLuzDiurna", dia);
+        Shader.SetGlobalFloat("_PasoLuzCielo", luzCielo);
+        Shader.SetGlobalColor("_PasoTinteCielo", tinte);
+        if (materialHorizonte != null) { materialHorizonte.SetColor("_Tinte", tinte); materialHorizonte.SetFloat("_Luz", luzCielo); }
+        if (materialLago != null) { materialLago.SetColor("_Tinte", tinte); materialLago.SetFloat("_Luz", luzCielo); }
+        if (ventisca != null)
+        {
+            var emision = ventisca.emission;
+            emision.rateOverTimeMultiplier = factorParticulas * (1.2f + Mathf.Pow(.5f + .5f * Mathf.Sin(Time.unscaledTime * .21f), 3f) * 4f);
+        }
+        foreach (var par in intensidadesRelleno)
+        {
+            if (par.Key == null) continue;
+            par.Key.intensity = Mathf.Lerp(par.Key.intensity, par.Value * Mathf.Lerp(.26f, .66f, dia), t);
+            par.Key.color = Color.Lerp(par.Key.color, Color.Lerp(new Color(.46f,.62f,.88f), coloresRelleno[par.Key], luz), t);
+        }
+    }
+
+    void LateUpdate() { ActualizarHorizonte(); }
+
+    void OnDestroy()
+    {
+        if (relieveFondo != null)
+        {
+            var fondo = relieveFondo.gameObject;
+            fondo.SetActive(false); relieveFondo.SetParent(null, true);
+            if (Application.isPlaying) Destroy(fondo); else DestroyImmediate(fondo);
+        }
+        if (filtroPared != null && filtroPared.sharedMesh == relievePared) filtroPared.sharedMesh = paredOriginal;
+        if (relievePared != null) { if (Application.isPlaying) Destroy(relievePared); else DestroyImmediate(relievePared); }
+        if (horizonte != null) { if (Application.isPlaying) Destroy(horizonte); else DestroyImmediate(horizonte); }
+        if (mallaHorizonte != null) { if (Application.isPlaying) Destroy(mallaHorizonte); else DestroyImmediate(mallaHorizonte); }
+        if (texturaHorizonte != null) { if (Application.isPlaying) Destroy(texturaHorizonte); else DestroyImmediate(texturaHorizonte); }
+        foreach (var par in coloresSprites) if (par.Key != null) par.Key.color = par.Value;
+        foreach (var par in originalesDecoracion)
+        {
+            if (par.Key == null) continue;
+            var actuales = par.Key.sharedMaterials;
+            bool cambio = false;
+            for (int i = 0; i < Mathf.Min(actuales.Length, par.Value.Length); i++)
+                if (materiales.Contains(actuales[i])) { actuales[i] = par.Value[i]; cambio = true; }
+            if (cambio) par.Key.sharedMaterials = actuales;
+        }
+        foreach (var par in intensidadesRelleno)
+            if (par.Key != null) { par.Key.intensity = par.Value; par.Key.color = coloresRelleno[par.Key]; }
+        foreach (var par in originales)
+            if (par.Key != null && materiales.Contains(par.Key.sharedMaterial)) par.Key.sharedMaterial = par.Value;
+        foreach (var material in materiales)
+            if (material != null) { if (Application.isPlaying) Destroy(material); else DestroyImmediate(material); }
+    }
+}

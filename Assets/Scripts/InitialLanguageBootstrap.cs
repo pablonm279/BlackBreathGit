@@ -9,6 +9,13 @@ internal static class InitialLanguageBootstrap
     {
         if (PlayerPrefs.HasKey(LanguagePlayerPrefsKey))
         {
+            int savedLanguage = PlayerPrefs.GetInt(LanguagePlayerPrefsKey);
+            int normalizedLanguage = TRADU.NormalizarIdioma(savedLanguage);
+            if (savedLanguage != normalizedLanguage)
+            {
+                PlayerPrefs.SetInt(LanguagePlayerPrefsKey, normalizedLanguage);
+                PlayerPrefs.Save();
+            }
             return;
         }
 
@@ -16,6 +23,7 @@ internal static class InitialLanguageBootstrap
         {
             SystemLanguage.Spanish => TRADU.IdiomaEspanol,
             SystemLanguage.Portuguese => TRADU.IdiomaPortugues,
+            SystemLanguage.ChineseSimplified when ChineseLocalization.IsAvailable => TRADU.IdiomaChinoSimplificado,
             _ => TRADU.IdiomaIngles
         };
 

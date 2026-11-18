@@ -1,0 +1,4 @@
+[mcp_servers.unity_black_breath]
+command = 'C:\Users\Pablo\.unity\relay\relay_win.exe'
+args = ['--mcp', '--project-path', 'C:\UnityProyectosNOborrar\GDD - Untitled']
+startup_timeout_sec = 120

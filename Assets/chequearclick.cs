@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 
 public class chequearclick : MonoBehaviour
 {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     void Update()
     {
         if (!Input.GetMouseButtonDown(0)) return;
@@ -30,4 +31,5 @@ public class chequearclick : MonoBehaviour
             Debug.Log($"{i}. {r.gameObject.name} | Canvas: {r.module.gameObject.name} | Depth: {r.depth} | SortingLayer: {r.sortingLayer} | SortingOrder: {r.sortingOrder}");
         }
     }
+#endif
 }

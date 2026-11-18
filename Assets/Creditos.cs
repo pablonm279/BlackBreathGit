@@ -28,6 +28,8 @@ public class Creditos : MonoBehaviour
                     panelEspaniol.SetActive(false);
                     panelIngles.SetActive(false);
                     break;
+                // La versión china usa el mismo diseño y traduce su texto TMP mediante el catálogo.
+                case TRADU.IdiomaChinoSimplificado:
                 default:
                     panelEspaniol.SetActive(true);
                     panelIngles.SetActive(false);

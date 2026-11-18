@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -41,6 +40,7 @@ public class ManifestacionArcana : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
     int energiaRequerida = NIVEL == 5 ? 1 : 2;
     int bonusAtaqueBase = NIVEL > 1 ? 1 : 0;
@@ -50,6 +50,7 @@ public class ManifestacionArcana : Habilidad
     string tituloEs = "Manifestacion Arcana I";
     string tituloEn = "Arcane Manifestation I";
     string tituloPt = "Manifestacao Arcana I";
+    string tituloZh = "奥术具现 I";
     if (NIVEL == 2) { tituloEs = "Manifestacion Arcana II"; tituloEn = "Arcane Manifestation II"; }
     if (NIVEL == 3) { tituloEs = "Manifestacion Arcana III"; tituloEn = "Arcane Manifestation III"; }
     if (NIVEL == 4) { tituloEs = "Manifestacion Arcana IV a"; tituloEn = "Arcane Manifestation IV a"; }
@@ -58,6 +59,10 @@ public class ManifestacionArcana : Habilidad
     if (NIVEL == 3) { tituloPt = "Manifestacao Arcana III"; }
     if (NIVEL == 4) { tituloPt = "Manifestacao Arcana IV a"; }
     if (NIVEL == 5) { tituloPt = "Manifestacao Arcana IV b"; }
+    if (NIVEL == 2) { tituloZh = "奥术具现 II"; }
+    if (NIVEL == 3) { tituloZh = "奥术具现 III"; }
+    if (NIVEL == 4) { tituloZh = "奥术具现 IV a"; }
+    if (NIVEL == 5) { tituloZh = "奥术具现 IV b"; }
 
     if (esIngles)
     {
@@ -92,6 +97,42 @@ public class ManifestacionArcana : Habilidad
         "Creates an Arcane Manifestation empowered by every Energy Residue on the battlefield.",
         lineas,
         proximaMejora,
+        colorTitulo: "#ab47bc");
+      return;
+    }
+
+    if (esChino)
+    {
+      string energiaZh = TerminoDescripcion(TerminoDescripcionId.Energia, "能量等级", "Estado_acumularenergia");
+      string manifestacionZh = TerminoDescripcion(TerminoDescripcionId.ManifestacionArcana, "奥术具现");
+      string residuosZh = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "能量残留", "Estado_acumularenergia");
+      string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "召唤物攻击 +1。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "召唤物防御 +1。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：召唤物最大行动点 +1。\n选项B：只需要 1 级能量。"; }
+      }
+      var lineasZh = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("目标", "1 个格子"),
+        LineaDescripcion("需求", $"{energiaRequerida} 级以上{energiaZh}。"),
+        LineaDescripcion("效果", $"在目标格子上召唤 1 个{manifestacionZh}。"),
+        LineaDescripcion("召唤时", $"吸收并摧毁战场上所有的{residuosZh}。", 1),
+        LineaDescripcion("每吸收一份", "伤害 +5%，最大生命值 +6。", 1)
+      };
+      if (bonusAtaqueBase > 0) { lineasZh.Add(LineaDescripcion("基础加成", $"攻击 +{bonusAtaqueBase}。")); }
+      if (bonusDefensaBase > 0) { lineasZh.Add(LineaDescripcion("基础加成", $"防御 +{bonusDefensaBase}。")); }
+      if (bonusAPMax > 0) { lineasZh.Add(LineaDescripcion("基础加成", $"最大行动点 +{bonusAPMax}。")); }
+      lineasZh.Add(LineaDescripcion("召唤回合", $"以 0 点{apZh}开始。"));
+      lineasZh.Add(LineaDescripcion("努力施为", $"最多消耗 {esforzable} 点行动点。"));
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "召唤一个奥术具现，其力量随战场上每一份能量残留而增强。",
+        lineasZh,
+        proximaMejoraZh,
         colorTitulo: "#ab47bc");
       return;
     }

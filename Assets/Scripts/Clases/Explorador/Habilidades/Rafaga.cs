@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -137,6 +136,49 @@ public class Rafaga : Habilidad
       {
         ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
         if (clase != null && clase.ObtenerCantidadFlechas() < 1)
+        {
+          txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+        }
+      }
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string agilidadZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+      string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+      string flechaZh = TerminoDescripcion(TerminoDescripcionId.Flecha, "箭");
+      string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+      string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "攻击检定加成 +1。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "冷却 -1。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：勇气消耗 -1。\n选项B：攻击检定加成 +2。"; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        "连射 " + (NIVEL < 2 ? "I" : NIVEL == 2 ? "II" : NIVEL == 3 ? "III" : NIVEL == 4 ? "IV a" : "IV b"),
+        "消耗剩余的行动点和箭矢，进行连续射击。",
+        new[]
+        {
+          LineaDescripcion("目标", "1 名敌人"),
+          LineaDescripcion("效果", "对目标进行连续攻击；若目标死亡，则改为攻击另一名敌人。"),
+          LineaDescripcion("重复", $"只要当前{apZh}和{flechaZh}还有剩余便持续进行；每次射击消耗 1 点行动点和 1 支箭。", 1),
+          LineaDescripcion("攻击检定", $"1d20 + {agilidadZh}{bonusTirada} 对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentaje}%。", 1),
+          LineaDescripcion("命中时", $"受到 {rangoDanio} + {agilidadZh} 点{danoZh}。", 1),
+          LineaDescripcion("消耗", $"{costoPM} 点{valentiaZh}；需要 1 支{flechaZh}"),
+          LineaDescripcion("结束条件", "结束本回合")
+        },
+        proximaMejoraZh);
+
+      if (EsEscenaCampaña())
+      {
+        ClaseExplorador claseZh = Usuario.GetComponent<ClaseExplorador>();
+        if (claseZh != null && claseZh.ObtenerCantidadFlechas() < 1)
         {
           txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
         }

@@ -99,6 +99,31 @@ public class Estocada : Habilidad
             return;
         }
 
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, "力量");
+            string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, "敏捷");
+            string mixZh = $"{fuerzaZh}/{agiZh}（{atributoMixtoActual}）";
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+            string penZh = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "护甲穿透", "IconoArmadura");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "突刺",
+                "精准的一击，可以穿透护甲。",
+                new List<LineaDescripcionNormalizada>
+                {
+                    LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+                    LineaDescripcion("效果", $"命中时，造成 {rangoDanio} + {mixZh} 点{danoZh}。"),
+                    LineaDescripcion("攻击检定", $"1d20 + {mixZh}{bonusTirada} 对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+                    LineaDescripcion("穿透", $"{penZh}：{penetracionArmadura}。"),
+                    LineaDescripcion("加成来源", $"{fuerzaZh}的一半加上{agiZh}的一半，向上取整。"),
+                    LineaDescripcion("耗力", $"最多 {esforzable} 点行动点。")
+                },
+                mostrarIconoMelee: true);
+            return;
+        }
+
         if (esPortugues)
         { string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Força"); string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade"); string mix=$"{forca}/{agi} ({atributoMixtoActual})"; string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante"); string pen=TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura,"Penetração de Armadura","IconoArmadura"); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Estocada","Uma estocada precisa que perfura armadura.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 alvo ou obstáculo em alcance corpo a corpo"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} + {mix} como {dano}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetração",$"{pen}: {penetracionArmadura}."),LineaDescripcion("Escalonamento",$"Metade de {forca} + metade de {agi}, arredondado para cima."),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},mostrarIconoMelee:true); return; }
         { string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Fuerza"); string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidad"); string mix=$"{fuerza}/{agi} ({atributoMixtoActual})"; string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa"); string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico"); string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante"); string pen=TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura,"Penetración de Armadura","IconoArmadura"); txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Estocada","Una estocada precisa que perfora armadura.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 objetivo u obstáculo en alcance cuerpo a cuerpo"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} + {mix} como {dano}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetración",$"{pen}: {penetracionArmadura}."),LineaDescripcion("Escalado",$"Mitad de {fuerza} + mitad de {agi}, redondeado hacia arriba."),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},mostrarIconoMelee:true); return; }

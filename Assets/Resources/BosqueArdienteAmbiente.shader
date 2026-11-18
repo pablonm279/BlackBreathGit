@@ -49,9 +49,9 @@ Shader "Campania/Bosque Ardiente/Ambiente"
                 if (_Modo < 1.5)
                 {
                     float2 uv = i.uv * float2(4.2,3.1) + float2(-t*.075, -t*.11);
-                    float n = ruido(uv) * .7 + ruido(uv*2.1+7.1)*.3;
+                    float n = ruido(uv) * .58 + ruido(uv*2.1+7.1)*.29 + ruido(uv*4.3-t*.025)*.13;
                     float borde = saturate(1-dot(p,p));
-                    alfa = borde*borde * smoothstep(.2,.78,n) * i.color.a;
+                    alfa = borde*borde * smoothstep(.17,.80,n) * i.color.a;
                     color *= lerp(.72,1.12,n);
                 }
                 else if (_Modo < 2.5)

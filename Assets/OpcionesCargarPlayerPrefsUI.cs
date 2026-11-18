@@ -35,6 +35,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public Toggle EnglishToggle;
     public Toggle PortuguesToggle;
+    public Toggle chinoSimplificadoToggle;
     public TextMeshProUGUI restartRequiredText;
 
     bool musicInBackground = true;
@@ -116,6 +117,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void AplicarEfectosEnUI()
     {
+        VincularSelectorChinoExistente();
         AsegurarControlesAudioSfx();
         AsegurarDropdownLimitadorFPS();
         AsegurarSliderEscalaTexto();
@@ -153,6 +155,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         EspaniolToggle.SetIsOnWithoutNotify(false);
         EnglishToggle.SetIsOnWithoutNotify(false);
         PortuguesToggle.SetIsOnWithoutNotify(false); 
+        if (chinoSimplificadoToggle != null) chinoSimplificadoToggle.SetIsOnWithoutNotify(false);
 
         if (nIdioma == TRADU.IdiomaEspanol)
         { EspaniolToggle.SetIsOnWithoutNotify(true); }
@@ -160,6 +163,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         { EnglishToggle.SetIsOnWithoutNotify(true); }
         else if (nIdioma == TRADU.IdiomaPortugues )
         { PortuguesToggle.SetIsOnWithoutNotify(true); }
+        else if (nIdioma == TRADU.IdiomaChinoSimplificado && chinoSimplificadoToggle != null)
+        { chinoSimplificadoToggle.SetIsOnWithoutNotify(true); }
         else
         { EspaniolToggle.SetIsOnWithoutNotify(true);}
         ActualizarEtiquetasAudio();
@@ -545,6 +550,12 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             graficosDropdown.options[1].text = "Media";
             graficosDropdown.options[2].text = "Ultra";
         }
+        else if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            graficosDropdown.options[0].text = ChineseLocalization.Get("Baja", "Low");
+            graficosDropdown.options[1].text = ChineseLocalization.Get("Media", "Medium");
+            graficosDropdown.options[2].text = ChineseLocalization.Get("Ultra", "Ultra");
+        }
 
         graficosDropdown.RefreshShownValue();
 
@@ -580,6 +591,14 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             dificultadDropdown.options[2].text = "Normal";
             dificultadDropdown.options[3].text = "Dificil";
             dificultadDropdown.options[4].text = "Muito Dificil";
+        }
+        else if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            dificultadDropdown.options[0].text = ChineseLocalization.Get("Muy Facil", "Very Easy");
+            dificultadDropdown.options[1].text = ChineseLocalization.Get("Facil", "Easy");
+            dificultadDropdown.options[2].text = ChineseLocalization.Get("Normal", "Normal");
+            dificultadDropdown.options[3].text = ChineseLocalization.Get("Dificil", "Hard");
+            dificultadDropdown.options[4].text = ChineseLocalization.Get("Muy Dificil", "Very Hard");
         }
 
         dificultadDropdown.RefreshShownValue();
@@ -802,6 +821,10 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         {
             etiquetaEscalaTexto.text = "Tamanho do texto: " + porcentaje + "%";
         }
+        else if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            etiquetaEscalaTexto.text = string.Format(ChineseLocalization.Get("Tamaño de texto: {0}%", "Text size: {0}%"), porcentaje);
+        }
         else
         {
             etiquetaEscalaTexto.text = "Tamaño de texto: " + porcentaje + "%";
@@ -997,6 +1020,10 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         else if (idioma == TRADU.IdiomaPortugues)
         {
             etiquetaBanter.text = "Conversas dos personagens";
+        }
+        else if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            etiquetaBanter.text = ChineseLocalization.Get("Diálogos de personajes", "Character banter");
         }
         else
         {
@@ -1247,6 +1274,10 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             {
                 fpsLimitLabel.text = "Limite de FPS";
             }
+            else if (idioma == TRADU.IdiomaChinoSimplificado)
+            {
+                fpsLimitLabel.text = ChineseLocalization.Get("Limitador de FPS", "FPS Limit");
+            }
             else
             {
                 fpsLimitLabel.text = "Limitador de FPS";
@@ -1265,6 +1296,10 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         else if (idioma == TRADU.IdiomaPortugues)
         {
             fpsLimitDropdown.options[5].text = "Sem limite";
+        }
+        else if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            fpsLimitDropdown.options[5].text = ChineseLocalization.Get("Sin limite", "Unlimited");
         }
         else
         {
@@ -1324,6 +1359,9 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         Debug.Log("EN: " + (EnglishToggle != null && EnglishToggle.isOn));
         Debug.Log("ES: " + (EspaniolToggle != null && EspaniolToggle.isOn));
 
+        if (chinoSimplificadoToggle != null && chinoSimplificadoToggle.isOn)
+            return TRADU.IdiomaChinoSimplificado;
+
         if (PortuguesToggle != null && PortuguesToggle.isOn)
             return TRADU.IdiomaPortugues;
 
@@ -1353,7 +1391,7 @@ public void OnEnglishToggle(bool isOn)
 
 public void CambiarIdioma(int idioma)
 {
-    nIdioma = idioma;
+    nIdioma = TRADU.NormalizarIdioma(idioma);
     PlayerPrefs.SetInt("nIdioma", nIdioma);
     PlayerPrefs.Save();
 
@@ -1369,10 +1407,35 @@ public void CambiarIdioma(int idioma)
     TraducirDropdownDificultad();
     ActualizarTextosLimitadorFPS();
     ActualizarEtiquetaBanter();
+    ActualizarEtiquetaEscalaTexto();
     AplicarIdiomaPanelControles();
     RefrescarObjetosMenuDependientesIdioma();
     SetRestartRequiredText(string.Empty);
 }
+
+    public void OnChinoSimplificadoToggle(bool isOn)
+    {
+        if (!isOn) return;
+        ChineseFontFallback.EnsureRegistered();
+        CambiarIdioma(TRADU.IdiomaChinoSimplificado);
+    }
+
+    private void VincularSelectorChinoExistente()
+    {
+        if (chinoSimplificadoToggle != null || PanelIdioma == null) return;
+        foreach (Toggle toggle in PanelIdioma.GetComponentsInChildren<Toggle>(true))
+        {
+            for (int i = 0; i < toggle.onValueChanged.GetPersistentEventCount(); i++)
+            {
+                if (toggle.onValueChanged.GetPersistentTarget(i) == this
+                    && toggle.onValueChanged.GetPersistentMethodName(i) == nameof(OnChinoSimplificadoToggle))
+                {
+                    chinoSimplificadoToggle = toggle;
+                    return;
+                }
+            }
+        }
+    }
 
     private void RefrescarObjetosMenuDependientesIdioma()
     {
@@ -1402,6 +1465,10 @@ public void CambiarIdioma(int idioma)
 
     private static string ObtenerTextoReinicio(int idioma)
     {
+        if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return ChineseLocalization.Get("Se requiere reiniciar para aplicar los cambios.", "Restart required to apply changes.");
+        }
         if (idioma == TRADU.IdiomaIngles)
         {
             return "Restart required to apply changes.";
@@ -1585,6 +1652,11 @@ public void CambiarIdioma(int idioma)
             textoMusica = "Volume da Musica";
             textoSfx = "Volume de Efeitos";
         }
+        else if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            textoMusica = ChineseLocalization.Get("Volumen de la Musica", "Music Volume");
+            textoSfx = ChineseLocalization.Get("Volumen de Efectos", "SFX Volume");
+        }
 
         if (etiquetaVolMusica != null)
         {
@@ -1660,6 +1732,10 @@ public void CambiarIdioma(int idioma)
         else if (idioma == TRADU.IdiomaPortugues)
         {
             brilloLabel.text = "Brilho";
+        }
+        else if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            brilloLabel.text = ChineseLocalization.Get("Brillo", "Brightness");
         }
         else
         {

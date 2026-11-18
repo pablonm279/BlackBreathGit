@@ -10,6 +10,8 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
     const string RutaAudioEscape = "Cuervos_escape";
     const int ColumnasHoja = 4;
     const int FilasHoja = 1;
+    [SerializeField, HideInInspector] int zonaHabilitada = 1;
+    bool EsPasoVientoHelado => zonaHabilitada == 2;
 
     [Header("Aparicion")]
     [SerializeField] int cantidadMinima = 4;
@@ -66,6 +68,7 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
         public float velocidadOndulacion;
         public float escala;
         public int offsetFrame;
+        public float ultimaPosicionX = float.NegativeInfinity;
     }
 
     sealed class BandadaActiva
@@ -91,10 +94,13 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
         public float fpsAleteo;
         public float multiplicadorFormacionInicial;
         public float multiplicadorFormacionFinal;
+        public bool esGanso;
     }
 
     readonly List<Sprite> framesAleteo = new List<Sprite>(ColumnasHoja * FilasHoja);
     readonly List<Sprite> framesAleteoCenital = new List<Sprite>(ColumnasHoja * FilasHoja);
+    readonly List<Sprite> framesGanso = new List<Sprite>(ColumnasHoja);
+    readonly List<Sprite> framesGansoCenital = new List<Sprite>(ColumnasHoja);
     readonly List<BandadaActiva> bandadas = new List<BandadaActiva>(1);
 
     AtributosZona atributosZona;
@@ -103,9 +109,47 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
     Coroutine cicloAparicion;
     static BandadasBosqueArdiente instanciaActiva;
 
+    public static void PrepararPasoVientoHelado(AtributosZona zona)
+    {
+        if (zona == null || zona.ID != 2 || zona.pasovientoheladoContenedorGameObjects == null) return;
+        Transform contenedor = zona.pasovientoheladoContenedorGameObjects.transform;
+        if (contenedor.Find("Bandadas del Paso (Runtime)") != null) return;
+
+        GameObject raiz = new GameObject("Bandadas del Paso (Runtime)");
+        raiz.SetActive(false);
+        raiz.transform.SetParent(contenedor, false);
+        var sistema = raiz.AddComponent<BandadasBosqueArdiente>();
+        sistema.zonaHabilitada = 2;
+        sistema.cantidadMinima = 5;
+        sistema.cantidadMaxima = 10;
+        sistema.retrasoInicialSegundos = new Vector2(8f, 15f);
+        sistema.intervaloSegundos = new Vector2(14f, 24f);
+        sistema.desdeDerecha = false;
+        sistema.profundidadCamara = new Vector2(7.5f, 10.5f);
+        sistema.duracionCruceSegundos = new Vector2(14f, 18f);
+        sistema.separacionFormacion = 0.30f;
+        sistema.pixelesPorUnidad = 350f;
+        sistema.escalaPajaros = new Vector2(0.065f, 0.078f);
+        sistema.velocidadAleteo = new Vector2(8f, 11f);
+        sistema.tintePajaros = new Color(0.78f, 0.85f, 0.92f, 1f);
+        sistema.ordenRender = 5100;
+        // Las ondulaciones no deben invertir el avance respecto al frente del Aliento.
+        sistema.amplitudOndulacionViewport = 0.008f;
+        sistema.amplitudOndulacionSecundariaViewport = 0.002f;
+        raiz.SetActive(true);
+    }
+
     void Awake()
     {
         atributosZona = GetComponentInParent<AtributosZona>();
+        if (EsPasoVientoHelado)
+        {
+            CargarFramesAleteo("ObjetosMapa/Bandadas/PinzonNival_Atlas", framesAleteo, "PinzonNival", 2, 0);
+            CargarFramesAleteo("ObjetosMapa/Bandadas/PinzonNival_Atlas", framesAleteoCenital, "PinzonNivalCenital", 2, 1);
+            CargarFramesAleteo("ObjetosMapa/Bandadas/GansoEscarcha_Atlas", framesGanso, "GansoEscarcha", 2, 0);
+            CargarFramesAleteo("ObjetosMapa/Bandadas/GansoEscarcha_Atlas", framesGansoCenital, "GansoEscarchaCenital", 2, 1);
+            return;
+        }
         CargarFramesAleteo(RutaHojaSprites, framesAleteo, "CuervoBandada");
         CargarFramesAleteo(RutaHojaSpritesCenital, framesAleteoCenital, "CuervoBandadaCenital");
         audioEscape = Resources.Load<AudioClip>(RutaAudioEscape);
@@ -182,6 +226,10 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
         }
 
         framesAleteoCenital.Clear();
+        foreach (Sprite frame in framesGanso) if (frame != null) Destroy(frame);
+        foreach (Sprite frame in framesGansoCenital) if (frame != null) Destroy(frame);
+        framesGanso.Clear();
+        framesGansoCenital.Clear();
     }
 
     IEnumerator CicloAparicion()
@@ -215,7 +263,7 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
             atributosZona = GetComponentInParent<AtributosZona>();
         }
 
-        if (atributosZona == null || atributosZona.ID != 1 || atributosZona.DecoracionZonaEnCurso)
+        if (atributosZona == null || atributosZona.ID != zonaHabilitada || atributosZona.DecoracionZonaEnCurso)
         {
             return false;
         }
@@ -255,7 +303,7 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
             : null;
     }
 
-    void CargarFramesAleteo(string rutaHoja, List<Sprite> destino, string prefijoNombre)
+    void CargarFramesAleteo(string rutaHoja, List<Sprite> destino, string prefijoNombre, int filas = FilasHoja, int primeraFila = 0)
     {
         Texture2D hoja = Resources.Load<Texture2D>(rutaHoja);
         if (hoja == null)
@@ -264,17 +312,17 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
             return;
         }
 
-        int anchoFrame = hoja.width / ColumnasHoja;
-        int altoFrame = hoja.height / FilasHoja;
+        float anchoFrame = hoja.width / (float)ColumnasHoja;
+        float altoFrame = hoja.height / (float)filas;
         if (anchoFrame <= 0 || altoFrame <= 0)
         {
             Debug.LogWarning("[BandadasBosqueArdiente] La hoja de cuervos no tiene dimensiones validas.", this);
             return;
         }
 
-        for (int filaVisual = 0; filaVisual < FilasHoja; filaVisual++)
+        for (int filaVisual = primeraFila; filaVisual < primeraFila + FilasHoja; filaVisual++)
         {
-            int filaTextura = FilasHoja - 1 - filaVisual;
+            int filaTextura = filas - 1 - filaVisual;
             for (int columna = 0; columna < ColumnasHoja; columna++)
             {
                 Rect rect = new Rect(
@@ -311,7 +359,7 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
 
         BandadaActiva bandada = new BandadaActiva
         {
-            raiz = new GameObject("Bandada Bosque Ardiente (Runtime)"),
+            raiz = new GameObject(EsPasoVientoHelado ? "Bandada Paso Viento Helado (Runtime)" : "Bandada Bosque Ardiente (Runtime)"),
             duracion = Mathf.Max(0.1f, RangoOrdenado(duracionCruceSegundos)),
             faseVelocidad = Random.Range(0f, Mathf.PI * 2f),
             semillaRuido = Random.Range(0f, 1000f),
@@ -397,7 +445,7 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
 
         BandadaActiva bandada = new BandadaActiva
         {
-            raiz = new GameObject("Bandada Escape Bosque Ardiente (Runtime)"),
+            raiz = new GameObject(EsPasoVientoHelado ? "Bandada Escape Paso Viento Helado (Runtime)" : "Bandada Escape Bosque Ardiente (Runtime)"),
             duracion = Mathf.Max(
                 0.1f,
                 RangoOrdenado(duracionEscapeSegundos) * factorDistancia / Mathf.Max(0.1f, velocidadEscape)),
@@ -456,6 +504,20 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
         Vector2 finViewport,
         float profundidad)
     {
+        if (EsPasoVientoHelado)
+        {
+            // El Aliento avanza desde la izquierda. Incluso un escape desde un nodo
+            // o una trayectoria cenital debe conservar una componente hacia la derecha.
+            Vector2 direccion = finViewport - inicioViewport;
+            direccion.x = Mathf.Max(0.35f, Mathf.Abs(direccion.x));
+            finViewport = CalcularSalidaViewport(inicioViewport, direccion.normalized);
+            bandada.esGanso = framesGanso.Count > 0 && framesGansoCenital.Count > 0 && Random.value < 0.35f;
+            if (bandada.esGanso)
+            {
+                bandada.fpsAleteo *= 0.55f;
+                bandada.duracion *= 1.15f;
+            }
+        }
         Vector2 deltaViewport = finViewport - inicioViewport;
         if (deltaViewport.sqrMagnitude <= 0.0001f)
         {
@@ -463,11 +525,13 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
         }
 
         bool vueloVertical = Mathf.Abs(deltaViewport.y) > Mathf.Abs(deltaViewport.x);
-        bool usarSpritesCenitales = vueloVertical && framesAleteoCenital.Count > 0;
-        bandada.framesAleteo = usarSpritesCenitales ? framesAleteoCenital : framesAleteo;
+        List<Sprite> laterales = bandada.esGanso ? framesGanso : framesAleteo;
+        List<Sprite> cenitales = bandada.esGanso ? framesGansoCenital : framesAleteoCenital;
+        bool usarSpritesCenitales = vueloVertical && cenitales.Count > 0;
+        bandada.framesAleteo = usarSpritesCenitales ? cenitales : laterales;
         if (bandada.framesAleteo.Count == 0)
         {
-            bandada.framesAleteo = framesAleteoCenital;
+            bandada.framesAleteo = cenitales;
             usarSpritesCenitales = true;
         }
 
@@ -501,12 +565,14 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
 
     void CrearPajaros(BandadaActiva bandada, int cantidad, float profundidad)
     {
+        if (bandada.esGanso) cantidad = Mathf.Clamp(cantidad, 3, 6);
         float profundidadMedia = Mathf.Max(0.1f, (profundidadCamara.x + profundidadCamara.y) * 0.5f);
         float compensacionProfundidad = profundidad / profundidadMedia;
 
         for (int i = 0; i < cantidad; i++)
         {
-            GameObject goPajaro = new GameObject($"Cuervo {i + 1}");
+            string especie = EsPasoVientoHelado ? (bandada.esGanso ? "Ganso de escarcha" : "Pinzon nival") : "Cuervo";
+            GameObject goPajaro = new GameObject($"{especie} {i + 1}");
             goPajaro.transform.SetParent(bandada.raiz.transform, false);
 
             SpriteRenderer renderer = goPajaro.AddComponent<SpriteRenderer>();
@@ -521,7 +587,7 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
                 offsetFormacion = ObtenerOffsetFormacion(i),
                 faseOndulacion = Random.Range(0f, Mathf.PI * 2f),
                 velocidadOndulacion = Random.Range(1.6f, 2.5f),
-                escala = RangoOrdenado(escalaPajaros) * compensacionProfundidad,
+                escala = RangoOrdenado(escalaPajaros) * compensacionProfundidad * (bandada.esGanso ? 1.35f : 1f),
                 offsetFrame = Random.Range(0, bandada.framesAleteo.Count)
             });
         }
@@ -591,6 +657,8 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
         float desplazamientoOndulacion = ((onda + deriva) * bandada.amplitudOndulacion)
             + (ondaSecundaria * bandada.amplitudOndulacionSecundaria);
         posicionMundo += bandada.perpendicularMundo * desplazamientoOndulacion;
+        if (EsPasoVientoHelado && deltaTime > 0f)
+            posicionMundo.x = Mathf.Max(posicionMundo.x, bandada.raiz.transform.position.x);
 
         bandada.raiz.transform.SetPositionAndRotation(posicionMundo, bandada.rotacionMundo);
 
@@ -617,6 +685,13 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
                 i * 0.002f);
             pajaro.visual.localRotation = bandada.rotacionLocalPajaros;
             pajaro.visual.localScale = Vector3.one * pajaro.escala;
+            if (EsPasoVientoHelado)
+            {
+                Vector3 posicion = pajaro.visual.position;
+                posicion.x = Mathf.Max(posicion.x, pajaro.ultimaPosicionX);
+                pajaro.visual.position = posicion;
+                pajaro.ultimaPosicionX = posicion.x;
+            }
 
             int frame = ((int)(bandada.tiempo * bandada.fpsAleteo) + pajaro.offsetFrame) % bandada.framesAleteo.Count;
             pajaro.renderer.sprite = bandada.framesAleteo[frame];

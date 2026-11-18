@@ -49,6 +49,12 @@ public class intensidadluzcaminos : MonoBehaviour
             ? intensidadNoche
             : intensidadDia;
 
+        if (campaignManager != null && campaignManager.scAtributosZona != null && campaignManager.scAtributosZona.ID == 2)
+        {
+            AmbientePasoVientoHelado.EvaluarHora(campaignManager.ObtenerHoraActual(), out float luzSolar, out _, out _);
+            intensidadObjetivo = Mathf.Lerp(intensidadNoche, intensidadDia * .68f, Mathf.InverseLerp(.18f, 1.04f, luzSolar));
+        }
+
         if (inmediata || duracionTransicion <= 0f)
         {
             luz.intensity = intensidadObjetivo;

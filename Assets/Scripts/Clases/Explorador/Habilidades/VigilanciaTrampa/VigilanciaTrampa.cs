@@ -55,9 +55,11 @@ public class VigilanciaTrampa : Trampa
       {
         string mensajeSinFlechas = TRADU.i != null && TRADU.i.nIdioma == 2
           ? "No more arrows"
-          : TRADU.i != null && TRADU.i.nIdioma == 3
-            ? "Não há mais flechas"
-            : "No hay más flechas";
+          : TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado
+            ? "没有箭矢了"
+            : TRADU.i != null && TRADU.i.nIdioma == 3
+              ? "Não há mais flechas"
+              : "No hay más flechas";
         _ = unidadCreadora.GenerarTextoFlotante(mensajeSinFlechas, Color.gray, FloatingTextContext.Resist);
         if (BattleManager.Instance != null)
         {

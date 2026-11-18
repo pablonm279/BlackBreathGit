@@ -1,0 +1,10 @@
+--- antes/AtributosZona.cs
++++ Assets/Scripts/Campania/AtributosZona.cs
+@@ -1098,6 +1098,7 @@
+           kOverride: 20);
+ 
+       AmbienteBosqueArdiente.Preparar(this, usarTexturaProceduralBosqueAngustiante);
++      yield return AdornosBosqueArdiente.Generar(this);
+ 
+       if (admin != null)
+       {

@@ -127,6 +127,38 @@ public class AFondo : Habilidad
                 mostrarIconoMelee: true);
             return;
         }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, "力量");
+            string agilidadZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, "敏捷");
+            string mixZh = $"{fuerzaZh}/{agilidadZh}（{atributoMixtoActual}）";
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string fortZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+            string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+            string sangZh = TerminoDescripcion(TerminoDescripcionId.Sangrado, "流血", "Estado_sangrano");
+            string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null
+                : NIVEL < 2 ? "伤害 +2。"
+                : NIVEL == 2 ? "护甲穿透 +1。"
+                : NIVEL == 3 ? "选项A：流血 +2。选项B：暴击率 +5%。"
+                : null;
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                tituloEs,
+                "刺穿一名目标及其后方两条对角线，可能造成流血。",
+                new List<LineaDescripcionNormalizada>
+                {
+                    LineaDescripcion("目标", "1 名敌人及其后方两个对角格"),
+                    LineaDescripcion("效果", $"命中时，造成 {rangoDanio} 点{danoZh}。"),
+                    LineaDescripcion("攻击检定", $"1d20 + {mixZh}{bonusTirada} 对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+                    LineaDescripcion("穿透", $"护甲穿透：{penetracionArmadura}。"),
+                    LineaDescripcion("豁免", $"目标进行{fortZh}豁免，对抗难度 {dcFortitud}。", 1),
+                    LineaDescripcion("豁免失败", $"若受到伤害，获得 {sangradoAplicado} 点{sangZh}。", 1),
+                    LineaDescripcion("耗力", $"最多 {esforzable} 点行动点。")
+                },
+                proxZh,
+                mostrarIconoMelee: true);
+            return;
+        }
         if(esPortugues){string forca=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Força");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidade");string mix=$"{forca}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortitude","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"dano Perfurante","dano_perforante");string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangramento","Estado_sangrano");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +2 de dano.":NIVEL==2?"Próximo nível: +1 Penetração de Armadura.":NIVEL==3?"Opção A: +2 Sangramento. Opção B: +5% de Crítico.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Perfura um alvo e as 2 diagonais traseiras, podendo causar Sangramento.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Alvo","1 inimigo e as 2 casas diagonais traseiras"),LineaDescripcion("Efeito",$"Ao acertar, causa {rangoDanio} como {dano}."),LineaDescripcion("Rolagem de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Falha crítica: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetração",$"Penetração de Armadura: {penetracionArmadura}."),LineaDescripcion("Salvaguarda",$"{fort} do alvo vs CD {dcFortitud}.",1),LineaDescripcion("Falha",$"Se sofrer dano, recebe {sangradoAplicado} {sang}.",1),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
         {string fuerza=TerminoDescripcion(TerminoDescripcionId.Fuerza,"Fuerza");string agi=TerminoDescripcion(TerminoDescripcionId.Agilidad,"Agilidad");string mix=$"{fuerza}/{agi} ({atributoMixtoActual})";string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string fort=TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza,"Fortaleza","ic_fortaleza");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string dano=TerminoDescripcion(TerminoDescripcionId.DanioPerforante,"daño Perforante","dano_perforante");string sang=TerminoDescripcion(TerminoDescripcionId.Sangrado,"Sangrado","Estado_sangrano");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +2 de daño.":NIVEL==2?"Próximo nivel: +1 Penetración de Armadura.":NIVEL==3?"Opción A: +2 Sangrado. Opción B: +5% de Crítico.":null;txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Perfora a un objetivo y las 2 diagonales traseras, con posibilidad de causar Sangrado.",new List<LineaDescripcionNormalizada>{LineaDescripcion("Objetivo","1 enemigo y las 2 casillas diagonales traseras"),LineaDescripcion("Efecto",$"Al impactar, inflige {rangoDanio} como {dano}."),LineaDescripcion("Tirada de Ataque",$"1d20 + {mix}{bonusTirada} vs {def}. Pifia: 5%. {crit}: {criticoPorcentaje}%."),LineaDescripcion("Penetración",$"Penetración de Armadura: {penetracionArmadura}."),LineaDescripcion("Salvación",$"{fort} del objetivo vs CD {dcFortitud}.",1),LineaDescripcion("Salvación fallida",$"Si recibe daño, obtiene {sangradoAplicado} {sang}.",1),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},prox,mostrarIconoMelee:true);return;}
 

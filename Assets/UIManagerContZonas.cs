@@ -405,55 +405,64 @@ public static class ClimaZonaCatalog
                     idioma,
                     "Despejado: +10% Rango de Visión de día.",
                     "Clear: +10% Vision Range during the day.",
-                    "Céu limpo: +10% Alcance de Visão durante o dia.");
+                    "Céu limpo: +10% Alcance de Visão durante o dia.",
+                    "晴天：白天视野范围 +10%。");
             case ClimaCalor:
                 return LocalizarTooltip(
                     idioma,
                     "Ola de Calor: +1 Fatiga. Día Libre da +5 Esperanza, otras Tareas Civiles dan -3.",
                     "Heat Wave: +1 Fatigue. Day Off grants +5 Hope; other Civil Tasks grant -3.",
-                    "Onda de Calor: +1 Fadiga. Dia Livre concede +5 Esperança; outras Tarefas Civis concedem -3.");
+                    "Onda de Calor: +1 Fadiga. Dia Livre concede +5 Esperança; outras Tarefas Civis concedem -3.",
+                    "热浪：+1 疲劳。休息日给予 +5 希望，其他平民任务给予 -3。");
             case ClimaLluvia:
                 return LocalizarTooltip(
                     idioma,
                     "Lluvia: -5 Esperanza. -15% Recolección de Suministros, -20% probabilidad de Emboscada.",
                     "Rain: -5 Hope. -15% Supply Gathering, -20% Ambush chance.",
-                    "Chuva: -5 Esperança. -15% Coleta de Suprimentos, -20% chance de Emboscada.");
+                    "Chuva: -5 Esperança. -15% Coleta de Suprimentos, -20% chance de Emboscada.",
+                    "雨天：-5 希望。补给采集 -15%，伏击概率 -20%。");
             case ClimaNieve:
                 return LocalizarTooltip(
                     idioma,
                     "Nieve: solo permite Descansar o Guardia. -15% velocidad de viaje y Recolecciones, -20% Emboscada. Cada tramo recorrido da -3 Esperanza.",
                     "Snow: only Rest or Guard is allowed. -15% travel speed and Gathering, -20% Ambush chance. Each traveled segment causes -3 Hope.",
-                    "Neve: só permite Descansar ou Vigiar. -15% de velocidade de viagem e Coletas, -20% de Emboscada. Cada trecho percorrido causa -3 Esperança.");
+                    "Neve: só permite Descansar ou Vigiar. -15% de velocidade de viagem e Coletas, -20% de Emboscada. Cada trecho percorrido causa -3 Esperança.",
+                    "降雪：仅允许休息或警戒。旅行速度与采集 -15%，伏击 -20%。每经过一段路程 -3 希望。");
             case ClimaNiebla:
                 return LocalizarTooltip(
                     idioma,
                     "Niebla: -15% Visión, -20% Recolecciones, -10% Exploración, -20% Emboscada.",
                     "Fog: -15% Vision, -20% Gathering, -10% Exploration, -20% Ambush chance.",
-                    "Névoa: -15% Visão, -20% Coletas, -10% Exploração, -20% chance de Emboscada.");
+                    "Névoa: -15% Visão, -20% Coletas, -10% Exploração, -20% chance de Emboscada.",
+                    "迷雾：视野 -15%，采集 -20%，探索 -10%，伏击 -20%。");
             case ClimaAlmasDanzantes:
                 return LocalizarTooltip(
                     idioma,
                     "Almas Danzantes: +3 Esperanza por viaje, -100% probabilidad de Emboscada.",
                     "Dancing Souls: +3 Hope per journey, -100% Ambush chance.",
-                    "Almas Dançantes: +3 Esperança por viagem, -100% chance de Emboscada.");
+                    "Almas Dançantes: +3 Esperança por viagem, -100% chance de Emboscada.",
+                    "舞动的亡魂：每段旅程 +3 希望，伏击概率 -100%。");
             case ClimaAuroraBoreal:
                 return LocalizarTooltip(
                     idioma,
                     "Aurora Boreal: +10 Esperanza.",
                     "Aurora Borealis: +10 Hope.",
-                    "Aurora Boreal: +10 Esperança.");
+                    "Aurora Boreal: +10 Esperança.",
+                    "北极光：+10 希望。");
             case ClimaNedukazalNormal:
                 return LocalizarTooltip(
                     idioma,
                     "Nedukazal está a oscuras.",
                     "Nedukazal is shrouded in darkness.",
-                    "Nedukazal está às escuras.");
+                    "Nedukazal está às escuras.",
+                    "内杜卡赞陷入黑暗。");
             case ClimaNedukazalMasacre:
                 return LocalizarTooltip(
                     idioma,
                     "Masacre: Nedukazal está siendo atacada. -10 Esperanza. +10% Emboscada. Los Zúrkil están potenciados.",
                     "Massacre: Nedukazal is under attack. -10 Hope. +10% Ambush chance. The Zúrkil are empowered.",
-                    "Massacre: Nedukazal está sendo atacada. -10 Esperança. +10% de Emboscada. Os Zúrkil estão fortalecidos.");
+                    "Massacre: Nedukazal está sendo atacada. -10 Esperança. +10% de Emboscada. Os Zúrkil estão fortalecidos.",
+                    "屠杀：内杜卡赞正遭到攻击。-10 希望。伏击 +10%。扎奇尔得到强化。");
             default:
                 return string.Empty;
         }
@@ -465,6 +474,8 @@ public static class ClimaZonaCatalog
 
         switch (idioma)
         {
+            case TRADU.IdiomaChinoSimplificado:
+                return "未知的专属天气";
             case TRADU.IdiomaIngles:
                 return "Unknown exclusive weather";
             case TRADU.IdiomaPortugues:
@@ -481,10 +492,12 @@ public static class ClimaZonaCatalog
             : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
     }
 
-    private static string LocalizarTooltip(int idioma, string es, string en, string pt)
+    private static string LocalizarTooltip(int idioma, string es, string en, string pt, string zh)
     {
         switch (idioma)
         {
+            case TRADU.IdiomaChinoSimplificado:
+                return zh;
             case TRADU.IdiomaIngles:
                 return en;
             case TRADU.IdiomaPortugues:

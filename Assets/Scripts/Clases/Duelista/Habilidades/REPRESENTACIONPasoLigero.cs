@@ -42,13 +42,31 @@ public class REPRESENTACIONPasoLigero : Habilidad
         string colorTitulo = "#5dade2";
         string colorEncabezado = "#44d3ec";
 
-        string titulo = esIngles ? "Light Step" : esPortugues ? "Passo Leve" : "Paso Ligero";
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
+        string titulo = esIngles ? "Light Step" : esChino ? "轻盈步伐" : esPortugues ? "Passo Leve" : "Paso Ligero";
         string subtitulo = esIngles
             ? "Discount one diagonal move or ally swap each turn."
-            : esPortugues
-                ? "Reduz o custo de um movimento diagonal ou troca por turno."
-                : "Reduce el costo de un movimiento diagonal o intercambio por turno.";
+            : esChino
+                ? "每回合减免一次对角移动或与友军互换位置的消耗。"
+                : esPortugues
+                    ? "Reduz o custo de um movimento diagonal ou troca por turno."
+                    : "Reduce el costo de un movimiento diagonal o intercambio por turno.";
 
+        if (esChino)
+        {
+            string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                titulo,
+                "被动：每回合减少一次敏捷移动的消耗。",
+                new[]
+                {
+                    LineaDescripcion("触发", "斜向移动，或与友军互换位置。"),
+                    LineaDescripcion("效果", $"该次移动消耗的{apZh} -1。"),
+                    LineaDescripcion("限制", "每回合一次。")
+                },
+                costoSuperior: string.Empty);
+            return;
+        }
         if (esIngles)
         {
             string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");

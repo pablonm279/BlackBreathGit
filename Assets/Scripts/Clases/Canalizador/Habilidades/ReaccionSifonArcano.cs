@@ -3,7 +3,6 @@ using System.Collections.Generic;
 //using UnityEditor.SearchService;
 using UnityEngine;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 
 public class ReaccionSifonArcano : Reaccion
 {
@@ -27,6 +26,10 @@ public class ReaccionSifonArcano : Reaccion
     if (TRADU.i.nIdioma == 2) // agrega la traducción a inglés
     {
       descripcion = "Reaction: At the end of each turn, receives arcane damage increased by the number of Energy Residues present.";
+    }
+    else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      descripcion = "反应：每回合结束时受到奥术伤害，伤害会随场上存在的能量残留数量提升。";
     }
     else if (TRADU.i.nIdioma == 3)
     {

@@ -100,6 +100,11 @@ public class TerminoHoverDetector : MonoBehaviour, IPointerMoveHandler, IPointer
       return $"Roll of {cantidad} {palabraDado} with {caras} sides, summed to resolve certain mechanics, such as damage.";
     }
 
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+      return $"投掷 {cantidad} 个 {caras} 面骰子并求和，用于结算某些机制，例如伤害。";
+    }
+
     if (idioma == TRADU.IdiomaPortugues)
     {
       string cantidadTextoPt = cantidad == 1 ? "1 dado" : $"{cantidad} dados";

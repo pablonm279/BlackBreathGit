@@ -99,6 +99,43 @@ public class PresenciaProvocadora : Habilidad
                 proximaMejora);
             return;
         }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string tituloZh = "挑衅气场 I";
+            if (NIVEL == 2) { tituloZh = "挑衅气场 II"; }
+            if (NIVEL == 3) { tituloZh = "挑衅气场 III"; }
+            if (NIVEL == 4) { tituloZh = "挑衅气场 IV a"; }
+            if (NIVEL == 5) { tituloZh = "挑衅气场 IV b"; }
+
+            string mentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免", "ic_mental");
+            string provZh = TerminoDescripcion(TerminoDescripcionId.Provocado, "被嘲讽");
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string armZh = TerminoDescripcion(TerminoDescripcionId.Armadura, "护甲", "IconoArmadura");
+            string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null
+                : NIVEL < 2 ? "豁免难度 +1。"
+                : NIVEL == 2 ? "分心额外造成 -1 护甲。"
+                : NIVEL == 3 ? "选项A：反击不再有惩罚。选项B：行动点消耗 -1。"
+                : null;
+            string contraZh = bonusAtaqueContra == 0 && bonusDanioContra == 0
+                ? "基础突刺。"
+                : $"基础突刺，攻击检定 {bonusAtaqueContra}，伤害 {bonusDanioContra}。";
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                tituloZh,
+                "挑衅敌人，并惩罚失手的近战攻击。",
+                new[]
+                {
+                    LineaDescripcion("目标", "所有敌人"),
+                    LineaDescripcion("效果", "每个目标进行一次心智豁免。"),
+                    LineaDescripcion("豁免", $"目标的{mentalZh}，对抗难度 {dcMental}。", 1),
+                    LineaDescripcion("豁免失败", $"施加{provZh}和分心：{reduccionDefensa} {defZh}，{reduccionArmadura} {armZh}（持续 2 回合）。", 1),
+                    LineaDescripcion("反应", $"持续 1 回合，只要有敌人对决斗者发起的近战攻击落空，决斗者便会以{contraZh}进行反击"),
+                    LineaDescripcion("次数限制", "直到下一回合开始前，反应次数不受限。"),
+                    LineaDescripcion("使用", "结束本回合。"),
+                    LineaDescripcion("耗力", $"最多 {esforzable} 点行动点。")
+                },
+                proxZh);
+            return;
+        }
         if(esPortugues){string mental=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Mental","ic_mental");string prov=TerminoDescripcion(TerminoDescripcionId.Provocado,"Provocado");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string arm=TerminoDescripcion(TerminoDescripcionId.Armadura,"Armadura","IconoArmadura");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 CD da salvaguarda.":NIVEL==2?"Próximo nível: Distraído aplica -1 Armadura adicional.":NIVEL==3?"Opção A: o contra-ataque perde suas penalidades. Opção B: -1 de custo de AP.":null;string contra=bonusAtaqueContra==0&&bonusDanioContra==0?"Estocada base.":$"Estocada base com {bonusAtaqueContra} na Rolagem de Ataque e {bonusDanioContra} de dano.";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloPt,"Provoca inimigos e pune ataques corpo a corpo que erram.",new[]{LineaDescripcion("Alvo","Todos os inimigos"),LineaDescripcion("Efeito","Cada alvo faz uma salvaguarda Mental."),LineaDescripcion("Salvaguarda",$"{mental} do alvo vs CD {dcMental}.",1),LineaDescripcion("Falha",$"Aplica {prov} e Distraído: {reduccionDefensa} {def}, {reduccionArmadura} {arm} (2 turnos).",1),LineaDescripcion("Reação",$"Por 1 turno, sempre que um inimigo erra um ataque corpo a corpo contra a Duelista, ela contra-ataca com {contra}"),LineaDescripcion("Limite","Reações ilimitadas até o próximo turno."),LineaDescripcion("Uso","Encerra o turno."),LineaDescripcion("Esforço",$"Até {esforzable} AP.")},prox);return;}
         {string mental=TerminoDescripcion(TerminoDescripcionId.SalvacionMental,"Mental","ic_mental");string prov=TerminoDescripcion(TerminoDescripcionId.Provocado,"Provocado");string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string arm=TerminoDescripcion(TerminoDescripcionId.Armadura,"Armadura","IconoArmadura");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 CD de salvación.":NIVEL==2?"Próximo nivel: Distraído aplica -1 Armadura adicional.":NIVEL==3?"Opción A: el contraataque pierde sus penalizaciones. Opción B: -1 de costo de AP.":null;string contra=bonusAtaqueContra==0&&bonusDanioContra==0?"Estocada base.":$"Estocada base con {bonusAtaqueContra} a la Tirada de Ataque y {bonusDanioContra} de daño.";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(tituloEs,"Provoca a los enemigos y castiga los ataques cuerpo a cuerpo fallidos.",new[]{LineaDescripcion("Objetivo","Todos los enemigos"),LineaDescripcion("Efecto","Cada objetivo hace una salvación Mental."),LineaDescripcion("Salvación",$"{mental} del objetivo vs CD {dcMental}.",1),LineaDescripcion("Salvación fallida",$"Aplica {prov} y Distraído: {reduccionDefensa} {def}, {reduccionArmadura} {arm} (2 turnos).",1),LineaDescripcion("Reacción",$"Durante 1 turno, cuando un enemigo falla un ataque cuerpo a cuerpo contra la Duelista, ella contraataca con {contra}"),LineaDescripcion("Límite","Reacciones ilimitadas hasta el próximo turno."),LineaDescripcion("Uso","Termina el turno."),LineaDescripcion("Esfuerzo",$"Hasta {esforzable} AP.")},prox);return;}
 

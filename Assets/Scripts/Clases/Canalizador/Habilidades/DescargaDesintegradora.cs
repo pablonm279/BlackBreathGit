@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -53,6 +52,7 @@ public class DescargaDesintegradora : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int poderActual = statsUI.Poder;
@@ -73,6 +73,7 @@ public class DescargaDesintegradora : Habilidad
     string tituloEs = "Descarga Desintegradora I";
     string tituloEn = "Disintegrating Discharge I";
     string tituloPt = "Descarga Desintegradora I";
+    string tituloZh = "瓦解冲击 I";
     if (NIVEL == 2) { tituloEs = "Descarga Desintegradora II"; tituloEn = "Disintegrating Discharge II"; }
     if (NIVEL == 3) { tituloEs = "Descarga Desintegradora III"; tituloEn = "Disintegrating Discharge III"; }
     if (NIVEL == 4) { tituloEs = "Descarga Desintegradora IV a"; tituloEn = "Disintegrating Discharge IV a"; }
@@ -81,6 +82,10 @@ public class DescargaDesintegradora : Habilidad
     if (NIVEL == 3) { tituloPt = "Descarga Desintegradora III"; }
     if (NIVEL == 4) { tituloPt = "Descarga Desintegradora IV a"; }
     if (NIVEL == 5) { tituloPt = "Descarga Desintegradora IV b"; }
+    if (NIVEL == 2) { tituloZh = "瓦解冲击 II"; }
+    if (NIVEL == 3) { tituloZh = "瓦解冲击 III"; }
+    if (NIVEL == 4) { tituloZh = "瓦解冲击 IV a"; }
+    if (NIVEL == 5) { tituloZh = "瓦解冲击 IV b"; }
 
     if (esIngles)
     {
@@ -117,6 +122,42 @@ public class DescargaDesintegradora : Habilidad
         "Unleashes a devastating Arcane blast that can disintegrate its targets.",
         lineas,
         proximaMejora,
+        colorTitulo: "#e67e22");
+      return;
+    }
+
+    if (esChino)
+    {
+      string energiaZh = TerminoDescripcion(TerminoDescripcionId.Energia, "能量等级", "Estado_acumularenergia");
+      string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+      string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danioArcanoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害", "dano_arcano");
+      string fortalezaZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string aturdidoZh = TerminoDescripcion(TerminoDescripcionId.Aturdido, "眩晕", "Estado_aturdido");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "伤害 +8。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "豁免难度 +1。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：不再对自身造成眩晕。\n选项B：不消耗能量。"; }
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "释放一道毁灭性的奥术冲击，可能瓦解目标。",
+        new[]
+        {
+          LineaDescripcion("目标", "金字塔形区域"),
+          LineaDescripcion("需求", $"{energiaRequeridaReal} 级以上{energiaZh}。"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanioEs} + {poderZh} 点{danioArcanoZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {poderZh}{bonusTirada}，对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentajeNormalizado}%。"),
+          LineaDescripcion("豁免", $"{fortalezaZh} 豁免，对抗难度 {dcDesintegracion}。", 1),
+          LineaDescripcion("豁免失败", "目标被瓦解，受到等同于其最大生命值的真实伤害。", 1),
+          LineaDescripcion("施放", consumeEnergia ? "消耗 1 级能量。" : "不消耗能量。"),
+          LineaDescripcion("反噬", aturdeCaster ? $"引导者陷入{aturdidoZh}，持续 1 回合。" : "不会对自身造成眩晕。"),
+          LineaDescripcion("努力施为", $"最多消耗 {esforzable} 点行动点。")
+        },
+        proximaMejoraZh,
         colorTitulo: "#e67e22");
       return;
     }

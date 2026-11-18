@@ -58,6 +58,18 @@ public class REPRESENTACIONMaestriaEspadaCorta : Habilidad
       return;
     }
 
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string atkZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+      string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+      string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string bonusZh = $"{atkZh} +{ataque}，{danoZh} +{danio}" + (critico > 0 ? $"，{critZh} +{critico}%" : "") + (danioCritico > 0 ? $"，暴击伤害 +{danioCritico}%。" : "。");
+      string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：暴击 +5%。" : NIVEL == 2 ? "下一级：暴击伤害 +10%。" : NIVEL == 3 ? "选项A：暴击 +5%，伤害 +2。选项B：攻击 +1，伤害 +2。" : null;
+      var lZh = new List<LineaDescripcionNormalizada> { LineaDescripcion("适用于", "短剑攻击。"), LineaDescripcion("加成", bonusZh) };
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"短剑精通 {sufijo}", "被动：提升使用短剑进行的攻击。", lZh, proxZh, costoSuperior: string.Empty);
+      return;
+    }
+
     if (TRADU.i != null && TRADU.i.nIdioma == 3)
     {
       string atk = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque"); string danoT = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "dano Cortante", "dano_cortante"); string critT = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico"); string bonus = $"+{ataque} {atk}, +{danio} {danoT}" + (critico > 0 ? $", +{critico}% {critT}" : "") + (danioCritico > 0 ? $", +{danioCritico}% de dano crítico" : "."); string prox = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "Próximo nível: +5% de Crítico." : NIVEL == 2 ? "Próximo nível: +10% de dano crítico." : NIVEL == 3 ? "Opção A: +5% de Crítico e +2 de dano. Opção B: +1 Ataque e +2 de dano." : null; var l = new List<LineaDescripcionNormalizada>{LineaDescripcion("Aplica-se a", "Ataques com espada curta."), LineaDescripcion("Bônus", bonus)}; txtDescripcion=ConstruirDescripcionNormalizadaLocalizada($"Maestria com Espada Curta {sufijo}","Passiva: melhora os ataques feitos com a espada curta.",l,prox,costoSuperior:string.Empty); return;

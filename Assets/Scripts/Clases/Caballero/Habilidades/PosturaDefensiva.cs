@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -39,6 +38,7 @@ public class PosturaDefensiva : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
       int bonoDefensa = 1 + (NIVEL > 1 ? 1 : 0);
       int bonoAtaque = NIVEL > 2 ? 1 : 0;
@@ -54,6 +54,7 @@ public class PosturaDefensiva : Habilidad
       string tituloEs = "Postura Defensiva I";
       string tituloEn = "Defensive Stance I";
       string tituloPt = "Postura Defensiva I";
+      string tituloZh = "防御姿态 I";
       if (NIVEL == 2) { tituloEs = "Postura Defensiva II"; tituloEn = "Defensive Stance II"; }
       if (NIVEL == 3) { tituloEs = "Postura Defensiva III"; tituloEn = "Defensive Stance III"; }
       if (NIVEL == 4) { tituloEs = "Postura Defensiva IV a"; tituloEn = "Defensive Stance IV a"; }
@@ -62,6 +63,10 @@ public class PosturaDefensiva : Habilidad
       if (NIVEL == 3) { tituloPt = "Postura Defensiva III"; }
       if (NIVEL == 4) { tituloPt = "Postura Defensiva IV a"; }
       if (NIVEL == 5) { tituloPt = "Postura Defensiva IV b"; }
+      if (NIVEL == 2) { tituloZh = "防御姿态 II"; }
+      if (NIVEL == 3) { tituloZh = "防御姿态 III"; }
+      if (NIVEL == 4) { tituloZh = "防御姿态 IV a"; }
+      if (NIVEL == 5) { tituloZh = "防御姿态 IV b"; }
 
       if (esIngles)
       {
@@ -94,6 +99,31 @@ public class PosturaDefensiva : Habilidad
             LineaDescripcion("Use", "Ends the turn")
           },
           proximaMejora);
+        return;
+      }
+
+      if (esChino)
+      {
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string ataqueZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "下一级：防御 +1。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：处于该姿态时攻击 +1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：受到伤害不再移除该反应。\n选项B：反应次数 +1。"; }
+        }
+        string buffZh = $"{defensaZh} +{bonoDefensa}";
+        if (bonoAtaque > 0) { buffZh += $"，{ataqueZh} +{bonoAtaque}"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloZh, "摆出防御姿态，准备发动近战反击。", new[]
+        {
+          LineaDescripcion("目标", "自身"),
+          LineaDescripcion("效果", $"获得 {buffZh}（持续 2 回合）。"),
+          LineaDescripcion("反应", "当敌人的近战攻击未命中时，用纵斩进行反击。", 1),
+          LineaDescripcion("次数限制", $"{usosReaccion} 次。", 1),
+          LineaDescripcion("结束条件", seCancelaAlRecibirDanio ? "受到伤害后，该反应结束。" : "受到伤害不会结束该反应。", 1),
+          LineaDescripcion("使用", "结束本回合")
+        }, proximaMejoraZh);
         return;
       }
 

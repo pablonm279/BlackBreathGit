@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -60,6 +59,7 @@ public class Distraer : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
     int dcBase = NIVEL > 1 ? 15 : 14;
     int apPenalty = -1;
@@ -76,6 +76,7 @@ public class Distraer : Habilidad
     string tituloEs = "Distraer I";
     string tituloEn = "Distract I";
     string tituloPt = "Distrair I";
+    string tituloZh = "分散注意 I";
     if (NIVEL == 2) { tituloEs = "Distraer II"; tituloEn = "Distract II"; }
     if (NIVEL == 3) { tituloEs = "Distraer III"; tituloEn = "Distract III"; }
     if (NIVEL == 4) { tituloEs = "Distraer IV a"; tituloEn = "Distract IV a"; }
@@ -84,6 +85,10 @@ public class Distraer : Habilidad
     if (NIVEL == 3) { tituloPt = "Distrair III"; }
     if (NIVEL == 4) { tituloPt = "Distrair IV a"; }
     if (NIVEL == 5) { tituloPt = "Distrair IV b"; }
+    if (NIVEL == 2) { tituloZh = "分散注意 II"; }
+    if (NIVEL == 3) { tituloZh = "分散注意 III"; }
+    if (NIVEL == 4) { tituloZh = "分散注意 IV a"; }
+    if (NIVEL == 5) { tituloZh = "分散注意 IV b"; }
 
     if (esIngles)
     {
@@ -111,6 +116,29 @@ public class Distraer : Habilidad
           LineaDescripcion("Stealth", "Discreet; does not reveal the Stalker.")
         },
         proximaMejora);
+      return;
+    }
+
+    if (esChino)
+    {
+      string mentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智", "ic_mental");
+      string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string ocultoZh = TerminoDescripcion(TerminoDescripcionId.Oculto, $"隐匿（{escondidoGanado}）", "Estado_oculto");
+      string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点", "ap");
+      string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：豁免难度 +1。" : NIVEL == 2 ? "下一级：分心效果的最大行动点 -1。" : NIVEL == 3 ? "选项A：最大行动点 -1，防御 -1。选项B：若处于孤立状态则获得隐匿 II。" : null;
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "分散一名敌人的注意力，且不会暴露潜猎者。",
+        new[]
+        {
+          LineaDescripcion("目标", "1 名敌人"),
+          LineaDescripcion("效果", "目标进行一次豁免检定。"),
+          LineaDescripcion("豁免", $"目标进行 {mentalZh} 豁免，对抗难度 {dcBase}。", 1),
+          LineaDescripcion("豁免失败", $"分心（持续 2 回合）：{apPenalty} {apZh}，{defPenalty} {defensaZh}。", 1),
+          LineaDescripcion("孤立目标", $"相邻格子内没有单位时，潜猎者获得{ocultoZh}。"),
+          LineaDescripcion("潜行", "隐蔽行动；不会暴露潜猎者。")
+        },
+        proxZh);
       return;
     }
 

@@ -85,6 +85,40 @@ public class Riposte : Habilidad
                 proximaMejora);
             return;
         }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string tituloZh = NIVEL switch
+            {
+                2 => "还击 II",
+                3 => "还击 III",
+                4 => "还击 IV a",
+                5 => "还击 IV b",
+                _ => "还击 I"
+            };
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null
+                : NIVEL < 2 ? "被拦截的一击中，防御 +1。"
+                : NIVEL == 2 ? "反击不再有攻击检定 -1 的惩罚。"
+                : NIVEL == 3 ? "选项A：受到伤害不会取消还击。选项B：每回合次数 +1。"
+                : null;
+            string contraZh = bonusAtaqueReaccion < 0
+                ? $"突刺（攻击检定 {bonusAtaqueReaccion}，伤害 -2）"
+                : "突刺（伤害 -2）";
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                tituloZh,
+                "准备拦截近战攻击，并对未命中的攻击进行反击。",
+                new[]
+                {
+                    LineaDescripcion("目标", "自身"),
+                    LineaDescripcion("效果", "进入还击预备状态。"),
+                    LineaDescripcion("反应", $"当相邻友军成为单体近战攻击的目标时，与其互换位置并成为目标，该次打击中 {defZh} +{bonoDefensa}；当敌人对决斗者的近战攻击落空时，以{contraZh}进行反击。", 1),
+                    LineaDescripcion("限制", $"{usos} 次。", 1),
+                    LineaDescripcion("结束条件", seCancelaConDanio ? "受到伤害后。" : "受到伤害不会使其结束。", 1),
+                    LineaDescripcion("使用", "结束本回合")
+                },
+                proxZh);
+            return;
+        }
         if(esPortugues){string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defesa","IconoDefensa");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +1 Defesa no golpe interceptado.":NIVEL==2?"Próximo nível: o contra-ataque perde a penalidade de -1 na Rolagem de Ataque.":NIVEL==3?"Opção A: sofrer dano não cancela Riposte. Opção B: +1 uso por turno.":null;string contra=bonusAtaqueReaccion<0?$"Estocada ({bonusAtaqueReaccion} na Rolagem de Ataque, -2 de dano)":"Estocada (-2 de dano)";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Prepara-se para interceptar ataques corpo a corpo e contra-atacar erros.",new[]{LineaDescripcion("Alvo","A própria Duelista"),LineaDescripcion("Efeito","Prepara Riposte."),LineaDescripcion("Reação",$"Quando um aliado adjacente é alvo de um ataque corpo a corpo de alvo único, troca de posição com ele, torna-se o alvo e recebe +{bonoDefensa} {def} para esse golpe; quando um inimigo erra um ataque corpo a corpo contra a Duelista, contra-ataca com {contra}.",1),LineaDescripcion("Limite",$"{usos} uso{(usos==1?"":"s")}.",1),LineaDescripcion("Termina",seCancelaConDanio?"Após sofrer dano.":"Sofrer dano não encerra o efeito.",1),LineaDescripcion("Uso","Encerra o turno")},prox);return;}
         {string def=TerminoDescripcion(TerminoDescripcionId.Defensa,"Defensa","IconoDefensa");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +1 Defensa en el golpe interceptado.":NIVEL==2?"Próximo nivel: el contraataque pierde su penalización de -1 a la Tirada de Ataque.":NIVEL==3?"Opción A: recibir daño no cancela Riposte. Opción B: +1 uso por turno.":null;string contra=bonusAtaqueReaccion<0?$"Estocada ({bonusAtaqueReaccion} a la Tirada de Ataque, -2 de daño)":"Estocada (-2 de daño)";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada(titulo,"Se prepara para interceptar ataques cuerpo a cuerpo y contraatacar fallos.",new[]{LineaDescripcion("Objetivo","La propia Duelista"),LineaDescripcion("Efecto","Prepara Riposte."),LineaDescripcion("Reacción",$"Cuando un aliado adyacente es objetivo de un ataque cuerpo a cuerpo de un solo objetivo, intercambia posiciones, se convierte en el objetivo y obtiene +{bonoDefensa} {def} para ese golpe; cuando un enemigo falla un ataque cuerpo a cuerpo contra la Duelista, contraataca con {contra}.",1),LineaDescripcion("Límite",$"{usos} uso{(usos==1?"":"s")}.",1),LineaDescripcion("Termina",seCancelaConDanio?"Después de recibir daño.":"Recibir daño no termina el efecto.",1),LineaDescripcion("Uso","Termina el turno")},prox);return;}
 

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
@@ -114,6 +113,52 @@ public class LuzCegadora : Habilidad
           "Unleashes a magical flash that blinds enemies and harms impure targets.",
           lineas,
           proximaMejora);
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string tituloZh = "致盲之光 I";
+        if (NIVEL == 2) { tituloZh = "致盲之光 II"; }
+        if (NIVEL == 3) { tituloZh = "致盲之光 III"; }
+        if (NIVEL == 4) { tituloZh = "致盲之光 IV a"; }
+        if (NIVEL == 5) { tituloZh = "致盲之光 IV b"; }
+
+        string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+        string reflejosZh = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "反射豁免", "ic_Reflejos");
+        string reflejosSinIconoZh = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "反射");
+        string cegadoZh = TerminoDescripcion(TerminoDescripcionId.Debuff, "致盲", "Estado_debuff");
+        string danioDivinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino");
+        string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气");
+        string formulaDanioZh = agregaD6Divino
+          ? $"1d10 + 1 + 1d6 + {poderZh}"
+          : $"1d10 + 1 + {poderZh}";
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "豁免难度 +1。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "对不死者/虚灵目标的神圣伤害 +1d6。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = $"选项A（{valentiaZh}消耗 -1）或选项B（对其他敌人造成 33% 伤害）。"; }
+        }
+
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "前后 3 格宽区域内的所有敌人"),
+          LineaDescripcion("效果", $"每个目标进行一次{reflejosZh}。"),
+          LineaDescripcion("豁免", $"{reflejosSinIconoZh}，对抗难度 {dcBase} + {poderZh}。", 1),
+          LineaDescripcion("豁免失败", $"施加{cegadoZh}，持续 2 回合：攻击 -3，防御 -2，{reflejosSinIconoZh} -1。", 1),
+          LineaDescripcion("不死者/虚灵", $"受到 {formulaDanioZh} 点{danioDivinoZh}。", 1)
+        };
+        if (afectaOtrosEnemigos)
+        {
+          lineasZh.Add(LineaDescripcion("其他敌人", "受到所掷神圣伤害的 33%。", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "释放一道魔法闪光，致盲敌人并伤害不洁的目标。",
+          lineasZh,
+          proximaMejoraZh);
         return;
       }
 

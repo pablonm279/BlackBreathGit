@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
@@ -40,6 +39,7 @@ public class AcumularEnergia : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       var statsUI = ObtenerStatsDescripcionUI();
       int poderActual = statsUI.Poder;
       ClaseCanalizador canalizador = scEstaUnidad as ClaseCanalizador;
@@ -88,6 +88,47 @@ public class AcumularEnergia : Habilidad
           "Gather Energy",
           "Concentrates until the next turn to increase Energy by 1.",
           lineas);
+        return;
+      }
+      if (esChino)
+      {
+        string energiaZh = TerminoDescripcion(TerminoDescripcionId.Energia, "能量等级", "Estado_acumularenergia");
+        string energiaSinIconoZh = TerminoDescripcion(TerminoDescripcionId.Energia, "能量等级");
+        string acumulandoZh = TerminoDescripcion(TerminoDescripcionId.Acumulando, "积蓄中");
+        string salvacionMentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免", "ic_mental");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        string apMaxZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点", "ap");
+        string apMaxSinIconoZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点");
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "自身"),
+          LineaDescripcion("效果", $"进入{acumulandoZh}状态，持续到下一回合开始。"),
+          LineaDescripcion("受到伤害时", $"进行一次 {salvacionMentalZh}，对抗难度 10 + 所受伤害的 33%。", 1),
+          LineaDescripcion("豁免失败", $"中断{acumulandoZh}。", 1),
+          LineaDescripcion("若保持成功", $"在下一回合开始时获得 +1 {energiaZh}。", 1),
+          LineaDescripcion("能量 1", $"伤害 +10%，{criticoZh} +5%。"),
+          LineaDescripcion("能量 2", $"伤害 +25%，{TerminoDescripcion(TerminoDescripcionId.Critico, "暴击")} +5%，{apMaxZh} +1。"),
+          LineaDescripcion("能量 3", $"伤害 +40%，{TerminoDescripcion(TerminoDescripcionId.Critico, "暴击")} +10%，{apMaxSinIconoZh} +2。")
+        };
+
+        if (nivelAcumulacionProtegida > 0)
+        {
+          int barreraExtraZh = nivelAcumulacionProtegida == 4 ? 6 : nivelAcumulacionProtegida > 1 ? 2 : 0;
+          string formulaBarreraZh = $"1 + 威力（{poderActual}）+ 3 × 当前{energiaSinIconoZh}";
+          if (barreraExtraZh > 0) { formulaBarreraZh += $" + {barreraExtraZh}"; }
+          string barreraZh = TerminoDescripcion(TerminoDescripcionId.Barrera, "屏障", "Estado_barrera");
+          lineasZh.Add(LineaDescripcion("受保护的积蓄", $"获得 {formulaBarreraZh} 点{barreraZh}，且{TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免")} +{tsMentalProtegida}，持续到下一回合。"));
+          if (nivelAcumulacionProtegida == 5)
+          {
+            lineasZh.Add(LineaDescripcion("积蓄期间", $"{apMaxSinIconoZh} +1。", 1));
+          }
+        }
+
+        lineasZh.Add(LineaDescripcion("使用", "结束本回合。"));
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          "积蓄能量",
+          "专注凝聚直到下一回合，以提升1级能量。",
+          lineasZh);
         return;
       }
       {

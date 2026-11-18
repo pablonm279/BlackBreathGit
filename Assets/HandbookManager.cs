@@ -7,6 +7,12 @@ public class HandbookManager : MonoBehaviour
 {
     private const int SolapaInicial = 1;
 
+    // Guarda el texto español original de cada TextMeshProUGUI del handbook la primera vez que
+    // se traduce, para poder re-traducir siempre desde el original real (nunca desde un texto
+    // que ya podría estar en chino) sin depender del barrido global de traducción, que corre una
+    // sola vez al iniciar/cambiar idioma y puede no haber alcanzado a este contenido.
+    private static readonly Dictionary<TextMeshProUGUI, string> textosOriginalesHandbook = new Dictionary<TextMeshProUGUI, string>();
+
     public GameObject solapaZonas;
     public GameObject solapaMapa;
     public GameObject solapaCiviles;
@@ -49,7 +55,37 @@ public class HandbookManager : MonoBehaviour
 
         if (target == null) return;
 
-        ActivarContenidoPorIdioma(target, nIdioma);
+        GameObject hijoActivado = ActivarContenidoPorIdioma(target, nIdioma);
+
+        // Para chino no existe un hijo propio de idioma: ActivarContenidoPorIdioma cae al hijo
+        // en español (childIdioma = 1 por defecto). En vez de depender del barrido global de
+        // traducción (que corre una sola vez al iniciar/cambiar idioma y puede no haber
+        // alcanzado a este contenido si el handbook se abre después), traducimos directamente
+        // los textos de ese hijo, cacheando el original la primera vez para no retraducir un
+        // texto que ya está en chino en aperturas posteriores de la misma solapa.
+        if (TRADU.i != null && nIdioma == TRADU.IdiomaChinoSimplificado && hijoActivado != null)
+        {
+            TextMeshProUGUI[] textos = hijoActivado.GetComponentsInChildren<TextMeshProUGUI>(true);
+            for (int i = 0; i < textos.Length; i++)
+            {
+                TextMeshProUGUI texto = textos[i];
+                if (texto == null)
+                {
+                    continue;
+                }
+
+                if (!textosOriginalesHandbook.TryGetValue(texto, out string original))
+                {
+                    original = texto.text;
+                    textosOriginalesHandbook[texto] = original;
+                }
+
+                if (!string.IsNullOrEmpty(original))
+                {
+                    texto.text = TRADU.i.Traducir(original);
+                }
+            }
+        }
 
         if (target.transform.childCount > 0)
         {
@@ -105,9 +141,9 @@ public class HandbookManager : MonoBehaviour
         transform.parent.gameObject.SetActive(false);
     }
 
-    private static void ActivarContenidoPorIdioma(GameObject solapa, int nIdioma)
+    private static GameObject ActivarContenidoPorIdioma(GameObject solapa, int nIdioma)
     {
-        if (solapa == null) return;
+        if (solapa == null) return null;
 
         int childCount = solapa.transform.childCount;
         int childIdioma = 1;
@@ -123,13 +159,18 @@ public class HandbookManager : MonoBehaviour
 
         if (childCount > childIdioma)
         {
-            solapa.transform.GetChild(childIdioma).gameObject.SetActive(true);
-            return;
+            GameObject hijo = solapa.transform.GetChild(childIdioma).gameObject;
+            hijo.SetActive(true);
+            return hijo;
         }
 
         if (childCount > 1)
         {
-            solapa.transform.GetChild(1).gameObject.SetActive(true);
+            GameObject hijo = solapa.transform.GetChild(1).gameObject;
+            hijo.SetActive(true);
+            return hijo;
         }
+
+        return null;
     }
 }

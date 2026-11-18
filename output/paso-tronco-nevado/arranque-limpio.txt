@@ -1,0 +1,1 @@
+Arranque limpio: troncos=0; activos=0

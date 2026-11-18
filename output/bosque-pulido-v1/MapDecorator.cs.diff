@@ -1,0 +1,12 @@
+--- antes/MapDecorator.cs
++++ Assets/MapDecorator.cs
+@@ -987,6 +987,9 @@
+     public void OcultarDecoracionRemovibleSobreCamino(LineRenderer lr, bool forzar = false)
+     {
+         var zona = GetComponent<AtributosZona>();
++        if (lr != null && zona != null && zona.ID == 1 && zona.bosqueardienteContenedorGameObjects != null)
++            zona.bosqueardienteContenedorGameObjects.GetComponent<AdornosBosqueArdiente>()
++                ?.RetirarSobreCamino(lr, CalcularRadioLimpiezaCamino(lr));
+         if (lr != null && zona != null && zona.ID == 2 && zona.pasovientoheladoContenedorGameObjects != null)
+             zona.pasovientoheladoContenedorGameObjects.GetComponent<AdornosPasoVientoHelado>()
+                 ?.RetirarSobreCamino(lr, CalcularRadioLimpiezaCamino(lr), forzar);

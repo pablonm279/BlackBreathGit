@@ -1,0 +1,14 @@
+Aurora procedural retirada: True
+Reflejo atenuado Luz: 0,012
+Reflejo atenuado Luz (1): 0,02117647
+Luz original restaurada Luz: 1,7
+Luz original restaurada Luz (1): 3
+Materiales originales restaurados al desactivar: True
+Materiales refinados reutilizados al activar: True
+Aurora anterior Clima_Aurora: renderer=True emision=True
+Aurora anterior Clima_Aurora (1): renderer=True emision=True
+Clima real sin cambio: True
+Hora real sin cambio: True
+RNG de Unity sin cambio: True
+Vista temporal restaurada: clima=-1 hora=-1
+Alcance: solo presentacion del clima en zona 2. Tutorial completo no recorrido.

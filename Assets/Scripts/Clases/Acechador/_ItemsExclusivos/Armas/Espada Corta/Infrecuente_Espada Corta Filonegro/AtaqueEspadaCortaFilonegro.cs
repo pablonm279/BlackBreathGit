@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -87,6 +86,7 @@ public class AtaqueEspadaCortaFilonegro : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
       int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
       int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
@@ -101,8 +101,8 @@ public class AtaqueEspadaCortaFilonegro : Habilidad
           ? $"<color={colorFuerza}>Forca ({stats.Fuerza})</color>"
           : $"<color={colorFuerza}>Fuerza ({stats.Fuerza})</color>";
       int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
-      string titulo = esIngles ? "Blackblade Short Sword Slash" : esPortugues ? "Corte de Espada Curta Fio Negro" : "Corte de Espada Corta Filonegro";
-      string subtitulo = esIngles ? "Melee cut with higher critical chance and doubled critical damage." : esPortugues ? "Corte corpo a corpo com mais chance critica e dano critico dobrado." : "Corte melee con mas critico y dano critico duplicado.";
+      string titulo = esIngles ? "Blackblade Short Sword Slash" : esPortugues ? "Corte de Espada Curta Fio Negro" : esChino ? "黑刃短剑斩击" : "Corte de Espada Corta Filonegro";
+      string subtitulo = esIngles ? "Melee cut with higher critical chance and doubled critical damage." : esPortugues ? "Corte corpo a corpo com mais chance critica e dano critico dobrado." : esChino ? "近战斩击，暴击率更高，暴击伤害翻倍。" : "Corte melee con mas critico y dano critico duplicado.";
       if (esIngles)
       {
         string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
@@ -119,6 +119,23 @@ public class AtaqueEspadaCortaFilonegro : Habilidad
         };
         if (nivelMaestria > 0) lineas.Add(LineaDescripcion("Passive", $"Short Sword Mastery (Tier {nivelMaestria})."));
         txtDescripcion = ConstruirDescripcionNormalizadaIngles(titulo, $"A short sword attack with enhanced {criticoResumen} strikes.", lineas, mostrarIconoMelee: true);
+        return;
+      }
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{stats.Fuerza}）");
+        string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string cortZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        var lZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{cortZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada}，对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+          LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Critico, "暴击时"), "造成双倍伤害。")
+        };
+        if (nivelMaestria > 0) lZh.Add(LineaDescripcion("被动", $"短剑精通（等级 {nivelMaestria}）。"));
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "暴击效果得到强化的短剑攻击。", lZh, mostrarIconoMelee: true);
         return;
       }
       if (esPortugues)

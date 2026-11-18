@@ -115,6 +115,44 @@ public class Vigilancia : Habilidad
       return;
     }
 
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string tituloZh = "值守 I";
+      if (NIVEL == 2) { tituloZh = "值守 II"; }
+      if (NIVEL == 3) { tituloZh = "值守 III"; }
+      if (NIVEL == 4) { tituloZh = "值守 IV a"; }
+      if (NIVEL == 5) { tituloZh = "值守 IV b"; }
+
+      string agilidadZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+      string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+      string flechaZh = TerminoDescripcion(TerminoDescripcionId.Flecha, "箭");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2 || NIVEL == 2) { proximaMejoraZh = "反应攻击检定加成 +1。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：将范围扩展为 3x3 方格。\n选项B：反应射击次数 +1。"; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "探索者监视一片区域，对进入该区域的敌人触发反应攻击。",
+        new[]
+        {
+          LineaDescripcion("目标", NIVEL == 4 ? "3x3 方形区域。" : "十字形区域。"),
+          LineaDescripcion("效果", "当敌人进入该区域内的格子时，触发一次反应射击。"),
+          LineaDescripcion("攻击检定", $"1d20 + {agilidadZh}{bonusTirada} 对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentaje}%。", 1),
+          LineaDescripcion("命中时", $"受到 {rangoDanioReaccion} + {agilidadZh} 点{danoZh}。", 1),
+          LineaDescripcion("限制", $"最多 {disparosPorUso} 次反应射击。", 1),
+          LineaDescripcion("需求", $"每次射击需要 1 支{flechaZh}。"),
+          LineaDescripcion("使用", "结束本回合")
+        },
+        proximaMejoraZh);
+
+      return;
+    }
+
     if (esPortugues)
     {
       string agilidade = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"Agilidade ({agilidadActual})");

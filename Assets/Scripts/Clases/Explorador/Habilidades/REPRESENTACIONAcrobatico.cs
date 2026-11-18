@@ -56,6 +56,35 @@ public class REPRESENTACIONAcrobatico : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string evasionZh = TerminoDescripcion(TerminoDescripcionId.Evasion, "闪避", "Estado_evasion");
+        string reflejosZh = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "反射豁免", "ic_Reflejos");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "反射豁免 +1。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "闪避 +1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A/B：闪避 +1。"; }
+        }
+
+        string efectoZh = $"{evasionZh} +{evasion}";
+        if (reflejos > 0) { efectoZh += $"，{reflejosZh} +{reflejos}"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"灵巧身手 {SufijoNivel()}",
+          "被动：每场战斗开始时获得闪避。",
+          new[]
+          {
+            LineaDescripcion("触发", "战斗开始时"),
+            LineaDescripcion("效果", efectoZh),
+            LineaDescripcion("闪避", $"叠加到{defensaZh}上；受到伤害后失去。")
+          },
+          proximaMejoraZh,
+          costoSuperior: string.Empty);
+        return;
+      }
+
       if (esPortugues)
       {
         string evasaoTermino = TerminoDescripcion(TerminoDescripcionId.Evasion, "Evasão", "Estado_evasion");

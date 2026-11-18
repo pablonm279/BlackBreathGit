@@ -32,6 +32,24 @@ public class REPRESENTACIONSigiloso : Habilidad
       return;
     }
 
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string ocultoZh = TerminoDescripcion(TerminoDescripcionId.Oculto, "隐匿", "Estado_oculto");
+      string ataqueZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        "潜行",
+        "被动：只要敌人没有伏击队伍，就会以隐匿状态开始战斗。",
+        new[]
+        {
+          LineaDescripcion("开始时", $"战斗开始时获得{ocultoZh}。"),
+          LineaDescripcion(TerminoDescripcion(TerminoDescripcionId.Oculto, "处于隐匿状态时"), $"{ataqueZh} +2，{criticoZh} +5%，伤害 +10%。"),
+          LineaDescripcion("额外", "无视夜战减益。")
+        },
+        costoSuperior: string.Empty);
+      return;
+    }
+
     if (TRADU.i != null && TRADU.i.nIdioma == 3)
     {
       string oculto = TerminoDescripcion(TerminoDescripcionId.Oculto, "Oculto", "Estado_oculto"); string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque"); string critico = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico");

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 
 public class btnItemEnVenta : MonoBehaviour, IPointerClickHandler, IPointerDownHandler

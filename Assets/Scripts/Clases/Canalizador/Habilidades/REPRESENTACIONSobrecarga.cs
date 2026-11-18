@@ -33,6 +33,22 @@ public class REPRESENTACIONSobrecarga : Habilidad
             return;
           }
 
+          if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+          {
+            string energiaZh = TerminoDescripcion(TerminoDescripcionId.Energia, "能量等级", "Estado_acumularenergia");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+              "过载",
+              "战斗结束后：引导者会在战役中根据战斗结束时的能量等级受到伤害。",
+              new[]
+              {
+                LineaDescripcion("触发", "战斗结束。"),
+                LineaDescripcion("效果", $"每保留一层{energiaZh}，受到最大生命值 15% 的伤害。"),
+                LineaDescripcion("限制", "当前生命值不能降到 1 以下。")
+              },
+              costoSuperior: string.Empty);
+            return;
+          }
+
           {
             bool pt = TRADU.i != null && TRADU.i.nIdioma == 3;
             string energia = TerminoDescripcion(TerminoDescripcionId.Energia, pt ? "nível de Energia" : "nivel de Energía", "Estado_acumularenergia");

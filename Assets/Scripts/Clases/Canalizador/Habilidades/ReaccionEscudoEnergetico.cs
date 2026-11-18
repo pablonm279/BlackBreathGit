@@ -24,6 +24,10 @@ public class ReaccionEscudoEnergetico : Reaccion
     {
       descripcion = $"Reaction: The channeler defends and counterattacks with Arcane Bursts if attacked unsuccessfully with projectiles.";
     }
+    else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      descripcion = "反应：若引导者被投射物攻击未命中，便会进行防御并以奥术冲击进行反击。";
+    }
     else if (TRADU.i.nIdioma == 3)
     {
       descripcion = $"Reacao: O canalizador se defende e contra-ataca com Descargas Arcanas se for atacado sem sucesso por projeteis.";

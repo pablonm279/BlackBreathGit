@@ -62,6 +62,51 @@ public class REPRESENTACIONAcumulacionProtegida : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        var statsUI = ObtenerStatsDescripcionUI();
+        string tituloZh = "受保护的积蓄 I";
+        if (NIVEL == 2) { tituloZh = "受保护的积蓄 II"; }
+        else if (NIVEL == 3) { tituloZh = "受保护的积蓄 III"; }
+        else if (NIVEL == 4) { tituloZh = "受保护的积蓄 IV a"; }
+        else if (NIVEL == 5) { tituloZh = "受保护的积蓄 IV b"; }
+
+        int barreraExtraZh = NIVEL == 4 ? 6 : NIVEL > 1 ? 2 : 0;
+        int bonusMentalZh = NIVEL > 2 ? 2 : 1;
+        string energiaZh = TerminoDescripcion(TerminoDescripcionId.Energia, "能量等级", "Estado_acumularenergia");
+        string barreraZh = TerminoDescripcion(TerminoDescripcionId.Barrera, "屏障", "Estado_barrera");
+        string salvacionMentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免", "ic_mental");
+        string formulaZh = $"1 + 威力（{statsUI.Poder}）+ 3 × 当前{energiaZh}";
+        if (barreraExtraZh > 0) { formulaZh += $" + {barreraExtraZh}"; }
+
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("触发", "使用积蓄能量。"),
+          LineaDescripcion("效果", $"获得 {formulaZh} 点{barreraZh}，且{salvacionMentalZh} +{bonusMentalZh}。"),
+          LineaDescripcion("持续时间", "直到下一回合开始。")
+        };
+        if (NIVEL == 5)
+        {
+          lineasZh.Add(LineaDescripcion("积蓄期间", $"{TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点", "ap")} +1。"));
+        }
+
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "屏障 +2。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "心智豁免额外 +1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：屏障额外 +4。\n选项B：积蓄期间最大行动点 +1。"; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "被动：在积蓄能量期间保护引导者。",
+          lineasZh,
+          proximaMejoraZh,
+          costoSuperior: string.Empty);
+        return;
+      }
+
       {
         bool pt = TRADU.i != null && TRADU.i.nIdioma == 3;
         var statsUI = ObtenerStatsDescripcionUI();

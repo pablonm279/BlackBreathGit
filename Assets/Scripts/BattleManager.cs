@@ -102,6 +102,7 @@ public class BattleManager : MonoBehaviour
   private readonly HashSet<Unidad> unidadesObjetivoValidoBarraVida = new HashSet<Unidad>();
   private readonly HashSet<Unidad> unidadesConFadeHoverObjetivoHabilidad = new HashSet<Unidad>();
   private readonly HashSet<Unidad> unidadesConFadeAliadoDebajoUnidadActivaFrontal = new HashSet<Unidad>();
+  private readonly HashSet<Unidad> nuevasConFadeAliadoDebajoBuffer = new HashSet<Unidad>();
   public event EventHandler OnRondaNueva;
   public event EventHandler OnTurnoNuevo;
   public event Action<float> OnValourGlobalAliadosCambiado;
@@ -151,6 +152,7 @@ public class BattleManager : MonoBehaviour
   public GameObject tooltipValorES;
   public GameObject tooltipValorEN;
   public GameObject tooltipValorPO;
+  public GameObject tooltipValorCH;
   [SerializeField] private float tooltipValorHoverDelay = 0.25f;
   private const float MargenHoverUnidadPixeles = 12f;
   public TextMeshProUGUI rondaText;
@@ -699,6 +701,7 @@ public class BattleManager : MonoBehaviour
     ConfigurarAnimTooltipValour(tooltipValorES);
     ConfigurarAnimTooltipValour(tooltipValorEN);
     ConfigurarAnimTooltipValour(tooltipValorPO);
+    ConfigurarAnimTooltipValour(tooltipValorCH);
   }
 
   private void ConfigurarAnimTooltipValour(GameObject tooltip)
@@ -1150,6 +1153,14 @@ public class BattleManager : MonoBehaviour
 
   void GenerarViasEscapeRondaTres()
   {
+    bool tutorialActivo =
+      (CampaignManager.Instance != null && CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+      || (scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo);
+    if (tutorialActivo)
+    {
+      return;
+    }
+
     if (RondaNro != ObtenerRondaAparicionViasEscape() || ladoB == null || ladoB.casillasLado == null)
     {
       return;
@@ -1580,6 +1591,7 @@ public class BattleManager : MonoBehaviour
 
     string nombreRefuerzo = refuerzo != null ? ObtenerNombreTraducidoParaLog(refuerzo.uNombre) : "";
     bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool enChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     int cambioValentia = esRefuerzoEnemigo ? -1 : 1;
     bool huboImpacto = false;
 
@@ -1602,10 +1614,14 @@ public class BattleManager : MonoBehaviour
     string mensajeValentia = esRefuerzoEnemigo
       ? (enIngles
         ? "Enemy reinforcement " + nombreRefuerzo + " lowers allied valour (-1 VAL)."
-        : "El refuerzo enemigo " + nombreRefuerzo + " reduce la Valentía aliada (-1 VAL).")
+        : enChino
+          ? "敌方增援 " + nombreRefuerzo + " 降低了友军的勇气（-1 勇气）。"
+          : "El refuerzo enemigo " + nombreRefuerzo + " reduce la Valentía aliada (-1 VAL).")
       : (enIngles
         ? "Allied reinforcement " + nombreRefuerzo + " boosts allied valour (+1 VAL)."
-        : "El refuerzo aliado " + nombreRefuerzo + " aumenta la Valentía aliada (+1 VAL).");
+        : enChino
+          ? "友方增援 " + nombreRefuerzo + " 提升了友军的勇气（+1 勇气）。"
+          : "El refuerzo aliado " + nombreRefuerzo + " aumenta la Valentía aliada (+1 VAL).");
     EscribirLog(CombatLogFormatter.EventoValour(mensajeValentia), false);
 
     if (scUIInfoChar != null)
@@ -1651,12 +1667,15 @@ public class BattleManager : MonoBehaviour
     float valourGlobalPct = CalcularValourGlobalAliadosPct(aliadosJugador);
     int valourMostrado = Mathf.RoundToInt(valourGlobalPct);
     bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool enChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
     if (valourGlobalPct >= UmbralValourMuyAlto)
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? "Global Valour Very High (" + valourMostrado + "%): allies gain +15% damage and +1 AP this round."
-        : "Valentía global Muy Alta (" + valourMostrado + "%): los aliados ganan +15% daño y +1 AP esta ronda."));
+        : enChino
+          ? "全局勇气极高（" + valourMostrado + "%）：友军本回合获得 +15% 伤害和 +1 行动点。"
+          : "Valentía global Muy Alta (" + valourMostrado + "%): los aliados ganan +15% daño y +1 AP esta ronda."));
       AplicarBuffGlobalValourDanio(aliadosJugador);
       AplicarBuffGlobalValourAP(aliadosJugador);
       return;
@@ -1666,7 +1685,9 @@ public class BattleManager : MonoBehaviour
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? "Global Valour High (" + valourMostrado + "%): allies gain +1 AP this round."
-        : "Valentía global Alta (" + valourMostrado + "%): los aliados ganan +1 AP esta ronda."));
+        : enChino
+          ? "全局勇气高（" + valourMostrado + "%）：友军本回合获得 +1 行动点。"
+          : "Valentía global Alta (" + valourMostrado + "%): los aliados ganan +1 AP esta ronda."));
       AplicarBuffGlobalValourAP(aliadosJugador);
       return;
     }
@@ -1675,7 +1696,9 @@ public class BattleManager : MonoBehaviour
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? "Global Valour Very Low (" + valourMostrado + "%): all allies roll Mental Save (DC 15 - current VAL, min 8 max 22). On fail: flee in shame (max 1 per round)."
-        : "Valentía global Muy Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mín 8 máx 22). Si fallan: huyen avergonzados (máx 1 por ronda)."));
+        : enChino
+          ? "全局勇气极低（" + valourMostrado + "%）：所有友军进行心智豁免（难度 = 15 - 当前勇气，最低8最高22）。若失败：羞愧地逃跑（每回合最多1名）。"
+          : "Valentía global Muy Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mín 8 máx 22). Si fallan: huyen avergonzados (máx 1 por ronda)."));
       AplicarChequeoMoralGlobal(aliadosJugador, true);
       return;
     }
@@ -1684,7 +1707,9 @@ public class BattleManager : MonoBehaviour
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? "Global Valour Low (" + valourMostrado + "%): all allies roll Mental Save (DC 15 - current VAL, min 8 max 22). On fail: Doubting 1 round (-10% damage, -1 Defense)."
-        : "Valentía global Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mín 8 máx 22). Si fallan: Dudando 1 ronda (-10% daño, -1 Defensa)."));
+        : enChino
+          ? "全局勇气低（" + valourMostrado + "%）：所有友军进行心智豁免（难度 = 15 - 当前勇气，最低8最高22）。若失败：获得持续1回合的犹疑（-10% 伤害，-1 防御）。"
+          : "Valentía global Baja (" + valourMostrado + "%): todos los aliados tiran TS Mental (DC 15 - VAL actual, mín 8 máx 22). Si fallan: Dudando 1 ronda (-10% daño, -1 Defensa)."));
       AplicarChequeoMoralGlobal(aliadosJugador, false);
     }
   }
@@ -1860,12 +1885,15 @@ public class BattleManager : MonoBehaviour
     {
       bool enInglesTenaz = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool enPortuguesTenaz = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool enChinoTenaz = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       string nombreAliadoTenaz = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
       EscribirLog(CombatLogFormatter.EventoValour(enInglesTenaz
         ? nombreAliadoTenaz + " fails Mental Save (DC " + dc + ") but refuses to flee."
         : enPortuguesTenaz
           ? nombreAliadoTenaz + " falha no TS Mental (DC " + dc + "), mas se recusa a fugir."
-          : nombreAliadoTenaz + " falla la TS Mental (DC " + dc + "), pero se rehusa a huir."));
+          : enChinoTenaz
+            ? nombreAliadoTenaz + "未通过心智豁免（难度 " + dc + "），但拒绝逃跑。"
+            : nombreAliadoTenaz + " falla la TS Mental (DC " + dc + "), pero se rehusa a huir."));
       return false;
     }
 
@@ -1890,10 +1918,13 @@ public class BattleManager : MonoBehaviour
     }
 
     bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool enChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
     EscribirLog(CombatLogFormatter.EventoValour(enIngles
       ? nombreAliado + " fails Mental Save (DC " + dc + ") and flees the battle in shame."
-      : nombreAliado + " falla la TS Mental (DC " + dc + ") y huye avergonzado de la batalla."));
+      : enChino
+        ? nombreAliado + "未通过心智豁免（难度 " + dc + "），羞愧地逃离了战斗。"
+        : nombreAliado + " falla la TS Mental (DC " + dc + ") y huye avergonzado de la batalla."));
     return true;
   }
 
@@ -1941,18 +1972,23 @@ public class BattleManager : MonoBehaviour
     Buff buffComponent = ComponentCopier.CopyComponent(dudando, aliado.gameObject);
 
     bool enIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
+    bool enChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliado.uNombre) : aliado.uNombre;
     if (porLimiteHuida)
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? nombreAliado + " fails Mental Save (DC " + dc + "). Doubting applied for 1 round (-10% damage, -1 Defense). Flee limit reached this round."
-        : nombreAliado + " falla la TS Mental (DC " + dc + "). Se aplica Dudando por 1 ronda (-10% daño, -1 Defensa). Se alcanzó el límite de huida en esta ronda."));
+        : enChino
+          ? nombreAliado + "未通过心智豁免（难度 " + dc + "）。获得持续1回合的犹疑（-10% 伤害，-1 防御）。本回合逃跑名额已用完。"
+          : nombreAliado + " falla la TS Mental (DC " + dc + "). Se aplica Dudando por 1 ronda (-10% daño, -1 Defensa). Se alcanzó el límite de huida en esta ronda."));
     }
     else
     {
       EscribirLog(CombatLogFormatter.EventoValour(enIngles
         ? nombreAliado + " fails Mental Save (DC " + dc + ") and becomes Doubting for 1 round (-10% damage, -1 Defense)."
-        : nombreAliado + " falla la TS Mental (DC " + dc + ") y entra en Dudando por 1 ronda (-10% daño, -1 Defensa)."));
+        : enChino
+          ? nombreAliado + "未通过心智豁免（难度 " + dc + "），获得持续1回合的犹疑（-10% 伤害，-1 防御）。"
+          : nombreAliado + " falla la TS Mental (DC " + dc + ") y entra en Dudando por 1 ronda (-10% daño, -1 Defensa)."));
     }
   }
 
@@ -2787,7 +2823,9 @@ public class BattleManager : MonoBehaviour
 
   private void ActualizarFadeAliadoDebajoUnidadActivaFrontal()
   {
-    HashSet<Unidad> nuevasConFade = new HashSet<Unidad>();
+    // Se ejecuta cada frame: se reutiliza el set para no generar basura.
+    nuevasConFadeAliadoDebajoBuffer.Clear();
+    HashSet<Unidad> nuevasConFade = nuevasConFadeAliadoDebajoBuffer;
     Unidad aliadoDebajo = ObtenerAliadoDebajoUnidadActivaFrontal();
     if (aliadoDebajo != null)
     {
@@ -3433,11 +3471,9 @@ public class BattleManager : MonoBehaviour
     }
 
     Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-    RaycastHit[] hits3D = Physics.RaycastAll(ray, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide)
-      .OrderBy(h => h.distance)
-      .ToArray();
+    int cantidadHits3D = RaycastOrdenadoPorDistancia(ray, out RaycastHit[] hits3D);
 
-    for (int i = 0; i < hits3D.Length; i++)
+    for (int i = 0; i < cantidadHits3D; i++)
     {
       Collider collider = hits3D[i].collider;
       if (collider == null)
@@ -3450,6 +3486,35 @@ public class BattleManager : MonoBehaviour
     }
 
     return false;
+  }
+
+  private static readonly RaycastHit[] bufferHitsMouse3D = new RaycastHit[64];
+
+  private sealed class ComparadorHitPorDistancia : IComparer<RaycastHit>
+  {
+    public static readonly ComparadorHitPorDistancia Instancia = new ComparadorHitPorDistancia();
+
+    public int Compare(RaycastHit a, RaycastHit b)
+    {
+      return a.distance.CompareTo(b.distance);
+    }
+  }
+
+  // Equivale a RaycastAll + OrderBy(distance), pero sin reservar memoria en el caso normal
+  // (se usa cada frame al pasar el mouse). Devuelve la cantidad valida dentro de hits.
+  private static int RaycastOrdenadoPorDistancia(Ray ray, out RaycastHit[] hits)
+  {
+    int cantidad = Physics.RaycastNonAlloc(ray, bufferHitsMouse3D, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide);
+    if (cantidad >= bufferHitsMouse3D.Length)
+    {
+      hits = Physics.RaycastAll(ray, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide);
+      Array.Sort(hits, ComparadorHitPorDistancia.Instancia);
+      return hits.Length;
+    }
+
+    hits = bufferHitsMouse3D;
+    Array.Sort(bufferHitsMouse3D, 0, cantidad, ComparadorHitPorDistancia.Instancia);
+    return cantidad;
   }
 
   private void ActualizarHoverUnidadBajoMouse()
@@ -3963,11 +4028,9 @@ public class BattleManager : MonoBehaviour
     }
 
     Ray ray = cam.ScreenPointToRay(mousePos);
-    RaycastHit[] hits3D = Physics.RaycastAll(ray, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide)
-      .OrderBy(h => h.distance)
-      .ToArray();
+    int cantidadHits3D = RaycastOrdenadoPorDistancia(ray, out RaycastHit[] hits3D);
 
-    for (int i = 0; i < hits3D.Length; i++)
+    for (int i = 0; i < cantidadHits3D; i++)
     {
       Collider collider = hits3D[i].collider;
       if (collider == null)
@@ -4099,11 +4162,9 @@ public class BattleManager : MonoBehaviour
     }
 
     Ray ray = cam.ScreenPointToRay(mousePos);
-    RaycastHit[] hits3D = Physics.RaycastAll(ray, 500f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide)
-      .OrderBy(h => h.distance)
-      .ToArray();
+    int cantidadHits3D = RaycastOrdenadoPorDistancia(ray, out RaycastHit[] hits3D);
 
-    for (int i = 0; i < hits3D.Length; i++)
+    for (int i = 0; i < cantidadHits3D; i++)
     {
       Collider collider = hits3D[i].collider;
       if (collider == null)
@@ -5658,6 +5719,11 @@ public class BattleManager : MonoBehaviour
     {
       UIFadeSlideUtility.Hide(tooltipValorPO);
     }
+
+    if (tooltipValorCH != null)
+    {
+      UIFadeSlideUtility.Hide(tooltipValorCH);
+    }
   }
 
   private IEnumerator AbrirTooltipValorConDelay()
@@ -5689,6 +5755,11 @@ public class BattleManager : MonoBehaviour
       UIFadeSlideUtility.Hide(tooltipValorPO);
     }
 
+    if (tooltipValorCH != null)
+    {
+      UIFadeSlideUtility.Hide(tooltipValorCH);
+    }
+
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
     GameObject tooltipSeleccionado = null;
     switch (idioma)
@@ -5701,6 +5772,9 @@ public class BattleManager : MonoBehaviour
         break;
       case 3: // Portugués
         tooltipSeleccionado = tooltipValorPO;
+        break;
+      case TRADU.IdiomaChinoSimplificado:
+        tooltipSeleccionado = tooltipValorCH != null ? tooltipValorCH : tooltipValorES;
         break;
       default:
         tooltipSeleccionado = tooltipValorES;

@@ -555,6 +555,7 @@ public class PrePartidaManager : MonoBehaviour
 
         return idioma switch
         {
+            TRADU.IdiomaChinoSimplificado => string.Format(ChineseLocalization.Get("Si empiezas una nueva partida, sobreescribirás la partida: \"{0}\".\n\n¿Continuar?", "If you start a new game, you will overwrite the save: \"{0}\".\n\nContinue?"), nombre),
             TRADU.IdiomaIngles => "If you start a new game, you will overwrite the save: \"" + nombre + "\".\n\nContinue?",
             TRADU.IdiomaPortugues => "Se você começar uma nova partida, sobrescreverá a partida: \"" + nombre + "\".\n\nContinuar?",
             _ => "Si empiezas una nueva partida, sobreescribirás la partida: \"" + nombre + "\".\n\n¿Continuar?"
@@ -563,11 +564,13 @@ public class PrePartidaManager : MonoBehaviour
 
     private static string ObtenerTextoCancelarConfirmacion(int idioma)
     {
+        if (idioma == TRADU.IdiomaChinoSimplificado) return ChineseLocalization.Get("Cancelar", "Cancel");
         return idioma == TRADU.IdiomaIngles ? "Cancel" : "Cancelar";
     }
 
     private static string ObtenerTextoContinuarConfirmacion(int idioma)
     {
+        if (idioma == TRADU.IdiomaChinoSimplificado) return ChineseLocalization.Get("Continuar", "Continue");
         return idioma == TRADU.IdiomaIngles ? "Continue" : "Continuar";
     }
 
@@ -576,6 +579,7 @@ public class PrePartidaManager : MonoBehaviour
         int idioma = ObtenerIdiomaActual();
         return idioma switch
         {
+            TRADU.IdiomaChinoSimplificado => ChineseLocalization.Get("Partida guardada", "Saved Game"),
             TRADU.IdiomaIngles => "Saved Game",
             TRADU.IdiomaPortugues => "Partida salva",
             _ => "Partida guardada"
@@ -1455,6 +1459,7 @@ public class PrePartidaManager : MonoBehaviour
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
         return idioma switch
         {
+            TRADU.IdiomaChinoSimplificado => ChineseLocalization.Get("Aleatorio", "Random"),
             TRADU.IdiomaIngles => "Random",
             TRADU.IdiomaPortugues => "Aleatório",
             _ => "Aleatorio"
@@ -1464,6 +1469,17 @@ public class PrePartidaManager : MonoBehaviour
     private static string ObtenerNombreZonaCarrusel(int zonaId)
     {
         int idioma = ObtenerIdiomaActual();
+
+        if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return zonaId switch
+            {
+                ZonaBosqueArdiente => ChineseLocalization.Get("El Bosque Ardiente", "The Burning Forest"),
+                ZonaPasoVientoHelado => ChineseLocalization.Get("Paso Viento Helado", "Frozenwind Passage"),
+                ZonaNedukazal => ChineseLocalization.Get("Nedukazal", "Nedukazal"),
+                _ => ChineseLocalization.Get("Desconocida", "Unknown")
+            };
+        }
 
         if (idioma == TRADU.IdiomaIngles)
         {
@@ -1499,6 +1515,17 @@ public class PrePartidaManager : MonoBehaviour
     private static string ObtenerDescripcionZonaCarrusel(int zonaId)
     {
         int idioma = ObtenerIdiomaActual();
+        if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return zonaId switch
+            {
+                ZonaBosqueArdiente => ChineseLocalization.Get("La caravana partirá desde las inmediaciones del Bosque de Glain, ahora llamado el <b>Bosque Ardiente</b>, después de que las llamas devoraran gran parte de él.\n\nMás allá del fuego, deberán enfrentarse a los antiguos guardianes del bosque, deformados por las quemaduras, consumidos por la furia y potenciados por el Aliento Negro.", "The caravan will set out from the outskirts of the Forest of Glain, now known as the <b>Burning Forest</b>, after flames consumed a vast portion of it.\n\nBeyond the fire, they will have to face the forest's ancient guardians, deformed by flames and empowered by the Black Breath."),
+                ZonaPasoVientoHelado => ChineseLocalization.Get("La caravana deberá ascender por las escarpadas y peligrosas Montañas Cruzadas hasta alcanzar el Paso Vientohelado.\n\nEste estrecho desfiladero es la única ruta conocida para atravesar la cordillera. El frío implacable y las criaturas salvajes no serán los únicos peligros: la tribu Kale'Tav no permitirá que ningún intruso cruce su territorio.", "The caravan must climb the steep and dangerous Crossed Mountains until it reaches Frozenwind Passage.\n\nThis narrow gorge is the only known route across the mountain range. The relentless cold and wild creatures will not be the only dangers: the Kale'Tav tribe will not allow any intruder to cross their territory."),
+                ZonaNedukazal => ChineseLocalization.Get("La caravana deberá alcanzar la antigua entrada de <b>Nedukazal</b>, un reino oculto bajo una inmensa montaña de piedra.\n\nSu enorme portal, desgastado por los siglos, es la única vía de acceso a sus profundidades, para poder cruzar y salir por la otra cara de la montaña.\nSin embargo, el recluido reino tiene su propia crisis en curso: criaturas desconocidas lo han invadido.", "The caravan must reach the ancient entrance to <b>Nedukazal</b>, a kingdom hidden beneath an immense mountain of stone.\n\nIts enormous portal, worn by the centuries, is the only way into its depths, allowing passage through and exit on the other side of the mountain.\nHowever, the secluded kingdom is facing a crisis of its own: unknown creatures have invaded it."),
+                _ => string.Empty
+            };
+        }
+
         if (idioma == TRADU.IdiomaIngles)
         {
             return zonaId switch
@@ -1584,8 +1611,23 @@ public class PrePartidaManager : MonoBehaviour
 #if UNITY_EDITOR
         return CampaignManager.EsZonaPermitidaPorDebug(zonaId);
 #else
-        return false;
+        TextAsset ajustes = Resources.Load<TextAsset>("CampaignDebugZones");
+        if (ajustes == null)
+        {
+            return false;
+        }
+
+        CampaignDebugZones datos = JsonUtility.FromJson<CampaignDebugZones>(ajustes.text);
+        return datos != null && (zonaId == ZonaPasoVientoHelado && datos.pasoVientoHelado
+            || zonaId == ZonaNedukazal && datos.nedukazal);
 #endif
+    }
+
+    [Serializable]
+    private class CampaignDebugZones
+    {
+        public bool pasoVientoHelado;
+        public bool nedukazal;
     }
 
     private static int ObtenerIdiomaActual()
@@ -1614,6 +1656,7 @@ public class PrePartidaManager : MonoBehaviour
         {
             disclaimerDemo.text = idioma switch
             {
+                TRADU.IdiomaChinoSimplificado => ChineseLocalization.Get("Próximamente más regiones", "More regions coming soon"),
                 TRADU.IdiomaIngles => "More regions coming soon",
                 TRADU.IdiomaPortugues => "Mais regiões em breve",
                 _ => "Próximamente más regiones"
@@ -1624,6 +1667,7 @@ public class PrePartidaManager : MonoBehaviour
 
         disclaimerDemo.text = idioma switch
         {
+            TRADU.IdiomaChinoSimplificado => ChineseLocalization.Get("Región no disponible en la Demo", "Region unavailable in the Demo"),
             TRADU.IdiomaIngles => "Region unavailable in the Demo",
             TRADU.IdiomaPortugues => "Região indisponível na Demo",
             _ => "Región no disponible en la Demo"
@@ -1680,6 +1724,17 @@ public static class ZonaMecanicaTextos
             return ObtenerTextoMecanicasDesconocidas(idioma);
         }
 
+        if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return zonaId switch
+            {
+                1 => ChineseLocalization.Get("A medida que viajas por el bosque, <color=#ff6a1a><b>las llamas</b></color> envolverán regiones del mapa de forma inesperada.\n\nSi intentas atravesar un <color=#ff6a1a><b>Nodo prendido fuego</b></color>, perderás <color=#a0e812><b>10 de Esperanza</b></color> y <color=#c918bb><b>8-15 Civiles</b></color>.\nNo se podrá <b>descansar</b> en nodos incendiados.\n\nAdemás, las batallas que tengan lugar en un <color=#ff6a1a><b>Nodo incendiado</b></color>, tendrán <color=#ff6a1a><b>llamas</b></color> en el campo de batalla.", "As you travel through the forest, <color=#ff6a1a><b>flames</b></color> will unexpectedly engulf regions of the map.\n\nIf you try to cross a <color=#ff6a1a><b>burning Node</b></color>, you will lose <color=#a0e812><b>10 Hope</b></color> and <color=#c918bb><b>8-15 Civilians</b></color>.\nYou cannot <b>rest</b> on burning nodes.\n\nAlso, battles that take place on a <color=#ff6a1a><b>burning Node</b></color> will have <color=#ff6a1a><b>flames</b></color> on the battlefield."),
+                2 => string.Format(ChineseLocalization.Get("La tribu <color=#77c7ff><b>Kale'Tav</b></color> está realizando <color=#b98cff><b>rituales</b></color> en el área, preparándose para el <color=#8b5cf6><b>Aliento Negro</b></color>.\n\nAl escuchar sus <b>tambores</b> a lo lejos sabrás dónde se encuentran.\nPor cada <color=#b98cff><b>Ritual completado</b></color>, sus combatientes recibirán <color=#ffcc66><b>bonificaciones en batalla</b></color>.\n\nPara interrumpir un ritual debes aproximarte a los <color=#77c7ff><b>nodos marcados</b></color> y derrotarlos.\n\n<color=#77c7ff><b>Fuerza Kale'Tav:</b></color> {0}", "The <color=#77c7ff><b>Kale'Tav</b></color> tribe is performing <color=#b98cff><b>rituals</b></color> in the area, preparing for the <color=#8b5cf6><b>Black Breath</b></color>.\n\nWhen you hear their <b>drums</b> in the distance, you will know where they are.\nFor each <color=#b98cff><b>completed Ritual</b></color>, their fighters will receive <color=#ffcc66><b>battle bonuses</b></color>.\n\nTo interrupt a ritual, approach the <color=#77c7ff><b>marked nodes</b></color> and defeat them.\n\n<color=#77c7ff><b>Kale'Tav Strength:</b></color> {0}"), fuerzaKaleTav),
+                3 => ChineseLocalization.Get("Debido a la invasión, <color=#b44a4a><b>Nedukazal</b></color> está envuelta en <color=#8b5cf6><b>caos y oscuridad</b></color>, por lo tanto la caravana no podrá ver claramente el camino adelante.\n\nAl depender de la <color=#ffd166><b>luz propia</b></color>, será más propensa a sufrir <color=#ff4d4d><b>emboscadas (+20%)</b></color>.\n\nMejora los <color=#77c7ff><b>Catalejos</b></color> para aumentar el <color=#77c7ff><b>rango de visión</b></color>.\nLas <color=#ffd166><b>Antorchas de Caravana</b></color> seguirán reforzando la luz propia de la caravana en esta región.\n\nEl <color=#8b5cf6><b>Aliento Negro</b></color> no será una preocupación en esta región.", "Due to the invasion, <color=#b44a4a><b>Nedukazal</b></color> is shrouded in <color=#8b5cf6><b>chaos and darkness</b></color>, so the caravan will not be able to clearly see the path ahead.\n\nBecause it relies on its <color=#ffd166><b>own light</b></color>, it will be more likely to suffer <color=#ff4d4d><b>ambushes (+20%)</b></color>.\n\nThe <color=#ffd166><b>Caravan Torches</b></color> improvement will increase the <color=#77c7ff><b>Vision Range</b></color> of the caravan.\n\nThe <color=#8b5cf6><b>Black Breath</b></color> will not be a concern in this region."),
+                _ => string.Empty
+            };
+        }
+
         if (idioma == TRADU.IdiomaIngles)
         {
             return ObtenerDescripcionIngles(zonaId, fuerzaKaleTav);
@@ -1697,6 +1752,7 @@ public static class ZonaMecanicaTextos
     {
         return idioma switch
         {
+            TRADU.IdiomaChinoSimplificado => ChineseLocalization.Get("Mecánicas desconocidas para esta región. Visítala para conocerlas.", "Mechanics unknown for this region. Visit it to learn them."),
             TRADU.IdiomaIngles => "Mechanics unknown for this region. Visit it to learn them.",
             TRADU.IdiomaPortugues => "Mecânicas desconhecidas para esta região. Visite-a para conhecê-las.",
             _ => "Mecánicas desconocidas para esta región. Visítala para conocerlas."

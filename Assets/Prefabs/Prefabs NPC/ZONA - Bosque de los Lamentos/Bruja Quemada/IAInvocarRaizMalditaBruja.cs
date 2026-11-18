@@ -322,6 +322,8 @@ public class IAInvocarRaizMalditaBruja : IAHabilidad
         return "summons a";
       case TRADU.IdiomaPortugues:
         return "invoca uma";
+      case TRADU.IdiomaChinoSimplificado:
+        return "召唤出一株";
       default:
         return "invoca una";
     }

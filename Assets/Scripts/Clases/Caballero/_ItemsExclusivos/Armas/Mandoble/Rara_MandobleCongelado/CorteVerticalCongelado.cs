@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -76,6 +75,7 @@ public class CorteVerticalCongelado : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
       int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
       int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
@@ -89,9 +89,9 @@ public class CorteVerticalCongelado : Habilidad
         : esPortugues
           ? $"<color={colorFuerza}>Forca ({stats.Fuerza})</color>"
           : $"<color={colorFuerza}>Fuerza ({stats.Fuerza})</color>";
-      string titulo = esIngles ? "Frozen Vertical Slash" : esPortugues ? "Corte Vertical Congelado" : "Corte Vertical Congelado";
-      string subtitulo = esIngles ? "Heavy melee attack with extra Cold damage." : esPortugues ? "Ataque corpo a corpo pesado com dano de Gelo extra." : "Ataque melee pesado con dano Frio extra.";
-      string efecto = esIngles ? "Extra damage: 1-10 Cold; on critical, 1-6 Cold to adjacent enemies" : esPortugues ? "Dano extra: 1-10 Gelo; em critico, 1-6 Gelo a inimigos adjacentes" : "Dano extra: 1-10 Frio; en critico, 1-6 Frio a enemigos adyacentes";
+      string titulo = esIngles ? "Frozen Vertical Slash" : esPortugues ? "Corte Vertical Congelado" : esChino ? "冰封纵斩" : "Corte Vertical Congelado";
+      string subtitulo = esIngles ? "Heavy melee attack with extra Cold damage." : esPortugues ? "Ataque corpo a corpo pesado com dano de Gelo extra." : esChino ? "沉重的近战攻击，附加额外冰霜伤害。" : "Ataque melee pesado con dano Frio extra.";
+      string efecto = esIngles ? "Extra damage: 1-10 Cold; on critical, 1-6 Cold to adjacent enemies" : esPortugues ? "Dano extra: 1-10 Gelo; em critico, 1-6 Gelo a inimigos adjacentes" : esChino ? "额外伤害：1-10 点冰霜伤害；暴击时，对相邻敌人造成 1-6 点冰霜伤害" : "Dano extra: 1-10 Frio; en critico, 1-6 Frio a enemigos adyacentes";
       if (esIngles)
       {
         string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
@@ -112,6 +112,22 @@ public class CorteVerticalCongelado : Habilidad
           },
           mostrarIconoMelee: true);
         return;
+      }
+
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{stats.Fuerza}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string cortanteZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string frioZh = TerminoDescripcion(TerminoDescripcionId.DanioFrio, "冰霜伤害", "dano_hielo");
+        string frioSinIconoZh = TerminoDescripcion(TerminoDescripcionId.DanioFrio, "冰霜伤害");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "一记冰封打击，暴击时会扩散冰霜伤害。", new[]
+        {
+          LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"), LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{cortanteZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada}，对抗{defensaZh}。大失败：10%。{criticoZh}：{criticoPorcentaje}%。", 1),
+          LineaDescripcion("武器效果", $"单位额外受到 1-10 点{frioZh}。"), LineaDescripcion("暴击时", $"相邻敌人受到 1-6 点{frioSinIconoZh}。", 1)
+        }, mostrarIconoMelee: true); return;
       }
 
       if (esPortugues)

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -73,13 +72,34 @@ public class GolpeBaston : Habilidad
         string costoSuperior = cooldownMax > 0
           ? $"{costoAP} {iconoAP}  {cooldownMax} {iconoCooldown}"
           : $"{costoAP} {iconoAP}";
-        string titulo = esIngles ? "Staff Strike" : esPortugues ? "Golpe de Cajado" : "Golpe de Bastón";
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
+        string titulo = esIngles ? "Staff Strike" : esChino ? "法杖打击" : esPortugues ? "Golpe de Cajado" : "Golpe de Bastón";
         nombre = titulo;
         string subtitulo = esIngles
           ? "Basic melee staff attack."
-          : esPortugues
-            ? "Ataque corpo a corpo básico com cajado."
-            : "Ataque cuerpo a cuerpo básico con bastón.";
+          : esChino
+            ? "基础的法杖近战攻击。"
+            : esPortugues
+              ? "Ataque corpo a corpo básico com cajado."
+              : "Ataque cuerpo a cuerpo básico con bastón.";
+
+        if (esChino)
+        {
+          string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{fuerzaActual}）");
+          string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+          string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioContundente, "钝击伤害", "dano_contundente");
+          txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+            titulo,
+            subtitulo,
+            new[]
+            {
+              LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+              LineaDescripcion("效果", $"命中时，造成 {rangoDanio} + {fuerzaZh} 点{danoZh}。"),
+              LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{ataqueTxt}{bonusAtaqueTxt} 对抗{defensaZh}。大失败：{pifiaPorcentaje}%。暴击：{criticoPorcentaje}%。", 1)
+            },
+            mostrarIconoMelee: true);
+          return;
+        }
 
         if (esIngles)
         {

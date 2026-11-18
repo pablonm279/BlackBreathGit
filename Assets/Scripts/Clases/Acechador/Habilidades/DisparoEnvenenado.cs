@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -78,6 +77,8 @@ public class DisparoEnvenenado : Habilidad
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage.</i>\n\n"; }
       if (TRADU.i.nIdioma == 3)
       { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano.</i>\n\n"; }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      { txtDescripcion += "\n\n<i>手弩精通提供：攻击 +1，伤害 +2。</i>\n\n"; }
 
     }
     else if (NivelMaestria == 2)
@@ -91,6 +92,8 @@ public class DisparoEnvenenado : Habilidad
       {  txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +5% Critical.</i>\n\n"; }
       if (TRADU.i.nIdioma == 3)
       {  txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano +5% Critico.</i>\n\n"; }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      { txtDescripcion += "\n\n<i>手弩精通提供：攻击 +1，伤害 +2，暴击 +5%。</i>\n\n"; }
 
     }
     else if (NivelMaestria == 3)
@@ -105,6 +108,8 @@ public class DisparoEnvenenado : Habilidad
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Attack +2 Damage +5% Critical, -1 AP.</i>\n\n"; }
       if(TRADU.i.nIdioma== 3)
       { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Ataque +2 Dano +5% Critico, -1 AP.</i>\n\n"; }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      { txtDescripcion += "\n\n<i>手弩精通提供：攻击 +1，伤害 +2，暴击 +5%，行动点 -1。</i>\n\n"; }
 
 
     }
@@ -121,6 +126,8 @@ public class DisparoEnvenenado : Habilidad
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: +1 Range +1 Attack +2 Damage +5% Critical.</i>\n\n"; }
       if(TRADU.i.nIdioma== 3)
       { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: +1 Alcance +1 Ataque +2 Dano +5% Critico.</i>\n\n"; }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      { txtDescripcion += "\n\n<i>手弩精通提供：距离 +1，攻击 +1，伤害 +2，暴击 +5%。</i>\n\n"; }
 
     }
     else if (NivelMaestria == 5)
@@ -137,6 +144,8 @@ public class DisparoEnvenenado : Habilidad
       { txtDescripcion += "\n\n<i>Hand Crossbow Mastery adds: Removes Cooldown, +1 Attack +2 Damage +5% Critical.</i>\n\n"; }
       if(TRADU.i.nIdioma== 3)
       { txtDescripcion += "\n\n<i>Maestria com Besta de Mao adiciona: Remove Recarga, +1 Ataque +2 Dano +5% Critico.</i>\n\n"; }
+      if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      { txtDescripcion += "\n\n<i>手弩精通提供：移除冷却，攻击 +1，伤害 +2，暴击 +5%。</i>\n\n"; }
 
     }
 
@@ -153,6 +162,7 @@ public class DisparoEnvenenado : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int agilidadActual = statsUI.Agilidad;
@@ -180,6 +190,7 @@ public class DisparoEnvenenado : Habilidad
     string tituloEs = "Disparo Envenenado I";
     string tituloEn = "Poison Shot I";
     string tituloPt = "Disparo Envenenado I";
+    string tituloZh = "淬毒射击 I";
     if (NIVEL == 2) { tituloEs = "Disparo Envenenado II"; tituloEn = "Poison Shot II"; }
     if (NIVEL == 3) { tituloEs = "Disparo Envenenado III"; tituloEn = "Poison Shot III"; }
     if (NIVEL == 4) { tituloEs = "Disparo Envenenado IV a"; tituloEn = "Poison Shot IV a"; }
@@ -188,6 +199,10 @@ public class DisparoEnvenenado : Habilidad
     if (NIVEL == 3) { tituloPt = "Disparo Envenenado III"; }
     if (NIVEL == 4) { tituloPt = "Disparo Envenenado IV a"; }
     if (NIVEL == 5) { tituloPt = "Disparo Envenenado IV b"; }
+    if (NIVEL == 2) { tituloZh = "淬毒射击 II"; }
+    if (NIVEL == 3) { tituloZh = "淬毒射击 III"; }
+    if (NIVEL == 4) { tituloZh = "淬毒射击 IV a"; }
+    if (NIVEL == 5) { tituloZh = "淬毒射击 IV b"; }
 
     if (esIngles)
     {
@@ -222,6 +237,32 @@ public class DisparoEnvenenado : Habilidad
         $"Hand crossbow attack. Fires a {venenoResumen} bolt that can afflict the target.",
         lineas,
         proximaMejora);
+      return;
+    }
+
+    if (esChino)
+    {
+      string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+      string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+      string fortZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+      string venZh = TerminoDescripcion(TerminoDescripcionId.Veneno, "中毒", "veneno");
+      string venResZh = TerminoDescripcion(TerminoDescripcionId.Veneno, "淬毒");
+      string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：豁免失败时中毒 +1。" : NIVEL == 2 ? "下一级：豁免难度 +1。" : NIVEL == 3 ? "选项A：中毒 +2。选项B：冷却时间 -1。" : null;
+      var lZh = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("目标", "1 个目标或障碍物"),
+        LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {agiZh} 点{danoZh}。"),
+        LineaDescripcion("攻击检定", $"1d20 + {agiZh}{bonusTirada}，对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+        LineaDescripcion("豁免", $"目标进行 {fortZh} 豁免，对抗难度 {dcBase}。", 1),
+        LineaDescripcion("豁免失败", $"叠加 {venenoAplicado} 层{venZh}。", 1)
+      };
+      if (nivelMaestria > 0)
+      {
+        lZh.Add(LineaDescripcion("被动", $"手弩精通（等级 {nivelMaestria}）。"));
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloZh, $"手弩攻击。射出一支{venResZh}的箭矢，可使目标陷入异常状态。", lZh, proxZh);
       return;
     }
 

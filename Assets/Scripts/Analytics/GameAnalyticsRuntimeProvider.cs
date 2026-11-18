@@ -235,6 +235,10 @@ internal static class GameAnalyticsRuntimeProvider
 
     private static void ConfigurePlayerDimensions(Settings settings)
     {
+        if (!settings.CustomDimensions01.Contains(ChineseLocalization.Locale))
+        {
+            settings.CustomDimensions01.Add(ChineseLocalization.Locale);
+        }
         if (settings.CustomDimensions01.Count > 0)
         {
             GA_Setup.SetAvailableCustomDimensions01(settings.CustomDimensions01);
@@ -257,6 +261,7 @@ internal static class GameAnalyticsRuntimeProvider
         {
             case 1: return "es";
             case 3: return "pt";
+            case TRADU.IdiomaChinoSimplificado: return ChineseLocalization.Locale;
             default: return "en";
         }
     }

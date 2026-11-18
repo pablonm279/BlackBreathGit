@@ -27,24 +27,35 @@ public sealed class BanterLineaLocal
     public string Espanol { get; }
     public string Ingles { get; }
     public string Portugues { get; }
+    public string Chino { get; }
 
     public BanterLineaLocal(
         string id,
         BanterDisparador disparador,
         string espanol,
         string ingles,
-        string portugues)
+        string portugues,
+        string chino = null)
     {
         Id = id;
         Disparador = disparador;
         Espanol = espanol;
         Ingles = ingles;
         Portugues = portugues;
+        Chino = chino;
     }
 
     public string ObtenerTextoActual()
     {
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : 1;
+        if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            if (!string.IsNullOrWhiteSpace(Chino))
+            {
+                return Chino;
+            }
+            return !string.IsNullOrWhiteSpace(Ingles) ? Ingles : Espanol;
+        }
         if (idioma == 2 && !string.IsNullOrWhiteSpace(Ingles))
         {
             return Ingles;

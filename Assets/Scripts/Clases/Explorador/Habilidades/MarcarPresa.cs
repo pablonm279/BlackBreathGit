@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -95,6 +94,46 @@ public class MarcarPresa : Habilidad
         "Marks one enemy and improves attacks against it.",
         lineas,
         proximaMejora);
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string tituloZh = "标记猎物 I";
+      if (NIVEL == 2) { tituloZh = "标记猎物 II"; }
+      if (NIVEL == 3) { tituloZh = "标记猎物 III"; }
+      if (NIVEL == 4) { tituloZh = "标记猎物 IV a"; }
+      if (NIVEL == 5) { tituloZh = "标记猎物 IV b"; }
+
+      string marcaZh = TerminoDescripcion(TerminoDescripcionId.MarcaPresa, "猎物标记", "Estado_marcado");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+      string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点", "ap");
+      string salvacionMentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免", "ic_mental");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "对已标记目标的暴击伤害 +5%。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = $"对已标记目标的{criticoZh} +5%。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：移除对其他目标的惩罚。\n选项B：击杀奖励额外获得 +1 勇气、+1 最大行动点、+1 心智豁免。"; }
+      }
+
+      var lineasZh = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("目标", "1 名敌人"),
+        LineaDescripcion("效果", $"施加{marcaZh}，持续 3 回合。"),
+        LineaDescripcion("对目标", $"攻击检定 +{bonoAtaqueMarca}，{criticoZh} +{bonoCritPorcentajeMarca}%，暴击伤害 +{bonoCritDanioMarca}%。", 1)
+      };
+      if (aplicaPenalidadPropia)
+      {
+        lineasZh.Add(LineaDescripcion("惩罚", "对其他目标的攻击检定 -2（持续 2 回合）。", 1));
+      }
+      lineasZh.Add(LineaDescripcion("击杀已标记目标时", $"+{recompensaVal} {valentiaZh}，+{recompensaApMax} {apZh}，+{recompensaTsMental} {salvacionMentalZh}（持续 3 回合）。", 1));
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "标记一名敌人，并强化对其发起的攻击。",
+        lineasZh,
+        proximaMejoraZh);
       return;
     }
 

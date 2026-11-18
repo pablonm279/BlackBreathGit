@@ -51,6 +51,10 @@ public class TraduccionRapida : MonoBehaviour
             case TRADU.IdiomaPortugues:
                 textoAsociado.text = textoPortugues;
                 break;
+            case TRADU.IdiomaChinoSimplificado:
+                textoAsociado.text = ChineseLocalization.GetDisplayText(textoEspanol,
+                    !string.IsNullOrEmpty(textoIngles) ? textoIngles : textoEspanol);
+                break;
             default:
                 textoAsociado.text = textoIngles;
                 break;
@@ -63,11 +67,7 @@ public class TraduccionRapida : MonoBehaviour
             ? TRADU.i.nIdioma
             : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaIngles);
 
-        return idioma == TRADU.IdiomaEspanol
-            || idioma == TRADU.IdiomaIngles
-            || idioma == TRADU.IdiomaPortugues
-                ? idioma
-                : TRADU.IdiomaIngles;
+        return TRADU.NormalizarIdioma(idioma);
     }
 
     private bool ObtenerTextoAsociado()

@@ -18,6 +18,7 @@ public class Actividad_RitualDeLimpieza: Actividad
       {
         TRADU.IdiomaIngles => "<color=#0cca74><b>Cleansing Ritual: </b></color><color=#d3d3d3><i>The Purifier performs protection rites to combat the Black Breath.</i></color>\\n\\nThe Black Breath recedes by 4 h every 24 active hours, and by 5 h when resting.",
         TRADU.IdiomaPortugues => "<color=#0cca74><b>Ritual de Limpeza: </b></color><color=#d3d3d3><i>A Purificadora realiza ritos de proteção para combater o Sopro Negro.</i></color>\\n\\nO Sopro Negro recua 4 h a cada 24 horas ativas e 5 h ao descansar.",
+        TRADU.IdiomaChinoSimplificado => "<color=#0cca74><b>净化仪式：</b></color><color=#d3d3d3><i>净化者施展防护仪式来对抗黑息。</i></color>\\n\\n每持续活动24小时，黑息便会消退4小时；休息时消退5小时。",
         _ => desc
       };
 

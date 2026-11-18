@@ -284,7 +284,8 @@ public class EventosAdmin : MonoBehaviour
                 "apenas logra mantenerse en pie. La fiebre avanza y necesitará varios días para recuperarse.\n\n",
                 "can barely remain standing. The fever is worsening, and recovery will take several days.\n\n",
                 "mal consegue ficar de pé. A febre está piorando, e a recuperação levará vários dias.\n\n",
-                idiomaEnfermo);
+                idiomaEnfermo,
+                "勉强能站稳。热病仍在加剧，需要好几天才能康复。\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Obtendrá el estado Enfermo por 4-7 días. Cada nivel del Séquito de Curanderos reducirá el tiempo de recuperación en 1 día.\n\n\n\n\n");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Puedes comprar medicina por 45 Oro para reducir la Enfermedad un día extra.</color>\n\n");
@@ -317,7 +318,11 @@ public class EventosAdmin : MonoBehaviour
                 "lose 25% of current Gold and -5 Hope.",
                 "você perde 25% do Ouro atual e -5 de Esperança.",
                 ColorPerjuicio, ColorPerjuicio, true,
-                "Si interrogas a la tripulación:", "If you interrogate the crew:", "Se interrogar a tripulação:");
+                "Si interrogas a la tripulación:", "If you interrogate the crew:", "Se interrogar a tripulação:",
+            "成功率（基础40 + 民兵）",
+            "你追回了金币；-1 平民，-5 希望。",
+            "损失当前25%的金币，-5 希望。",
+            "如果你审问船员：");
 
             txtDescripcion.text += TRADU.i.Traducir("<b>▸ Si no interrogas:</b>\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Perderás el 25% del Oro actual, sin arriesgar nada más.</color>\n\n");
@@ -359,7 +364,11 @@ public class EventosAdmin : MonoBehaviour
                 "the water is safe; -1 Fatigue.",
                 "a água é segura; -1 de Fadiga.",
                 ColorPerjuicio, ColorBeneficio, false,
-                "Si dejas que beban:", "If you let them drink:", "Se deixar que bebam:");
+                "Si dejas que beban:", "If you let them drink:", "Se deixar que bebam:",
+            "污染概率（取决于黑息）",
+            "水源已被污染；-25 平民，-10 希望。",
+            "水源是安全的；-1 疲劳。",
+            "如果你让他们喝水：");
 
             textBotonA.text = TRADU.i.Traducir("Negarse");
 
@@ -399,7 +408,11 @@ public class EventosAdmin : MonoBehaviour
                 "+15 Esperanza.", "+15 Hope.", "+15 de Esperança.",
                 "-20 Esperanza.", "-20 Hope.", "-20 de Esperança.",
                 ColorBeneficio, ColorPerjuicio, true,
-                "Si le respondes con un discurso:", "If you answer with a speech:", "Se responder com um discurso:");
+                "Si le respondes con un discurso:", "If you answer with a speech:", "Se responder com um discurso:",
+            "成功率（取决于希望）",
+            "+15 希望。",
+            "-20 希望。",
+            "如果你用演讲回应：");
             txtDescripcion.text += TRADU.i.Traducir("<b>▸ Si lo golpeas:</b>\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>Su familia abandona la Caravana, retirando su inversión: -65 Oro, -8 Civiles, -10 Esperanza.</color>\n\n");
 
@@ -426,7 +439,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadPasoPrecario,
                 "+35 Experiencia.", "+35 Experience.", "+35 de Experiência.",
-                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.",
+            "+35 经验。",
+            "受到负伤。");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides rodear el tramo, la Caravana ganará +1 Fatiga.</color>\n\n");
 
@@ -452,7 +467,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento1), DificultadAireEnrarecido,
                 "+6-10 Civiles y +30 Experiencia.", "+6-10 Civilians and +30 Experience.", "+6-10 Civis e +30 de Experiência.",
-                "Enfermo por 3 días.", "Sick for 3 days.", "Doente por 3 dias.");
+                "Enfermo por 3 días.", "Sick for 3 days.", "Doente por 3 dias.",
+            "+6-10 平民，+30 经验。",
+            "患病，持续3天。");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides sellar la entrada y seguir, -12 Esperanza.</color>\n\n");
 
@@ -478,7 +495,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadRumorDeDesbande,
                 "+35 Experiencia y +4 Esperanza.", "+35 Experience and +4 Hope.", "+35 de Experiência e +4 de Esperança.",
-                "Baja Moral por 72 h y -10 Esperanza.", "Low Morale for 72 h and -10 Hope.", "Moral Baixa por 72 h e -10 de Esperança.");
+                "Baja Moral por 72 h y -10 Esperanza.", "Low Morale for 72 h and -10 Hope.", "Moral Baixa por 72 h e -10 de Esperança.",
+            "+35 经验，+4 希望。",
+            "低落士气，持续72小时，-10 希望。");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides imponer silencio por la fuerza, -10 Esperanza.</color>\n\n");
 
@@ -501,7 +520,9 @@ public class EventosAdmin : MonoBehaviour
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadVadoTraicionero,
                     "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
-                    "Herida y -1 Buey.", "Injury and -1 Ox.", "Ferimento e -1 Boi.");
+                    "Herida y -1 Buey.", "Injury and -1 Ox.", "Ferimento e -1 Boi.",
+            "+40 经验。",
+            "负伤，-1 役牛。");
             }
 
             if (participanteEvento2 != null)
@@ -509,7 +530,9 @@ public class EventosAdmin : MonoBehaviour
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento2, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento2), DificultadVadoTraicionero,
                     "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
-                    "Herida y -1 Buey.", "Injury and -1 Ox.", "Ferimento e -1 Boi.");
+                    "Herida y -1 Buey.", "Injury and -1 Ox.", "Ferimento e -1 Boi.",
+            "+40 经验。",
+            "负伤，-1 役牛。");
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
             }
@@ -536,7 +559,9 @@ public class EventosAdmin : MonoBehaviour
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento1), DificultadCarroEncajado,
                     "+35 Experiencia y +3 Esperanza.", "+35 Experience and +3 Hope.", "+35 de Experiência e +3 de Esperança.",
-                    "Herida y +1 Fatiga.", "Injury and +1 Fatigue.", "Ferimento e +1 de Fadiga.");
+                    "Herida y +1 Fatiga.", "Injury and +1 Fatigue.", "Ferimento e +1 de Fadiga.",
+            "+35 经验，+3 希望。",
+            "负伤，+1 疲劳。");
             }
 
             if (participanteEvento2 != null)
@@ -544,7 +569,9 @@ public class EventosAdmin : MonoBehaviour
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento2, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento2), DificultadCarroEncajado,
                     "+35 Experiencia y +3 Esperanza.", "+35 Experience and +3 Hope.", "+35 de Experiência e +3 de Esperança.",
-                    "Herida y +1 Fatiga.", "Injury and +1 Fatigue.", "Ferimento e +1 de Fadiga.");
+                    "Herida y +1 Fatiga.", "Injury and +1 Fatigue.", "Ferimento e +1 de Fadiga.",
+            "+35 经验，+3 希望。",
+            "负伤，+1 疲劳。");
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
             }
@@ -569,7 +596,9 @@ public class EventosAdmin : MonoBehaviour
             txtDescripcion.text += TRADU.i.Traducir("Los bueyes se inquietan al instante y varios Civiles retroceden alarmados. Si nadie actúa rápido, el caos podría extenderse a toda la Caravana.\n\n");
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, tsReflejos, DificultadBestiasAterradas,
                 "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
-                "-2 Bueyes.", "-2 Oxen.", "-2 Bois.");
+                "-2 Bueyes.", "-2 Oxen.", "-2 Bois.",
+            "+40 经验。",
+            "-2 役牛。");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides apartarte y ceder el paso, sumarás un retraso de 5 horas.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Contenerlos");
@@ -619,7 +648,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadHieloQuebradizo,
                 "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
-                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.",
+            "+40 经验。",
+            "受到负伤。");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides rodear el tramo, sumarás un retraso de 5 horas.</color>\n\n");
 
@@ -716,7 +747,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadBrechaEnLaCalzada,
                 "+40 Experiencia.", "+40 Experience.", "+40 de Experiência.",
-                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.",
+            "+40 经验。",
+            "受到负伤。");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides rodear la brecha, la Caravana ganará +1 Fatiga.</color>\n\n");
 
@@ -849,17 +882,20 @@ public class EventosAdmin : MonoBehaviour
                 "Varios carros destruidos yacen entre cadáveres. La otra Caravana no sobrevivió, pero parte de su carga sigue intacta.\n\n",
                 "Several shattered wagons lie among the dead. The other Caravan did not survive, but part of its cargo remains intact.\n\n",
                 "Várias carroças destruídas jazem entre os mortos. A outra Caravana não sobreviveu, mas parte da carga continua intacta.\n\n",
-                idiomaCaravanaPerdida);
+                idiomaCaravanaPerdida,
+                "几辆破损的马车散落在尸体之间。另一支车队没能幸存，但部分货物仍完好无损。\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#d8a205>Saquear: +21-35 Suministros, +5-11 Materiales, +15-35 Oro y -5 Esperanza.</color>\n\n",
                 "<color=#d8a205>Loot: +21-35 Supplies, +5-11 Materials, +15-35 Gold, and -5 Hope.</color>\n\n",
                 "<color=#d8a205>Saquear: +21-35 Suprimentos, +5-11 Materiais, +15-35 de Ouro e -5 de Esperança.</color>\n\n",
-                idiomaCaravanaPerdida);
+                idiomaCaravanaPerdida,
+                "<color=#d8a205>洗劫：+21-35 补给，+5-11 材料，+15-35 金币，-5 希望。</color>\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#a0e812>Dar sepultura: +15 Esperanza.</color>\n\n",
                 "<color=#a0e812>Bury the dead: +15 Hope.</color>\n\n",
                 "<color=#a0e812>Sepultar os mortos: +15 de Esperança.</color>\n\n",
-                idiomaCaravanaPerdida);
+                idiomaCaravanaPerdida,
+                "<color=#a0e812>安葬死者：+15 希望。</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Saquear");
 
@@ -875,17 +911,20 @@ public class EventosAdmin : MonoBehaviour
                 "La Caravana encuentra un aserradero abandonado con madera aún aprovechable. Cargarla toda dará buenos materiales, pero agotará a los Civiles y consumirá horas.\n\n",
                 "The Caravan finds an abandoned sawmill with usable timber. Taking it all will yield plenty of materials, but exhaust the Civilians and cost precious hours.\n\n",
                 "A Caravana encontra uma serraria abandonada com madeira aproveitável. Levar tudo renderá muitos materiais, mas cansará os Civis e consumirá horas preciosas.\n\n",
-                idiomaAserradero);
+                idiomaAserradero,
+                "车队发现了一处废弃的锯木厂，仍有可用的木材。全部运走能获得不少材料，但会耗尽平民的体力并消耗时间。\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#d8a205>Cargar todo: +65-90 Materiales, +1 Fatiga y retraso de 5 horas.</color>\n\n",
                 "<color=#d8a205>Take everything: +65-90 Materials, +1 Fatigue, and a 5 hour delay.</color>\n\n",
                 "<color=#d8a205>Levar tudo: +65-90 Materiais, +1 de Fadiga e um atraso de 5 horas.</color>\n\n",
-                idiomaAserradero);
+                idiomaAserradero,
+                "<color=#d8a205>全部运走：+65-90 材料，+1 疲劳，延误5小时。</color>\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#a0e812>Recoger lo cercano: +15-26 Materiales.</color>\n\n",
                 "<color=#a0e812>Gather what is nearby: +15-26 Materials.</color>\n\n",
                 "<color=#a0e812>Recolher o que está perto: +15-26 Materiais.</color>\n\n",
-                idiomaAserradero);
+                idiomaAserradero,
+                "<color=#a0e812>只捡取附近的：+15-26 材料。</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Todo");
 
@@ -907,12 +946,17 @@ public class EventosAdmin : MonoBehaviour
                 "+50-80 Suministros y +55 Experiencia.", "+50-80 Supplies and +55 Experience.", "+50-80 Suprimentos e +55 de Experiência.",
                 "Herida y pierde el 60 % de su Vida actual.", "Injury and loses 60% of current Health.", "Ferimento e perde 60% da Vida atual.",
                 ColorBeneficio, ColorPerjuicio, true,
-                "Si decides cazarlos:", "If you decide to hunt them:", "Se decidir caçá-los:");
+                "Si decides cazarlos:", "If you decide to hunt them:", "Se decidir caçá-los:",
+            "成功率（取决于等级）",
+            "+50-80 补给，+55 经验。",
+            "负伤，损失当前60%的生命值。",
+            "如果你决定猎杀他们：");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<b>▸ Si decides domesticarlos:</b>\n<color=#a0e812>+2-3 Bueyes.</color>\n\n",
                 "<b>▸ If you decide to domesticate them:</b>\n<color=#a0e812>+2-3 Oxen.</color>\n\n",
                 "<b>▸ Se decidir domesticá-los:</b>\n<color=#a0e812>+2-3 Bois.</color>\n\n",
-                TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol);
+                TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol,
+                "<b>▸ 如果你决定驯服它们：</b>\n<color=#a0e812>+2-3 役牛。</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Cazarlos");
 
@@ -928,17 +972,20 @@ public class EventosAdmin : MonoBehaviour
                 "Un grupo de Civiles corre hacia la Caravana con bandidos pisándoles los talones. Los más débiles no llegarán sin ayuda.\n\n",
                 "A group of Civilians runs toward the Caravan with bandits close behind. The weakest will not make it without help.\n\n",
                 "Um grupo de Civis corre em direção à Caravana com bandidos logo atrás. Os mais fracos não conseguirão chegar sem ajuda.\n\n",
-                idiomaCiviles);
+                idiomaCiviles,
+                "一群平民朝车队跑来，身后紧跟着匪徒。体弱者若无人相助，恐怕无法赶到。\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#d8a205>Defenderlos: combate normal; +18-26 Civiles.</color>\n\n",
                 "<color=#d8a205>Defend them: normal battle; +18-26 Civilians.</color>\n\n",
                 "<color=#d8a205>Defendê-los: batalha normal; +18-26 Civis.</color>\n\n",
-                idiomaCiviles);
+                idiomaCiviles,
+                "<color=#d8a205>保护他们：普通战斗；+18-26 平民。</color>\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#d8a205>Huir con los más ágiles: +5-10 Civiles y -5 Esperanza.</color>\n\n",
                 "<color=#d8a205>Flee with the fastest: +5-10 Civilians and -5 Hope.</color>\n\n",
                 "<color=#d8a205>Fugir com os mais ágeis: +5-10 Civis e -5 de Esperança.</color>\n\n",
-                idiomaCiviles);
+                idiomaCiviles,
+                "<color=#d8a205>带着跑得快的人逃走：+5-10 平民，-5 希望。</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Defender");
 
@@ -954,7 +1001,8 @@ public class EventosAdmin : MonoBehaviour
                 "Por un instante solo se oyen pasos, murmullos y alguna risa. La paz es tan extraña que hasta el aire parece más limpio.\n\n<color=#a0e812>Aliento Negro -10 h.</color>\n\n",
                 "For a moment there are only footsteps, murmurs, and scattered laughter. The peace is so strange that even the air seems cleaner.\n\n<color=#a0e812>Black Breath -10 h.</color>\n\n",
                 "Por um instante, ouvem-se apenas passos, murmúrios e algumas risadas. A paz é tão estranha que até o ar parece mais limpo.\n\n<color=#a0e812>Respiro Negro -10 h.</color>\n\n",
-                idiomaTranquilidad);
+                idiomaTranquilidad,
+                "一时间，只听得见脚步声、低语和偶尔的笑声。这份宁静如此陌生，连空气都仿佛清新了几分。\n\n<color=#a0e812>黑息 -10 小时。</color>\n\n");
 
 
             botonA.SetActive(false);
@@ -975,17 +1023,20 @@ public class EventosAdmin : MonoBehaviour
                 "te ofrece una bolsa de monedas como voto de confianza.\n\n",
                 "offers you a purse of coins as a sign of trust.\n\n",
                 "oferece uma bolsa de moedas como voto de confiança.\n\n",
-                idiomaVoto);
+                idiomaVoto,
+                "向你递上一袋钱币，以示信任。\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#a0e812>Rechazar el Oro: Alta Moral por 4 días y +55 Experiencia.</color>\n\n",
                 "<color=#a0e812>Refuse the Gold: High Morale for 4 days and +55 Experience.</color>\n\n",
                 "<color=#a0e812>Recusar o Ouro: Moral Alta por 4 dias e +55 de Experiência.</color>\n\n",
-                idiomaVoto);
+                idiomaVoto,
+                "<color=#a0e812>拒绝金币：获得高昂士气，持续4天，+55 经验。</color>\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#a0e812>Aceptar el Oro: +120-160 Oro.</color>\n\n",
                 "<color=#a0e812>Accept the Gold: +120-160 Gold.</color>\n\n",
                 "<color=#a0e812>Aceitar o Ouro: +120-160 de Ouro.</color>\n\n",
-                idiomaVoto);
+                idiomaVoto,
+                "<color=#a0e812>接受金币：+120-160 金币。</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Rechazar");
 
@@ -1001,17 +1052,20 @@ public class EventosAdmin : MonoBehaviour
                 "Un anciano de la región hace señas a la Caravana. No piensa huir del Aliento Negro, pero ofrece compartir lo que sabe del terreno.\n\n",
                 "An old local waves down the Caravan. He does not intend to flee the Black Breath, but offers to share what he knows of the land.\n\n",
                 "Um ancião da região chama a Caravana. Ele não pretende fugir do Respiro Negro, mas oferece compartilhar o que sabe sobre o terreno.\n\n",
-                idiomaAnciano);
+                idiomaAnciano,
+                "一位当地老人向车队招手示意。他并不打算逃离黑息，但愿意分享自己对这片地形的了解。\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#a0e812>Preguntar por un atajo: intentará generar un Atajo.</color>\n\n",
                 "<color=#a0e812>Ask about a shortcut: attempts to create a Shortcut.</color>\n\n",
                 "<color=#a0e812>Perguntar por um atalho: tentará gerar um Atalho.</color>\n\n",
-                idiomaAnciano);
+                idiomaAnciano,
+                "<color=#a0e812>询问捷径：将尝试生成一条捷径。</color>\n\n");
             txtDescripcion.text += SeleccionarTextoLocal(
                 "<color=#a0e812>Preguntar por los alrededores: revela nodos cercanos.</color>\n\n",
                 "<color=#a0e812>Ask about the surroundings: reveals nearby nodes.</color>\n\n",
                 "<color=#a0e812>Perguntar pelos arredores: revela nós próximos.</color>\n\n",
-                idiomaAnciano);
+                idiomaAnciano,
+                "<color=#a0e812>询问周边情况：揭示附近节点。</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Atajo");
 
@@ -1031,12 +1085,14 @@ public class EventosAdmin : MonoBehaviour
                 "despierta con una certeza extraña: soñó con la Caravana llegando a salvo al puerto. Su convicción se contagia a quienes lo escuchan.\n\n",
                 "wakes with a strange certainty: they dreamed of the Caravan reaching the port safely. Their conviction spreads to everyone who listens.\n\n",
                 "desperta com uma certeza estranha: sonhou com a Caravana chegando em segurança ao porto. Sua convicção contagia quem escuta.\n\n",
-                idiomaSueno);
+                idiomaSueno,
+                "带着一种奇异的笃定醒来：梦见车队安全抵达了港口。这份笃信感染了所有听闻此事的人。\n\n");
             txtDescripcion.text += "<color=#a0e812><b><color=#d1006f>" + participanteEvento1.sNombre + "</color></b> " + SeleccionarTextoLocal(
                 "gana 150 Experiencia y Alta Moral por 5 días.</color>\n\n",
                 "gains 150 Experience and High Morale for 5 days.</color>\n\n",
                 "ganha 150 de Experiência e Moral Alta por 5 dias.</color>\n\n",
-                idiomaSueno);
+                idiomaSueno,
+                "获得150经验，以及持续5天的高昂士气。</color>\n\n");
 
             botonA.SetActive(false);
             textBotonB.text = TRADU.i.Traducir("Continuar");
@@ -1060,7 +1116,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadMarcasDelCorreo,
                 "revela nodos cercanos y gana 30 Experiencia.", "reveals nearby nodes and gains 30 Experience.", "revela nós próximos e ganha 30 de Experiência.",
-                "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
+                "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.",
+            "揭示附近节点，获得30经验。",
+            "+1 疲劳。");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides seguir sin detenerte, +3 Esperanza.</color>\n\n");
 
@@ -1082,7 +1140,9 @@ public class EventosAdmin : MonoBehaviour
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadPulsoDeMando,
                     "+30 Experiencia y +6 Esperanza.", "+30 Experience and +6 Hope.", "+30 de Experiência e +6 de Esperança.",
-                    "-6 Esperanza.", "-6 Hope.", "-6 de Esperança.");
+                    "-6 Esperanza.", "-6 Hope.", "-6 de Esperança.",
+            "+30 经验，+6 希望。",
+            "-6 希望。");
             }
 
             if (participanteEvento2 != null)
@@ -1090,7 +1150,9 @@ public class EventosAdmin : MonoBehaviour
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento2, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento2), DificultadPulsoDeMando,
                     "+30 Experiencia y +6 Esperanza.", "+30 Experience and +6 Hope.", "+30 de Experiência e +6 de Esperança.",
-                    "-6 Esperanza.", "-6 Hope.", "-6 de Esperança.");
+                    "-6 Esperanza.", "-6 Hope.", "-6 de Esperança.",
+            "+30 经验，+6 希望。",
+            "-6 希望。");
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
             }
@@ -1120,7 +1182,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento1), DificultadHombrosFirmes,
                 "+50 Experiencia y +5 Esperanza.", "+50 Experience and +5 Hope.", "+50 de Experiência e +5 de Esperança.",
-                "obtiene Fatigado.", "becomes Fatigued.", "fica Fatigado.");
+                "obtiene Fatigado.", "becomes Fatigued.", "fica Fatigado.",
+            "+50 经验，+5 希望。",
+            "陷入疲劳状态。");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides dejar al Civil, -5 Esperanza. -1 Civil.</color>\n\n");
 
@@ -1146,7 +1210,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadManoCierta,
                 "revela nodos cercanos; +35 Experiencia y +4 Esperanza.", "reveals nearby nodes; +35 Experience and +4 Hope.", "revela nós próximos; +35 de Experiência e +4 de Esperança.",
-                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.",
+            "揭示附近节点；+35 经验，+4 希望。",
+            "受到负伤。");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides dejarla ir, -10 Esperanza.</color>\n\n");
 
@@ -1168,7 +1234,9 @@ public class EventosAdmin : MonoBehaviour
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadDosMiradas,
                     "+25 Experiencia y -5 h de Aliento Negro.", "+25 Experience and -5 h of Black Breath.", "+25 de Experiência e -5 h de Respiro Negro.",
-                    "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
+                    "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.",
+            "+25 经验，黑息 -5 小时。",
+            "+1 疲劳。");
             }
 
             if (participanteEvento2 != null)
@@ -1176,7 +1244,9 @@ public class EventosAdmin : MonoBehaviour
                 retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
                 AgregarDescripcionTiradaD20(participanteEvento2, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento2), DificultadDosMiradas,
                     "+25 Experiencia y -5 h de Aliento Negro.", "+25 Experience and -5 h of Black Breath.", "+25 de Experiência e -5 h de Respiro Negro.",
-                    "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
+                    "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.",
+            "+25 经验，黑息 -5 小时。",
+            "+1 疲劳。");
                 textBotonA.text = participanteEvento1 != null ? participanteEvento1.sNombre : TRADU.i.Traducir("Héroe 1");
                 textBotonB.text = participanteEvento2.sNombre;
             }
@@ -1627,7 +1697,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadTechoInestable,
                 "+35 Experiencia.", "+35 Experience.", "+35 de Experiência.",
-                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.");
+                "obtiene Herida.", "suffers an Injury.", "sofre um Ferimento.",
+            "+35 经验。",
+            "受到负伤。");
 
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides mover el campamento, la noche será más larga. +1 Fatiga.</color>\n\n");
 
@@ -2191,6 +2263,8 @@ public class EventosAdmin : MonoBehaviour
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadArengaEnLaLluvia,
                 "Inspiración para el próximo combate y +30 Experiencia.", "Inspiration for the next battle and +30 Experience.", "Inspiração para o próximo combate e +30 de Experiência.",
                 "+2 Esperanza.", "+2 Hope.", "+2 de Esperança.",
+                "为下一场战斗获得鼓舞，+30 经验。",
+                "+2 希望。",
                 ColorBeneficio, ColorBeneficio);
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides no detener la marcha, +3 Esperanza.</color>\n\n");
 
@@ -2248,7 +2322,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadRastroSospechoso,
                 "Vigilante por 1 viaje y +30 Experiencia.", "Vigilant for 1 journey and +30 Experience.", "Vigilante por 1 viagem e +30 de Experiência.",
-                "Descuidados por 3 viajes.", "Careless for 3 journeys.", "Descuidada por 3 viagens.");
+                "Descuidados por 3 viajes.", "Careless for 3 journeys.", "Descuidada por 3 viagens.",
+            "获得警戒状态，持续1次旅程，+30 经验。",
+            "陷入疏于防备，持续3次旅程。");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides no detenerte, +2 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Leer el rastro");
@@ -2291,7 +2367,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadRepasoDeManiobras,
                 "Compromiso y +35 Experiencia.", "Commitment and +35 Experience.", "Compromisso e +35 de Experiência.",
-                "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
+                "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.",
+            "获得尽责，+35 经验。",
+            "+1 疲劳。");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si prefieres descansar de inmediato, +2 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Repasar");
@@ -2335,7 +2413,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Mental, ObtenerTSMentalTotal(participanteEvento1), DificultadCuervosDelPaso,
                 "+2 Esperanza.", "+2 Hope.", "+2 de Esperança.",
-                "Acobardados para el próximo combate.", "Doubtful for the next battle.", "Acobardada para o próximo combate.");
+                "Acobardados para el próximo combate.", "Doubtful for the next battle.", "Acobardada para o próximo combate.",
+            "+2 希望。",
+            "下一场战斗陷入怯战状态。");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides seguir sin mirarlos, la Caravana obtendrá Acobardados.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Romper el clima");
@@ -2380,7 +2460,9 @@ public class EventosAdmin : MonoBehaviour
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Reflejos, ObtenerTSReflejosTotal(participanteEvento1), DificultadVigiaDelHielo,
                 "Vigilante por 1 viaje y +30 Experiencia.", "Vigilant for 1 journey and +30 Experience.", "Vigilante por 1 viagem e +30 de Experiência.",
-                "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.");
+                "+1 Fatiga.", "+1 Fatigue.", "+1 de Fadiga.",
+            "获得警戒状态，持续1次旅程，+30 经验。",
+            "+1 疲劳。");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides no exponer a nadie, +2 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Subir");
@@ -2751,7 +2833,9 @@ public class EventosAdmin : MonoBehaviour
         string accionPt,
         string consecuenciaEs,
         string consecuenciaEn,
-        string consecuenciaPt)
+        string consecuenciaPt,
+        string accionZh = null,
+        string consecuenciaZh = null)
     {
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
         string nombre;
@@ -2778,6 +2862,14 @@ public class EventosAdmin : MonoBehaviour
                 nombreTirada = "Teste de Resistência — " + ObtenerNombreTipoTirada(tipo, idioma);
                 etiquetaResultado = exito ? "Sucesso" : "Falha";
                 siglaDificultad = "CD";
+                break;
+            case TRADU.IdiomaChinoSimplificado:
+                nombre = participante != null ? participante.sNombre : "一位英雄";
+                accion = !string.IsNullOrEmpty(accionZh) ? accionZh : accionEn;
+                consecuencia = !string.IsNullOrEmpty(consecuenciaZh) ? consecuenciaZh : consecuenciaEn;
+                nombreTirada = "豁免检定 — " + ObtenerNombreTipoTirada(tipo, idioma);
+                etiquetaResultado = exito ? "成功" : "失败";
+                siglaDificultad = "难度";
                 break;
             default:
                 nombre = participante != null ? participante.sNombre : "Un Héroe";
@@ -2809,15 +2901,19 @@ public class EventosAdmin : MonoBehaviour
         string umbralPt,
         string resultadoEs,
         string resultadoEn,
-        string resultadoPt)
+        string resultadoPt,
+        string accionZh = null,
+        string umbralZh = null,
+        string resultadoZh = null)
     {
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
-        string accion = SeleccionarTextoLocal(accionEs, accionEn, accionPt, idioma);
-        string descripcionUmbral = SeleccionarTextoLocal(umbralEs, umbralEn, umbralPt, idioma);
-        string resultado = SeleccionarTextoLocal(resultadoEs, resultadoEn, resultadoPt, idioma);
+        string accion = SeleccionarTextoLocal(accionEs, accionEn, accionPt, idioma, accionZh);
+        string descripcionUmbral = SeleccionarTextoLocal(umbralEs, umbralEn, umbralPt, idioma, umbralZh);
+        string resultado = SeleccionarTextoLocal(resultadoEs, resultadoEn, resultadoPt, idioma, resultadoZh);
         string nombreTirada = idioma == TRADU.IdiomaIngles
             ? "Percentage Roll"
-            : idioma == TRADU.IdiomaPortugues ? "Teste Percentual" : "Tirada porcentual";
+            : idioma == TRADU.IdiomaPortugues ? "Teste Percentual"
+            : idioma == TRADU.IdiomaChinoSimplificado ? "百分比检定" : "Tirada porcentual";
 
         CampaignManager.Instance.EscribirLog(
             "—" + accion + ". " + nombreTirada + ": " + tirada + "/100 vs " + umbral + " % "
@@ -2842,14 +2938,24 @@ public class EventosAdmin : MonoBehaviour
             return tipo == TipoTiradaEvento.Reflejos ? "Reflexos" : tipo == TipoTiradaEvento.Fortaleza ? "Fortitude" : "Mental";
         }
 
+        if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return tipo == TipoTiradaEvento.Reflejos ? "反射" : tipo == TipoTiradaEvento.Fortaleza ? "坚韧" : "意志";
+        }
+
         return tipo == TipoTiradaEvento.Reflejos ? "Reflejos" : tipo == TipoTiradaEvento.Fortaleza ? "Fortaleza" : "Mental";
     }
 
-    static string SeleccionarTextoLocal(string textoEs, string textoEn, string textoPt, int idioma)
+    static string SeleccionarTextoLocal(string textoEs, string textoEn, string textoPt, int idioma, string textoZh = null)
     {
         if (idioma == TRADU.IdiomaIngles)
         {
             return textoEn;
+        }
+
+        if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return !string.IsNullOrEmpty(textoZh) ? textoZh : textoEn;
         }
 
         return idioma == TRADU.IdiomaPortugues ? textoPt : textoEs;
@@ -2870,11 +2976,14 @@ public class EventosAdmin : MonoBehaviour
         string falloEs,
         string falloEn,
         string falloPt,
+        string exitoZh = null,
+        string falloZh = null,
         string colorExito = ColorBeneficio,
         string colorFallo = ColorPerjuicio,
         string decisionEs = null,
         string decisionEn = null,
-        string decisionPt = null)
+        string decisionPt = null,
+        string decisionZh = null)
     {
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
         string nombreTirada;
@@ -2896,6 +3005,13 @@ public class EventosAdmin : MonoBehaviour
             etiquetaExito = "Sucesso";
             etiquetaFallo = "Falha";
         }
+        else if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            nombreTirada = "豁免检定 — " + ObtenerNombreTipoTirada(tipo, idioma);
+            siglaDificultad = "难度";
+            etiquetaExito = "成功";
+            etiquetaFallo = "失败";
+        }
         else
         {
             nombreTirada = "Tirada de Salvación — " + ObtenerNombreTipoTirada(tipo, idioma);
@@ -2908,10 +3024,10 @@ public class EventosAdmin : MonoBehaviour
             ? "<b><color=#d1006f>" + participante.sNombre + "</color></b> — "
             : string.Empty;
         string operador = modificador >= 0 ? "+ " + modificador : "- " + Mathf.Abs(modificador);
-        string exito = SeleccionarTextoLocal(exitoEs, exitoEn, exitoPt, idioma);
-        string fallo = SeleccionarTextoLocal(falloEs, falloEn, falloPt, idioma);
+        string exito = SeleccionarTextoLocal(exitoEs, exitoEn, exitoPt, idioma, exitoZh);
+        string fallo = SeleccionarTextoLocal(falloEs, falloEn, falloPt, idioma, falloZh);
 
-        AgregarEncabezadoDecisionSiCorresponde(decisionEs, decisionEn, decisionPt, idioma);
+        AgregarEncabezadoDecisionSiCorresponde(decisionEs, decisionEn, decisionPt, idioma, decisionZh);
         txtDescripcion.text += "<color=" + ColorRiesgo + ">" + participanteFormateado + nombreTirada
             + ": 1d20 " + operador + " vs " + siglaDificultad + " " + dificultad + ".</color>\n";
         txtDescripcion.text += "<color=" + colorExito + ">" + etiquetaExito + ": " + exito + "</color>\n";
@@ -2934,19 +3050,24 @@ public class EventosAdmin : MonoBehaviour
         bool resultadoBajoEsExito = true,
         string decisionEs = null,
         string decisionEn = null,
-        string decisionPt = null)
+        string decisionPt = null,
+        string umbralZh = null,
+        string exitoZh = null,
+        string falloZh = null,
+        string decisionZh = null)
     {
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
         string nombreTirada = idioma == TRADU.IdiomaIngles
             ? "Probability"
-            : idioma == TRADU.IdiomaPortugues ? "Probabilidade" : "Probabilidad";
-        string etiquetaExito = idioma == TRADU.IdiomaIngles ? "Success" : idioma == TRADU.IdiomaPortugues ? "Sucesso" : "Éxito";
-        string etiquetaFallo = idioma == TRADU.IdiomaIngles ? "Failure" : idioma == TRADU.IdiomaPortugues ? "Falha" : "Fallo";
-        string umbral = SeleccionarTextoLocal(umbralEs, umbralEn, umbralPt, idioma);
-        string exito = SeleccionarTextoLocal(exitoEs, exitoEn, exitoPt, idioma);
-        string fallo = SeleccionarTextoLocal(falloEs, falloEn, falloPt, idioma);
+            : idioma == TRADU.IdiomaPortugues ? "Probabilidade"
+            : idioma == TRADU.IdiomaChinoSimplificado ? "概率" : "Probabilidad";
+        string etiquetaExito = idioma == TRADU.IdiomaIngles ? "Success" : idioma == TRADU.IdiomaPortugues ? "Sucesso" : idioma == TRADU.IdiomaChinoSimplificado ? "成功" : "Éxito";
+        string etiquetaFallo = idioma == TRADU.IdiomaIngles ? "Failure" : idioma == TRADU.IdiomaPortugues ? "Falha" : idioma == TRADU.IdiomaChinoSimplificado ? "失败" : "Fallo";
+        string umbral = SeleccionarTextoLocal(umbralEs, umbralEn, umbralPt, idioma, umbralZh);
+        string exito = SeleccionarTextoLocal(exitoEs, exitoEn, exitoPt, idioma, exitoZh);
+        string fallo = SeleccionarTextoLocal(falloEs, falloEn, falloPt, idioma, falloZh);
 
-        AgregarEncabezadoDecisionSiCorresponde(decisionEs, decisionEn, decisionPt, idioma);
+        AgregarEncabezadoDecisionSiCorresponde(decisionEs, decisionEn, decisionPt, idioma, decisionZh);
         txtDescripcion.text += "<color=" + ColorRiesgo + ">" + nombreTirada + ": "
             + LimitarProbabilidad(probabilidad) + "% " + umbral + ".</color>\n";
         string etiquetaResultadoBajo = resultadoBajoEsExito ? etiquetaExito : etiquetaFallo;
@@ -2955,14 +3076,14 @@ public class EventosAdmin : MonoBehaviour
         txtDescripcion.text += "<color=" + colorFallo + ">" + etiquetaResultadoAlto + ": " + fallo + "</color>\n\n";
     }
 
-    private void AgregarEncabezadoDecisionSiCorresponde(string decisionEs, string decisionEn, string decisionPt, int idioma)
+    private void AgregarEncabezadoDecisionSiCorresponde(string decisionEs, string decisionEn, string decisionPt, int idioma, string decisionZh = null)
     {
         if (string.IsNullOrEmpty(decisionEs))
         {
             return;
         }
 
-        string decision = SeleccionarTextoLocal(decisionEs, decisionEn, decisionPt, idioma);
+        string decision = SeleccionarTextoLocal(decisionEs, decisionEn, decisionPt, idioma, decisionZh);
         txtDescripcion.text += "<b>▸ " + decision + "</b>\n";
     }
 
@@ -3069,7 +3190,10 @@ public class EventosAdmin : MonoBehaviour
                     "de éxito", "success chance", "de chance de sucesso",
                     "Éxito: el ladrón fue descubierto y el oro recuperado; -1 Civil y -5 Esperanza.",
                     "Success: the thief was found and the gold recovered; -1 Civilian and -5 Hope.",
-                    "Sucesso: o ladrão foi descoberto e o ouro recuperado; -1 Civil e -5 de Esperança.");
+                    "Sucesso: o ladrão foi descoberto e o ouro recuperado; -1 Civil e -5 de Esperança.",
+            "审问被盗的钱箱",
+            "成功率",
+            "成功：窃贼被抓获，金币已追回；-1 平民，-5 希望。");
             }
             else
             {
@@ -3082,7 +3206,10 @@ public class EventosAdmin : MonoBehaviour
                     "de éxito", "success chance", "de chance de sucesso",
                     "Fallo: el ladrón escapó con " + oroRobado + " Oro y el interrogatorio costó -5 Esperanza.",
                     "Failure: the thief escaped with " + oroRobado + " Gold and the interrogation cost -5 Hope.",
-                    "Falha: o ladrão fugiu com " + oroRobado + " de Ouro e o interrogatório custou -5 de Esperança.");
+                    "Falha: o ladrão fugiu com " + oroRobado + " de Ouro e o interrogatório custou -5 de Esperança.",
+            "审问被盗的钱箱",
+            "成功率",
+            "失败：窃贼带着 " + oroRobado + " 金币逃走了，审问耗费了 -5 希望。");
             }
 
             gameObject.SetActive(false);
@@ -3114,7 +3241,10 @@ public class EventosAdmin : MonoBehaviour
                     "de éxito", "success chance", "de chance de sucesso",
                     "Éxito: el discurso acalló las dudas; +15 Esperanza.",
                     "Success: the speech silenced the doubts; +15 Hope.",
-                    "Sucesso: o discurso silenciou as dúvidas; +15 de Esperança.");
+                    "Sucesso: o discurso silenciou as dúvidas; +15 de Esperança.",
+            "在贵族面前的演讲",
+            "成功率",
+            "成功：演讲平息了疑虑；+15 希望。");
             }
             else
             {
@@ -3124,7 +3254,10 @@ public class EventosAdmin : MonoBehaviour
                     "de éxito", "success chance", "de chance de sucesso",
                     "Fallo: el discurso sembró más dudas; -20 Esperanza.",
                     "Failure: the speech raised further doubts; -20 Hope.",
-                    "Falha: o discurso gerou ainda mais dúvidas; -20 de Esperança.");
+                    "Falha: o discurso gerou ainda mais dúvidas; -20 de Esperança.",
+            "在贵族面前的演讲",
+            "成功率",
+            "失败：演讲引发了更多疑虑；-20 希望。");
             }
             gameObject.SetActive(false);
         }
@@ -3143,7 +3276,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou guiar a Caravana pela passagem precária",
                     "guio el cruce sin incidentes y ganó 35 Experiencia.",
                     "guided the crossing safely and gained 35 Experience.",
-                    "guiou a travessia em segurança e ganhou 35 de Experiência.");
+                    "guiou a travessia em segurança e ganhou 35 de Experiência.",
+            "试图引导车队穿过危险的隘口",
+            "顺利引导车队通过，未生变故，获得35经验。");
             }
             else if (participanteEvento1 != null)
             {
@@ -3154,7 +3289,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou guiar a Caravana pela passagem precária",
                     "perdió pie entre los tablones y sufrió una Herida.",
                     "lost their footing among the planks and suffered an Injury.",
-                    "perdeu o equilíbrio entre as tábuas e sofreu um Ferimento.");
+                    "perdeu o equilíbrio entre as tábuas e sofreu um Ferimento.",
+            "试图引导车队穿过危险的隘口",
+            "在木板间失足，身受负伤。");
             }
 
             gameObject.SetActive(false);
@@ -3176,7 +3313,9 @@ public class EventosAdmin : MonoBehaviour
                     "entrou no porão de ar rarefeito",
                     "rescató " + civiles + " Civiles y ganó 30 Experiencia.",
                     "rescued " + civiles + " Civilians and gained 30 Experience.",
-                    "resgatou " + civiles + " Civis e ganhou 30 de Experiência.");
+                    "resgatou " + civiles + " Civis e ganhou 30 de Experiência.",
+            "进入了空气稀薄的货舱",
+            "救出了 " + civiles + " 名平民，获得30经验。");
             }
             else if (participanteEvento1 != null)
             {
@@ -3187,7 +3326,9 @@ public class EventosAdmin : MonoBehaviour
                     "entrou no porão de ar rarefeito",
                     "el aire lo venció y quedó Enfermo por 3 días.",
                     "the foul air overwhelmed them; they became Sick for 3 days.",
-                    "o ar nocivo o venceu; ficou Doente por 3 dias.");
+                    "o ar nocivo o venceu; ficou Doente por 3 dias.",
+            "进入了空气稀薄的货舱",
+            "被浑浊的空气击倒，患病，持续3天。");
             }
 
             gameObject.SetActive(false);
@@ -3208,7 +3349,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou conter o rumor de deserção",
                     "apagó el rumor antes de que creciera; +35 Experiencia y +4 Esperanza.",
                     "stopped the rumor before it spread; +35 Experience and +4 Hope.",
-                    "conteve o rumor antes que se espalhasse; +35 de Experiência e +4 de Esperança.");
+                    "conteve o rumor antes que se espalhasse; +35 de Experiência e +4 de Esperança.",
+            "试图平息溃散的谣言",
+            "在谣言扩散前将其平息；+35 经验，+4 希望。");
             }
             else if (participanteEvento1 != null)
             {
@@ -3220,7 +3363,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou conter o rumor de deserção",
                     "el rumor se agravó; obtuvo Baja Moral por 72 h y la Caravana perdió 10 Esperanza.",
                     "the rumor worsened; they suffered Low Morale for 72 h and the Caravan lost 10 Hope.",
-                    "o rumor se agravou; ficou com Moral Baixa por 72 h e a Caravana perdeu 10 de Esperança.");
+                    "o rumor se agravou; ficou com Moral Baixa por 72 h e a Caravana perdeu 10 de Esperança.",
+            "试图平息溃散的谣言",
+            "谣言愈演愈烈；陷入低落士气，持续72小时，车队损失10希望。");
             }
 
             gameObject.SetActive(false);
@@ -3241,7 +3386,9 @@ public class EventosAdmin : MonoBehaviour
                     "organizou a travessia do vau traiçoeiro",
                     "condujo a la Caravana sin pérdidas y ganó 40 Experiencia.",
                     "led the Caravan across without losses and gained 40 Experience.",
-                    "conduziu a Caravana sem perdas e ganhou 40 de Experiência.");
+                    "conduziu a Caravana sem perdas e ganhou 40 de Experiência.",
+            "下令穿越那处凶险的浅滩",
+            "带领车队毫发无损地通过，获得40经验。");
             }
             else if (participante != null)
             {
@@ -3253,7 +3400,9 @@ public class EventosAdmin : MonoBehaviour
                     "organizou a travessia do vau traiçoeiro",
                     "la corriente rompió la formación; sufrió una Herida y la Caravana perdió 1 Buey.",
                     "the current broke the formation; they suffered an Injury and the Caravan lost 1 Ox.",
-                    "a corrente rompeu a formação; sofreu um Ferimento e a Caravana perdeu 1 Boi.");
+                    "a corrente rompeu a formação; sofreu um Ferimento e a Caravana perdeu 1 Boi.",
+            "下令穿越那处凶险的浅滩",
+            "水流冲散了队形；身受负伤，车队损失1头役牛。");
             }
 
             gameObject.SetActive(false);
@@ -3275,7 +3424,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou soltar a carroça atolada",
                     "liberó el carro; +35 Experiencia y +3 Esperanza.",
                     "freed the wagon; +35 Experience and +3 Hope.",
-                    "soltou a carroça; +35 de Experiência e +3 de Esperança.");
+                    "soltou a carroça; +35 de Experiência e +3 de Esperança.",
+            "试图解救陷住的马车",
+            "成功解救了马车；+35 经验，+3 希望。");
             }
             else if (participante != null)
             {
@@ -3287,7 +3438,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou soltar a carroça atolada",
                     "el esfuerzo lo hirió y la Caravana ganó +1 Fatiga.",
                     "the effort injured them and the Caravan gained +1 Fatigue.",
-                    "o esforço o feriu e a Caravana ganhou +1 de Fadiga.");
+                    "o esforço o feriu e a Caravana ganhou +1 de Fadiga.",
+            "试图解救陷住的马车",
+            "用力过猛而受伤，车队 +1 疲劳。");
             }
 
             gameObject.SetActive(false);
@@ -3307,7 +3460,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou conter as feras aterrorizadas",
                     "dominó el caos y ganó 40 Experiencia.",
                     "brought the chaos under control and gained 40 Experience.",
-                    "controlou o caos e ganhou 40 de Experiência.");
+                    "controlou o caos e ganhou 40 de Experiência.",
+            "试图安抚受惊的牲畜",
+            "成功控制了混乱局面，获得40经验。");
             }
             else
             {
@@ -3318,7 +3473,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou conter as feras aterrorizadas",
                     "las bestias rompieron la formación y la Caravana perdió 2 Bueyes.",
                     "the beasts broke the formation and the Caravan lost 2 Oxen.",
-                    "as feras romperam a formação e a Caravana perdeu 2 Bois.");
+                    "as feras romperam a formação e a Caravana perdeu 2 Bois.",
+            "试图安抚受惊的牲畜",
+            "牲畜冲散了队形，车队损失2头役牛。");
             }
             gameObject.SetActive(false);
         }
@@ -3350,7 +3507,9 @@ public class EventosAdmin : MonoBehaviour
                         "tentou guiar a Caravana sobre o gelo quebradiço",
                         "encontró un paso firme y ganó 40 Experiencia.",
                         "found firm footing and gained 40 Experience.",
-                        "encontrou uma passagem firme e ganhou 40 de Experiência.");
+                        "encontrou uma passagem firme e ganhou 40 de Experiência.",
+            "试图引导车队穿越脆弱的薄冰",
+            "找到了一条坚实的路径，获得40经验。");
                 }
             }
             else if (participanteEvento1 != null)
@@ -3362,7 +3521,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou guiar a Caravana sobre o gelo quebradiço",
                     "el hielo cedió bajo sus pies y sufrió una Herida.",
                     "the ice gave way beneath them and they suffered an Injury.",
-                    "o gelo cedeu sob seus pés e sofreu um Ferimento.");
+                    "o gelo cedeu sob seus pés e sofreu um Ferimento.",
+            "试图引导车队穿越脆弱的薄冰",
+            "脚下的冰层破裂，身受负伤。");
             }
 
             gameObject.SetActive(false);
@@ -3384,7 +3545,9 @@ public class EventosAdmin : MonoBehaviour
                         "tentou guiar a Caravana pela brecha",
                         "marcó un paso seguro y ganó 40 Experiencia.",
                         "marked a safe route and gained 40 Experience.",
-                        "marcou uma passagem segura e ganhou 40 de Experiência.");
+                        "marcou uma passagem segura e ganhou 40 de Experiência.",
+            "试图引导车队穿过裂口",
+            "标出了一条安全的路径，获得40经验。");
                 }
             }
             else if (participanteEvento1 != null)
@@ -3396,7 +3559,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou guiar a Caravana pela brecha",
                     "cayó entre los escombros y sufrió una Herida.",
                     "fell among the rubble and suffered an Injury.",
-                    "caiu entre os escombros e sofreu um Ferimento.");
+                    "caiu entre os escombros e sofreu um Ferimento.",
+            "试图引导车队穿过裂口",
+            "跌入瓦砾之中，身受负伤。");
             }
 
             gameObject.SetActive(false);
@@ -3467,7 +3632,10 @@ public class EventosAdmin : MonoBehaviour
                     "de éxito", "success chance", "de chance de sucesso",
                     "Éxito: regresó con " + rand + " Suministros y ganó 55 Experiencia.",
                     "Success: returned with " + rand + " Supplies and gained 55 Experience.",
-                    "Sucesso: voltou com " + rand + " Suprimentos e ganhou 55 de Experiência.");
+                    "Sucesso: voltou com " + rand + " Suprimentos e ganhou 55 de Experiência.",
+            participanteEvento1.sNombre + " 的狩猎",
+            "成功率",
+            "成功：带着 " + rand + " 份补给归来，获得55经验。");
             }
             else
             {
@@ -3480,7 +3648,10 @@ public class EventosAdmin : MonoBehaviour
                     "de éxito", "success chance", "de chance de sucesso",
                     "Fallo: sufrió una Herida y perdió el 60 % de su Vida actual.",
                     "Failure: suffered an Injury and lost 60% of current Health.",
-                    "Falha: sofreu um Ferimento e perdeu 60% da Vida atual.");
+                    "Falha: sofreu um Ferimento e perdeu 60% da Vida atual.",
+            participanteEvento1.sNombre + " 的狩猎",
+            "成功率",
+            "失败：身受负伤，损失当前60%的生命值。");
             }
             gameObject.SetActive(false);
         }
@@ -3530,7 +3701,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou interpretar as marcas do correio",
                     "descifró el código, reveló nodos cercanos y ganó 30 Experiencia.",
                     "decoded the marks, revealed nearby nodes, and gained 30 Experience.",
-                    "decifrou as marcas, revelou nós próximos e ganhou 30 de Experiência.");
+                    "decifrou as marcas, revelou nós próximos e ganhou 30 de Experiência.",
+            "试图解读信件上的记号",
+            "破译了密码，揭示附近节点，获得30经验。");
             }
             else
             {
@@ -3541,7 +3714,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou interpretar as marcas do correio",
                     "la demora no reveló nada y la Caravana ganó +1 Fatiga.",
                     "the delay revealed nothing and the Caravan gained +1 Fatigue.",
-                    "o atraso não revelou nada e a Caravana ganhou +1 de Fadiga.");
+                    "o atraso não revelou nada e a Caravana ganhou +1 de Fadiga.",
+            "试图解读信件上的记号",
+            "耽搁却一无所获，车队 +1 疲劳。");
             }
             gameObject.SetActive(false);
         }
@@ -3562,7 +3737,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou reorganizar a fila",
                     "impuso orden; +30 Experiencia y +6 Esperanza.",
                     "restored order; +30 Experience and +6 Hope.",
-                    "restabeleceu a ordem; +30 de Experiência e +6 de Esperança.");
+                    "restabeleceu a ordem; +30 de Experiência e +6 de Esperança.",
+            "试图重整队列",
+            "恢复了秩序；+30 经验，+6 希望。");
             }
             else
             {
@@ -3573,7 +3750,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou reorganizar a fila",
                     "la confusión se extendió y la Caravana perdió 6 Esperanza.",
                     "the confusion spread and the Caravan lost 6 Hope.",
-                    "a confusão se espalhou e a Caravana perdeu 6 de Esperança.");
+                    "a confusão se espalhou e a Caravana perdeu 6 de Esperança.",
+            "试图重整队列",
+            "混乱蔓延开来，车队损失6希望。");
             }
             gameObject.SetActive(false);
         }
@@ -3593,7 +3772,9 @@ public class EventosAdmin : MonoBehaviour
                     "carregou o Civil exausto durante a marcha",
                     "sostuvo el paso; +50 Experiencia y +5 Esperanza.",
                     "kept pace; +50 Experience and +5 Hope.",
-                    "manteve o ritmo; +50 de Experiência e +5 de Esperança.");
+                    "manteve o ritmo; +50 de Experiência e +5 de Esperança.",
+            "在行军途中背负着精疲力竭的平民",
+            "撑住了行进的步伐；+50 经验，+5 希望。");
             }
             else if (participanteEvento1 != null)
             {
@@ -3604,7 +3785,9 @@ public class EventosAdmin : MonoBehaviour
                     "carregou o Civil exausto durante a marcha",
                     "el esfuerzo lo dejó Fatigado.",
                     "the effort left them Fatigued.",
-                    "o esforço o deixou Fatigado.");
+                    "o esforço o deixou Fatigado.",
+            "在行军途中背负着精疲力竭的平民",
+            "过度的劳累让他陷入疲劳。");
             }
             gameObject.SetActive(false);
         }
@@ -3625,7 +3808,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou recuperar a bolsa de viagem",
                     "la recuperó, reveló nodos cercanos; +35 Experiencia y +4 Esperanza.",
                     "recovered it and revealed nearby nodes; +35 Experience and +4 Hope.",
-                    "recuperou-a e revelou nós próximos; +35 de Experiência e +4 de Esperança.");
+                    "recuperou-a e revelou nós próximos; +35 de Experiência e +4 de Esperança.",
+            "试图找回旅途中的钱包",
+            "找回了钱包，揭示附近节点；+35 经验，+4 希望。");
             }
             else if (participanteEvento1 != null)
             {
@@ -3636,7 +3821,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou recuperar a bolsa de viagem",
                     "perdió el equilibrio y sufrió una Herida.",
                     "lost their footing and suffered an Injury.",
-                    "perdeu o equilíbrio e sofreu um Ferimento.");
+                    "perdeu o equilíbrio e sofreu um Ferimento.",
+            "试图找回旅途中的钱包",
+            "失去平衡，身受负伤。");
             }
             gameObject.SetActive(false);
         }
@@ -3657,7 +3844,9 @@ public class EventosAdmin : MonoBehaviour
                     "defendeu sua leitura da rota",
                     "eligió bien; +25 Experiencia y -5 h de Aliento Negro.",
                     "chose correctly; +25 Experience and -5 h of Black Breath.",
-                    "escolheu corretamente; +25 de Experiência e -5 h de Respiro Negro.");
+                    "escolheu corretamente; +25 de Experiência e -5 h de Respiro Negro.",
+            "坚持自己对路线的判断",
+            "选择正确；+25 经验，黑息 -5 小时。");
             }
             else
             {
@@ -3668,7 +3857,9 @@ public class EventosAdmin : MonoBehaviour
                     "defendeu sua leitura da rota",
                     "la duda retrasó la marcha y la Caravana ganó +1 Fatiga.",
                     "the hesitation delayed the march and the Caravan gained +1 Fatigue.",
-                    "a hesitação atrasou a marcha e a Caravana ganhou +1 de Fadiga.");
+                    "a hesitação atrasou a marcha e a Caravana ganhou +1 de Fadiga.",
+            "坚持自己对路线的判断",
+            "犹豫拖慢了行程，车队 +1 疲劳。");
             }
             gameObject.SetActive(false);
         }
@@ -3711,7 +3902,9 @@ public class EventosAdmin : MonoBehaviour
                         "tentou escorar o teto instável",
                         "afianzó la estructura y ganó 35 Experiencia.",
                         "secured the structure and gained 35 Experience.",
-                        "firmou a estrutura e ganhou 35 de Experiência.");
+                        "firmou a estrutura e ganhou 35 de Experiência.",
+            "试图固定摇摇欲坠的屋顶",
+            "稳固了结构，获得35经验。");
                 }
             }
             else if (participanteEvento1 != null)
@@ -3723,7 +3916,9 @@ public class EventosAdmin : MonoBehaviour
                     "tentou escorar o teto instável",
                     "parte del techo cedió y sufrió una Herida.",
                     "part of the roof collapsed and they suffered an Injury.",
-                    "parte do teto cedeu e sofreu um Ferimento.");
+                    "parte do teto cedeu e sofreu um Ferimento.",
+            "试图固定摇摇欲坠的屋顶",
+            "部分屋顶坍塌，身受负伤。");
             }
             gameObject.SetActive(false);
         }
@@ -3791,7 +3986,9 @@ public class EventosAdmin : MonoBehaviour
                         "ergueu a voz sob a chuva",
                         "la arenga sostuvo a la Caravana; +30 Experiencia e Inspiración para el próximo combate.",
                         "the speech rallied the Caravan; +30 Experience and Inspiration for the next battle.",
-                        "o discurso reanimou a Caravana; +30 de Experiência e Inspiração para o próximo combate.");
+                        "o discurso reanimou a Caravana; +30 de Experiência e Inspiração para o próximo combate.",
+            "在雨中高声呼喊",
+            "这番激励稳住了车队；+30 经验，并为下一场战斗获得鼓舞。");
                 }
                 else
                 {
@@ -3802,7 +3999,9 @@ public class EventosAdmin : MonoBehaviour
                         "ergueu a voz sob a chuva",
                         "la arenga no encendió a todos, pero sostuvo el ánimo; +2 Esperanza.",
                         "the speech failed to rally everyone, but steadied their spirits; +2 Hope.",
-                        "o discurso não reanimou a todos, mas sustentou o ânimo; +2 de Esperança.");
+                        "o discurso não reanimou a todos, mas sustentou o ânimo; +2 de Esperança.",
+            "在雨中高声呼喊",
+            "这番话并未点燃所有人，但稳住了士气；+2 希望。");
                 }
             }
             else
@@ -3838,7 +4037,9 @@ public class EventosAdmin : MonoBehaviour
                         "tentou interpretar o rastro suspeito",
                         "detectó el peligro a tiempo; +30 Experiencia y Vigilante por 1 viaje.",
                         "spotted the danger in time; +30 Experience and Vigilant for 1 journey.",
-                        "percebeu o perigo a tempo; +30 de Experiência e Vigilante por 1 viagem.");
+                        "percebeu o perigo a tempo; +30 de Experiência e Vigilante por 1 viagem.",
+            "试图辨读可疑的踪迹",
+            "及时察觉了危险；+30 经验，获得警戒状态，持续1次旅程。");
                 }
                 else
                 {
@@ -3849,7 +4050,9 @@ public class EventosAdmin : MonoBehaviour
                         "tentou interpretar o rastro suspeito",
                         "interpretó mal las señales y la Caravana quedó Descuidados por 3 viajes.",
                         "misread the signs and the Caravan became Careless for 3 journeys.",
-                        "interpretou mal os sinais e a Caravana ficou Descuidada por 3 viagens.");
+                        "interpretou mal os sinais e a Caravana ficou Descuidada por 3 viagens.",
+            "试图辨读可疑的踪迹",
+            "误判了迹象，车队陷入疏于防备，持续3次旅程。");
                 }
             }
             else
@@ -3875,7 +4078,9 @@ public class EventosAdmin : MonoBehaviour
                         "conduziu uma revisão de manobras",
                         "ordenó al grupo; +35 Experiencia y Compromiso.",
                         "brought the group into order; +35 Experience and Commitment.",
-                        "organizou o grupo; +35 de Experiência e Compromisso.");
+                        "organizou o grupo; +35 de Experiência e Compromisso.",
+            "主持了一次演练复习",
+            "整肃了队伍；+35 经验，获得尽责。");
                 }
                 else
                 {
@@ -3886,7 +4091,9 @@ public class EventosAdmin : MonoBehaviour
                         "conduziu uma revisão de manobras",
                         "el ejercicio se volvió confuso y la Caravana ganó +1 Fatiga.",
                         "the exercise became confused and the Caravan gained +1 Fatigue.",
-                        "o exercício se tornou confuso e a Caravana ganhou +1 de Fadiga.");
+                        "o exercício se tornou confuso e a Caravana ganhou +1 de Fadiga.",
+            "主持了一次演练复习",
+            "演练陷入混乱，车队 +1 疲劳。");
                 }
             }
             else
@@ -3916,7 +4123,9 @@ public class EventosAdmin : MonoBehaviour
                         "enfrentou o mau agouro dos corvos",
                         "rompió el miedo y la Caravana ganó +2 Esperanza.",
                         "broke the fear and the Caravan gained +2 Hope.",
-                        "rompeu o medo e a Caravana ganhou +2 de Esperança.");
+                        "rompeu o medo e a Caravana ganhou +2 de Esperança.",
+            "直面乌鸦带来的不祥之兆",
+            "打破了恐惧，车队 +2 希望。");
                 }
                 else
                 {
@@ -3927,7 +4136,9 @@ public class EventosAdmin : MonoBehaviour
                         "enfrentou o mau agouro dos corvos",
                         "el presagio se impuso y la Caravana quedó Acobardada para el próximo combate.",
                         "the omen prevailed and the Caravan became Doubtful for the next battle.",
-                        "o presságio prevaleceu e a Caravana ficou Acobardada para o próximo combate.");
+                        "o presságio prevaleceu e a Caravana ficou Acobardada para o próximo combate.",
+            "直面乌鸦带来的不祥之兆",
+            "凶兆应验，车队在下一场战斗中陷入怯战。");
                 }
             }
             else
@@ -3963,7 +4174,9 @@ public class EventosAdmin : MonoBehaviour
                         "subiu à crista de gelo para vigiar a rota",
                         "leyó el terreno; +30 Experiencia y Vigilante por 1 viaje.",
                         "read the terrain; +30 Experience and Vigilant for 1 journey.",
-                        "leu o terreno; +30 de Experiência e Vigilante por 1 viagem.");
+                        "leu o terreno; +30 de Experiência e Vigilante por 1 viagem.",
+            "爬上冰脊瞭望路线",
+            "读懂了地形；+30 经验，获得警戒状态，持续1次旅程。");
                 }
                 else
                 {
@@ -3974,7 +4187,9 @@ public class EventosAdmin : MonoBehaviour
                         "subiu à crista de gelo para vigiar a rota",
                         "bajó agotado y la Caravana ganó +1 Fatiga.",
                         "came down exhausted and the Caravan gained +1 Fatigue.",
-                        "desceu exausto e a Caravana ganhou +1 de Fadiga.");
+                        "desceu exausto e a Caravana ganhou +1 de Fadiga.",
+            "爬上冰脊瞭望路线",
+            "精疲力竭地下来，车队 +1 疲劳。");
                 }
             }
             else
@@ -4065,7 +4280,8 @@ public class EventosAdmin : MonoBehaviour
                 "—La Caravana renunció al interrogatorio. El ladrón escapó con " + oroRobado + " Oro.",
                 "—The Caravan declined the interrogation. The thief escaped with " + oroRobado + " Gold.",
                 "—A Caravana desistiu do interrogatório. O ladrão fugiu com " + oroRobado + " de Ouro.",
-                idioma), true);
+                idioma,
+                "—车队放弃了审问。窃贼带着 " + oroRobado + " 金币逃走了。"), true);
 
             gameObject.SetActive(false);
         }
@@ -4088,7 +4304,10 @@ public class EventosAdmin : MonoBehaviour
                     "de contaminación", "contamination risk", "de contaminação",
                     "Fallo: el agua estaba contaminada; -" + civilesPerdidos + " Civiles y -10 Esperanza.",
                     "Failure: the water was contaminated; -" + civilesPerdidos + " Civilians and -10 Hope.",
-                    "Falha: a água estava contaminada; -" + civilesPerdidos + " Civis e -10 de Esperança.");
+                    "Falha: a água estava contaminada; -" + civilesPerdidos + " Civis e -10 de Esperança.",
+            "河流的风险",
+            "污染概率",
+            "失败：河水已被污染；-" + civilesPerdidos + " 平民，-10 希望。");
             }
             else
             {
@@ -4098,7 +4317,10 @@ public class EventosAdmin : MonoBehaviour
                     "de contaminación", "contamination risk", "de contaminação",
                     "Éxito: el agua era segura y los Civiles se refrescaron; -1 Fatiga.",
                     "Success: the water was safe and the Civilians recovered; -1 Fatigue.",
-                    "Sucesso: a água era segura e os Civis se recuperaram; -1 de Fadiga.");
+                    "Sucesso: a água era segura e os Civis se recuperaram; -1 de Fadiga.",
+            "河流的风险",
+            "污染概率",
+            "成功：河水是安全的，平民们得以解渴；-1 疲劳。");
             }
             gameObject.SetActive(false);
         }
@@ -4149,7 +4371,9 @@ public class EventosAdmin : MonoBehaviour
                         "organizou a travessia do vau traiçoeiro",
                         "condujo a la Caravana sin pérdidas y ganó 40 Experiencia.",
                         "led the Caravan across without losses and gained 40 Experience.",
-                        "conduziu a Caravana sem perdas e ganhou 40 de Experiência.");
+                        "conduziu a Caravana sem perdas e ganhou 40 de Experiência.",
+            "下令穿越那处凶险的浅滩",
+            "带领车队毫发无损地通过，获得40经验。");
                 }
                 else
                 {
@@ -4161,7 +4385,9 @@ public class EventosAdmin : MonoBehaviour
                         "organizou a travessia do vau traiçoeiro",
                         "la corriente rompió la formación; sufrió una Herida y la Caravana perdió 1 Buey.",
                         "the current broke the formation; they suffered an Injury and the Caravan lost 1 Ox.",
-                        "a corrente rompeu a formação; sofreu um Ferimento e a Caravana perdeu 1 Boi.");
+                        "a corrente rompeu a formação; sofreu um Ferimento e a Caravana perdeu 1 Boi.",
+            "下令穿越那处凶险的浅滩",
+            "水流冲散了队形；身受负伤，车队损失1头役牛。");
                 }
             }
             else
@@ -4189,7 +4415,9 @@ public class EventosAdmin : MonoBehaviour
                         "tentou soltar a carroça atolada",
                         "liberó el carro; +35 Experiencia y +3 Esperanza.",
                         "freed the wagon; +35 Experience and +3 Hope.",
-                        "soltou a carroça; +35 de Experiência e +3 de Esperança.");
+                        "soltou a carroça; +35 de Experiência e +3 de Esperança.",
+            "试图解救陷住的马车",
+            "成功解救了马车；+35 经验，+3 希望。");
                 }
                 else
                 {
@@ -4201,7 +4429,9 @@ public class EventosAdmin : MonoBehaviour
                         "tentou soltar a carroça atolada",
                         "el esfuerzo lo hirió y la Caravana ganó +1 Fatiga.",
                         "the effort injured them and the Caravan gained +1 Fatigue.",
-                        "o esforço o feriu e a Caravana ganhou +1 de Fadiga.");
+                        "o esforço o feriu e a Caravana ganhou +1 de Fadiga.",
+            "试图解救陷住的马车",
+            "用力过猛而受伤，车队 +1 疲劳。");
                 }
             }
             else
@@ -4366,7 +4596,9 @@ public class EventosAdmin : MonoBehaviour
                         "tentou reorganizar a fila",
                         "impuso orden; +30 Experiencia y +6 Esperanza.",
                         "restored order; +30 Experience and +6 Hope.",
-                        "restabeleceu a ordem; +30 de Experiência e +6 de Esperança.");
+                        "restabeleceu a ordem; +30 de Experiência e +6 de Esperança.",
+            "试图重整队列",
+            "恢复了秩序；+30 经验，+6 希望。");
                 }
                 else
                 {
@@ -4377,7 +4609,9 @@ public class EventosAdmin : MonoBehaviour
                         "tentou reorganizar a fila",
                         "la confusión se extendió y la Caravana perdió 6 Esperanza.",
                         "the confusion spread and the Caravan lost 6 Hope.",
-                        "a confusão se espalhou e a Caravana perdeu 6 de Esperança.");
+                        "a confusão se espalhou e a Caravana perdeu 6 de Esperança.",
+            "试图重整队列",
+            "混乱蔓延开来，车队损失6希望。");
                 }
             }
             else
@@ -4416,7 +4650,9 @@ public class EventosAdmin : MonoBehaviour
                         "defendeu sua leitura da rota",
                         "eligió bien; +25 Experiencia y -5 h de Aliento Negro.",
                         "chose correctly; +25 Experience and -5 h of Black Breath.",
-                        "escolheu corretamente; +25 de Experiência e -5 h de Respiro Negro.");
+                        "escolheu corretamente; +25 de Experiência e -5 h de Respiro Negro.",
+            "坚持自己对路线的判断",
+            "选择正确；+25 经验，黑息 -5 小时。");
                 }
                 else
                 {
@@ -4427,7 +4663,9 @@ public class EventosAdmin : MonoBehaviour
                         "defendeu sua leitura da rota",
                         "la duda retrasó la marcha y la Caravana ganó +1 Fatiga.",
                         "the hesitation delayed the march and the Caravan gained +1 Fatigue.",
-                        "a hesitação atrasou a marcha e a Caravana ganhou +1 de Fadiga.");
+                        "a hesitação atrasou a marcha e a Caravana ganhou +1 de Fadiga.",
+            "坚持自己对路线的判断",
+            "犹豫拖慢了行程，车队 +1 疲劳。");
                 }
             }
             else

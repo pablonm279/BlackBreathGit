@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -59,6 +58,12 @@ public class Acechar : Habilidad
     if (NIVEL == 4) { tituloPt = "Espreitar IV a"; }
     if (NIVEL == 5) { tituloPt = "Espreitar IV b"; }
 
+    string tituloZh = "潜行 I";
+    if (NIVEL == 2) { tituloZh = "潜行 II"; }
+    if (NIVEL == 3) { tituloZh = "潜行 III"; }
+    if (NIVEL == 4) { tituloZh = "潜行 IV a"; }
+    if (NIVEL == 5) { tituloZh = "潜行 IV b"; }
+
     string colorTitulo = "#5dade2";
     string colorEncabezado = "#44d3ec";
     string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
@@ -95,6 +100,36 @@ public class Acechar : Habilidad
           LineaDescripcion("On cast", "Ends the turn")
         },
         proximaMejora);
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string ocultoZh = TerminoDescripcion(TerminoDescripcionId.Oculto, "隐匿（1）", "Estado_oculto");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "攻击加成 +1。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "暴击率 +5%。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：暴击率 +10%。\n选项B：造成伤害后效果依然持续。"; }
+      }
+
+      string buffZh = $"伤害 +15%，攻击 +{buffAtaque}";
+      if (buffCritPorcentaje > 0) { buffZh += $"，{criticoZh} +{buffCritPorcentaje}%"; }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "潜伏隐匿，为接下来的攻击做准备。",
+        new[]
+        {
+          LineaDescripcion("目标", "自身"),
+          LineaDescripcion("效果", $"获得{ocultoZh}。"),
+          LineaDescripcion("增益", $"{buffZh}（持续 {duracionTurnos} 回合）"),
+          LineaDescripcion("结束条件", seRemueveAlDanar ? $"{duracionTurnos} 回合后，或造成伤害后。" : $"{duracionTurnos} 回合后。"),
+          LineaDescripcion("使用时", "结束本回合")
+        },
+        proximaMejoraZh);
       return;
     }
 

@@ -32,6 +32,11 @@ public class armaduraPesadaCaballero : Armadura
             sNombreItem = "Heavy Armor " + nmejora;
             itemDescripcion = "A heavy armor that is very resistant but limits movement.\n\nAdds: Limiting Armor.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "重甲 " + nmejora;
+            itemDescripcion = "一件非常坚固的重甲，但会限制移动。\n\n附加：笨重护甲。";
+         }
       }
       //Si hay variantes especiales, se ponen aca abajo
       if (sNombreItem == "Coraza de Llamas")
@@ -45,6 +50,11 @@ public class armaduraPesadaCaballero : Armadura
          {
             sNombreItem = "Flame Armor";
             itemDescripcion = "A heavy armor that is very resistant but limits movement.\n\nAdds: Limiting Armor.\nCan set attackers on fire.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "烈焰胸甲";
+            itemDescripcion = "一件非常坚固的重甲，但会限制移动。\n\n附加：笨重护甲。\n可使攻击者燃烧。";
          }
       }
       //------
@@ -60,6 +70,11 @@ public class armaduraPesadaCaballero : Armadura
             sNombreItem = "Light Armor";
             itemDescripcion = "A lightweight armor that allows for greater mobility.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "轻甲";
+            itemDescripcion = "一件轻便的护甲，能让骑士获得更强的机动性。";
+         }
       }
       //------
       if (sNombreItem == "Coraza de Fuerza de Gigante")
@@ -73,6 +88,11 @@ public class armaduraPesadaCaballero : Armadura
          {
             sNombreItem = "Giant Strength Armor";
             itemDescripcion = "A heavy armor that grants great strength to the Knight.\n\nAdds: Limiting Armor.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "巨力胸甲";
+            itemDescripcion = "一件能赋予骑士强大力量的重甲。\n\n附加：笨重护甲。";
          }
       }
 

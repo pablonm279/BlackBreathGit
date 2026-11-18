@@ -8,7 +8,7 @@ public sealed class NodoVisualRework : MonoBehaviour
 {
   const string NombreMarcador = "MarcadorCampaniaRework";
   const int SegmentosAro = 64;
-  const float VelocidadAparicion = 7.5f;
+  const float VelocidadAparicion = 4f;
   const float DuracionRevelado = 1.55f;
   const float EscalaGeneralMarcador = 0.85f;
   const float BrilloGeneralMarcador = 0.90f;
@@ -55,6 +55,7 @@ public sealed class NodoVisualRework : MonoBehaviour
   bool misteriosoAnterior;
   int codigoVisualAnterior;
   float aparicion;
+  float enfasisVisual = 1f;
   float tiempoReveladoRestante;
   Color colorRevelado;
 
@@ -426,8 +427,13 @@ public sealed class NodoVisualRework : MonoBehaviour
     bool revelandoTipo = ActualizarHaloRevelado(inaccesible);
     ActualizarHazReveladoExterior(revelandoTipo, colorTipo);
 
+    float enfasisObjetivo = actual || hover || disponible || urgente || revelandoTipo
+      ? 1f : remoto ? 0.65f : 0.78f;
+    enfasisVisual = Mathf.Lerp(enfasisVisual, enfasisObjetivo,
+      1f - Mathf.Exp(-5f * Time.unscaledDeltaTime));
+
     float pulso = 0.5f + 0.5f * Mathf.Sin(
-      Time.unscaledTime * (hover ? 6.4f : 3.8f)
+      Time.unscaledTime * (hover ? 2.8f : 1.6f)
       + nodo.posXNodo * 0.43f
       + nodo.posYNodo * 0.21f);
 
@@ -465,8 +471,8 @@ public sealed class NodoVisualRework : MonoBehaviour
         ? new Color(1f, 0.92f, 0.72f, 1f)
         : colorTipo;
 
-    float brilloTipo = inaccesible ? 0.0068f : hover ? 0.918f : disponible ? Mathf.Lerp(0.425f, 0.68f, pulso) : 0.221f;
-    float brilloEstado = hover ? 1.088f : disponible ? Mathf.Lerp(0.493f, 0.85f, pulso) : 0.425f;
+    float brilloTipo = (inaccesible ? 0.0068f : hover ? 0.918f : actual ? 0.55f : disponible ? Mathf.Lerp(0.46f, 0.58f, pulso) : 0.221f) * enfasisVisual;
+    float brilloEstado = hover ? 1.088f : actual ? 0.65f : disponible ? Mathf.Lerp(0.55f, 0.70f, pulso) : 0.425f;
 
     Color colorPedestal = inaccesible
       ? new Color(0.009f, 0.010f, 0.012f, 1f)
@@ -504,7 +510,7 @@ public sealed class NodoVisualRework : MonoBehaviour
       float alphaInicio = hover
         ? 0.17f
         : disponible
-          ? Mathf.Lerp(0.051f, 0.102f, pulso)
+          ? Mathf.Lerp(0.058f, 0.075f, pulso)
           : urgente
             ? 0.068f
             : 0f;
@@ -1065,7 +1071,11 @@ public sealed class NodoVisualRework : MonoBehaviour
 
   static Material CrearMaterialStandard(string nombre, Color color, float metalico, float suavidad)
   {
-    Shader shader = Shader.Find("Standard");
+    Shader shader = Shader.Find("GDD/Campania/NodoVisualForward");
+    if (shader == null)
+    {
+      shader = Shader.Find("Standard");
+    }
     if (shader == null)
     {
       shader = Shader.Find("Unlit/Color");

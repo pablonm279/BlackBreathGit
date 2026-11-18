@@ -33,6 +33,11 @@ public class armaEspadaCorta : Arma
             sNombreItem = "Shortsword " + nmejora;
             itemDescripcion = "A short-bladed sword, very versatile.\n\nAttack ability: Shortsword Slash.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "短剑 " + nmejora;
+            itemDescripcion = "一把短刃剑，用途广泛。\n\n攻击技能：短剑斩击。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Espada Curta " + nmejora;
@@ -54,6 +59,11 @@ public class armaEspadaCorta : Arma
             sNombreItem = "Arcane Shortsword " + nmejora;
             itemDescripcion = "A short-bladed sword, very versatile.\n\nAttack ability: Arcane Shortsword Slash.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "奥术短剑 " + nmejora;
+            itemDescripcion = "一把短刃剑，用途广泛。\n\n攻击技能：奥术短剑斩击。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Espada Curta Arcana " + nmejora;
@@ -73,6 +83,11 @@ public class armaEspadaCorta : Arma
             sNombreItem = "Blacksteel Shortsword " + nmejora;
             itemDescripcion = "A short-bladed sword, very versatile.\n\nAttack ability: Blacksteel Shortsword Slash.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "黑刃短剑 " + nmejora;
+            itemDescripcion = "一把短刃剑，用途广泛。\n\n攻击技能：黑刃短剑斩击。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Espada Curta Fio Negro " + nmejora;
@@ -91,6 +106,11 @@ public class armaEspadaCorta : Arma
          {
             sNombreItem = "Life-consuming Shortsword " + nmejora;
             itemDescripcion = "A short-bladed sword, very versatile.\n\nAttack ability: Life-consuming Shortsword Slash.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "噬命短剑 " + nmejora;
+            itemDescripcion = "一把短刃剑，用途广泛。\n\n攻击技能：噬命短剑斩击。";
          }
          else if (TRADU.i.nIdioma == 3)
          {

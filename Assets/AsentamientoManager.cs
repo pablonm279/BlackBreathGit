@@ -130,7 +130,8 @@ public class AsentamientoManager : MonoBehaviour
         campaign.EscribirLog(Loc(
             "-La caravana llega a un asentamiento aislado. +5 Esperanza.",
             "-The caravan reaches an isolated settlement. +5 Hope.",
-            "-A caravana chega a um assentamento isolado. +5 Esperanca."));
+            "-A caravana chega a um assentamento isolado. +5 Esperanca.",
+            "-车队抵达了一处偏僻的定居点。+5 希望。"));
         campaign.AplicarTraitsLlegadaAsentamiento();
        /* campaign.EscribirLog(Loc(
             "-El sequito de mercaderes actualiza su oferta en el asentamiento.",
@@ -250,7 +251,8 @@ public class AsentamientoManager : MonoBehaviour
             campaign.EscribirAdvertenciaLog(MarcarSinAcciones(Loc(
                 "-No quedan acciones disponibles en este asentamiento.",
                 "-No actions remain in this settlement.",
-                "-Nao restam acoes disponiveis neste assentamento.")));
+                "-Nao restam acoes disponiveis neste assentamento.",
+                "-这处定居点已没有可用的行动。")));
             MostrarDescripcionAccion(accion);
             return;
         }
@@ -390,14 +392,16 @@ public class AsentamientoManager : MonoBehaviour
             campaign.EscribirLog("<color=#ff8f8f>" + Loc(
                 "-No se pudo reclutar a nadie en la taverna.",
                 "-No one could be recruited in the tavern.",
-                "-Nao foi possivel recrutar alguem na taverna.") + "</color>", true);
+                "-Nao foi possivel recrutar alguem na taverna.",
+                "-未能在酒馆招募到任何人。") + "</color>", true);
             return;
         }
 
         campaign.EscribirLog(Loc(
             $"-Se pagan {costoTaverna} de Oro en la taverna para reclutar un nuevo personaje.",
             $"-{costoTaverna} Gold is paid at the tavern to recruit a new character.",
-            $"-Pagam-se {costoTaverna} de Ouro na taverna para recrutar um novo personagem."));
+            $"-Pagam-se {costoTaverna} de Ouro na taverna para recrutar um novo personagem.",
+            $"-在酒馆花费 {costoTaverna} 金币，招募了一名新角色。"));
 
         if (campaign.scMenuPersonajes != null && campaign.scMenuPersonajes.listaPersonajes != null)
         {
@@ -415,7 +419,8 @@ public class AsentamientoManager : MonoBehaviour
         campaign.EscribirLog(Loc(
             "-Los personajes comparten charlas y cerveza en la Taberna, obtienen Alta Moral durante 48 h. (No la Purificadora)",
             "-The characters share stories and beer at the Tavern, obtaining High Morale for 48 h. (Not the Purifier)",
-            "-Os personagens compartilham histórias e cerveja na Taverna, obtendo Moral Alta durante 48 h. (Exceto a Purificadora)"));
+            "-Os personagens compartilham histórias e cerveja na Taverna, obtendo Moral Alta durante 48 h. (Exceto a Purificadora)",
+            "-角色们在酒馆里闲聊畅饮，获得高昂士气，持续48小时。（净化者除外）"));
     }
 
     private void EjecutarResultadoPlazaPrincipal()
@@ -437,7 +442,8 @@ public class AsentamientoManager : MonoBehaviour
         campaign.EscribirLog(Loc(
             $"-El discurso en la plaza convence a {civiles} civiles. Se unen con {suministros} suministros y {materiales} materiales.",
             $"-The speech in the square convinces {civiles} civilians. They join with {suministros} supplies and {materiales} materials.",
-            $"-O discurso na praca convence {civiles} civis. Eles se juntam com {suministros} suprimentos e {materiales} materiais."));
+            $"-O discurso na praca convence {civiles} civis. Eles se juntam com {suministros} suprimentos e {materiales} materiais.",
+            $"-广场上的演讲说服了 {civiles} 名平民。他们带来了 {suministros} 补给和 {materiales} 材料，一同加入。"));
     }
 
     private void EjecutarResultadoPosada()
@@ -479,11 +485,13 @@ public class AsentamientoManager : MonoBehaviour
         campaign.EscribirLog(Loc(
             $"-La caravana descansa en la posada. -{costoPosada} Oro, Fatiga a 0, +5 Esperanza.",
             $"-The caravan rests at the inn. -{costoPosada} Gold, Fatigue reset to 0, +5 Hope.",
-            $"-A caravana descansa na hospedaria. -{costoPosada} Ouro, Fadiga zerada, +5 Esperanca."));
+            $"-A caravana descansa na hospedaria. -{costoPosada} Ouro, Fadiga zerada, +5 Esperanca.",
+            $"-车队在旅店休整。-{costoPosada} 金币，疲劳归零，+5 希望。"));
         campaign.EscribirLog(Loc(
             "-La posada deja a la Caravana con 1 estado de caravana al azar.",
             "-The inn leaves the Caravan with 1 random caravan state.",
-            "-A hospedaria deixa a Caravana com 1 estado de caravana aleatorio."));
+            "-A hospedaria deixa a Caravana com 1 estado de caravana aleatorio.",
+            "-旅店让车队获得1个随机车队状态。"));
         campaign.AplicarPresagiosDescanso();
 
     }
@@ -496,7 +504,8 @@ public class AsentamientoManager : MonoBehaviour
             motivo = Loc(
                 "La campania no esta disponible.",
                 "The campaign is not available.",
-                "A campanha nao esta disponivel.");
+                "A campanha nao esta disponivel.",
+                "战役当前不可用。");
             return false;
         }
 
@@ -505,7 +514,8 @@ public class AsentamientoManager : MonoBehaviour
             motivo = Loc(
                 "No hay suficiente Oro para pagar la taverna.",
                 "There is not enough Gold to pay for the tavern.",
-                "Nao ha Ouro suficiente para pagar a taverna.");
+                "Nao ha Ouro suficiente para pagar a taverna.",
+                "金币不足，无法支付酒馆的费用。");
             return false;
         }
 
@@ -514,7 +524,8 @@ public class AsentamientoManager : MonoBehaviour
             motivo = Loc(
                 "La caravana no tiene más tiendas para otro personaje.",
                 "The caravan has no spare tents for another character.",
-                "A caravana nao tem mais tendas para outro personagem.");
+                "A caravana nao tem mais tendas para outro personagem.",
+                "车队没有多余的帐篷可供新角色使用。");
             return false;
         }
 
@@ -530,7 +541,8 @@ public class AsentamientoManager : MonoBehaviour
             motivo = Loc(
                 "La campania no esta disponible.",
                 "The campaign is not available.",
-                "A campanha nao esta disponivel.");
+                "A campanha nao esta disponivel.",
+                "战役当前不可用。");
             return false;
         }
 
@@ -539,7 +551,8 @@ public class AsentamientoManager : MonoBehaviour
             motivo = Loc(
                 "No hay suficiente Oro para pagar la posada.",
                 "There is not enough Gold to pay for the inn.",
-                "Nao ha Ouro suficiente para pagar a hospedaria.");
+                "Nao ha Ouro suficiente para pagar a hospedaria.",
+                "金币不足，无法支付旅店的费用。");
             return false;
         }
 
@@ -656,7 +669,7 @@ public class AsentamientoManager : MonoBehaviour
     {
         if (txtTitulo != null)
         {
-            txtTitulo.text = Loc("ASENTAMIENTO", "SETTLEMENT", "ASSENTAMENTO");
+            txtTitulo.text = Loc("ASENTAMIENTO", "SETTLEMENT", "ASSENTAMENTO", "定居点");
         }
 
         if (txtIntro != null)
@@ -664,7 +677,8 @@ public class AsentamientoManager : MonoBehaviour
             txtIntro.text = Loc(
                 "La caravana ha llegado a un pequeno asentamiento aislado en el camino.\nParece que sus habitantes no estan preparados para lo que se aproxima, y el tiempo apremia.",
                 "The caravan has reached a small isolated settlement on the road.\nIts people are not prepared for what is coming, and time is running short.",
-                "A caravana chegou a um pequeno assentamento isolado na estrada.\nSeus habitantes nao estao preparados para o que se aproxima, e o tempo esta se esgotando.");
+                "A caravana chegou a um pequeno assentamento isolado na estrada.\nSeus habitantes nao estao preparados para o que se aproxima, e o tempo esta se esgotando.",
+                "车队来到了路边一处偏僻的小定居点。\n这里的居民似乎还没有准备好面对即将到来的危机，时间紧迫。");
         }
 
         if (txtSubtitulo != null)
@@ -672,7 +686,8 @@ public class AsentamientoManager : MonoBehaviour
             txtSubtitulo.text = Loc(
                 "Elige como emplear el tiempo disponible.",
                 "Choose how to spend the remaining time.",
-                "Escolha como empregar o tempo restante.");
+                "Escolha como empregar o tempo restante.",
+                "选择如何利用现有的时间。");
         }
     }
 
@@ -687,18 +702,19 @@ public class AsentamientoManager : MonoBehaviour
         string textoAcciones = Loc(
             $"{accionesRestantes}/{maxAcciones} Acciones disponibles",
             $"{accionesRestantes}/{maxAcciones} Actions available",
-            $"{accionesRestantes}/{maxAcciones} Acoes disponiveis");
+            $"{accionesRestantes}/{maxAcciones} Acoes disponiveis",
+            $"{accionesRestantes}/{maxAcciones} 可用行动");
 
         txtAccionesDisponibles.text = accionesRestantes <= 0 ? MarcarSinAcciones(textoAcciones) : textoAcciones;
     }
 
     private void ActualizarEtiquetasBotones()
     {
-        ConfigurarEtiquetaBoton(btnPuestoComercial, Loc("Puesto Comercial", "Trading Post", "Posto Comercial"));
-        ConfigurarEtiquetaBoton(btnTaverna, Loc("Taverna", "Tavern", "Taverna"));
-        ConfigurarEtiquetaBoton(btnPlazaPrincipal, Loc("Plaza Principal", "Main Square", "Praca Principal"));
-        ConfigurarEtiquetaBoton(btnPosada, Loc("Posada", "Inn", "Hospedaria"));
-        ConfigurarEtiquetaBoton(btnMarcharse, Loc("Marcharse", "Leave", "Partir"));
+        ConfigurarEtiquetaBoton(btnPuestoComercial, Loc("Puesto Comercial", "Trading Post", "Posto Comercial", "贸易站"));
+        ConfigurarEtiquetaBoton(btnTaverna, Loc("Taverna", "Tavern", "Taverna", "酒馆"));
+        ConfigurarEtiquetaBoton(btnPlazaPrincipal, Loc("Plaza Principal", "Main Square", "Praca Principal", "中央广场"));
+        ConfigurarEtiquetaBoton(btnPosada, Loc("Posada", "Inn", "Hospedaria", "旅店"));
+        ConfigurarEtiquetaBoton(btnMarcharse, Loc("Marcharse", "Leave", "Partir", "离开"));
     }
 
     private void ActualizarDescripcionActiva()
@@ -729,13 +745,15 @@ public class AsentamientoManager : MonoBehaviour
             return Loc(
                 "Pasa el cursor por una acción para ver su efecto. Las acciones duran 5h; la Posada, 8h.",
                 "Hover an action to inspect its effect. Actions take 5h; the Inn takes 8h.",
-                "Passe o cursor sobre uma ação para ver seu efeito. As ações duram 5h; a Hospedaria, 8h.");
+                "Passe o cursor sobre uma ação para ver seu efeito. As ações duram 5h; a Hospedaria, 8h.",
+                "把鼠标悬停在一个行动上以查看其效果。行动持续5小时；旅店为8小时。");
         }
 
         return MarcarSinAcciones(Loc(
             "No quedan acciones disponibles. Puedes marcharte cuando quieras.",
             "No actions remain. You can leave whenever you want.",
-            "Nao restam acoes disponiveis. Voce pode partir quando quiser."));
+            "Nao restam acoes disponiveis. Voce pode partir quando quiser.",
+            "已没有可用的行动。你可以随时离开。"));
     }
 
     private string ObtenerDescripcionAccion(AccionAsentamiento accion)
@@ -750,8 +768,9 @@ public class AsentamientoManager : MonoBehaviour
             ? Loc(
                 $"Consume 1 acción · Duración: {duracionHoras}h.",
                 $"Consumes 1 action · Duration: {duracionHoras}h.",
-                $"Consome 1 ação · Duração: {duracionHoras}h.")
-            : MarcarSinAcciones(Loc("No quedan acciones disponibles.", "No actions remain.", "Nao restam acoes disponiveis."));
+                $"Consome 1 ação · Duração: {duracionHoras}h.",
+                $"消耗1个行动 · 持续时间：{duracionHoras}小时。")
+            : MarcarSinAcciones(Loc("No quedan acciones disponibles.", "No actions remain.", "Nao restam acoes disponiveis.", "已没有可用的行动。"));
 
         switch (accion)
         {
@@ -759,14 +778,16 @@ public class AsentamientoManager : MonoBehaviour
                 return Loc(
                     "Accederás al puesto comerical del asentamiento.\n\n" + estadoAcciones,
                     "Access the settlement's trading post.\n\n" + estadoAcciones,
-                    "Acesse o posto comercial do assentamento.\n\n" + estadoAcciones);
+                    "Acesse o posto comercial do assentamento.\n\n" + estadoAcciones,
+                    "你将进入该定居点的贸易站。\n\n" + estadoAcciones);
 
             case AccionAsentamiento.Taverna:
                 string estadoTaverna = PuedeUsarTaverna(out string motivo)
                     ? Loc(
                         $"Costo: {ObtenerCostoServicio(CostoTavernaBase)} Oro. Recluta un personaje aleatorio nivel 1.",
                         $"Cost: {ObtenerCostoServicio(CostoTavernaBase)} Gold. Recruits a random level 1character.",
-                        $"Custo: {ObtenerCostoServicio(CostoTavernaBase)} Ouro. Recruta um personagem aleatorio nível 1.")
+                        $"Custo: {ObtenerCostoServicio(CostoTavernaBase)} Ouro. Recruta um personagem aleatorio nível 1.",
+                        $"花费：{ObtenerCostoServicio(CostoTavernaBase)} 金币。招募一名随机的1级角色。")
                     : motivo;
                 return estadoTaverna + "\n\n" + estadoAcciones;
 
@@ -774,19 +795,22 @@ public class AsentamientoManager : MonoBehaviour
                 return Loc(
                     $"Das un discurso en la plaza para concientizar a los pobladores sobre la situación, y que deben unirse a la caravana si quieren sobrevivir. Convences entre {civilesMinimos} y {civilesMaximos} civiles para unirse. Cada civil aporta 2 suministros y 1 material.\n\n" + estadoAcciones,
                     $"You give a speech in the square to raise awareness among the settlers about the inminent danger, and try to convince them to join the caravan if they want to survive. You convince between {civilesMinimos} and {civilesMaximos} civilians to join. Each civilian brings 2 supplies and 1 material.\n\n" + estadoAcciones,
-                    $"Voce da um discurso na praca para conscientizar os moradores sobre a situacao, e que devem se juntar a caravana se quiserem sobreviver. Voce convence entre {civilesMinimos} e {civilesMaximos} civis para se juntar. Cada civil traz 2 suprimentos e 1 material.\n\n" + estadoAcciones);
+                    $"Voce da um discurso na praca para conscientizar os moradores sobre a situacao, e que devem se juntar a caravana se quiserem sobreviver. Voce convence entre {civilesMinimos} e {civilesMaximos} civis para se juntar. Cada civil traz 2 suprimentos e 1 material.\n\n" + estadoAcciones,
+                    $"你在广场上发表演讲，让居民意识到当前的处境，明白若想活下去就必须加入车队。你说服了 {civilesMinimos} 到 {civilesMaximos} 名平民加入。每名平民带来2份补给和1份材料。\n\n" + estadoAcciones);
 
             case AccionAsentamiento.Posada:
                 return Loc(
                     $"Costo: {ObtenerCostoServicio(CostoPosadaBase)} Oro. Durante 8 h todos descansan, recuperan 4% de su Vida máxima por hora y no progresan actividades. Al finalizar, la Fatiga vuelve a 0, la caravana gana 5 Esperanza y obtiene 1 estado de caravana al azar.\n\n" + estadoAcciones,
                     $"Cost: {ObtenerCostoServicio(CostoPosadaBase)} Gold. For 8 h everyone rests, recovers 4% maximum Health per hour, and activities do not progress. At the end, Fatigue is reset to 0, the caravan gains 5 Hope, and it obtains 1 random caravan state.\n\n" + estadoAcciones,
-                    $"Custo: {ObtenerCostoServicio(CostoPosadaBase)} Ouro. Durante 8 h todos descansam, recuperam 4% da Vida máxima por hora e as atividades não progridem. Ao final, a Fadiga volta a 0, a caravana ganha 5 Esperança e obtém 1 estado de caravana aleatório.\n\n" + estadoAcciones);
+                    $"Custo: {ObtenerCostoServicio(CostoPosadaBase)} Ouro. Durante 8 h todos descansam, recuperam 4% da Vida máxima por hora e as atividades não progridem. Ao final, a Fadiga volta a 0, a caravana ganha 5 Esperança e obtém 1 estado de caravana aleatório.\n\n" + estadoAcciones,
+                    $"花费：{ObtenerCostoServicio(CostoPosadaBase)} 金币。8小时内所有人休息，每小时恢复4%最大生命，且活动不再推进。结束后，疲劳归零，车队获得5希望，并获得1个随机车队状态。\n\n" + estadoAcciones);
 
             case AccionAsentamiento.Marcharse:
                 return Loc(
                     "La caravaná abandonará el asentamiento inmediatamente.",
                     "The caravan will leave the settlement immediately.",
-                    "A caravana abandonará o assentamento imediatamente.");
+                    "A caravana abandonará o assentamento imediatamente.",
+                    "车队将立即离开这处定居点。");
         }
 
         return ObtenerDescripcionDefault();
@@ -817,14 +841,17 @@ public class AsentamientoManager : MonoBehaviour
         campaign.txtDescripcionPuestoComercial.text = Loc(
             "El sequito de mercaderes abre su puesto dentro del asentamiento. Al cerrar el comercio volveras a estas opciones.",
             "The merchants entourage opens its stall inside the settlement. Closing the shop will return you to these options.",
-            "A comitiva de mercadores abre sua banca dentro do assentamento. Ao fechar a loja voce retornara a estas opcoes.");
+            "A comitiva de mercadores abre sua banca dentro do assentamento. Ao fechar a loja voce retornara a estas opcoes.",
+            "商队的商人们在定居点内摆开了摊位。关闭商店后你将返回这些选项。");
     }
 
-    private string Loc(string es, string en, string pt)
+    private string Loc(string es, string en, string pt, string zh = null)
     {
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
         switch (idioma)
         {
+            case TRADU.IdiomaChinoSimplificado:
+                return !string.IsNullOrEmpty(zh) ? zh : en;
             case TRADU.IdiomaIngles:
                 return en;
             case TRADU.IdiomaPortugues:
@@ -1370,7 +1397,7 @@ public class AsentamientoManager : MonoBehaviour
         {
             btnContinuarAsentamientoArrasado.onClick.RemoveAllListeners();
             btnContinuarAsentamientoArrasado.onClick.AddListener(ContinuarAsentamientoArrasado);
-            ConfigurarEtiquetaBoton(btnContinuarAsentamientoArrasado, Loc("Continuar", "Continue", "Continuar"));
+            ConfigurarEtiquetaBoton(btnContinuarAsentamientoArrasado, Loc("Continuar", "Continue", "Continuar", "继续"));
         }
     }
 

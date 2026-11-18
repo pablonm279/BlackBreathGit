@@ -9,6 +9,7 @@ public class TRADU : MonoBehaviour
     public const int IdiomaEspanol = 1;
     public const int IdiomaIngles = 2;
     public const int IdiomaPortugues = 3;
+    public const int IdiomaChinoSimplificado = 4;
 
     public static event System.Action<int> IdiomaActualizado;
     public static TRADU i { get; private set; }
@@ -80,6 +81,9 @@ public class TRADU : MonoBehaviour
             case IdiomaPortugues:
                 resultado = TraducirConCompatibilidadMojibake(textComponent, TraducirPortugues);
                 break;
+            case IdiomaChinoSimplificado:
+                resultado = TraducirChinoSimplificado(textComponent);
+                break;
 
         }
 
@@ -96,16 +100,43 @@ public class TRADU : MonoBehaviour
 
 
 
-    private static int NormalizarIdioma(int idioma)
+    public static int NormalizarIdioma(int idioma)
     { 
         return idioma == IdiomaEspanol || idioma == IdiomaIngles || idioma == IdiomaPortugues
+            || (idioma == IdiomaChinoSimplificado && ChineseLocalization.IsAvailable)
             ? idioma
             : IdiomaIngles;
     }
 
     private static bool IdiomaRequiereTraduccionMasiva(int idioma)
     {
-        return idioma == IdiomaIngles || idioma == IdiomaPortugues;
+        return idioma == IdiomaIngles || idioma == IdiomaPortugues || idioma == IdiomaChinoSimplificado;
+    }
+
+    private string TraducirChinoSimplificado(string texto)
+    {
+        if (string.IsNullOrEmpty(texto)) return texto;
+        if (ChineseLocalization.TryTranslate(texto, out string traducido)) return traducido;
+
+        // Antes de rendirse y caer a inglés, probamos las mismas variantes de tolerancia
+        // (sin tildes, mojibake) que ya usan los demás idiomas, pero contra el catálogo
+        // chino: muchas claves fueron copiadas de cadenas históricas de TRADU.cs (algunas
+        // sin tildes por error tipográfico original), mientras que el código real que llama
+        // a Traducir() sí usa tildes. Sin este intento, esas claves nunca calzan en chino y
+        // el texto se muestra en inglés en vez de chino.
+        string claveSinTildes = RemoverTildesYEnies(texto);
+        if (claveSinTildes != texto && ChineseLocalization.TryTranslate(claveSinTildes, out string traducidoSinTildes))
+        {
+            return traducidoSinTildes;
+        }
+
+        string claveMojibake = ConvertirATextoMojibake(texto);
+        if (claveMojibake != texto && ChineseLocalization.TryTranslate(claveMojibake, out string traducidoMojibake))
+        {
+            return traducidoMojibake;
+        }
+
+        return TraducirConCompatibilidadMojibake(texto, TraducirIngles);
     }
 
     private string TraducirConCompatibilidadMojibake(string textComponent, System.Func<string, bool, string> traductor)
@@ -15293,6 +15324,10 @@ public class TRADU : MonoBehaviour
         else if (nIdioma == IdiomaPortugues)
         {
             traducido = TraducirConCompatibilidadMojibake(original.Normalize(NormalizationForm.FormC), TraducirPortugues);
+        }
+        else if (nIdioma == IdiomaChinoSimplificado)
+        {
+            traducido = TraducirChinoSimplificado(original);
         }
 
         if (txt.text != traducido)

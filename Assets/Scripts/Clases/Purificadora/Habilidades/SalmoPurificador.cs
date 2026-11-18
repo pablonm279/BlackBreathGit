@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -88,6 +87,44 @@ public class SalmoPurificador : Habilidad
         "Cleanses debuffs and negative states from allies.",
         lineas,
         proximaMejora);
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string tituloZh = "净化圣咏 I";
+      if (NIVEL == 2) { tituloZh = "净化圣咏 II"; }
+      if (NIVEL == 3) { tituloZh = "净化圣咏 III"; }
+      if (NIVEL == 4) { tituloZh = "净化圣咏 IV a"; }
+      if (NIVEL == 5) { tituloZh = "净化圣咏 IV b"; }
+
+      string debuffsZh = TerminoDescripcion(TerminoDescripcionId.Debuff, "负面效果", "Estado_debuff");
+      string fervorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, "狂热");
+      string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "下一级：每个单位额外移除 +1 个负面效果。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "下一级：冷却 -1。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：额外移除 +1 个负面效果。\n选项B：每移除一个负面效果，获得 +1 勇气。"; }
+      }
+
+      var lineasZh = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("目标", "1 名友军及其位置周围的相邻友军。"),
+        LineaDescripcion("效果", $"为每个受影响的友军移除最多 {debuffsPorUnidad} 个可移除的{debuffsZh}或负面状态。")
+      };
+      if (daValentia)
+      {
+        lineasZh.Add(LineaDescripcion("每移除一项", $"该友军获得 +1 {valentiaZh}。", 1));
+      }
+      lineasZh.Add(LineaDescripcion("消耗", $"1 点{fervorZh}"));
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "净化友军身上的负面效果和不良状态。",
+        lineasZh,
+        proximaMejoraZh);
       return;
     }
 
@@ -526,6 +563,13 @@ public class SalmoPurificador : Habilidad
       string nombreLanzador = TraducirTexto(scEstaUnidad.uNombre);
       string nombreDebuffTraducido = TraducirTexto(nombreDebuff);
       string nombreAliado = TraducirTexto(aliado.uNombre);
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        BattleManager.Instance.EscribirLog(nombreLanzador + " 移除了 " + nombreAliado + " 身上的 " + nombreDebuffTraducido + "。");
+        return;
+      }
+
       string verboRemueve = TRADU.i != null ? TRADU.i.Traducir(" remueve ") : " remueve ";
       string conector = (TRADU.i != null && TRADU.i.nIdioma == 2) ? " from " : (TRADU.i != null && TRADU.i.nIdioma == 3) ? " de " : " de ";
       BattleManager.Instance.EscribirLog(nombreLanzador + verboRemueve + nombreDebuffTraducido + conector + nombreAliado + ".");

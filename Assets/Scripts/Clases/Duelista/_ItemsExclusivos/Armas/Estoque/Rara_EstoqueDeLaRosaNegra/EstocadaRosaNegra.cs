@@ -25,7 +25,8 @@ public class EstocadaRosaNegra : Estocada
         string tituloEs = "Estocada de la Rosa Negra";
         string tituloEn = "Black Rose Thrust";
         string tituloPt = "Estocada da Rosa Negra";
-        nombre = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
+        nombre = esIngles ? tituloEn : esChino ? "黑玫瑰突刺" : esPortugues ? tituloPt : tituloEs;
 
         if (esIngles)
         {
@@ -50,6 +51,33 @@ public class EstocadaRosaNegra : Estocada
                     LineaDescripcion("Penetration", $"Armor Penetration: {penetracionArmadura}."),
                     LineaDescripcion("Save", $"Target's {fortaleza} vs DC {DificultadSangrado}.", 1),
                     LineaDescripcion("Failed save", $"Gains {sangrado} ({DuracionSangrado} turns).", 1)
+                },
+                mostrarIconoMelee: true);
+            return;
+        }
+        if (esChino)
+        {
+            string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, "力量");
+            string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, "敏捷");
+            string mixZh = $"{fuerzaZh}/{agiZh}（{atributoMixtoActual}）";
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string fortZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+            string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+            string sangZh = TerminoDescripcion(TerminoDescripcionId.Sangrado, "流血", "Estado_sangrano");
+            string bonusZh = FormatoModificadorDescripcion(ataqueActual) + FormatoModificadorDescripcion(bonusAtaque);
+            int pctZh = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "黑玫瑰突刺",
+                "优雅的一击，可能让目标流血不止。",
+                new[]
+                {
+                    LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+                    LineaDescripcion("效果", $"命中时，造成 {FormatearRangoDados(1, 8)} + {mixZh} 点{danoZh}。"),
+                    LineaDescripcion("攻击检定", $"1d20 + {mixZh}{bonusZh} 对抗{defZh}。大失败：5%。{critZh}：{pctZh}%。"),
+                    LineaDescripcion("穿透", $"护甲穿透：{penetracionArmadura}。"),
+                    LineaDescripcion("豁免", $"目标进行{fortZh}豁免，对抗难度 {DificultadSangrado}。", 1),
+                    LineaDescripcion("豁免失败", $"获得{sangZh}（持续 {DuracionSangrado} 回合）。", 1)
                 },
                 mostrarIconoMelee: true);
             return;

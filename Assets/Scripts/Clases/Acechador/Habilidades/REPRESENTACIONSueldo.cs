@@ -28,6 +28,20 @@ public class REPRESENTACIONSueldo : Habilidad
          return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+         txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+            "薪水",
+            "战役被动：潜猎者按合同工作，每次休整都会向车队收费。",
+            new[]
+            {
+               LineaDescripcion("费用", "每次休整 20 金币"),
+               LineaDescripcion("例外", "若希望高于 70，则不收费。")
+            },
+            costoSuperior: string.Empty);
+         return;
+      }
+
       if (TRADU.i != null && TRADU.i.nIdioma == 3)
       {
          txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Salário","Passiva de Campanha: o Espreitador trabalha por contrato e cobra da caravana a cada descanso.",new[]{LineaDescripcion("Custo","20 moedas de ouro por descanso"),LineaDescripcion("Exceção","Não cobra se a Esperança estiver acima de 70.")},costoSuperior:string.Empty); return;

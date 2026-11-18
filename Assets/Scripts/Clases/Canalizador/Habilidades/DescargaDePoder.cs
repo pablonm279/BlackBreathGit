@@ -57,6 +57,7 @@ public class DescargaDePoder : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int poderActual = statsUI.Poder;
@@ -66,6 +67,7 @@ public class DescargaDePoder : Habilidad
       string tituloEs = "Descarga de Poder I";
       string tituloEn = "Power Discharge I";
       string tituloPt = "Descarga de Poder I";
+      string tituloZh = "力量释放 I";
       if (NIVEL == 2) { tituloEs = "Descarga de Poder II"; tituloEn = "Power Discharge II"; }
       if (NIVEL == 3) { tituloEs = "Descarga de Poder III"; tituloEn = "Power Discharge III"; }
       if (NIVEL == 4) { tituloEs = "Descarga de Poder IV a"; tituloEn = "Power Discharge IV a"; }
@@ -74,6 +76,10 @@ public class DescargaDePoder : Habilidad
       if (NIVEL == 3) { tituloPt = "Descarga de Poder III"; }
       if (NIVEL == 4) { tituloPt = "Descarga de Poder IV a"; }
       if (NIVEL == 5) { tituloPt = "Descarga de Poder IV b"; }
+      if (NIVEL == 2) { tituloZh = "力量释放 II"; }
+      if (NIVEL == 3) { tituloZh = "力量释放 III"; }
+      if (NIVEL == 4) { tituloZh = "力量释放 IV a"; }
+      if (NIVEL == 5) { tituloZh = "力量释放 IV b"; }
 
       string rangoDanioEs = FormatearRangoDados(3, 6, danioFijo);
 
@@ -102,6 +108,33 @@ public class DescargaDePoder : Habilidad
             LineaDescripcion("Effort", $"Up to {esforzable} AP.")
           },
           proximaMejora);
+        return;
+      }
+
+      if (esChino)
+      {
+        string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+        string danioArcanoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害", "dano_arcano");
+        string salvacionReflejosZh = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "反射", "ic_Reflejos");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "伤害 +5。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "豁免难度 +1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：行动点消耗 -1。\n选项B：冷却时间 -1。"; }
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "在一片T形区域释放一道奥术冲击波。",
+          new[]
+          {
+            LineaDescripcion("目标", "T形区域"),
+            LineaDescripcion("效果", $"区域内的单位受到 {rangoDanioEs} + {poderZh} 点{danioArcanoZh}。"),
+            LineaDescripcion("豁免", $"{salvacionReflejosZh} 豁免，对抗难度 {dcSalvacion}。", 1),
+            LineaDescripcion("豁免成功", "受到 50% 伤害。", 1),
+            LineaDescripcion("努力施为", $"最多消耗 {esforzable} 点行动点。")
+          },
+          proximaMejoraZh);
         return;
       }
 

@@ -39,6 +39,21 @@ public class REPRESENTACIONPasoCauteloso : Habilidad
       return;
     }
 
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        "谨慎步伐",
+        "被动：每回合躲避一次敌意格子效果。",
+        new[]
+        {
+          LineaDescripcion("触发", "进入带有敌意效果的格子。"),
+          LineaDescripcion("效果", "躲避该效果。"),
+          LineaDescripcion("限制", "每回合一次")
+        },
+        costoSuperior: string.Empty);
+      return;
+    }
+
     if (esPortugues)
     {
       txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(

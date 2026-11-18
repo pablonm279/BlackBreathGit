@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -93,6 +92,36 @@ public class TiroconArco : Habilidad
       {
         ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
         if (clase != null && clase.ObtenerCantidadFlechas() < 1)
+        {
+          txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+        }
+      }
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string agilidadZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+      string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+      string flechaZh = TerminoDescripcion(TerminoDescripcionId.Flecha, "箭");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string rangoDanioRealZh = FormatearRangoDados(XdDanio, daniodX, 1);
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        "弓箭射击",
+        "向一名目标射出一支箭。",
+        new[]
+        {
+          LineaDescripcion("目标", "1 名敌人或障碍物"),
+          LineaDescripcion("效果", $"命中时，造成 {rangoDanioRealZh} + {agilidadZh} 点{danoZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {agilidadZh}{bonusTirada} 对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentaje}%。"),
+          LineaDescripcion("消耗", $"1 支{flechaZh}")
+        });
+
+      if (EsEscenaCampaña())
+      {
+        ClaseExplorador claseZh = Usuario.GetComponent<ClaseExplorador>();
+        if (claseZh != null && claseZh.ObtenerCantidadFlechas() < 1)
         {
           txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
         }

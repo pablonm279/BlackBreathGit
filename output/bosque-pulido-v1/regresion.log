@@ -1,0 +1,1551 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.3/staging' branch; Version is '6000.3.20f1 (c9ba695d4f07) revision 13220457'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Pablo" at "2026-11-18T03:17:05.6889769Z"
+OS: 'Windows 10  (10.0.19045) 64bit Professional' Language: 'es' Physical Memory: 32717 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-11-18T03:17:05Z
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 14712, path: "C:/Program Files/WindowsApps/UnityTechnologies.UnityHub_4.0.1.65535_x64__2vrhnee42bhxm/app/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.19.0+4cc3dda
+  Session Id:              fcedae08e6d74babb27810dfe6b2ae07
+  Correlation Id:          67409085d345670f17d93ac359294657
+  External correlation Id: 5331553735375659551
+  Machine Id:              ZRrFzqENzo8VXBZeoP7AVXiSdNU=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-Pablo" (connect: 0.00s, validation: 0.00s, handshake: 0.09s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-Pablo-notifications" at "2026-11-18T03:17:05.7828965Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-AUGU-9VX5-WU58-JJSY-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: Unlimited
+[Licensing::Module] License group:
+  Id: 4673112900561-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-AUGU-9VX5-WU58-JJSY-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: Unlimited
+[Licensing::Module] License group:
+  Id: 4673112900561-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Module] Licensing Background thread has ended after 0.10s
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Unity.exe
+-batchmode
+-projectPath
+C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+-executeMethod
+BosqueRender.Run
+-quit
+-logFile
+C:/UnityProyectosNOborrar/GDD - Untitled/output/bosque-pulido-v1/regresion.log
+Successfully changed project path to: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+Player connection [39384]  Target information:
+
+Player connection [39384]  * "[IP] 192.168.100.3 [Port] 55505 [Flags] 2 [Guid] 2199646098 [EditorId] 2199646098 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-IAS7GE8) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [39384]  * "[IP] 192.168.193.7 [Port] 55505 [Flags] 2 [Guid] 2199646098 [EditorId] 2199646098 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-IAS7GE8) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [39384] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [39384] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Package Manager] Connected to IPC stream "Upm-16068" after 0.4 seconds.
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-AUGU-9VX5-WU58-JJSY-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: Unlimited
+[Licensing::Module] License group:
+  Id: 4673112900561-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.3.20f1 (c9ba695d4f07)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 2060 (ID=0x1f08)
+    Vendor:   NVIDIA
+    VRAM:     5954 MB
+    Driver:   32.0.15.9579
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56068
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.20f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.004972 seconds.
+- Loaded All Assemblies, in  0.674 seconds
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.693 seconds
+Domain Reload Profiling: 1359ms
+	BeginReloadAssembly (246ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (33ms)
+	RebuildCommonClasses (64ms)
+	RebuildNativeTypeToScriptingClass (23ms)
+	initialDomainReloadingComplete (84ms)
+	LoadAllAssembliesAndSetupDomain (249ms)
+		LoadAssemblies (205ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (245ms)
+			TypeCache.Refresh (243ms)
+				TypeCache.ScanAssembly (225ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (1ms)
+	FinalizeReload (693ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (628ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (78ms)
+			SetLoadedEditorAssemblies (5ms)
+			BeforeProcessingInitializeOnLoad (138ms)
+			ProcessInitializeOnLoadAttributes (256ms)
+			ProcessInitializeOnLoadMethodAttributes (150ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: F4-AUGU-9VX5-WU58-JJSY-XXXX
+  Product: Unity Personal
+  Type: ULF
+  Expiration: Unlimited
+[Licensing::Module] License group:
+  Id: 4673112900561-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 7 packages:
+  Built-in packages:
+    com.unity.modules.particlesystem@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.audio@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.ui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.imgui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imgui)
+  Embedded packages:
+    com.unity.ugui@file:C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.01 seconds
+[Package Manager] Done resolving packages in 0.46 seconds
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 7 packages:
+  Built-in packages:
+    com.unity.modules.particlesystem@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.imageconversion@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.audio@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.ui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.imgui@1.0.0 (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Library\PackageCache\com.unity.modules.imgui)
+  Embedded packages:
+    com.unity.ugui@file:C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui (location: C:\UnityProyectosNOborrar\GDD - Untitled\Temp\BosquePreview\Packages\com.unity.ugui)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.00 seconds
+[ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+DisplayProgressbar: Compiling Scripts
+ExitCode: 4 Duration: 0s367ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+*** Tundra requires additional run (0.30 seconds), 1 items updated, 202 evaluated
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+ExitCode: 0 Duration: 0s398ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.20f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/UnityProyectosNOborrar/GDD - Untitled/Temp/BosquePreview
+ExitCode: 0 Duration: 0s813ms
+Finished compiling graph: 212 nodes, 1552 flattened edges (1458 ToBuild, 16 ToUse), maximum node priority 108
+[171/209    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp
+[203/209    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+Assets\SunController.cs(105,13): warning CS0618: 'Light.cookieSize' is obsolete: 'Light.cookieSize has been deprecated. Use Light.cookieSize2D instead.'
+
+Assets\MapDecorator.cs(934,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\MapDecorator.cs(951,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+
+Assets\MapDecorator.cs(1029,21): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+[204/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
+[205/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
+[206/209    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+[207/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[208/209    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (0.78 seconds), 7 items updated, 209 evaluated
+Assets\SunController.cs(105,13): warning CS0618: 'Light.cookieSize' is obsolete: 'Light.cookieSize has been deprecated. Use Light.cookieSize2D instead.'
+Assets\MapDecorator.cs(934,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\MapDecorator.cs(951,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\MapDecorator.cs(1029,21): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+AssetDatabase: script compilation time: 2.159472s
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  2.109 seconds
+Start importing Assets using Guid(00000000000000001000000000000000) (DefaultImporter) -> (artifact id: '4b55c7cb15071bfc086d0e52a7664a41') in 0.0248449 seconds
+Start importing ProjectSettings/InputManager.asset using Guid(00000000000000002000000000000000) (LibraryAssetImporter) -> (artifact id: '3d278bdfa729973ecf92c670ca181c88') in 0.0036057 seconds
+Start importing ProjectSettings/TagManager.asset using Guid(00000000000000003000000000000000) (LibraryAssetImporter) -> (artifact id: 'efd83fbc15a1d6b288a213f212dc9251') in 0.003168 seconds
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '2339cb794e240fc8e59a51da12b346b7') in 0.0059426 seconds
+Start importing ProjectSettings/AudioManager.asset using Guid(00000000000000006000000000000000) (LibraryAssetImporter) -> (artifact id: '7bb8de31f311db17f0fefe3abfd595f1') in 0.0030877 seconds
+Start importing ProjectSettings/TimeManager.asset using Guid(00000000000000007000000000000000) (LibraryAssetImporter) -> (artifact id: '52c307e924e96ceef905bcc2cea85a00') in 0.003065 seconds
+Start importing ProjectSettings/DynamicsManager.asset using Guid(00000000000000008000000000000000) (LibraryAssetImporter) -> (artifact id: '913ceedd18932e74f6c2ac19d4bebe5c') in 0.0036539 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f1bb68c80f937a5d1cc87682f901159a') in 0.0030861 seconds
+Start importing ProjectSettings/EditorBuildSettings.asset using Guid(0000000000000000b000000000000000) (LibraryAssetImporter) -> (artifact id: '1923232d45cb936aef47cec131f33975') in 0.0028729 seconds
+Start importing ProjectSettings/EditorSettings.asset using Guid(0000000000000000c000000000000000) (LibraryAssetImporter) -> (artifact id: 'fdcca38f5f1944c9bec0b9f00395ab39') in 0.0030372 seconds
+Start importing ProjectSettings/NavMeshAreas.asset using Guid(00000000000000004100000000000000) (LibraryAssetImporter) -> (artifact id: '4ba0a6bb5cc18b1619eb3b3f4ce570d1') in 0.0027708 seconds
+Start importing ProjectSettings/Physics2DSettings.asset using Guid(00000000000000005100000000000000) (LibraryAssetImporter) -> (artifact id: 'bb8ce7f5b2d944741959db20200075a7') in 0.0032394 seconds
+Start importing ProjectSettings/GraphicsSettings.asset using Guid(00000000000000006100000000000000) (LibraryAssetImporter) -> (artifact id: '041f8e671a93a484399854eca4c35b80') in 0.0027944 seconds
+Start importing ProjectSettings/ClusterInputManager.asset using Guid(00000000000000007100000000000000) (LibraryAssetImporter) -> (artifact id: '5a028a71a6163b7bc9a46219c48662ec') in 0.0026925 seconds
+Start importing ProjectSettings/UnityConnectSettings.asset using Guid(0000000000000000a100000000000000) (LibraryAssetImporter) -> (artifact id: '5a6e69f8200d884ded3f19f546ea756a') in 0.0027379 seconds
+Start importing ProjectSettings/PresetManager.asset using Guid(0000000000000000b100000000000000) (LibraryAssetImporter) -> (artifact id: '669bd2cb5cdf99ef516d1350fa42393e') in 0.0026677 seconds
+Start importing ProjectSettings/VFXManager.asset using Guid(0000000000000000c100000000000000) (LibraryAssetImporter) -> (artifact id: 'dd6732d958402095937fd19a0cecb735') in 0.003384 seconds
+Start importing ProjectSettings/VersionControlSettings.asset using Guid(0000000000000000d100000000000000) (LibraryAssetImporter) -> (artifact id: 'b89f810c452b248c014f182ae5caa680') in 0.0035647 seconds
+Start importing ProjectSettings/MemorySettings.asset using Guid(0000000000000000f100000000000000) (LibraryAssetImporter) -> (artifact id: '19f032dc933bd79e61da5c81f7ddd1ac') in 0.0035445 seconds
+Start importing ProjectSettings/MultiplayerManager.asset using Guid(00000000000000000200000000000000) (LibraryAssetImporter) -> (artifact id: 'f060d13f2990d90fc35c577bb4111c66') in 0.003373 seconds
+Start importing Library/BuildInstructions using Guid(00000000000000002300000000000000) (DefaultImporter) -> (artifact id: 'ade3aeda13ad9960ede0e143cb33502a') in 0.0011578 seconds
+Start importing Packages/com.unity.modules.imgui using Guid(c060426bfd6e82575228df6656368eaa) (DefaultImporter) -> (artifact id: '7d484ab5933192f91b6a2fb9f7498a1e') in 0.0008468 seconds
+Start importing Packages/com.unity.ugui using Guid(613f95849fea65b15f0a014bab7a9f93) (DefaultImporter) -> (artifact id: '1217c713edf38fb67bf15a7c50d4ad68') in 0.0005708 seconds
+Start importing Assets/Resources using Guid(83c04083f0162d043b7086fd84a52ec9) (DefaultImporter) -> (artifact id: '3a35107a45cf8babb91350f3e0fb04aa') in 0.0098702 seconds
+Start importing Packages/com.unity.modules.imageconversion using Guid(850c54ee0b9e1aa740b1c67792eb1f26) (DefaultImporter) -> (artifact id: '77f78b27bd9bac81a00a007ef6f28867') in 0.0010358 seconds
+Start importing Packages/com.unity.modules.physics using Guid(d6db7caf2e852b75ebb9c6098418179c) (DefaultImporter) -> (artifact id: 'b562405fb5bd1c9305c356f8cfe7a672') in 0.0008754 seconds
+Start importing Packages/com.unity.modules.particlesystem using Guid(48b10b41f58d5b49717f376cda59eeb8) (DefaultImporter) -> (artifact id: '52931c3585e961751803a41152ba5f0c') in 0.0008817 seconds
+Start importing Packages/com.unity.modules.ui using Guid(39728903e57c60021f80449a8bbc0096) (DefaultImporter) -> (artifact id: '9ba448b29b75a8a1f5c4c31201266424') in 0.0008811 seconds
+Start importing Assets/Editor using Guid(e9f64d277c2e6094e8b51b1f4d3455bd) (DefaultImporter) -> (artifact id: '4a63f7dcff25c27dd0d2f39e23e2a89e') in 0.0105545 seconds
+Start importing Packages/com.unity.modules.audio using Guid(2d6ba5cbe47e6ad3c87474c56174d4e0) (DefaultImporter) -> (artifact id: '2ad5535b0c9fde796c0a268a703c42c8') in 0.0007687 seconds
+Start importing Packages/com.unity.ugui/Editor Resources using Guid(d1a0a27327b54c3bac52a08929c33f81) (DefaultImporter) -> (artifact id: '89d4bdf381a63d2d738dcc151e624513') in 0.0077153 seconds
+Start importing Assets/Resources/Imagenes using Guid(629270874fabc6f45a50db9a06b16326) (DefaultImporter) -> (artifact id: '2d1607417ed393ea3c4cec14faa3a5f8') in 0.0151456 seconds
+Start importing Packages/com.unity.ugui/Runtime using Guid(aa14b70e6a58c5b4fa6663623e3dca91) (DefaultImporter) -> (artifact id: 'fa7aa1d533b272bf79afdbd5404453cd') in 0.0022393 seconds
+Start importing Packages/com.unity.ugui/Package Resources using Guid(5ec95f4d5b2d1f14e9ff8682562553f9) (DefaultImporter) -> (artifact id: '20161e53e484de6465e75d382f9dbde6') in 0.0020531 seconds
+Start importing Packages/com.unity.ugui/Editor using Guid(bee384ad5b4d1a843a018082e7db53cd) (DefaultImporter) -> (artifact id: 'cc2ff2381a5068f9e19e880ea4d9c9b1') in 0.0018521 seconds
+Start importing Assets/Resources/ObjetosMapa using Guid(ff0e0cfffecb18747be97a51e6ba6ac6) (DefaultImporter) -> (artifact id: 'ea62cc75369cecd56641524dbef9fa69') in 0.0101861 seconds
+Start importing Packages/com.unity.ugui/Editor/TMP using Guid(10d1425d9e87841d9a9deafe9e93a6f2) (DefaultImporter) -> (artifact id: 'b78a297ad64c4d78728ae683af3e5658') in 0.0023904 seconds
+Start importing Packages/com.unity.ugui/Runtime/TMP using Guid(619aadd8f276341ca84d7ad5a9c6db21) (DefaultImporter) -> (artifact id: '5308cedcd74d43682790fc7238a9d1e2') in 0.0095107 seconds
+Start importing Packages/com.unity.ugui/Editor/Analytics using Guid(c52726d811a9f66459355df6b0c3977b) (DefaultImporter) -> (artifact id: '4154f772d9b7cf6fccdb594f4e326893') in 0.0077627 seconds
+Start importing Packages/com.unity.ugui/Editor/UGUI using Guid(278b6073a5bdd4362acd72ca43ff9e0d) (DefaultImporter) -> (artifact id: 'abf9fbf9f7c10d2af702b2e8085d3ed6') in 0.00841 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI using Guid(1817d28a5343b4ec19b4ec7903730e2c) (DefaultImporter) -> (artifact id: 'd27c003f26a5bcc4ae0be188e216ff3a') in 0.001967 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures using Guid(f8e6a2d47aba4c6c9b3c5a72d9f48da5) (DefaultImporter) -> (artifact id: '41714146c3f223570fca541b52f7c091') in 0.0084739 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Gizmos using Guid(e93ec7eb6de342aabd156833e253f838) (DefaultImporter) -> (artifact id: 'e3065312f331f86c187a2c34400b2ab5') in 0.0020826 seconds
+Start importing Packages/com.unity.ugui/Runtime/InternalBridge using Guid(bab3a29ab4f214742a44add41efffb7d) (DefaultImporter) -> (artifact id: 'b8ae5a4142d7b3ff7433a144e13442a5') in 0.0019469 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Shaders using Guid(2da27f5fe80a3a549ac7331d9f52f5f0) (DefaultImporter) -> (artifact id: '8ba95b6473bead211c52ddc79ac818a9') in 0.0014952 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/Properties using Guid(32e2186f4598cff489784aae586f2215) (DefaultImporter) -> (artifact id: 'd945312145ac0c9dd7a3598fc5b82f23') in 0.0080548 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UI using Guid(742654cad2425334696ba6ed4495cfef) (DefaultImporter) -> (artifact id: 'd1046547fc52369f9a3a8f6b662ded51') in 0.0024208 seconds
+Start importing Packages/com.unity.ugui/Editor/UGUI/UI using Guid(853edc343b78a7c4c81cbb3851d48c0a) (DefaultImporter) -> (artifact id: '773a517afa854ab194e9e6794bc9a1cf') in 0.0017694 seconds
+Start importing Packages/com.unity.ugui/Editor/UGUI/EventSystem using Guid(f525580684527b147b70cf94aaa70dbc) (DefaultImporter) -> (artifact id: '35f8d6adc1fe92d630cb18996309700e') in 0.0019852 seconds
+Start importing Packages/com.unity.ugui/Editor/Analytics/IAnalytic using Guid(77417b0f4cf6d334f916c64448d24133) (DefaultImporter) -> (artifact id: 'a22d0db8c8eb6d464d1b5bd50a6655ab') in 0.0015453 seconds
+Start importing Packages/com.unity.ugui/Editor/TMP/PropertyDrawers using Guid(ea7c31b5b377c314db28ad3fabbbd38d) (DefaultImporter) -> (artifact id: 'ebc92ba84e6406c25f912a00cf612866') in 0.00161 seconds
+Start importing Packages/com.unity.ugui/Editor/TMP/HDRP using Guid(eecc124dc0b994047aac97ccf8c8ed0a) (DefaultImporter) -> (artifact id: '5b5397f7d63b0f449a7a5706eccb0297') in 0.001472 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/EventSystem using Guid(7f27709c942d91541be1fd6aa5cb3d78) (DefaultImporter) -> (artifact id: 'f0d60c8b7f149f215e5d223617964474') in 0.0016712 seconds
+Start importing Packages/com.unity.ugui/Editor/UGUI/Properties using Guid(cf97e54bcd5479a46bdbade48da047cc) (DefaultImporter) -> (artifact id: 'bcc5e4cf73302b79631566aee946fa3b') in 0.0016609 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UI/Core using Guid(12c42068351bb084abde965d725b9887) (DefaultImporter) -> (artifact id: 'cacc7f0504c10a89d30473ce3cb13775') in 0.0019612 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/EventSystem/EventData using Guid(b3cdabf2f1e76854d8aab5930305d70d) (DefaultImporter) -> (artifact id: '8277f8c996e87ca284549912a55a6cd9') in 0.0018762 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UI/Animation using Guid(5472815444de2ce45bf2053a4af04b9d) (DefaultImporter) -> (artifact id: '41463e8550df76b3752941ecf4af4827') in 0.0017705 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/EventSystem/Raycasters using Guid(46646a5562f14984690c85ee7b946bc9) (DefaultImporter) -> (artifact id: 'e72938d8295fecfa581dc14542b5af2f') in 0.0018952 seconds
+Start importing Packages/com.unity.ugui/Editor/UGUI/UI/PropertyDrawers using Guid(bc9aa6d5a7945f34882c442e9e201537) (DefaultImporter) -> (artifact id: '270b585cc009643c70718bcb5358bab0') in 0.001577 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/EventSystem/UIElements using Guid(5dc64c943466a44498be3b620c743b45) (DefaultImporter) -> (artifact id: '96c94b86d87620112b8e860f107d8e93') in 0.0015579 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/EventSystem/InputModules using Guid(8e78f8a8575e4a04f8337a54e241cdc5) (DefaultImporter) -> (artifact id: 'cf1e069480532a8f3dc9085bfcf71e39') in 0.0019402 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Utility using Guid(d63dd1a776d383248a21ec2a8a6e7868) (DefaultImporter) -> (artifact id: 'ddf4baa864d390cb48033641e93bc3ab') in 0.001563 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Culling using Guid(27ed3e221887b3544bd9d6505d4a789f) (DefaultImporter) -> (artifact id: 'a8414d4e7a7ce3589ca9a54f2895a3ea') in 0.0018408 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UI/Core/SpecializedCollections using Guid(f8ed4321a98682942b9980996131cf26) (DefaultImporter) -> (artifact id: '5a5ef29bec25f7a3bf7676116a5962c1') in 0.0089674 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Layout using Guid(1999349e7f492c947bb6eb70f624382e) (DefaultImporter) -> (artifact id: 'a8e41ce3a6fccc9c9b78c2afb86f94a6') in 0.0020453 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UI/Core/MaterialModifiers using Guid(7c6295db74da28645bf49db58b7c9c65) (DefaultImporter) -> (artifact id: 'c8309270d25389008b80d2680377db3a') in 0.0015988 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UI/Core/VertexModifiers using Guid(cfa73a847eeff06448bb50a8ac6a94e0) (DefaultImporter) -> (artifact id: '4854c52cecabffb60fdd5ed9e9763c1c') in 0.0079667 seconds
+Start importing Packages/com.unity.ugui/Runtime/TMP/Unity.TextMeshPro.asmdef using Guid(6055be8ebefd69e48b49212b09b47b2f) (AssemblyDefinitionImporter) -> (artifact id: '755faf4d872606cabacec4dfdc775f71') in 0.0041959 seconds
+Start importing Packages/com.unity.ugui/Runtime/InternalBridge/Unity.InternalAPIEngineBridge.004.asmdef using Guid(43b111c4a445f446abd2c02e77750ff5) (AssemblyDefinitionImporter) -> (artifact id: '7768f0299b485d6ebc39eb408ad5c375') in 0.004781 seconds
+Start importing Packages/com.unity.ugui/Editor/Analytics/UnityEditor.UI.Analytics.asmdef using Guid(8394c018a82352f41ae354f7bdad54e3) (AssemblyDefinitionImporter) -> (artifact id: '51a42a6dc598d685998182f7c5c967c4') in 0.0044536 seconds
+Start importing Packages/com.unity.ugui/Editor/UGUI/UnityEditor.UI.asmdef using Guid(343deaaf83e0cee4ca978e7df0b80d21) (AssemblyDefinitionImporter) -> (artifact id: 'af08ec8d4d031bbff740ba61300146c5') in 0.0041536 seconds
+Start importing Packages/com.unity.ugui/Editor/TMP/Unity.TextMeshPro.Editor.asmdef using Guid(6546d7765b4165b40850b3667f981c26) (AssemblyDefinitionImporter) -> (artifact id: '9560f464d4c68b2cd231f1d640031561') in 0.0044935 seconds
+Start importing Packages/com.unity.ugui/Runtime/UGUI/UnityEngine.UI.asmdef using Guid(2bafac87e7f4b9b418d9448d219b01ab) (AssemblyDefinitionImporter) -> (artifact id: '535f7aafa4dd215a60024f56978e8d8a') in 0.0051149 seconds
+Start importing Packages/com.unity.modules.ui/package.ModuleCompilationTrigger using Guid(51fa60bb2bd1e5bc74e8cc95a7bfd5b7) (DefaultImporter) -> (artifact id: '237e32f9541121b786ca4b06eace0dfe') in 0.0397954 seconds
+Start importing Packages/com.unity.modules.imageconversion/package.ModuleCompilationTrigger using Guid(830a36a23cf3ab1e61fa47940a6dc35e) (DefaultImporter) -> (artifact id: 'ee0f0c801f95c19382d8b454dc7586e1') in 0.0013824 seconds
+Start importing Packages/com.unity.modules.audio/package.ModuleCompilationTrigger using Guid(042dc296246916648e55a43d0eeb2036) (DefaultImporter) -> (artifact id: '93cfeb7be8bf6df4dc4fc167223dc2d5') in 0.0016243 seconds
+Start importing Packages/com.unity.modules.particlesystem/package.ModuleCompilationTrigger using Guid(17f093324b67f5bd57e55b546736750e) (DefaultImporter) -> (artifact id: '2ff549dcfdc7b1fa23811cebe1444f07') in 0.0011232 seconds
+Start importing Packages/com.unity.modules.physics/package.ModuleCompilationTrigger using Guid(5c1ee4056d0ac7ad3c5a16597fcaa38a) (DefaultImporter) -> (artifact id: '288b7a03d6481d4e92cee0ae908758ad') in 0.0011352 seconds
+Start importing Packages/com.unity.modules.imgui/package.ModuleCompilationTrigger using Guid(be13c398521e3c1ad21fb9da30ab2ab6) (DefaultImporter) -> (artifact id: 'ea0574aa05344c7e80357502346d73fc') in 0.0013247 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Native extension for WindowsStandalone target not found
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.760 seconds
+Domain Reload Profiling: 2862ms
+	BeginReloadAssembly (452ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (51ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (162ms)
+	RebuildCommonClasses (58ms)
+	RebuildNativeTypeToScriptingClass (20ms)
+	initialDomainReloadingComplete (44ms)
+	LoadAllAssembliesAndSetupDomain (1528ms)
+		LoadAssemblies (1664ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (24ms)
+			TypeCache.Refresh (13ms)
+				TypeCache.ScanAssembly (7ms)
+			BuildScriptInfoCaches (5ms)
+			ResolveRequiredComponents (3ms)
+	FinalizeReload (761ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (527ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (41ms)
+			SetLoadedEditorAssemblies (5ms)
+			BeforeProcessingInitializeOnLoad (213ms)
+			ProcessInitializeOnLoadAttributes (184ms)
+			ProcessInitializeOnLoadMethodAttributes (66ms)
+			AfterProcessingInitializeOnLoad (18ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (42ms)
+Start importing Library/BuildPlayer.prefs using Guid(00000000000000005000000000000000) (DefaultImporter) -> (artifact id: '083d37eb6b0e82b8f5c1ec86344d848d') in 0.0065165 seconds
+Start importing Packages/com.unity.ugui/Package Resources/TMP Examples & Extras.unitypackage using Guid(bc00e25696e4132499f56528d3fed2e3) (DefaultImporter) -> (artifact id: '36912524d77e494bff28eadb6545a86b') in 0.0048684 seconds
+Start importing Packages/com.unity.ugui/Package Resources/TMP Essential Resources.unitypackage using Guid(ce4ff17ca867d2b48b5c8a4181611901) (DefaultImporter) -> (artifact id: 'c9b9d0e8e0d8a5df2fad0e13885ca7c4') in 0.0023856 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignRight_Light.psd using Guid(e05ace3bd15740cda0bad60d89092a5b) (TextureImporter) -> (artifact id: 'bd0db8a7b34401e17fac70f14aa1c16f') in 0.0341776 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignMiddle.psd using Guid(41b96614b2e6494ba995ddcd252d11ae) (TextureImporter) -> (artifact id: 'ce7dc7ca52b4ffb152f8b3f720e7655e') in 0.0159845 seconds
+Start importing Assets/Resources/Imagenes/piedramapa1.png using Guid(81b3fde3f4581004086bc638f71365b5) (TextureImporter) -> (artifact id: 'e13d708885e40059d26c9d7b24b6c7ad') in 0.1371566 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignCenter.psd using Guid(81ed8c76d2bc4a4c95d092c98af4e58f) (TextureImporter) -> (artifact id: '659ce4a5c7b7f0d81f5e876ee23d6432') in 0.0199309 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignLeft_Light.psd using Guid(12736c98af174f91827a26b66d2b01b9) (TextureImporter) -> (artifact id: '2d70984b740b32048b9ab2eae573a49a') in 0.014492 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignJustified.psd using Guid(92027f7f8cfc4feaa477da0dc38d3d46) (TextureImporter) -> (artifact id: '06fa44ae0418e7d82a00dc15bf3cc972') in 0.0158529 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignLeft.psd using Guid(9288066c33474b94b6ee5465f4df1cc0) (TextureImporter) -> (artifact id: '44890d6cf6f152813a6508f9468437b5') in 0.0189783 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignMidLine.psd using Guid(c2f7f6a88b4c4f20a53deb72f3d9144c) (TextureImporter) -> (artifact id: '91c0f1a64b37da4684aafc07251704ce') in 0.0173121 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/SectionHeader_Light.psd using Guid(e3b0f810fdea84e40ab4ba20f256f7e8) (TextureImporter) -> (artifact id: '5e8eaa9a3c233ca77e7cc25cd93cc406') in 0.0208833 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignRight.psd using Guid(342a0f8aca7f4f0691338912faec0494) (TextureImporter) -> (artifact id: '2e46f5000a9a97dad533dd5a5352b03d') in 0.0159775 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignFlush_Light.psd using Guid(64b9fad609434c489c32b1cdf2004a1c) (TextureImporter) -> (artifact id: 'ab200197f3b3ef1688706cf99ad90a46') in 0.0148547 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignCenterGeo_Light.psd using Guid(35ff0937876540d3bd4b6a941df62a92) (TextureImporter) -> (artifact id: 'aca0d852c9a08345e1e638a441592706') in 0.0183851 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignMiddle_Light.psd using Guid(066619c9c9c84f89acb1b48c11a7efe2) (TextureImporter) -> (artifact id: 'e48c818ae4404b865ea2b9585426d05c') in 0.0139253 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Gizmos/TMP - Dropdown Icon.psd using Guid(a7ec9e7ad8b847b7ae4510af83c5d868) (TextureImporter) -> (artifact id: '7e1882bee782464aa59eb0594b60f6f5') in 0.0164409 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignCenterGeo.psd using Guid(c76700ea0062413d9f69409b4e9e151b) (TextureImporter) -> (artifact id: '056c83fafe135eac44bb89b8e0849e7e') in 0.0144631 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignBaseLine_Light.psd using Guid(18775b51e3bd42299fd30bd036ea982f) (TextureImporter) -> (artifact id: 'd3f6574098cbd7890f64c4c6a5a44e02') in 0.0164165 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignTop.psd using Guid(48d034c499ee4697af9dd6e327110249) (TextureImporter) -> (artifact id: '967aa5640759c1d8bb9da284c44c8a40') in 0.0146933 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignBottom_Light.psd using Guid(585b70cb75dd43efbfead809c30a1731) (TextureImporter) -> (artifact id: 'd558aedbde7f50453fc4cd307ea07817') in 0.0169418 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignCapLine_Light.psd using Guid(49679f302ac6408697f6b9314a38985c) (TextureImporter) -> (artifact id: '35d31ca26e61c4bfdda1fc343e3eafb9') in 0.0156999 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignFlush.psd using Guid(691475c57a824010be0c6f474caeb7e1) (TextureImporter) -> (artifact id: 'bee2dc78543db0aeef652a5f2e485818') in 0.0206691 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignCenter_Light.psd using Guid(6ace62d30f494c948b71d5594afce11d) (TextureImporter) -> (artifact id: '0820c086eb2231f8398c705980fd7261') in 0.0170405 seconds
+Start importing Assets/Resources/ObjetosMapa/Normal_BosqueArdiente.png using Guid(7afe8de8bc0f9f247b10b1adcb0985c2) (TextureImporter) -> (artifact id: '0ed988d83de88502245b450601a8a0ab') in 0.1853513 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignBottom.psd using Guid(ca51b19024094d1b87f3e07edb0a75fb) (TextureImporter) -> (artifact id: '7eddcac00ea901512f581eb8442d9da2') in 0.0136768 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignJustified_Light.psd using Guid(fa6bd40a216346b783a4cce741d277a5) (TextureImporter) -> (artifact id: '2a8ace8a350a8ad5587fa734a958a593') in 0.0132992 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignBaseLine.psd using Guid(8bc445bb79654bf496c92d0407840a92) (TextureImporter) -> (artifact id: '8a6f53f4dfb5395c2242ad524cecfafa') in 0.015134 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignMidline_Light.psd using Guid(bb42b2d967d6427983c901a4ffc8ecd9) (TextureImporter) -> (artifact id: 'e75ff28b961f5309520c216915b7c2fa') in 0.0132177 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/SectionHeader_Dark.psd using Guid(fb5730e24283d0c489e5c7d0bee023d9) (TextureImporter) -> (artifact id: '9da7a9d672c089e353d0f893275b0a63') in 0.015174 seconds
+Start importing Assets/Resources/ObjetosMapa/height_tierra_quemada_2k.png using Guid(dc71313f2d9decc4b9c2bafc4f0970c4) (TextureImporter) -> (artifact id: 'bfc5058548674ed78d5259e86c22ba48') in 0.1469776 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Gizmos/TMP - Sprite Asset Icon.psd using Guid(ec7c645d93308c04d8840982af12101e) (TextureImporter) -> (artifact id: '5019163a9106cc515f738a0940735ada') in 0.0156024 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignCapLine.psd using Guid(0d9a36012a224080966c7b55896aa0f9) (TextureImporter) -> (artifact id: '7d2332acd44796d1b9ff3dff2395ce26') in 0.0154076 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Textures/btn_AlignTop_Light.psd using Guid(ed041e68439749a69d0efa0e3d896c2e) (TextureImporter) -> (artifact id: '4e8924e1423eeb510721205cb49c111c') in 0.0218961 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Gizmos/TMP - Input Field Icon.psd using Guid(3ee40aa79cd242a5b53b0b0ca4f13f0f) (TextureImporter) -> (artifact id: '721dd97e9d8da55538e973695f303bc1') in 0.015201 seconds
+Start importing Assets/Resources/Imagenes/Arbol1.png using Guid(4ec8782e73956e84b833f68da9e9516c) (TextureImporter) -> (artifact id: '2b9efb7d7464901ea36e1267625e1886') in 0.0066477 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Gizmos/TMP - Font Asset Icon.psd using Guid(ee148e281f3c41c5b4ff5f8a5afe5a6c) (TextureImporter) -> (artifact id: 'ed4e5906c8b52fa8050754598dd6d2c6') in 0.0136943 seconds
+Start importing Assets/Resources/ObjetosMapa/Shadow_Blob_1024.png using Guid(0fdd599f45e95b542bcdb7f04142ae75) (TextureImporter) -> (artifact id: 'e255cd1833c0b507381b97c8cea0fd17') in 0.0064501 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Gizmos/TMP - Text Component Icon.psd using Guid(2fd6421f253b4ef1a19526541f9ffc0c) (TextureImporter) -> (artifact id: 'f7b6f73ea6c33c228f602d9b619bad42') in 0.0194389 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Shaders/TMP_SDF_SSD.cginc using Guid(abe6991365a27d341a10580f3b7c0f44) (ShaderIncludeImporter) -> (artifact id: '6210c9b75bcff879a66d3acd3c6dd96f') in 0.0109423 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Shaders/TMP_Properties.cginc using Guid(3c6c403084eacec478a1129ce20061ea) (ShaderIncludeImporter) -> (artifact id: '0b6510a7584c4ccb00079dbc08b3b282') in 0.0045184 seconds
+Start importing Assets/Resources/BosqueArdienteMadera.shader using Guid(c16bc5ce0fb536d4bb7cd5082898cdf2) (ShaderImporter)Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+ -> (artifact id: '7775ef565880b0f3aeb5b2f564c66fbb') in 0.2677813 seconds
+Start importing Assets/Resources/BosqueArdienteFondo.shader using Guid(c4237698a9d7480295c9082b2a3b35ae) (ShaderImporter) -> (artifact id: 'e4e1895216e6bb3b0ed218bd9f2d43bf') in 0.005999 seconds
+Start importing Assets/Resources/BosqueArdienteSuelo.shader using Guid(35f74afedbdde4c409768d524d2979c9) (ShaderImporter) -> (artifact id: '300886630a2550c156b182c9c2e7e2a7') in 2.524116 seconds
+Start importing Assets/Resources/BosqueArdienteAmbiente.shader using Guid(c86bb8fbb1c6f63408a1788abada9f67) (ShaderImporter) -> (artifact id: '17f6d778d95e53a5c503f70289471d31') in 0.0071861 seconds
+Start importing Assets/Resources/BosqueArdienteLlamas.shader using Guid(a978c2f3d79f494da3f465779992c821) (ShaderImporter)There are inconsistent line endings in the 'Assets/Resources/BosqueArdienteLlamas.shader' script. Some are Mac OS X (UNIX) and some are Windows.
+This might lead to incorrect line numbers in stacktraces and compiler errors. Many text editors can fix this using Convert Line Endings menu commands.
+ -> (artifact id: 'ad3ddae4c0e7b68787405cbdf15918c2') in 0.0452195 seconds
+Start importing Packages/com.unity.ugui/Editor Resources/Shaders/TMP_SDF Internal Editor.shader using Guid(9c442dc870b456e48b615cd8add0e9ef) (ShaderImporter) -> (artifact id: '1d84de99b17eddc779fc1f69810430fa') in 0.0284342 seconds
+Start importing Assets/Resources/ObjetosMapa/Llama 1.mat using Guid(f01c59df93196c842af702270764facf) (NativeFormatImporter) -> (artifact id: 'c253ff3623f86b7a5a92024046f0d2e2') in 0.0054805 seconds
+Start importing Assets/Resources/ObjetosMapa/MatBosqueArdienteSuelo.mat using Guid(d193403d02fd0e14b8a9e28caf11e3a0) (NativeFormatImporter) -> (artifact id: 'a08214ceecef1897244990e30ecc833e') in 0.0046884 seconds
+Start importing Assets/Resources/ObjetosMapa/Mat_Piedra1Quad.mat using Guid(79df32c93ef9a5143b52b41c468be714) (NativeFormatImporter) -> (artifact id: 'f026f9d41244e4e7621caa46439c4b41') in 0.0045898 seconds
+Start importing Assets/Resources/ObjetosMapa/Llama.mat using Guid(89487a67e0aba4347b466832c4e2b379) (NativeFormatImporter) -> (artifact id: '132ef949538a7531b71a637ff2fcdfa5') in 0.0045183 seconds
+Start importing Assets/Resources/ObjetosMapa/LlamaEspectral.mat using Guid(be75e075d7e528142a988cb78cb62193) (NativeFormatImporter) -> (artifact id: '1f242e1544c36c001381f15fa5c55427') in 0.0041922 seconds
+Start importing Assets/Resources/ObjetosMapa/Mat_Arbol1Quad.mat using Guid(fea0a8d86e3be584181ba579c396a7f2) (NativeFormatImporter) -> (artifact id: '07290e3ef9835893e504f9ab0e115a5c') in 0.0156767 seconds
+Start importing Packages/com.unity.ugui/README.md using Guid(e0ae6629cc70b514889df37fccb76832) (TextScriptImporter) -> (artifact id: '44afeb028f510a9f4544ce88fd1cf112') in 0.0047651 seconds
+Start importing Packages/com.unity.ugui/package.json using Guid(319b8889f363f5947acf209c17a94149) (PackageManifestImporter) -> (artifact id: '0d56f132eb0965e68b645baebd500335') in 0.0084248 seconds
+Start importing Packages/com.unity.modules.imgui/package.json using Guid(42fe78c8fe682715a2cb531422e6ccb3) (PackageManifestImporter) -> (artifact id: 'b643c636c8e55776455f8adce1983951') in 0.0029237 seconds
+Start importing Packages/com.unity.ugui/PackageConversionData.json using Guid(05f5bfd584002f948982a1498890f9a9) (TextScriptImporter) -> (artifact id: 'd9e43e27959cd399247c69832ab9dc4f') in 0.0111887 seconds
+Start importing Packages/com.unity.modules.imageconversion/package.json using Guid(953fab16d15d5885b3600fcd6388b2ad) (PackageManifestImporter) -> (artifact id: '4914195fadd462954a635b65250787ed') in 0.0031901 seconds
+Start importing Packages/com.unity.modules.particlesystem/package.json using Guid(87d720faa37005c08600090e04d8c739) (PackageManifestImporter) -> (artifact id: 'd6aa8c20d84b997ec285a739a17be19d') in 0.0028688 seconds
+Start importing Packages/com.unity.ugui/CHANGELOG.md using Guid(c851bee4305bddf438cc6ffc515991ce) (TextScriptImporter) -> (artifact id: '80aa7e1c8215b9d3824af55dd65c9c21') in 0.0114702 seconds
+Start importing Packages/com.unity.modules.audio/package.json using Guid(e9df95f53f1c1d0c9199e235d6c42b50) (PackageManifestImporter) -> (artifact id: '14bdb854ae6daae762f5873a0a889a4a') in 0.0029716 seconds
+Start importing Packages/com.unity.modules.physics/package.json using Guid(1a4266815e998967becf686f9c71f0a6) (PackageManifestImporter) -> (artifact id: '4fbeefd29956a8cb2b920ec02d72eda6') in 0.0030791 seconds
+Start importing Packages/com.unity.ugui/LICENSE.md using Guid(4d3d51749e989f747b2674e0b4d9b3d7) (TextScriptImporter) -> (artifact id: 'ae566241d6b201e35280c27d51ece7ee') in 0.0056449 seconds
+Start importing Packages/com.unity.ugui/PackageConversionData_Assets.json using Guid(0e0afa652c0031c48896a97b424d027b) (TextScriptImporter) -> (artifact id: '804ed7b65d087f01b748fb71ecdd6f77') in 0.005389 seconds
+Start importing Packages/com.unity.modules.ui/package.json using Guid(bfd567a3d1631a761bca9e99fa53d86d) (PackageManifestImporter) -> (artifact id: 'b6a9b41c4f747864b57f61357f87e39b') in 0.002853 seconds
+Start importing Assets/Resources/ObjetosMapa/BosqueArdiente - Arbol1.prefab using Guid(15c3aae601260c5478403fa8ebe744fc) (PrefabImporter) -> (artifact id: 'f4f62638f3b21f709ff56a77335ca028') in 0.019755 seconds
+Start importing Assets/Resources/ObjetosMapa/Llama1GO.prefab using Guid(5936c3c4460b4884fbca8b6ae125221a) (PrefabImporter) -> (artifact id: '9d035bda1e1ac2a94ad3c2972672d165') in 0.0444194 seconds
+Start importing Assets/Resources/ObjetosMapa/LlamaEspectral.prefab using Guid(79aa5586b41c2134cbd9880261f75f2e) (PrefabImporter) -> (artifact id: '47ca60060521cbbcd1103b1c2e9767c7') in 0.0255102 seconds
+Start importing Assets/Resources/ObjetosMapa/BosqueArdiente - Piedra1.prefab using Guid(6b151a79da062f845ac67b229ff2560d) (PrefabImporter) -> (artifact id: '1ba7388ad7a99b4dbfabed1497e3192c') in 0.0061834 seconds
+Start importing Assets/Resources/LlamaInicial.prefab using Guid(7fc5b0e040ba49f4cb305f6e65847a72) (PrefabImporter) -> (artifact id: '9e8e7b9d8c3fd44659cd0c69d3031f1e') in 0.0281686 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.03 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+Loading style catalogs (6)
+	StyleSheets/Extensions/base/common.uss
+	UIPackageResources/StyleSheets/Default/Variables/Public/common.uss
+	StyleSheets/Northstar/common.uss
+	StyleSheets/Extensions/fonts/inter.uss
+	StyleSheets/Extensions/base/dark.uss
+	UIPackageResources/StyleSheets/Default/Northstar/Palette/dark.uss
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=44f31ba6114ea1c408f8b2e36a8ccab8): Total: 12.528 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	Summary:
+		Imports: total=149 (actual=149, local cache=0, cache server=0)
+		Asset DB Process Time: managed=17 ms, native=5660 ms
+		Asset DB Callback time: managed=284 ms, native=2266 ms
+		Scripting: domain reloads=1, domain reload time=2110 ms, compile time=2162 ms, other=25 ms
+		Project Asset Count: scripts=79, non-scripts=70
+		Asset File Changes: new=5, changed=12, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokeCustomDependenciesCallbacks: 0.003ms
+	InvokePackagesCallback: 485.219ms
+	ApplyChangesToAssetFolders: 0.585ms
+	Scan: 154.985ms
+	OnSourceAssetsModified: 3.284ms
+	CategorizeAssetsWithTransientArtifact: 1.367ms
+	ProcessAssetsWithTransientArtifactChanges: 9.834ms
+	CategorizeAssets: 1.673ms
+	ImportOutOfDateAssets: 5349.743ms (-1399.737ms without children)
+		ImportManagerImport: 4586.012ms (79.747ms without children)
+			ImportInProcess: 4505.562ms
+			UpdateCategorizedAssets: 0.702ms
+		CompileScripts: 2162.296ms
+		ReloadNativeAssets: 0.001ms
+		UnloadImportedAssets: 0.457ms
+		ReloadImportedAssets: 0.026ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.044ms
+		InitializingProgressBar: 0.008ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
+		OnDemandSchedulerStart: 0.636ms
+	PostProcessAllAssets: 2092.463ms
+	Hotreload: 1.379ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.026ms
+	UnloadStreamsBegin: 2.338ms
+	PersistCurrentRevisions: 0.244ms
+	UnloadStreamsEnd: 0.003ms
+	GenerateScriptTypeHashes: 0.187ms
+	Untracked: 4425.239ms
+
+Application.AssetDatabase Initial Refresh End
+Scanning for USB devices : 2.434ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-BosquePulidoAislado
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 271 unused Assets / (0.7 MB). Loaded Objects now: 913.
+Memory consumption went from 96.2 MB to 95.5 MB.
+Total: 6.928300 ms (FindLiveObjects: 0.088400 ms CreateObjectMapping: 0.015500 ms MarkObjects: 6.277800 ms  DeleteObjects: 0.545100 ms)
+
+Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 0 unused Assets / (Unknown). Loaded Objects now: 913.
+Memory consumption went from 95.3 MB to 95.3 MB.
+Total: 7.777900 ms (FindLiveObjects: 0.092000 ms CreateObjectMapping: 0.011900 ms MarkObjects: 7.664500 ms  DeleteObjects: 0.008100 ms)
+
+Start importing Assets/ES-CampañaPrueba.unity using Guid(407db367a6f26724db7467645cb3bf6f) (DefaultImporter) -> (artifact id: 'a906f9e12794a60d764ce9b46b7e5bfb') in 0.0013848 seconds
+Refreshing native plugins compatible for Editor in 0.00 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=f027ffc5dd458f447b2fcc09437180ce): Total: 0.029 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+[MapDecorator] Este GameObject deberáa estar en escala (1,1,1) para no heredar escalas raras.
+OK Shader BosqueArdienteSuelo
+OK Shader BosqueArdienteAmbiente
+OK Shader BosqueArdienteLlamas
+OK Ambiente creado
+OK RNG de juego intacto al preparar
+OK Suelo mejorado conservado
+OK Solo cambia el material: emisores, humo, posiciones y LOD intactos
+OK Materiales fuente sin modificar
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: LlamaEspectral
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama 1
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Mascara refinada activa
+OK Color y emision HDR originales: Llama
+OK Propiedad original _Glossiness
+OK Propiedad original _Metallic
+OK Propiedad original _SrcBlend
+OK Propiedad original _DstBlend
+OK Propiedad original _ZWrite
+OK Emision original habilitada
+OK Llamas refinadas: Decorador generado
+OK Llamas refinadas: Bosque inicial
+OK Sin incendios grandes del rework
+OK Brasas, ceniza y humo ambiental conservados
+OK Preparar dos veces no duplica
+OK Reaplicar tampoco modifica emisores
+OK RNG de juego intacto al animar
+OK Posiciones originales intactas
+OK Sombreado original conservado: error 0,000 % en 13680 pixeles de fuego
+OK Reloj respeta dt cero
+OK Ambiente limpio al salir de campaña
+Batchmode quit successfully invoked - shutting down!
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-Pablo-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-Pablo channel disconnected successfully.
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+Exiting batchmode successfully now!
+Exiting without the bug reporter. Application will terminate with return code 0

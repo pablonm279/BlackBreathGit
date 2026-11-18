@@ -60,6 +60,12 @@ public class Fogata : Habilidad
     if (NIVEL == 4) { tituloPt = "Fogueira IV a"; }
     if (NIVEL == 5) { tituloPt = "Fogueira IV b"; }
 
+    string tituloZh = "篝火 I";
+    if (NIVEL == 2) { tituloZh = "篝火 II"; }
+    if (NIVEL == 3) { tituloZh = "篝火 III"; }
+    if (NIVEL == 4) { tituloZh = "篝火 IV a"; }
+    if (NIVEL == 5) { tituloZh = "篝火 IV b"; }
+
     string colorTitulo = "#5dade2";
     string colorEncabezado = "#44d3ec";
     string iconoAP = "<space=0.55em><size=150%><voffset=0.34em><sprite name=\"ap\"></voffset></size><space=-0.35em>";
@@ -91,6 +97,34 @@ public class Fogata : Habilidad
           LineaDescripcion("Effort", $"Up to {esforzable} AP")
         },
         proximaMejora);
+      return;
+    }
+
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string danioFuegoConIconoZh = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "火焰伤害", "dano_fuego");
+      string danioFuegoSinIconoZh = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "火焰伤害");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "持续时间 +1 回合。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "行动点消耗 -1。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：相邻探索者的攻击额外获得 1-3 点火焰伤害。\n选项B：行动点消耗 -1。"; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "点燃一堆篝火，强化附近探索者的攻击。",
+        new[]
+        {
+          LineaDescripcion("目标", "1 个格子"),
+          LineaDescripcion("效果", "放置一堆篝火。"),
+          LineaDescripcion("接触时", $"受到 {danoTrampa} 点{danioFuegoConIconoZh}。", 1),
+          LineaDescripcion("相邻探索者", $"攻击获得 +{danoFuego} {danioFuegoSinIconoZh}。", 1),
+          LineaDescripcion("持续时间", $"{duracionTrampaTurnos} 回合"),
+          LineaDescripcion("耗力", $"最多 {esforzable} 点行动点")
+        },
+        proximaMejoraZh);
       return;
     }
 

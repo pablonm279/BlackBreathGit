@@ -4,7 +4,6 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 //using UnityEditor.TerrainTools;
 
 public class UITarjetaBarraOrdenTurno : MonoBehaviour

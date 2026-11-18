@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -41,6 +40,7 @@ public class HaciaLasSombras : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
     int evasionGanada = NIVEL > 2 ? 3 : 2;
     bool terminaTurno = NIVEL != 4;
@@ -53,6 +53,7 @@ public class HaciaLasSombras : Habilidad
     string tituloEs = "Hacia Las Sombras I";
     string tituloEn = "Into the Shadows I";
     string tituloPt = "Para as Sombras I";
+    string tituloZh = "遁入暗影 I";
     if (NIVEL == 2) { tituloEs = "Hacia Las Sombras II"; tituloEn = "Into the Shadows II"; }
     if (NIVEL == 3) { tituloEs = "Hacia Las Sombras III"; tituloEn = "Into the Shadows III"; }
     if (NIVEL == 4) { tituloEs = "Hacia Las Sombras IV a"; tituloEn = "Into the Shadows IV a"; }
@@ -61,6 +62,10 @@ public class HaciaLasSombras : Habilidad
     if (NIVEL == 3) { tituloPt = "Para as Sombras III"; }
     if (NIVEL == 4) { tituloPt = "Para as Sombras IV a"; }
     if (NIVEL == 5) { tituloPt = "Para as Sombras IV b"; }
+    if (NIVEL == 2) { tituloZh = "遁入暗影 II"; }
+    if (NIVEL == 3) { tituloZh = "遁入暗影 III"; }
+    if (NIVEL == 4) { tituloZh = "遁入暗影 IV a"; }
+    if (NIVEL == 5) { tituloZh = "遁入暗影 IV b"; }
 
     if (esIngles)
     {
@@ -83,6 +88,24 @@ public class HaciaLasSombras : Habilidad
           LineaDescripcion("Use", terminaTurno ? "Ends the turn." : "Does not end the turn.")
         },
         proximaMejora);
+      return;
+    }
+
+    if (esChino)
+    {
+      string ocultoZh = TerminoDescripcion(TerminoDescripcionId.Oculto, "隐匿（2）", "Estado_oculto");
+      string evasionZh = TerminoDescripcion(TerminoDescripcionId.Evasion, $"闪避（{evasionGanada}）", "Estado_evasion");
+      string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：冷却时间 -1。" : NIVEL == 2 ? "下一级：闪避 +1。" : NIVEL == 3 ? "选项A：不结束本回合。选项B：无需消耗勇气。" : null;
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "传送、清除减益效果，并让潜猎者重新进入潜行状态。",
+        new[]
+        {
+          LineaDescripcion("目标", "潜猎者所在一侧的 1 个空格子"),
+          LineaDescripcion("效果", $"传送到目标格子，清除减益效果，并获得{ocultoZh}和{evasionZh}。"),
+          LineaDescripcion("使用", terminaTurno ? "结束本回合。" : "不结束本回合。")
+        },
+        proxZh);
       return;
     }
 

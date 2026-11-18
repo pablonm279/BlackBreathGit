@@ -25,7 +25,8 @@ public class EstocadaAstral : Estocada
         string tituloEs = "Estocada Astral";
         string tituloEn = "Astral Thrust";
         string tituloPt = "Estocada Astral";
-        nombre = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
+        nombre = esIngles ? tituloEn : esChino ? "星界突刺" : esPortugues ? tituloPt : tituloEs;
 
         if (esIngles)
         {
@@ -52,6 +53,35 @@ public class EstocadaAstral : Estocada
                     LineaDescripcion("Penetration", $"Armor Penetration: {penetracionArmadura}."),
                     LineaDescripcion("Save", $"Target's {mental} vs DC {DificultadMarcaAstral}.", 1),
                     LineaDescripcion("Failed save", $"Astral Mark: -1 {defensaSinIcono}, -2 {mentalSinIcono} and -10 {resistenciaArcana} ({DuracionMarcaAstral} turns).", 1)
+                },
+                mostrarIconoMelee: true);
+            return;
+        }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, "力量");
+            string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, "敏捷");
+            string mixZh = $"{fuerzaZh}/{agiZh}（{atributoMixtoActual}）";
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string def2Zh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御");
+            string mentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免", "ic_mental");
+            string mental2Zh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免");
+            string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+            string resZh = TerminoDescripcion(TerminoDescripcionId.ResistenciaArcana, "奥术抗性");
+            string bonusZh = FormatoModificadorDescripcion(ataqueActual) + FormatoModificadorDescripcion(bonusAtaque);
+            int pctZh = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "星界突刺",
+                "精准的一击，可能留下星界印记。",
+                new[]
+                {
+                    LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+                    LineaDescripcion("效果", $"命中时，造成 {FormatearRangoDados(1, 8)} + {mixZh} 点{danoZh}。"),
+                    LineaDescripcion("攻击检定", $"1d20 + {mixZh}{bonusZh} 对抗{defZh}。大失败：5%。{critZh}：{pctZh}%。"),
+                    LineaDescripcion("穿透", $"护甲穿透：{penetracionArmadura}。"),
+                    LineaDescripcion("豁免", $"目标进行{mentalZh}豁免，对抗难度 {DificultadMarcaAstral}。", 1),
+                    LineaDescripcion("豁免失败", $"星界印记：{def2Zh} -1，{mental2Zh} -2，{resZh} -10（持续 {DuracionMarcaAstral} 回合）。", 1)
                 },
                 mostrarIconoMelee: true);
             return;

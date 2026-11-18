@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -84,6 +83,7 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
       int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
       int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
@@ -99,8 +99,8 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
           ? $"<color={colorFuerza}>Forca ({stats.Fuerza})</color>"
           : $"<color={colorFuerza}>Fuerza ({stats.Fuerza})</color>";
       int nivelMaestria = claseAcechador != null ? claseAcechador.PASIVA_MaestriaConEspadacorta : 0;
-      string titulo = esIngles ? "Life-consuming Short Sword Slash" : esPortugues ? "Corte de Espada Curta Consomevida" : "Corte de Espada Corta Consumevida";
-      string subtitulo = esIngles ? "Melee cut; on hit, grants temporary damage." : esPortugues ? "Corte corpo a corpo; ao acertar, concede dano temporario." : "Corte melee; al impactar, gana dano temporal.";
+      string titulo = esIngles ? "Life-consuming Short Sword Slash" : esPortugues ? "Corte de Espada Curta Consomevida" : esChino ? "噬命短剑斩击" : "Corte de Espada Corta Consumevida";
+      string subtitulo = esIngles ? "Melee cut; on hit, grants temporary damage." : esPortugues ? "Corte corpo a corpo; ao acertar, concede dano temporario." : esChino ? "近战斩击；命中后获得临时伤害加成。" : "Corte melee; al impactar, gana dano temporal.";
       if (esIngles)
       {
         string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
@@ -116,6 +116,23 @@ public class AtaqueEspadaCortaConsumevida : Habilidad
         };
         if (nivelMaestria > 0) lineas.Add(LineaDescripcion("Passive", $"Short Sword Mastery (Tier {nivelMaestria})."));
         txtDescripcion = ConstruirDescripcionNormalizadaIngles(titulo, "A short sword attack that grants temporary damage.", lineas, mostrarIconoMelee: true);
+        return;
+      }
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{stats.Fuerza}）");
+        string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string cortZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        var lZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{cortZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada}，对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+          LineaDescripcion("命中时", "获得 +10% 伤害（持续 2 回合）。")
+        };
+        if (nivelMaestria > 0) lZh.Add(LineaDescripcion("被动", $"短剑精通（等级 {nivelMaestria}）。"));
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "命中后可获得临时伤害加成的短剑攻击。", lZh, mostrarIconoMelee: true);
         return;
       }
       if (esPortugues)

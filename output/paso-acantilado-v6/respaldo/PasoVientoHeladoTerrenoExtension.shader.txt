@@ -1,0 +1,113 @@
+Shader "GDD/Campania/PasoVientoHeladoTerrenoExtension"
+{
+    // Igual que el suelo mate del Paso, pero empujado hacia atras en profundidad (a lo largo del rayo de la camara):
+    // donde la malla principal esta casi a la misma altura siempre gana, sin lineas de interseccion entre ambas mallas.
+    Properties
+    {
+        _Color ("Color", Color) = (1,1,1,1)
+        _MainTex ("Albedo", 2D) = "white" {}
+        _BumpMap ("Normal", 2D) = "bump" {}
+        _BumpScale ("Normal Scale", Float) = 1
+        _Glossiness ("Smoothness", Range(0,1)) = 0.08
+        _Metallic ("Metallic", Range(0,1)) = 0
+        _EmpujeProfundidad ("Empuje en profundidad (m)", Float) = 1.0
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 300
+        CGPROGRAM
+        #pragma surface surf Standard fullforwardshadows vertex:vert addshadow
+        #pragma target 3.0
+        #include "PasoVientoHeladoCielo.cginc"
+
+        sampler2D _MainTex;
+        sampler2D _BumpMap;
+        fixed4 _Color;
+        half _BumpScale;
+        half _Glossiness;
+        half _Metallic;
+        float _EmpujeProfundidad;
+        sampler2D _PasoCordillera;
+        sampler2D _PasoNieve, _PasoPizarra;
+        float _PasoBrumaInicio, _PasoBrumaFin, _PasoScrollCielo, _PasoLuzCielo;
+        fixed4 _PasoTinteCielo;
+
+        struct Input
+        {
+            float2 uv_MainTex;
+            float2 uv_BumpMap;
+            float3 worldPos;
+            float3 worldNormal;
+            float4 screenPos;
+            INTERNAL_DATA
+        };
+
+        float hash(float2 p) { return frac(sin(dot(p,float2(127.1,311.7))) * 43758.5453); }
+        float ruido(float2 p)
+        {
+            float2 a=floor(p), f=frac(p); f=f*f*(3-2*f);
+            return lerp(lerp(hash(a),hash(a+float2(1,0)),f.x),lerp(hash(a+float2(0,1)),hash(a+1),f.x),f.y);
+        }
+
+        void vert(inout appdata_full v)
+        {
+            #ifndef UNITY_PASS_SHADOWCASTER
+            float3 mundo = mul(unity_ObjectToWorld, v.vertex).xyz;
+            float3 direccion = normalize(mundo - _WorldSpaceCameraPos);
+            mundo += direccion * _EmpujeProfundidad;
+            v.vertex = mul(unity_WorldToObject, float4(mundo, 1.0));
+            #endif
+        }
+
+        void surf(Input i, inout SurfaceOutputStandard o)
+        {
+            float2 p = i.worldPos.xz;
+            float macro = ruido(p * .13) * .65 + ruido(p * .31 + 17) * .35;
+            float fino = ruido(float2(p.x * .8 + p.y * .25,p.y * 2.4));
+            fixed3 original = tex2D(_MainTex, i.uv_MainTex).rgb;
+            float2 nieveUV = p*.065;
+            float3 normalMundo = WorldNormalVector(i,float3(0,0,1));
+            float3 normalGeometrica = cross(ddx(i.worldPos),ddy(i.worldPos));
+            normalGeometrica *= rsqrt(max(.000001,dot(normalGeometrica,normalGeometrica)));
+            float3 pesos = pow(abs(normalGeometrica),4);
+            pesos /= max(.001,pesos.x+pesos.y+pesos.z);
+            fixed3 nieve = tex2D(_PasoNieve,i.worldPos.zy*.065).rgb * pesos.x
+                + tex2D(_PasoNieve,nieveUV).rgb * pesos.y
+                + tex2D(_PasoNieve,i.worldPos.xy*.065).rgb * pesos.z;
+            nieve = (nieve-.5)*1.35+.46;
+            nieve *= .80 + macro * .24;
+            // Las pendientes escarpadas descubren pizarra, las planas conservan nieve limpia.
+            float roca = (1-smoothstep(.64,.96,abs(normalMundo.y))) * smoothstep(.32,.65,ruido(p*.42));
+            fixed3 pizarra = tex2D(_PasoPizarra,i.worldPos.zy*float2(.04,.16)).rgb * pesos.x
+                + tex2D(_PasoPizarra,p*float2(.04,.16)).rgb * pesos.y
+                + tex2D(_PasoPizarra,i.worldPos.xy*float2(.04,.16)).rgb * pesos.z;
+            fixed3 albedo = lerp(nieve, pizarra,roca*.88);
+            // Islas estables de tundra, con borde roto y restos de nieve; no consumen RNG de campaña.
+            float2 q=float2(p.x*.81-p.y*.59,p.x*.59+p.y*.81);
+            float2 deformacion=float2(ruido(q*.19+17.3),ruido(q*.23-29.1))-.5;
+            float manchas=ruido(q*.115+deformacion*1.8+13.7)*.65+ruido(q*.27+deformacion*.7-21.3)*.35;
+            float tundra=smoothstep(.52,.76,manchas)*smoothstep(.58,.94,abs(normalMundo.y));
+            fixed3 tierra=lerp(fixed3(.23,.235,.215),fixed3(.31,.32,.28),ruido(q*.85));
+            tierra*=.96+ruido(q*5.7)*.08;
+            albedo=lerp(albedo,tierra,tundra*.48);
+            o.Albedo = albedo * _Color.rgb;
+            // Relieve fino contenido: evita las bandas azules del normal anterior.
+            float altura = tex2D(_PasoNieve,nieveUV).r;
+            float dx = tex2D(_PasoNieve,nieveUV+float2(.002,0)).r-altura;
+            float dy = tex2D(_PasoNieve,nieveUV+float2(0,.002)).r-altura;
+            o.Normal = normalize(float3(-float2(dx,dy)*5,1));
+            o.Metallic = _Metallic;
+            o.Smoothness = _Glossiness;
+            float bruma = smoothstep(_PasoBrumaInicio, max(_PasoBrumaInicio+.01,_PasoBrumaFin),i.worldPos.z);
+            float3 vista = mul(UNITY_MATRIX_V,float4(i.worldPos,1)).xyz;
+            float2 pantalla = .5 + .5 * vista.xy * float2(abs(UNITY_MATRIX_P._m00),abs(UNITY_MATRIX_P._m11)) / max(.001,-vista.z);
+            fixed3 cielo = PasoCieloVelado(_PasoCordillera,float2(.05+pantalla.x*.90+_PasoScrollCielo,saturate((pantalla.y-.48)/.52)),_PasoLuzCielo,_PasoTinteCielo.rgb);
+            o.Albedo *= 1-bruma;
+            o.Emission = cielo * bruma;
+            o.Alpha = 1;
+        }
+        ENDCG
+    }
+    Fallback "Diffuse"
+}

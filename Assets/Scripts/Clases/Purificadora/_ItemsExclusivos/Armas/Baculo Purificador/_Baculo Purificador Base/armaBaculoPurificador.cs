@@ -27,6 +27,11 @@ public class armaBaculoPurificador : Arma
             sNombreItem = "Purifying Staff " + nmejora;
             itemDescripcion = "A staff that radiates purifying energy.\n\nAttack ability: Staff Strike.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "净化法杖 " + nmejora;
+            itemDescripcion = "一根散发着净化能量的法杖。\n\n攻击技能：法杖打击。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Bastao Purificador " + nmejora;
@@ -45,6 +50,11 @@ public class armaBaculoPurificador : Arma
             sNombreItem = "Staff of Sacred Flame " + nmejora;
             itemDescripcion = "A staff kindled with sacred fire to punish the impure.\n\nAttack ability: Sacred Flame.\nApplies Burning and deals extra damage to Ethereal, Undead, and Corrupted targets.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "圣焰法杖 " + nmejora;
+            itemDescripcion = "一根燃着圣火的法杖，用以惩戒不洁之物。\n\n攻击技能：圣焰。\n施加燃烧，并对虚灵、不死者和腐蚀目标造成额外伤害。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Cajado da Chama Sagrada " + nmejora;
@@ -62,6 +72,11 @@ public class armaBaculoPurificador : Arma
          {
             sNombreItem = "Staff of the Final Rite " + nmejora;
             itemDescripcion = "Shatters the soul on impact.\n\nAttack ability: Staff Strike.\nEffect: Shattered Soul (-Mental Save, -Divine Res, -Necro Res).";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "终末仪式法杖 " + nmejora;
+            itemDescripcion = "命中时震碎目标的灵魂。\n\n攻击技能：法杖打击。\n效果：破碎之魂（心智豁免 -、神圣抗性 -、死灵抗性 -）。";
          }
          else if (TRADU.i.nIdioma == 3)
          {

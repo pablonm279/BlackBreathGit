@@ -1,0 +1,2 @@
+OK: preparacion idempotente; activar/desactivar/destruir restaura malla; terreno jugable sin cambios; colliders, reloj y RNG intactos; tutorial excluido; cinco shaders sin errores.
+OK: renderer original de viento restaurado al desactivar y sustituido al reactivar; capturas finales realizadas en una ejecución limpia; final fuera de Play Mode.

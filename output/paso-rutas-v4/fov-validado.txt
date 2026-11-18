@@ -1,0 +1,2 @@
+OK huella rustica: visible dentro; oculto fuera sin explorar; recorrido conservado; debug y FOV desactivado correctos.
+OK piedra asentamiento: visible dentro; oculto fuera sin explorar; recorrido conservado; debug y FOV desactivado correctos.

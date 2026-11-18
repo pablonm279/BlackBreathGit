@@ -1,0 +1,5 @@
+Troncos grandes colocados: 2
+Tronco: (1901.8770, 27.7025, 60.0535) / escala=1,101823
+Tronco: (1883.1570, 28.4810, 46.6369) / escala=0,9777129
+RNG, posiciones, tipos, revelado y conexiones intactos; sin colliders.
+Limpieza de caminos: conserva troncos al lado del camino y retira los que cruzaría.

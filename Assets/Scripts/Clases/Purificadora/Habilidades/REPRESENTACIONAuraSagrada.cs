@@ -250,6 +250,42 @@ public class REPRESENTACIONAuraSagrada : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string pasivaZh = TerminoDescripcion(TerminoDescripcionId.Pasiva, "被动");
+        string fervorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, "狂热");
+        string terminoBarreraZh = TerminoDescripcion(TerminoDescripcionId.Barrera, "屏障", "Estado_barrera");
+        string danioDivinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "屏障 +1。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "神圣伤害 +1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = $"选项A：移除{fervorZh}需求。\n选项B：{fervorZh}达到 3 点以上时加成翻倍。"; }
+        }
+
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "所有友军"),
+          LineaDescripcion("效果", $"授予 +{barrera} {terminoBarreraZh} 和 +{bonusDivino} {danioDivinoZh}。")
+        };
+        if (NIVEL == 5)
+        {
+          lineasZh.Add(LineaDescripcion($"{fervorZh} 达到 3+ 时", "加成翻倍。", 1));
+        }
+        lineasZh.Add(LineaDescripcion("需求", requiereFervor ? $"需要 1+ {fervorZh}。" : $"无需{fervorZh}。"));
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"圣光光环 {SufijoNivel()}",
+          requiereFervor
+            ? $"{pasivaZh}：只要净化者拥有{fervorZh}，便会强化所有友军。"
+            : $"{pasivaZh}：强化所有友军，无需{fervorZh}。",
+          lineasZh,
+          proximaMejoraZh,
+          costoSuperior: "");
+        return;
+      }
+
       if (TRADU.i != null && TRADU.i.nIdioma == 3)
       {
         string passiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Passiva");

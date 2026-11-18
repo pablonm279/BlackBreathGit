@@ -372,25 +372,24 @@ MonoBehaviour:
       muito mais capazes.\u201D"
   - key: tutorial.personaje2.body
     es: "Las <b>Actividades de Campa\xF1a</b> permiten asignar tareas a los Personajes
-      mientras la caravana viaja o descansa. La actividad por defecto es \"Guardia\"
-      pero puedes cambiarla si deseas.\n\nCada Personaje posee opciones \xFAnicas
-      seg\xFAn su clase.\n\n<color=#FFD54A><b>Cierra el men\xFA de Personajes con
+      mientras la caravana viaja o descansa.\nCada Personaje posee opciones \xFAnicas
+      seg\xFAn su clase.\n\n\n<color=#FFD54A><b>Cierra el men\xFA de Personajes con
       la tecla \"C\" para continuar.</b></color>\n"
     en: '<b>Campaign Activities</b> let you assign tasks to Characters while the
-      caravan travels or rests. The default activity is "Guard" but you can change
-      it if you want.
+      caravan travels or rests.
+
+      Each Character has unique options based on
+      their class.
 
 
-      Each Character has unique options based on their class.
 
-
-      <color=#FFD54A><b>Close
-      the Characters menu with the "C" key to continue.</b></color>
+      <color=#FFD54A><b>Close the Characters menu with the
+      "C" key to continue.</b></color>
 
 '
     pt: "As <b>Atividades de Campanha</b> permitem atribuir tarefas aos Personagens
-      enquanto a caravana viaja ou descansa.\n\nCada Personagem possui op\xE7\xF5es
-      \xFAnicas conforme sua classe.\n\n<color=#FFD54A><b>Feche o menu de Personagens
+      enquanto a caravana viaja ou descansa.\nCada Personagem possui op\xE7\xF5es
+      \xFAnicas conforme sua classe.\n\n\n<color=#FFD54A><b>Feche o menu de Personagens
       com a tecla \"C\" para continuar.</b></color>\n"
   - key: tutorial.personaje2.title
     es: Actividades

@@ -44,11 +44,19 @@ public class DisipacionArcana : Habilidad
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
         if (esIngles)
         {
             txtDescripcion = "<color=#5dade2><b>Arcane Dispersal</b></color>\n\n" +
                 "<i>(Passive) The mantle bleeds off excess arcane energy before it destabilizes the Channeler. +1 Defense.</i>";
+            return;
+        }
+
+        if (esChino)
+        {
+            txtDescripcion = "<color=#5dade2><b>奥术消散</b></color>\n\n" +
+                "<i>（被动）斗篷会在多余的奥术能量使引导者失衡之前将其消散。防御 +1。</i>";
             return;
         }
 

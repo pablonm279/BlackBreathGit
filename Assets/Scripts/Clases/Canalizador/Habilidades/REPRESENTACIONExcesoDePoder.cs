@@ -68,6 +68,51 @@ public class REPRESENTACIONExcesoDePoder : Habilidad
             return;
         }
 
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string tituloZh = "力量过载 I";
+            if (NIVEL == 2) { tituloZh = "力量过载 II"; }
+            else if (NIVEL == 3) { tituloZh = "力量过载 III"; }
+            else if (NIVEL == 4) { tituloZh = "力量过载 IV a"; }
+            else if (NIVEL == 5) { tituloZh = "力量过载 IV b"; }
+
+            int duracionResiduoZh = NIVEL == 4 ? 3 : 2;
+            int bonusDanioArcanoZh = NIVEL > 1 ? 4 : 3;
+            int apRestauradoZh = NIVEL > 2 ? 2 : 1;
+            string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string residuoZh = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "能量残留", "Estado_acumularenergia");
+            string danioArcanoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害", "dano_arcano");
+            string danioArcanoSinIconoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害");
+            string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+
+            var lineasZh = new List<LineaDescripcionNormalizada>
+            {
+                LineaDescripcion("被动加成", $"{criticoZh} +{criticoPorcentaje}%。"),
+                LineaDescripcion("触发", "造成一次暴击。"),
+                LineaDescripcion("效果", $"在附近一个随机空格中生成 {residuos} 点{residuoZh}。"),
+                LineaDescripcion("反噬", $"自身受到 {danioPropio} 点{danioArcanoZh}。"),
+                LineaDescripcion("残留", $"持续 {duracionResiduoZh} 回合。"),
+                LineaDescripcion("接触时", $"获得 +1 攻击 和 +{bonusDanioArcanoZh} 点{danioArcanoSinIconoZh}（持续 {duracionResiduoZh} 回合）；恢复 {apRestauradoZh} 点{apZh}。", 1),
+                LineaDescripcion("引导者", "同时恢复 1-8 点生命值。", 2),
+                LineaDescripcion("其他单位", $"同时受到 1-8 点{danioArcanoSinIconoZh}。", 2)
+            };
+
+            string proximaMejoraZh = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2 || NIVEL == 2) { proximaMejoraZh = "反噬最大伤害 -1。"; }
+                else if (NIVEL == 3) { proximaMejoraZh = "选项A：每次暴击额外 +1 点能量残留。\n选项B：暴击率额外 +5%。"; }
+            }
+
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                tituloZh,
+                "被动：暴击会产生不稳定的能量残留并引发奥术反噬。",
+                lineasZh,
+                proximaMejoraZh,
+                costoSuperior: string.Empty);
+            return;
+        }
+
         {
             bool pt = esPortuguesFormato;
             string titulo = pt ? "Excesso de Poder I" : "Exceso de Poder I";

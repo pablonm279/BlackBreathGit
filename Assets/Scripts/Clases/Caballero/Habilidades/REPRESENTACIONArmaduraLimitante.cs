@@ -41,6 +41,15 @@ public class REPRESENTACIONArmaduraLimitante : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("笨重护甲", "弱点：沉重的护甲降低了攻击的精准度。", new[]
+        {
+          LineaDescripcion("效果", "大失败 +5%。")
+        }, colorTitulo: "#cb5000", costoSuperior: string.Empty);
+        return;
+      }
+
       if (TRADU.i != null && TRADU.i.nIdioma == 3)
       {
         txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("Armadura Limitante", "Fraqueza: a armadura pesada reduz a precisão dos ataques.", new[]

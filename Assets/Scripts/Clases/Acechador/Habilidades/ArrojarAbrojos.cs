@@ -43,6 +43,7 @@ public class ArrojarAbrojos : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
       int dcBase = NIVEL > 2 ? 12 : 11;
       int bleedAplicado = 4 + (NIVEL == 4 ? 1 : 0);
@@ -57,6 +58,7 @@ public class ArrojarAbrojos : Habilidad
       string tituloEs = "Arrojar Abrojos I";
       string tituloEn = "Throw Caltrops I";
       string tituloPt = "Lancar Abrolhos I";
+      string tituloZh = "撒铁蒺藜 I";
       if (NIVEL == 2) { tituloEs = "Arrojar Abrojos II"; tituloEn = "Throw Caltrops II"; }
       if (NIVEL == 3) { tituloEs = "Arrojar Abrojos III"; tituloEn = "Throw Caltrops III"; }
       if (NIVEL == 4) { tituloEs = "Arrojar Abrojos IV a"; tituloEn = "Throw Caltrops IV a"; }
@@ -65,6 +67,10 @@ public class ArrojarAbrojos : Habilidad
       if (NIVEL == 3) { tituloPt = "Lancar Abrolhos III"; }
       if (NIVEL == 4) { tituloPt = "Lancar Abrolhos IV a"; }
       if (NIVEL == 5) { tituloPt = "Lancar Abrolhos IV b"; }
+      if (NIVEL == 2) { tituloZh = "撒铁蒺藜 II"; }
+      if (NIVEL == 3) { tituloZh = "撒铁蒺藜 III"; }
+      if (NIVEL == 4) { tituloZh = "撒铁蒺藜 IV a"; }
+      if (NIVEL == 5) { tituloZh = "撒铁蒺藜 IV b"; }
 
       if (esIngles)
       {
@@ -91,6 +97,28 @@ public class ArrojarAbrojos : Habilidad
             LineaDescripcion("Failed save", $"Double damage; applies {bleedAplicado} {sangrado}" + (drenaAp ? $"; loses 1 {ap}." : "."), 1)
           },
           proximaMejora);
+        return;
+      }
+
+      if (esChino)
+      {
+        string reflejosZh = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "反射", "ic_Reflejos");
+        string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+        string sangZh = TerminoDescripcion(TerminoDescripcionId.Sangrado, "流血", "Estado_sangrano");
+        string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+        string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：陷阱伤害 +1。" : NIVEL == 2 ? "下一级：豁免难度 +1。" : NIVEL == 3 ? "选项A：流血 +1。选项B：豁免失败时 -1 行动点。" : null;
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "悄无声息地在数个格子上散布铁蒺藜陷阱。",
+          new[]
+          {
+            LineaDescripcion("目标", "1 个格子及其空的对角格子"),
+            LineaDescripcion("效果", "放置一次性铁蒺藜陷阱，不会暴露潜猎者。"),
+            LineaDescripcion("触发", $"敌人进入陷阱格子时受到 {danioBase} 点{danoZh}。"),
+            LineaDescripcion("豁免", $"目标进行 {reflejosZh} 豁免，对抗难度 {dcBase}。", 1),
+            LineaDescripcion("豁免失败", $"伤害翻倍；叠加 {bleedAplicado} 层{sangZh}" + (drenaAp ? $"；损失 1 点{apZh}。" : "。"), 1)
+          },
+          proxZh);
         return;
       }
 

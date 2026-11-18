@@ -20,6 +20,8 @@ Assets/_Recovery.meta
 .vscode/
 .idea/
 *.csproj
+!/tools/localization/Inventory.csproj
+!/tools/localization/tests/LocalizationChecks.csproj
 *.sln
 *.slnx
 *.user

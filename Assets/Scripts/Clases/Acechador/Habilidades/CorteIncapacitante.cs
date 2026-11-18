@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -64,6 +63,7 @@ public class CorteIncapacitante : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int fuerzaActual = statsUI.Fuerza;
@@ -100,6 +100,7 @@ public class CorteIncapacitante : Habilidad
     string tituloEs = "Corte Incapacitante I";
     string tituloEn = "Crippling Slash I";
     string tituloPt = "Corte Incapacitante I";
+    string tituloZh = "致残斩击 I";
     if (NIVEL == 2) { tituloEs = "Corte Incapacitante II"; tituloEn = "Crippling Slash II"; }
     if (NIVEL == 3) { tituloEs = "Corte Incapacitante III"; tituloEn = "Crippling Slash III"; }
     if (NIVEL == 4) { tituloEs = "Corte Incapacitante IV a"; tituloEn = "Crippling Slash IV a"; }
@@ -108,6 +109,10 @@ public class CorteIncapacitante : Habilidad
     if (NIVEL == 3) { tituloPt = "Corte Incapacitante III"; }
     if (NIVEL == 4) { tituloPt = "Corte Incapacitante IV a"; }
     if (NIVEL == 5) { tituloPt = "Corte Incapacitante IV b"; }
+    if (NIVEL == 2) { tituloZh = "致残斩击 II"; }
+    if (NIVEL == 3) { tituloZh = "致残斩击 III"; }
+    if (NIVEL == 4) { tituloZh = "致残斩击 IV a"; }
+    if (NIVEL == 5) { tituloZh = "致残斩击 IV b"; }
 
     if (esIngles)
     {
@@ -143,6 +148,32 @@ public class CorteIncapacitante : Habilidad
         lineas,
         proximaMejora,
         mostrarIconoMelee: true);
+      return;
+    }
+
+    if (esChino)
+    {
+      string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{fuerzaActual}）");
+      string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+      string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+      string fortZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+      string sangZh = TerminoDescripcion(TerminoDescripcionId.Sangrado, "流血", "sangrado");
+      string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：攻击检定 +1。" : NIVEL == 2 ? "下一级：豁免难度 +1。" : NIVEL == 3 ? "选项A：流血 +3。选项B：持续时间 +1 回合。" : null;
+      var lZh = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+        LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{danoZh}。"),
+        LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada}，对抗{defZh}。大失败：5%。{critZh}：{criticoPorcentaje}%。"),
+        LineaDescripcion("豁免", $"目标进行 {fortZh} 豁免，对抗难度 {dcBase} + {agiZh}（{dcTotal}）。", 1),
+        LineaDescripcion("豁免失败", $"失能：无法移动，伤害 -20%，攻击 -2（持续 {duracion} 回合）" + (NIVEL == 4 ? $"；叠加 3 层{sangZh}。" : "。"), 1)
+      };
+      if (nivelMaestria > 0)
+      {
+        lZh.Add(LineaDescripcion("被动", $"短剑精通（等级 {nivelMaestria}）。"));
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(tituloZh, "短剑攻击。可使目标失能。", lZh, proxZh, mostrarIconoMelee: true);
       return;
     }
 

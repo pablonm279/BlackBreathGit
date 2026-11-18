@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -119,6 +118,7 @@ public class TiroBallestaDeMano : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
     var statsUI = ObtenerStatsDescripcionUI();
 
     int agilidadActual = statsUI.Agilidad;
@@ -166,6 +166,26 @@ public class TiroBallestaDeMano : Habilidad
         "Hand Crossbow Shot",
         "Hand crossbow attack. Fires at one target.",
         lineas);
+      return;
+    }
+
+    if (esChino)
+    {
+      string agilidadZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+      string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      var lineasZh = new List<LineaDescripcionNormalizada>
+      {
+        LineaDescripcion("目标", "1 个目标或障碍物"),
+        LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {agilidadZh} 点{danoZh}。"),
+        LineaDescripcion("攻击检定", $"1d20 + {agilidadZh}{bonusTirada}，对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentaje}%。")
+      };
+      if (nivelMaestria > 0)
+      {
+        lineasZh.Add(LineaDescripcion("被动", $"手弩精通（等级 {nivelMaestria}）。"));
+      }
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("手弩射击", "手弩攻击。向一名目标射击。", lineasZh);
       return;
     }
 

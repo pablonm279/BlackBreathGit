@@ -53,6 +53,28 @@ public class REPRESENTACIONReconocimiento : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2 || NIVEL == 2) { proximaMejoraZh = "先攻 +1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：行动点 +1。\n选项B：使敌方增援延迟 +1 回合。"; }
+        }
+        string aliadosZh = $"{apZh} +{apPrimerTurno}";
+        if (iniciativa > 0) { aliadosZh += $"，先攻 +{iniciativa}"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          $"侦察 {SufijoNivel()}",
+          "被动：为队伍带来开局优势。",
+          new[]
+          {
+            LineaDescripcion("友军", $"第一回合 {aliadosZh}。"),
+            LineaDescripcion("敌方增援", $"延迟 {retrasoRefuerzos} 回合到达。")
+          }, proximaMejoraZh, costoSuperior: string.Empty);
+        return;
+      }
+
       if (esPortugues)
       {
         string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");

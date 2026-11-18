@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -90,6 +89,44 @@ public class CastigaraLosMalvados : Habilidad
             LineaDescripcion("Ends", $"After {usos} failed saves, or when the target succeeds the save.")
           },
           proximaMejora);
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string tituloZh = "惩戒邪恶 I";
+        if (NIVEL == 2) { tituloZh = "惩戒邪恶 II"; }
+        if (NIVEL == 3) { tituloZh = "惩戒邪恶 III"; }
+        if (NIVEL == 4) { tituloZh = "惩戒邪恶 IV a"; }
+        if (NIVEL == 5) { tituloZh = "惩戒邪恶 IV b"; }
+
+        string marcaReactivaZh = TerminoDescripcion(TerminoDescripcionId.MarcaReactiva, "反应标记", "Estado_reaccion");
+        string salvacionMentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免", "ic_mental");
+        string mentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免");
+        string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+        string danioDivinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino");
+        string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+        string porcentajeDanioZh = NIVEL == 5 ? "50%" : "33%";
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "下一级：豁免难度 +1。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：冷却 -1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：次数 +1。\n选项B：伤害占比提升至 50%。"; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "标记一名敌人；对友军造成伤害会触发神圣惩罚。",
+          new[]
+          {
+            LineaDescripcion("目标", "1 名敌人"),
+            LineaDescripcion("效果", $"施加{marcaReactivaZh}。每当目标对你的友军造成伤害时，都要进行一次{salvacionMentalZh}。"),
+            LineaDescripcion("豁免", $"{mentalZh}，对抗难度 {dcBase} + {poderZh}", 1),
+            LineaDescripcion("豁免失败", $"受到 {rangoDanioEs} + {poderZh} + 所造成伤害的{porcentajeDanioZh}作为{danioDivinoZh}；失去剩余的全部{apZh}。", 1),
+            LineaDescripcion("结束条件", $"累计 {usos} 次豁免失败后，或目标豁免成功时。")
+          },
+          proximaMejoraZh);
         return;
       }
 

@@ -72,10 +72,33 @@ public class TextoInicialManager : MonoBehaviour
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
         bool usarIngles = idioma == TRADU.IdiomaIngles;
         bool usarPortugues = idioma == TRADU.IdiomaPortugues;
+        bool activarEspaniol = !usarIngles && (!usarPortugues || versionPortugues == null);
 
-        if (versionEspañol != null) { versionEspañol.SetActive(!usarIngles && (!usarPortugues || versionPortugues == null)); }
+        if (versionEspañol != null) { versionEspañol.SetActive(activarEspaniol); }
         if (versionIngles != null) { versionIngles.SetActive(usarIngles); }
         if (versionPortugues != null) { versionPortugues.SetActive(usarPortugues); }
+
+        // Para chino no existe un hijo propio: se muestra el hijo en español (activarEspaniol)
+        // y se depende de que su texto ya haya sido traducido. El barrido global
+        // (TraducirTodosTextosSegunIdioma) corre una sola vez al iniciar la campaña y esta
+        // pantalla puede activarse recién al llegar a la zona, mucho después — así que, en vez
+        // de depender de ese barrido (y de si ya cacheó o no el texto original de este
+        // componente en particular), traducimos directamente el texto del hijo en español,
+        // que en este punto siempre contiene el español real: nada más lo modifica.
+        if (idioma == TRADU.IdiomaChinoSimplificado && activarEspaniol && TRADU.i != null && versionEspañol != null)
+        {
+            TextMeshProUGUI[] textos = versionEspañol.GetComponentsInChildren<TextMeshProUGUI>(true);
+            for (int i = 0; i < textos.Length; i++)
+            {
+                TextMeshProUGUI texto = textos[i];
+                if (texto == null || string.IsNullOrEmpty(texto.text))
+                {
+                    continue;
+                }
+
+                texto.text = TRADU.i.Traducir(texto.text);
+            }
+        }
     }
 
 }

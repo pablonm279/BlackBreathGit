@@ -572,6 +572,13 @@ public class TutorialPresenter : MonoBehaviour
       pointer.position = targetPosition + (Vector3)step.pointerOffset;
       pointer.localScale = Vector3.one * Mathf.Max(0.01f, step.pointerScale);
       pointer.localRotation = Quaternion.Euler(0f, 0f, GetPointerRotation(step.pointerDirection));
+      if (director != null && director.ActiveDefinition != null
+        && director.ActiveDefinition.tutorialId == TutorialDirector.DefaultTutorialId)
+      {
+        // Vaiven leve sobre la posicion base, incluso si el tutorial pausa el juego.
+        float displacement = Mathf.Sin(Time.unscaledTime * (2f * Mathf.PI / 1.4f)) * 8f;
+        pointer.position += pointer.right * displacement;
+      }
     }
   }
 
@@ -1295,6 +1302,8 @@ public class TutorialPresenter : MonoBehaviour
     switch (idioma)
     {
       case TRADU.IdiomaIngles:
+      // La primera versión china utiliza la narración inglesa existente.
+      case TRADU.IdiomaChinoSimplificado:
         return step.narratorAudioIngles;
       case TRADU.IdiomaPortugues:
         return step.narratorAudioPortugues;

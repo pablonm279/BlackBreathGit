@@ -15,26 +15,27 @@ Shader "GDD/Campania/CaminoVision"
         _OcclusionMap ("Occlusion", 2D) = "white" {}
 
         [HideInInspector] _CaminoRecorrido ("Camino recorrido", Float) = 0
-        [HideInInspector] _Mode ("Mode", Float) = 2
-        [HideInInspector] _SrcBlend ("SrcBlend", Float) = 5
-        [HideInInspector] _DstBlend ("DstBlend", Float) = 10
-        [HideInInspector] _ZWrite ("ZWrite", Float) = 0
+        [HideInInspector] _UsarAlphaCorte ("Usar alpha del material fuente", Float) = 0
+        [HideInInspector] _Mode ("Mode", Float) = 1
+        [HideInInspector] _SrcBlend ("SrcBlend", Float) = 1
+        [HideInInspector] _DstBlend ("DstBlend", Float) = 0
+        [HideInInspector] _ZWrite ("ZWrite", Float) = 1
     }
 
     SubShader
     {
         Tags
         {
-            "Queue" = "Transparent"
-            "RenderType" = "Transparent"
+            "Queue" = "AlphaTest"
+            "RenderType" = "TransparentCutout"
             "IgnoreProjector" = "True"
         }
         LOD 200
         Cull Off
-        ZWrite Off
+        ZWrite On
 
         CGPROGRAM
-        #pragma surface surf Standard alpha:fade keepalpha noshadow noforwardadd
+        #pragma surface surf Standard keepalpha noshadow noforwardadd
         #pragma target 3.0
 
         sampler2D _MainTex;
@@ -48,6 +49,8 @@ Shader "GDD/Campania/CaminoVision"
         half _BumpScale;
         half _OcclusionStrength;
         half _CaminoRecorrido;
+        half _Cutoff;
+        half _UsarAlphaCorte;
 
         // Valores globales actualizados por NieblaGuerraCaravana.
         float4 _CaminoVisionPantalla;
@@ -80,8 +83,13 @@ Shader "GDD/Campania/CaminoVision"
             visible = lerp(visible, 1.0, saturate(_CaminoVisionDebug));
             visible = lerp(1.0, visible, saturate(_CaminoVisionActiva));
 
-            // Sólo descarta la zona completamente exterior; conserva el feather.
-            clip(visible - 0.001);
+            // El material base conserva su recorte y el FOV descarta geometría.
+            // Así el camino visible permanece opaco y escribe profundidad.
+            if (_UsarAlphaCorte > 0.5)
+            {
+                clip(albedo.a - _Cutoff);
+            }
+            clip(visible - 0.5);
 
             fixed3 normal = UnpackNormal(tex2D(_BumpMap, entrada.uv_BumpMap));
             normal.xy *= _BumpScale;
@@ -96,7 +104,7 @@ Shader "GDD/Campania/CaminoVision"
                 _OcclusionStrength);
             salida.Emission = tex2D(_EmissionMap, entrada.uv_EmissionMap).rgb
                 * _EmissionColor.rgb;
-            salida.Alpha = albedo.a * visible;
+            salida.Alpha = 1.0;
         }
         ENDCG
     }

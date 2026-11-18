@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3177341380423711066}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: LlamaEspectral
   m_TagString: MapaObjeto
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1836259966490223890}
   - component: {fileID: 3512754892029597356}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: LlamaLuz
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 5331260065397888202}
   - component: {fileID: 6248978902187216016}
   - component: {fileID: 5987493171298579964}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Fuego (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5018,7 +5018,7 @@ GameObject:
   - component: {fileID: 1585132025393340758}
   - component: {fileID: 5667445700260554388}
   - component: {fileID: 3091533330750583284}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9854,7 +9854,7 @@ GameObject:
   - component: {fileID: 2917272737735006210}
   - component: {fileID: 3170824262794279262}
   - component: {fileID: 5539305575122251971}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14689,7 +14689,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3330913120028878711}
   - component: {fileID: 6025763530507280002}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14789,7 +14789,7 @@ GameObject:
   - component: {fileID: 548884425781408221}
   - component: {fileID: 4621394363808501627}
   - component: {fileID: 2397428316315729209}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Fuego (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19663,7 +19663,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6462406167379423597}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Llama_BosqueArdiente
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19699,7 +19699,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3886293722184178522}
   - component: {fileID: 5709942094250190473}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19799,7 +19799,7 @@ GameObject:
   - component: {fileID: 5063210950680354656}
   - component: {fileID: 8512621242021392591}
   - component: {fileID: 1269476200397953068}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Fuego (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24677,7 +24677,7 @@ GameObject:
   - component: {fileID: 2214911773787796074}
   - component: {fileID: 4708067053519126334}
   - component: {fileID: 3096777546910585169}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: FuegoGrande
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29551,7 +29551,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1260797289753650389}
   - component: {fileID: 2181540437756609391}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29649,7 +29649,7 @@ GameObject:
   - component: {fileID: 5369210983055844232}
   - component: {fileID: 5803235921648390633}
   - component: {fileID: 4132022838072895329}
-  m_Layer: 6
+  m_Layer: 18
   m_Name: Humo
   m_TagString: Untagged
   m_Icon: {fileID: 0}

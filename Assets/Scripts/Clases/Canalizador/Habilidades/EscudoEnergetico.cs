@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -37,10 +36,12 @@ public class EscudoEnergetico : Habilidad
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
         string tituloEs = "Escudo Energetico I";
         string tituloEn = "Energy Shield I";
         string tituloPt = "Escudo Energetico I";
+        string tituloZh = "能量护盾 I";
         if (NIVEL == 2) { tituloEs = "Escudo Energetico II"; tituloEn = "Energy Shield II"; }
         if (NIVEL == 3) { tituloEs = "Escudo Energetico III"; tituloEn = "Energy Shield III"; }
         if (NIVEL == 4) { tituloEs = "Escudo Energetico IV a"; tituloEn = "Energy Shield IV a"; }
@@ -49,6 +50,10 @@ public class EscudoEnergetico : Habilidad
         if (NIVEL == 3) { tituloPt = "Escudo Energetico III"; }
         if (NIVEL == 4) { tituloPt = "Escudo Energetico IV a"; }
         if (NIVEL == 5) { tituloPt = "Escudo Energetico IV b"; }
+        if (NIVEL == 2) { tituloZh = "能量护盾 II"; }
+        if (NIVEL == 3) { tituloZh = "能量护盾 III"; }
+        if (NIVEL == 4) { tituloZh = "能量护盾 IV a"; }
+        if (NIVEL == 5) { tituloZh = "能量护盾 IV b"; }
 
         int barreraBase = NIVEL > 1 ? 12 : 8;
         int bonusAtaqueReaccion = NIVEL > 2 ? 1 : 0;
@@ -93,6 +98,38 @@ public class EscudoEnergetico : Habilidad
                 "Creates a reactive barrier that counters missed ranged attacks.",
                 lineas,
                 proximaMejora);
+            return;
+        }
+
+        if (esChino)
+        {
+            string energiaZh = TerminoDescripcion(TerminoDescripcionId.Energia, "当前能量等级", "Estado_acumularenergia");
+            string barreraZh = TerminoDescripcion(TerminoDescripcionId.Barrera, "屏障", "Estado_barrera");
+            string descargaArcanaZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术冲击");
+            string residuoZh = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "能量残留", "Estado_acumularenergia");
+            string bonusAtaqueTextoZh = bonusAtaqueReaccion > 0 ? $"，攻击检定 +{bonusAtaqueReaccion}" : string.Empty;
+            string proximaMejoraZh = null;
+            if (DebeMostrarProximaMejoraDescripcion())
+            {
+                if (NIVEL < 2) { proximaMejoraZh = "基础屏障 +4。"; }
+                else if (NIVEL == 2) { proximaMejoraZh = "反击的攻击检定 +1。"; }
+                else if (NIVEL == 3) { proximaMejoraZh = "选项A：受到伤害不再移除该反应。\n选项B：反应次数 +1。"; }
+            }
+            var lineasZh = new List<LineaDescripcionNormalizada>
+            {
+                LineaDescripcion("目标", "自身"),
+                LineaDescripcion("效果", $"获得 {barreraBase} + 10 × {energiaZh} 点{barreraZh}。"),
+                LineaDescripcion("反应", "一名远程敌人对引导者的攻击未命中。"),
+                LineaDescripcion("反击", $"对该敌人使用{descargaArcanaZh}{bonusAtaqueTextoZh}，并在附近一个随机空格生成 1 个{residuoZh}。", 1),
+                LineaDescripcion("次数限制", $"每次施放可触发 {usosReaccion} 次反应。", 1)
+            };
+            lineasZh.Add(LineaDescripcion("反应结束", seCancelaConDanio ? "当引导者受到伤害，或次数用尽时。" : "当次数用尽时。", 1));
+            lineasZh.Add(LineaDescripcion("持续时间", "屏障：1 回合。"));
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                tituloZh,
+                "生成一层反应型屏障，对未命中的远程攻击进行反击。",
+                lineasZh,
+                proximaMejoraZh);
             return;
         }
 

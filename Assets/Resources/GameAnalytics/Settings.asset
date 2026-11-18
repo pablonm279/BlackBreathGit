@@ -30,7 +30,7 @@ MonoBehaviour:
   secretKey:
   - adacc5af7f56ddd80f023ae065147c9b410ade5b
   Build:
-  - 0.76
+  - 0.76.1
   SelectedPlatformOrganization:
   - 
   SelectedPlatformStudio:
@@ -60,6 +60,7 @@ MonoBehaviour:
   - es
   - en
   - pt
+  - zh-Hans
   CustomDimensions02:
   - difficulty_0
   - difficulty_1

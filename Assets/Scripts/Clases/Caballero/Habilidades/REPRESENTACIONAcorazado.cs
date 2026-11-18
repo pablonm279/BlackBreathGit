@@ -237,6 +237,23 @@ public class REPRESENTACIONAcorazado : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string armaduraZh = TerminoDescripcion(TerminoDescripcionId.Armadura, "护甲", "IconoArmadura");
+        string armaduraResumenZh = TerminoDescripcion(TerminoDescripcionId.Armadura, "护甲");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "下一级：护甲削减的门槛提升为物理伤害 7 点以上。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：护甲削减的门槛提升为物理伤害 8 点以上。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：门槛提升为物理伤害 10 点以上。\n选项B：护甲不会低于初始值的一半。"; }
+        }
+        var lineasZh = new List<LineaDescripcionNormalizada> { LineaDescripcion("效果", $"只有单次受到 {umbralDanio} 点以上的物理伤害时，{armaduraZh}才会被削减。") };
+        if (NIVEL == 5) { lineasZh.Add(LineaDescripcion("限制", "护甲不会低于初始值的一半。")); }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"重甲 {SufijoNivel()}", $"被动：{armaduraResumenZh}能抵御低于 {umbralDanio} 点的物理伤害。", lineasZh, proximaMejoraZh, costoSuperior: string.Empty);
+        return;
+      }
+
       if (TRADU.i != null && TRADU.i.nIdioma == 3)
       {
         string armadura = TerminoDescripcion(TerminoDescripcionId.Armadura, "Armadura", "IconoArmadura");
@@ -340,6 +357,12 @@ public class REPRESENTACIONAcorazado : Habilidad
         if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: a Armadura reduz com 7+ dano fisico.</color>"; }
         if (NIVEL == 2) { return "<color=#dfea02>Proximo Nivel: a Armadura reduz com 8+ dano fisico.</color>"; }
         if (NIVEL == 3) { return "<color=#dfea02>Opcao A: reduz com 10+ dano fisico.\nOpcao B: Armadura nao baixa da metade inicial.</color>"; }
+      }
+      else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        if (NIVEL < 2) { return "<color=#dfea02>下一级：物理伤害达到 7 点以上才会削减护甲。</color>"; }
+        if (NIVEL == 2) { return "<color=#dfea02>下一级：物理伤害达到 8 点以上才会削减护甲。</color>"; }
+        if (NIVEL == 3) { return "<color=#dfea02>选项A：达到 10 点以上物理伤害才削减。\n选项B：护甲不会低于初始值的一半。</color>"; }
       }
       else
       {

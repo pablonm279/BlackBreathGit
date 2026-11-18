@@ -150,6 +150,60 @@ public abstract class Accesorio  : Item
             if (buffResDivino != 0)
                 itemDescripcion += $"\nDivine Res.: {(buffResDivino > 0 ? "+" : "")}{buffResDivino}";
         }
+        if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            // Fuerza
+            if (buffFuerza != 0)
+                itemDescripcion += $"\n力量：{(buffFuerza > 0 ? "+" : "")}{buffFuerza}";
+            // Agilidad
+            if (buffAgi != 0)
+                itemDescripcion += $"\n敏捷：{(buffAgi > 0 ? "+" : "")}{buffAgi}";
+            // Poder
+            if (buffPoder != 0)
+                itemDescripcion += $"\n威力：{(buffPoder > 0 ? "+" : "")}{buffPoder}";
+            // Iniciativa
+            if (buffIniciativa != 0)
+                itemDescripcion += $"\n先攻：{(buffIniciativa > 0 ? "+" : "")}{buffIniciativa}";
+            // AP Máx
+            if (buffApMax != 0)
+                itemDescripcion += $"\n最大行动点：{(buffApMax > 0 ? "+" : "")}{buffApMax}";
+            // Valor Máx
+            if (buffValMax != 0)
+                itemDescripcion += $"\n最大勇气：{(buffValMax > 0 ? "+" : "")}{buffValMax}";
+            // HP Máx
+            if (buffhpMax != 0)
+                itemDescripcion += $"\n最大HP：{(buffhpMax > 0 ? "+" : "")}{buffhpMax}";
+            // Armadura
+            if (buffArmadura != 0)
+                itemDescripcion += $"\n护甲：{(buffArmadura > 0 ? "+" : "")}{buffArmadura}";
+            // Defensa
+            if (buffDefensa != 0)
+                itemDescripcion += $"\n防御：{(buffDefensa > 0 ? "+" : "")}{buffDefensa}";
+            // TS Reflejo
+            if (buffTSReflejo != 0)
+                itemDescripcion += $"\n反射豁免：{(buffTSReflejo > 0 ? "+" : "")}{buffTSReflejo}";
+            // TS Fortaleza
+            if (buffTSFortaleza != 0)
+                itemDescripcion += $"\n坚韧豁免：{(buffTSFortaleza > 0 ? "+" : "")}{buffTSFortaleza}";
+            // TS Mental
+            if (buffTSMental != 0)
+                itemDescripcion += $"\n心智豁免：{(buffTSMental > 0 ? "+" : "")}{buffTSMental}";
+            // Resistencias
+            if (buffResFuego != 0)
+                itemDescripcion += $"\n火焰抗性：{(buffResFuego > 0 ? "+" : "")}{buffResFuego}";
+            if (buffResRayo != 0)
+                itemDescripcion += $"\n闪电抗性：{(buffResRayo > 0 ? "+" : "")}{buffResRayo}";
+            if (buffResHielo != 0)
+                itemDescripcion += $"\n冰霜抗性：{(buffResHielo > 0 ? "+" : "")}{buffResHielo}";
+            if (buffResArcano != 0)
+                itemDescripcion += $"\n奥术抗性：{(buffResArcano > 0 ? "+" : "")}{buffResArcano}";
+            if (buffResAcido != 0)
+                itemDescripcion += $"\n酸性抗性：{(buffResAcido > 0 ? "+" : "")}{buffResAcido}";
+            if (buffResNecro != 0)
+                itemDescripcion += $"\n死灵抗性：{(buffResNecro > 0 ? "+" : "")}{buffResNecro}";
+            if (buffResDivino != 0)
+                itemDescripcion += $"\n神圣抗性：{(buffResDivino > 0 ? "+" : "")}{buffResDivino}";
+        }
 
     }
 }

@@ -1668,6 +1668,8 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
     switch (idioma)
     {
+       case TRADU.IdiomaChinoSimplificado:
+          return string.Format(ChineseLocalization.Get("Poder aliado: {0}", "Ally Power: {0}"), poder);
        case TRADU.IdiomaIngles:
           return "Ally Power: " + poder;
        case TRADU.IdiomaPortugues:
@@ -1682,6 +1684,8 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
     switch (idioma)
     {
+       case TRADU.IdiomaChinoSimplificado:
+          return string.Format(ChineseLocalization.Get("Poder enemigo: {0}", "Enemy Power: {0}"), poder);
        case TRADU.IdiomaIngles:
           return "Enemy Power: " + poder;
        case TRADU.IdiomaPortugues:
@@ -1696,6 +1700,8 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : TRADU.IdiomaEspanol;
     switch (idioma)
     {
+       case TRADU.IdiomaChinoSimplificado:
+          return ChineseLocalization.Get("Poder enemigo: ??", "Enemy Power: ??");
        case TRADU.IdiomaIngles:
           return "Enemy Power: ??";
        case TRADU.IdiomaPortugues:
@@ -1781,6 +1787,12 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
        return nombreBase;
     }
 
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+       return ChineseLocalization.Get(nombreBase,
+          TraduccionesFaccionEn.TryGetValue(nombreBase, out string ingles) ? ingles : nombreBase);
+    }
+
     if (idioma == TRADU.IdiomaIngles && TraduccionesFaccionEn.TryGetValue(nombreBase, out string traduccionEn))
     {
        return traduccionEn;
@@ -1796,6 +1808,10 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
 
  string ObtenerPrefijoFaccionPorIdioma(int idioma)
  {
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+       return ChineseLocalization.Get("Facción enemiga: ", "Enemy faction: ");
+    }
     if (idioma == TRADU.IdiomaIngles)
    {
        return "Enemy faction: ";
@@ -1811,6 +1827,10 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
 
  string ObtenerTextoEmboscadaEnemigaPorIdioma(int idioma)
  {
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+       return ChineseLocalization.Get("La caravana ha sido emboscada!", "The caravan has been ambushed!");
+    }
     if (idioma == TRADU.IdiomaIngles)
     {
        return "The caravan has been ambushed!";
@@ -1826,6 +1846,10 @@ float AjustarChanceEncuentroPropioPresagioEnemigos(float chanceBase)
 
  string ObtenerPrefijoEmboscadaAliadaPorIdioma(int idioma)
  {
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+       return ChineseLocalization.Get("Has emboscado a los enemigos: ", "You ambushed the enemies: ");
+    }
     if (idioma == TRADU.IdiomaIngles)
     {
        return "You ambushed the enemies: ";
@@ -3372,6 +3396,10 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
 
  string FormatearTextoVictoria(int exp, int oro, int materiales, int hopeBonus)
  {
+    if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+        return ChineseBattleText.Victory(exp, oro, materiales, hopeBonus);
+    }
     List<string> partes = new List<string>();
 
     if (exp > 0) partes.Add(exp + (TRADU.i.nIdioma == 2 ? " Exp" : " Exp"));
@@ -3393,6 +3421,10 @@ void ProcesarEncuentroLegacy(int resultado, ref int aumentochancesitem)
 
  string FormatearTextoDerrota(int hopeLoss, int civilLoss, int oxLoss)
  {
+    if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+        return ChineseBattleText.Defeat(hopeLoss, civilLoss, oxLoss);
+    }
     List<string> partesEs = new List<string>();
     List<string> partesEn = new List<string>();
 

@@ -41,10 +41,12 @@ public class Instatransporte : Habilidad
   {
     bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
     bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
     string tituloEs = "Instatransporte I";
     string tituloEn = "Instatransport I";
     string tituloPt = "Instatransporte I";
+    string tituloZh = "瞬间传送 I";
     if (NIVEL == 2) { tituloEs = "Instatransporte II"; tituloEn = "Instatransport II"; }
     if (NIVEL == 3) { tituloEs = "Instatransporte III"; tituloEn = "Instatransport III"; }
     if (NIVEL == 4) { tituloEs = "Instatransporte IV a"; tituloEn = "Instatransport IV a"; }
@@ -53,6 +55,10 @@ public class Instatransporte : Habilidad
     if (NIVEL == 3) { tituloPt = "Instatransporte III"; }
     if (NIVEL == 4) { tituloPt = "Instatransporte IV a"; }
     if (NIVEL == 5) { tituloPt = "Instatransporte IV b"; }
+    if (NIVEL == 2) { tituloZh = "瞬间传送 II"; }
+    if (NIVEL == 3) { tituloZh = "瞬间传送 III"; }
+    if (NIVEL == 4) { tituloZh = "瞬间传送 IV a"; }
+    if (NIVEL == 5) { tituloZh = "瞬间传送 IV b"; }
 
     int alcance = NIVEL > 2 ? 4 : 3;
     int bonusEvasion = NIVEL == 5 ? 2 : 1;
@@ -91,6 +97,38 @@ public class Instatransporte : Habilidad
           LineaDescripcion("Self", $"Gains +{bonusEvasion} {evasion}.")
         },
         proximaMejora);
+      return;
+    }
+    if (esChino)
+    {
+      string residuoZh = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "能量残留", "Estado_acumularenergia");
+      string danioArcanoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害", "dano_arcano");
+      string danioArcanoSinIconoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害");
+      string evasionZh = TerminoDescripcion(TerminoDescripcionId.Evasion, "闪避", "Estado_evasion");
+      string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+      string patronResiduosZh = NIVEL == 4 ? "在所有相邻格子上" : "在呈十字形的相邻格子上";
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "冷却时间 -1。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "可选目标距离 +1。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：在所有相邻格子上生成残留。\n选项B：闪避 +1。"; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        "传送到一个空格子，并在目的地留下不稳定的能量残留。",
+        new[]
+        {
+          LineaDescripcion("目标", "1 个空格子"),
+          LineaDescripcion("效果", "传送到目标格子，并摧毁其上的陷阱。"),
+          LineaDescripcion("残留", $"{patronResiduosZh}生成{residuoZh}；持续 {duracionResiduo} 回合。"),
+          LineaDescripcion("接触时", $"获得 +1 攻击，{danioArcanoZh} +{bonusDanioArcano}（持续 {duracionResiduo} 回合）；恢复 {apRestaurado} 点{apZh}。", 1),
+          LineaDescripcion("引导者", "同时恢复 1-8 点生命值。", 2),
+          LineaDescripcion("其他单位", $"同时受到 1-8 点{danioArcanoSinIconoZh}。", 2),
+          LineaDescripcion("自身", $"获得 +{bonusEvasion} {evasionZh}。")
+        },
+        proximaMejoraZh);
       return;
     }
     {

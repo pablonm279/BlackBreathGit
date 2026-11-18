@@ -257,6 +257,33 @@ public class REPRESENTACIONImplacable : Habilidad
       return;
     }
 
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气", "Valentía");
+      string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点", "ap");
+      string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, "力量");
+      string mentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免", "ic_mental");
+      string fortalezaZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧豁免", "ic_fortaleza");
+      string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "下一级：加成中额外获得力量 +1，坚韧豁免 +2。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "下一级：加成中额外获得暴击 +5%。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：最大勇气 -1，使用次数 +1。\n选项B：持续时间 +1 回合。"; }
+      }
+      string efectoZh = $"获得 {apZh} +2，{fuerzaZh} +{fuerza}，伤害 +20%，{mentalZh} +3";
+      if (NIVEL > 1) { efectoZh += $"，{fortalezaZh} +2"; }
+      if (NIVEL > 2) { efectoZh += $"，{criticoZh} +5%"; }
+      efectoZh += "。";
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"无情 {SufijoNivel()}", "被动：勇气达到上限时触发一次强力的临时加成。", new[]
+      {
+        LineaDescripcion("基础", $"最大{valentiaZh} +{valentiaMaxima}。"), LineaDescripcion("触发", "勇气达到上限。"),
+        LineaDescripcion("效果", efectoZh, 1), LineaDescripcion("持续时间", $"{duracion} 回合", 1), LineaDescripcion("使用次数", $"每场战斗 {usos} 次", 1)
+      }, proximaMejoraZh, costoSuperior: string.Empty);
+      return;
+    }
+
     if (TRADU.i != null && TRADU.i.nIdioma == 3)
     {
       string valentia = TerminoDescripcion(TerminoDescripcionId.Valentia, "Valentia", "Valentía");
@@ -385,6 +412,12 @@ public class REPRESENTACIONImplacable : Habilidad
       if (NIVEL < 2) { return "<color=#dfea02>Proximo Nivel: +1 Forca e +2 Resistencia de Fortitude no buff.</color>"; }
       if (NIVEL == 2) { return "<color=#dfea02>Próximo Nivel: +5% Crítico no buff.</color>"; }
       if (NIVEL == 3) { return "<color=#dfea02>Opcao A: -1 Valentia Maxima, +1 uso.\nOpcao B: +1 turno de duracao.</color>"; }
+    }
+    else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      if (NIVEL < 2) { return "<color=#dfea02>下一级：加成中力量 +1，坚韧豁免 +2。</color>"; }
+      if (NIVEL == 2) { return "<color=#dfea02>下一级：加成中暴击 +5%。</color>"; }
+      if (NIVEL == 3) { return "<color=#dfea02>选项A：最大勇气 -1，使用次数 +1。\n选项B：持续时间 +1 回合。</color>"; }
     }
     else
     {

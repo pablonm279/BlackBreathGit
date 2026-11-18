@@ -1,0 +1,10 @@
+--- antes/ValidacionAmbienteBosque.cs
++++ Assets/Editor/ValidacionAmbienteBosque.cs
+@@ -14,6 +14,7 @@
+         bool conservar = new SerializedObject(zona).FindProperty("usarTexturaProceduralBosqueAngustiante").boolValue;
+         if (conservar) zona.ReaplicarTexturaBosqueArdiente();
+         AmbienteBosqueArdiente.Preparar(zona, conservar);
++        zona.StartCoroutine(AdornosBosqueArdiente.Generar(zona));
+     }
+ 
+     [MenuItem("Tools/Campaña/Bosque Ardiente/Capturar ambiente actual")]

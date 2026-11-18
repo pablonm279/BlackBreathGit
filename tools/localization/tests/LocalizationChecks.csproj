@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <NoWarn>$(NoWarn);0162</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../../Assets/TRADU.cs" Link="Game/TRADU.cs" />
+    <Compile Include="../../../Assets/Scripts/Localization/ChineseLocalization.cs" Link="Game/ChineseLocalization.cs" />
+    <Compile Include="../../../Assets/Scripts/Localization/ChineseBattleText.cs" Link="Game/ChineseBattleText.cs" />
+    <Compile Include="../../../Assets/TraduccionRapida.cs" Link="Game/TraduccionRapida.cs" />
+    <Compile Include="../../../Assets/Scripts/UI/PrePartidaTooltip.cs" Link="Game/PrePartidaTooltip.cs" />
+    <Compile Include="../../../Assets/Scripts/InitialLanguageBootstrap.cs" Link="Game/InitialLanguageBootstrap.cs" />
+    <Compile Include="../../../Assets/Scripts/Tutorial/TutorialLocalizationTable.cs" Link="Game/TutorialLocalizationTable.cs" />
+    <Compile Include="../../../outputs/localization/regression/LegacyTRADU.cs" Link="LegacyTRADU.cs" />
+  </ItemGroup>
+</Project>

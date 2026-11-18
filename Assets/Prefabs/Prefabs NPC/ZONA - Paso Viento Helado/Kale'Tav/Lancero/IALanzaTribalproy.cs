@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
-using Unity.VisualScripting;
 using System.Threading.Tasks;
 
 public class IALanzaTribalproy : IAHabilidad
@@ -78,8 +77,8 @@ public class IALanzaTribalproy : IAHabilidad
       GameObject flechaPrefab = BattleManager.Instance.contenedorPrefabs.LanzaTribal;
       GameObject Proyectil = Instantiate(flechaPrefab);
       Proyectil.GetComponent<ArrowFlight>().startMarker = transform;
-      Proyectil.GetComponent<ArrowFlight>().velocidad = 4.3f;
-      Proyectil.GetComponent<ArrowFlight>().parabola = 0.9f;  
+      Proyectil.GetComponent<ArrowFlight>().velocidad = 4.5f;
+      Proyectil.GetComponent<ArrowFlight>().parabola = 0.35f;  
     
      
       if (Objetivo != null)

@@ -446,6 +446,8 @@ public class IACondenaFerozBruja : IAHabilidad
         return "unleashes Fierce Condemnation on";
       case TRADU.IdiomaPortugues:
         return "libera Condenacao Feroz sobre";
+      case TRADU.IdiomaChinoSimplificado:
+        return "释放凶暴定罪于";
       default:
         return "desata Condena Feroz sobre";
     }

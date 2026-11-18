@@ -1,0 +1,11 @@
+despejado dia: 2 particulas; nubes=0
+lluvia dia: 421 particulas; nubes=0,85
+nieve dia: 809 particulas; nubes=0,72
+niebla dia: 52 particulas; nubes=0,55
+aurora dia: 23 particulas; nubes=0,05
+despejado noche: 1 particulas; nubes=0
+lluvia noche: 418 particulas; nubes=0,85
+nieve noche: 1021 particulas; nubes=0,72
+niebla noche: 68 particulas; nubes=0,55
+aurora noche: 29 particulas; nubes=0,05
+Reloj y clima real conservados: 9h / clima 1

@@ -1,0 +1,143 @@
+OK Shader BosqueArdienteSuelo
+OK Shader BosqueArdienteAmbiente
+OK Shader BosqueArdienteMadera
+OK Shader BosqueArdienteFondo
+OK Fondo con tres distancias y humo, en cuatro renderers
+OK Cantidad acotada de adornos: 41
+OK Adornos sin colliders ni interacción
+OK Fondo sin colliders
+OK RNG de campaña intacto al construir fondo y adornos
+OK Malla jugable intacta
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Huella libre de camino visible
+OK Huella libre de camino oculto
+OK Huella libre de nodo
+OK Regeneración determinista sin duplicar adornos
+OK Fondo único al reaplicar
+OK Presupuesto máximo de cuatro luces sin sombras
+OK Luces nuevas sin coste de sombras
+OK Un camino nuevo retira el adorno que invade su huella
+OK Calidad baja reduce la decoración
+OK Calidad baja limita el relleno a una luz
+OK El generador no modifica otras zonas
+OK Fondo y luces se apagan al salir del bosque
+OK RNG intacto después de animar y regenerar

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -76,6 +75,7 @@ public class CorteVerticalSagrado : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       StatsDescripcionUI stats = ObtenerStatsDescripcionUI();
       int criticoMin = Mathf.Clamp(19 - (stats.CriticoRango + criticoRangoHab), 2, 20);
       int criticoPorcentaje = Mathf.Clamp(21 - criticoMin, 0, 20) * 5;
@@ -89,9 +89,9 @@ public class CorteVerticalSagrado : Habilidad
         : esPortugues
           ? $"<color={colorFuerza}>Forca ({stats.Fuerza})</color>"
           : $"<color={colorFuerza}>Fuerza ({stats.Fuerza})</color>";
-      string titulo = esIngles ? "Sacred Vertical Slash" : esPortugues ? "Corte Vertical Sagrado" : "Corte Vertical Sagrado";
-      string subtitulo = esIngles ? "Heavy melee attack with Divine damage against Undead and Ethereal." : esPortugues ? "Ataque corpo a corpo pesado com dano Divino contra Mortos-vivos e Etereos." : "Ataque melee pesado con dano Divino contra Nomuertos y Etereos.";
-      string efecto = esIngles ? "Against Undead/Ethereal: +1-8 Divine" : esPortugues ? "Contra Morto-vivo/Etereo: +1-8 Divino" : "Contra Nomuerto/Etereo: +1-8 Divino";
+      string titulo = esIngles ? "Sacred Vertical Slash" : esPortugues ? "Corte Vertical Sagrado" : esChino ? "神圣纵斩" : "Corte Vertical Sagrado";
+      string subtitulo = esIngles ? "Heavy melee attack with Divine damage against Undead and Ethereal." : esPortugues ? "Ataque corpo a corpo pesado com dano Divino contra Mortos-vivos e Etereos." : esChino ? "沉重的近战攻击，对不死者和虚体额外造成神圣伤害。" : "Ataque melee pesado con dano Divino contra Nomuertos y Etereos.";
+      string efecto = esIngles ? "Against Undead/Ethereal: +1-8 Divine" : esPortugues ? "Contra Morto-vivo/Etereo: +1-8 Divino" : esChino ? "对不死者/虚体：额外 +1-8 神圣伤害" : "Contra Nomuerto/Etereo: +1-8 Divino";
       if (esIngles)
       {
         string fuerza = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"Strength ({stats.Fuerza})");
@@ -111,6 +111,21 @@ public class CorteVerticalSagrado : Habilidad
           },
           mostrarIconoMelee: true);
         return;
+      }
+
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{stats.Fuerza}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string cortanteZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string divinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(titulo, "对不死者和虚体目标施以惩戒的神圣一击。", new[]
+        {
+          LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"), LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{cortanteZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{bonusTirada}，对抗{defensaZh}。大失败：10%。{criticoZh}：{criticoPorcentaje}%。", 1),
+          LineaDescripcion("武器效果", $"不死者和虚体目标额外受到 1-8 点{divinoZh}。")
+        }, mostrarIconoMelee: true); return;
       }
 
       if (esPortugues)

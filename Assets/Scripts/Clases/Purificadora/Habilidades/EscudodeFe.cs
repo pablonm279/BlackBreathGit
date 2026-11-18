@@ -102,6 +102,51 @@ public class EscudodeFe : Habilidad
         return;
       }
 
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string tituloZh = "信念护盾 I";
+        if (NIVEL == 2) { tituloZh = "信念护盾 II"; }
+        if (NIVEL == 3) { tituloZh = "信念护盾 III"; }
+        if (NIVEL == 4) { tituloZh = "信念护盾 IV a"; }
+        if (NIVEL == 5) { tituloZh = "信念护盾 IV b"; }
+
+        string trampaZh = TerminoDescripcion(TerminoDescripcionId.TrampaProtectora, "护佑结界");
+        string barreraZh = TerminoDescripcion(TerminoDescripcionId.Barrera, "屏障", "Estado_barrera");
+        string fortalezaZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧", "ic_fortaleza");
+        string reflejosZh = TerminoDescripcion(TerminoDescripcionId.SalvacionReflejos, "反射", "ic_Reflejos");
+        string mentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智", "ic_mental");
+        string fervorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, $"你的当前狂热（{fervorActual}）");
+        string fervorSinValorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, "狂热");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string valentiaZh = TerminoDescripcion(TerminoDescripcionId.Valentia, "勇气");
+        string efectoDisparoZh = $"授予 {barreraZh} +{bonusBarrera}，{fortalezaZh}/{reflejosZh}/{mentalZh} 豁免 +{bonusTS}";
+        if (agregaDefensa) { efectoDisparoZh += $"，{defensaZh} +1"; }
+        if (agregaCuracion) { efectoDisparoZh += "，并恢复 2-12 点生命值"; }
+        efectoDisparoZh += $"。数值取自施放时的{fervorZh}。";
+
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = $"下一级：{valentiaZh}消耗 -1。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：触发时额外获得 +1 防御。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：持续时间 +1 回合。\n选项B：触发时额外恢复 2-12 点生命值。"; }
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "放置以当前狂热强度保护友军的护佑格。",
+          new[]
+          {
+            LineaDescripcion("目标", "1 个格子"),
+            LineaDescripcion("效果", $"在所选格子及相邻格子上放置{trampaZh}。"),
+            LineaDescripcion("触发时", efectoDisparoZh, 1),
+            LineaDescripcion("持续时间", $"{duracionTurnos} 回合"),
+            LineaDescripcion("需求", $"需要至少 1 点{fervorSinValorZh}；不会消耗它。")
+          },
+          proximaMejoraZh);
+        return;
+      }
+
       if (esPortugues)
       {
         string trampa = TerminoDescripcion(TerminoDescripcionId.TrampaProtectora, "armadilha protetora");

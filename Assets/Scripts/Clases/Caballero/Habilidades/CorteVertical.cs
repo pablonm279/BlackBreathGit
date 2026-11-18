@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -47,6 +46,7 @@ public class Cortevertical : Habilidad
     {
       bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
       bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+      bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
       var statsUI = ObtenerStatsDescripcionUI();
 
       int fuerzaActual = statsUI.Fuerza;
@@ -67,12 +67,14 @@ public class Cortevertical : Habilidad
       string ataqueTxt = ataqueActual == 0
         ? string.Empty
         : ataqueActual > 0 ? $" + {ataqueActual}" : $" - {Mathf.Abs(ataqueActual)}";
-      string titulo = esIngles ? "Vertical Cut" : esPortugues ? "Corte Vertical" : "Corte Vertical";
+      string titulo = esIngles ? "Vertical Cut" : esPortugues ? "Corte Vertical" : esChino ? "纵斩" : "Corte Vertical";
       string subtitulo = esIngles
         ? "Greatsword frontal melee attack against one target."
         : esPortugues
           ? "Ataque corpo a corpo com mandoble."
-          : "Golpe frontal con el mandoble.";
+          : esChino
+            ? "用巨剑对一名目标发起的正面近战攻击。"
+            : "Golpe frontal con el mandoble.";
 
       if (esIngles)
       {
@@ -90,6 +92,21 @@ public class Cortevertical : Habilidad
             LineaDescripcion("Attack Roll", $"1d20 + {fuerza}{ataqueTxt}{bonusAtaqueTxt} vs {defensa}. Fumble: {pifiaPorcentaje}%. {critico}: {criticoPorcentaje}%.")
           },
           mostrarIconoMelee: true);
+        return;
+      }
+
+      if (esChino)
+      {
+        string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, $"力量（{fuerzaActual}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string danoCortanteZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("纵斩", "对一名目标发起沉重的下劈攻击。", new[]
+        {
+          LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+          LineaDescripcion("效果", $"命中时造成 {rangoDanio} + {fuerzaZh} 点{danoCortanteZh}。"),
+          LineaDescripcion("攻击检定", $"1d20 + {fuerzaZh}{ataqueTxt}{bonusAtaqueTxt}，对抗{defensaZh}。大失败：{pifiaPorcentaje}%。{criticoZh}：{criticoPorcentaje}%。")
+        }, mostrarIconoMelee: true);
         return;
       }
 

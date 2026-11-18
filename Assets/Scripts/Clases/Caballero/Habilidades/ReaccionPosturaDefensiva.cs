@@ -26,6 +26,10 @@ public class ReaccionPosturaDefensiva : Reaccion
     {
       descripcion = $"Reaction: The knight will attack any enemy that misses a melee attack against him.";
     }
+    if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      descripcion = "反应：骑士会攻击任何对他发起近战攻击但未命中的敌人。";
+    }
     if (TRADU.i.nIdioma == 3)
     {
       descripcion = $"Reacao: O cavaleiro atacara qualquer inimigo que errar um ataque corpo a corpo contra ele.";

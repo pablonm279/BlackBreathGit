@@ -31,7 +31,8 @@ public class EstocadaPrimerSangre : Estocada
         string tituloEs = "Estocada del Primer Sangre";
         string tituloEn = "First Blood Thrust";
         string tituloPt = "Estocada do Primeiro Sangue";
-        nombre = esIngles ? tituloEn : esPortugues ? tituloPt : tituloEs;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
+        nombre = esIngles ? tituloEn : esChino ? "首滴血突刺" : esPortugues ? tituloPt : tituloEs;
 
         if (esIngles)
         {
@@ -54,6 +55,31 @@ public class EstocadaPrimerSangre : Estocada
                     LineaDescripcion("Attack Roll", $"1d20 + {atributoMixto}{bonusTiradaNormalizado} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
                     LineaDescripcion("Penetration", $"Armor Penetration: {penetracionArmadura}."),
                     LineaDescripcion("Full HP target", $"+{BonusAtaquePrimerSangre} Attack Roll, +{BonusDanioPlanoPrimerSangre} damage and +5% {criticoSinIcono}.")
+                },
+                mostrarIconoMelee: true);
+            return;
+        }
+        if (esChino)
+        {
+            string fuerzaZh = TerminoDescripcion(TerminoDescripcionId.Fuerza, "力量");
+            string agiZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, "敏捷");
+            string mixZh = $"{fuerzaZh}/{agiZh}（{atributoMixtoActual}）";
+            string defZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+            string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string crit2Zh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击");
+            string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+            string bonusZh = FormatoModificadorDescripcion(ataqueActual) + FormatoModificadorDescripcion(bonusAtaque);
+            int pctZh = Mathf.Clamp(21 - criticoBaseMin, 0, 20) * 5;
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "首滴血突刺",
+                "开局的一击，惩罚未受损的目标。",
+                new[]
+                {
+                    LineaDescripcion("目标", "1 名近战范围内的敌人或障碍物"),
+                    LineaDescripcion("效果", $"命中时，造成 {FormatearRangoDados(1, 8)} + {mixZh} 点{danoZh}。"),
+                    LineaDescripcion("攻击检定", $"1d20 + {mixZh}{bonusZh} 对抗{defZh}。大失败：5%。{critZh}：{pctZh}%。"),
+                    LineaDescripcion("穿透", $"护甲穿透：{penetracionArmadura}。"),
+                    LineaDescripcion("目标满生命值时", $"攻击检定 +{BonusAtaquePrimerSangre}，伤害 +{BonusDanioPlanoPrimerSangre}，{crit2Zh} +5%。")
                 },
                 mostrarIconoMelee: true);
             return;

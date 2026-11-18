@@ -575,6 +575,11 @@ public class BotonHabilidad : MonoBehaviour, IPointerClickHandler
             return "Intrínseca";
         }
 
+        if (idioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return "固有";
+        }
+
         return "Intrínseca";
     }
 
@@ -1307,6 +1312,8 @@ public class BotonHabilidad : MonoBehaviour, IPointerClickHandler
                 return "Insufficient Fervor";
             case TRADU.IdiomaPortugues:
                 return "Fervor insuficiente";
+            case TRADU.IdiomaChinoSimplificado:
+                return "狂热不足";
             default:
                 return "Fervor insuficiente";
         }
@@ -1325,6 +1332,8 @@ public class BotonHabilidad : MonoBehaviour, IPointerClickHandler
                 return "Requires being hidden";
             case TRADU.IdiomaPortugues:
                 return "Requer estar escondido";
+            case TRADU.IdiomaChinoSimplificado:
+                return "需要处于隐藏状态";
             default:
                 return "Requiere estar escondido";
         }
@@ -1343,6 +1352,8 @@ public class BotonHabilidad : MonoBehaviour, IPointerClickHandler
                 return "Insufficient AP";
             case TRADU.IdiomaPortugues:
                 return "PA insuficientes";
+            case TRADU.IdiomaChinoSimplificado:
+                return "行动点不足";
             default:
                 return "PA insuficientes";
         }

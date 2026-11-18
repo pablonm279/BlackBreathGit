@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -91,6 +90,41 @@ public class PilaresDeLuz : Habilidad
             LineaDescripcion("Duration", $"{duracionTurnos} turns")
           },
           proximaMejora);
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string tituloZh = "光之柱 I";
+        if (NIVEL == 2) { tituloZh = "光之柱 II"; }
+        if (NIVEL == 3) { tituloZh = "光之柱 III"; }
+        if (NIVEL == 4) { tituloZh = "光之柱 IV a"; }
+        if (NIVEL == 5) { tituloZh = "光之柱 IV b"; }
+
+        string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+        string danioDivinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino", "69%");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "下一级：光柱生命值 +6。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "下一级：光柱反击伤害 +2。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "下一级：选项A：伤害抗性 +3。\n选项B：光柱数量 +1。"; }
+        }
+
+        string estadisticasPilarZh = $"{vidaPilar} 点生命值";
+        if (resistenciaDanio > 0) { estadisticasPilarZh += $"，伤害抗性 {resistenciaDanio}"; }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "创造神圣的光柱，敌人攻击它时会受到反击伤害。",
+          new[]
+          {
+            LineaDescripcion("目标", "1 个格子"),
+            LineaDescripcion("效果", $"在所选格子及同列的空闲相邻格子上，最多创造 {cantidadPilares} 根光柱。"),
+            LineaDescripcion("光柱", estadisticasPilarZh, 1),
+            LineaDescripcion("被击中时", $"攻击者受到 {rangoDanioPilarEs} + {poderZh} 点{danioDivinoZh}；对不死者和虚灵目标伤害翻倍。", 1),
+            LineaDescripcion("持续时间", $"{duracionTurnos} 回合")
+          },
+          proximaMejoraZh);
         return;
       }
 

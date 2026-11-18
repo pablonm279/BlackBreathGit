@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -127,6 +126,46 @@ public class DisparoPotente : Habilidad
         {
           ClaseExplorador clase = Usuario.GetComponent<ClaseExplorador>();
           if (clase != null && clase.ObtenerCantidadFlechas() < requiereRecurso)
+          {
+            txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
+          }
+        }
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string agilidadZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{agilidadActual}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string penetracionZh = TerminoDescripcion(TerminoDescripcionId.PenetracionArmadura, "护甲穿透", "IconoArmadura");
+        string flechaZh = TerminoDescripcion(TerminoDescripcionId.Flecha, "箭");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "伤害 +2。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "攻击检定加成 +1。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = "选项A：无需消耗箭矢。\n选项B：攻击检定加成 +2。"; }
+        }
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          "强力射击 " + (NIVEL < 2 ? "I" : NIVEL == 2 ? "II" : NIVEL == 3 ? "III" : NIVEL == 4 ? "IV a" : "IV b"),
+          "发射一支重箭，贯穿一整行的所有目标。",
+          new[]
+          {
+            LineaDescripcion("目标", "同一行的所有敌人和障碍物"),
+            LineaDescripcion("效果", $"命中时，每个目标受到 {rangoDanio} + {agilidadZh} 点{danoZh}。"),
+            LineaDescripcion("攻击检定", $"1d20 + {agilidadZh}{bonusTirada} 对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentaje}%。"),
+            LineaDescripcion("穿透", $"{penetracionZh}：{penetracionArmadura}"),
+            LineaDescripcion("消耗", requiereRecurso > 0 ? $"1 支{flechaZh}" : "无"),
+            LineaDescripcion("耗力", $"最多 {esforzable} 点行动点")
+          },
+          proximaMejoraZh);
+
+        if (EsEscenaCampaña())
+        {
+          ClaseExplorador claseZh = Usuario.GetComponent<ClaseExplorador>();
+          if (claseZh != null && claseZh.ObtenerCantidadFlechas() < requiereRecurso)
           {
             txtDescripcion += $"\n\n<color=#ea0606><b>{TRADU.i.Traducir("No tienes flechas para usar esta habilidad.")}</b></color>";
           }

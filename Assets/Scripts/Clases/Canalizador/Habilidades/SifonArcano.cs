@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Threading.Tasks;
@@ -96,6 +95,45 @@ public class SifonArcano : Habilidad
           LineaDescripcion("Effort", $"Up to {esforzable} AP.")
         },
         proximaMejora);
+      return;
+    }
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string tituloZh = "奥术汲取 I";
+      if (NIVEL == 2) { tituloZh = "奥术汲取 II"; }
+      if (NIVEL == 3) { tituloZh = "奥术汲取 III"; }
+      if (NIVEL == 4) { tituloZh = "奥术汲取 IV a"; }
+      if (NIVEL == 5) { tituloZh = "奥术汲取 IV b"; }
+
+      string salvacionMentalZh = TerminoDescripcion(TerminoDescripcionId.SalvacionMental, "心智豁免", "ic_mental");
+      string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+      string sifonZh = TerminoDescripcion(TerminoDescripcionId.SifonArcano, "奥术汲取");
+      string residuosZh = TerminoDescripcion(TerminoDescripcionId.ResiduoEnergetico, "能量残留", "Estado_acumularenergia");
+      string danioArcanoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害", "dano_arcano");
+      string apMaxZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "最大行动点", "ap");
+      string energiaZh = TerminoDescripcion(TerminoDescripcionId.Energia, "能量等级");
+      string proximaMejoraZh = null;
+      if (DebeMostrarProximaMejoraDescripcion())
+      {
+        if (NIVEL < 2) { proximaMejoraZh = "每回合基础伤害 +1。"; }
+        else if (NIVEL == 2) { proximaMejoraZh = "解锁 IV 级升级路线，无直接机制变化。"; }
+        else if (NIVEL == 3) { proximaMejoraZh = "选项A：无实装变化。\n选项B：持续时间 +1 回合。"; }
+      }
+
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        tituloZh,
+        $"将一名敌人与一道奥术汲取相连，其伤害随{residuosZh}的数量提升。",
+        new[]
+        {
+          LineaDescripcion("目标", "1 名敌人"),
+          LineaDescripcion("效果", "目标进行一次豁免。"),
+          LineaDescripcion("豁免", $"{salvacionMentalZh}，对抗难度 {DificultadSalvacionMentalBase} + {poderZh}。", 1),
+          LineaDescripcion("豁免失败", $"施加{sifonZh}，持续 {duracionTurnos} 回合。", 1),
+          LineaDescripcion("每回合伤害", $"受到 {rangoDanioEs} × （1 + 战场上{residuosZh}的数量）点{danioArcanoZh}。", 1),
+          LineaDescripcion("击杀时", $"引导者获得 +1 {apMaxZh}，且在本场战斗剩余时间内 +10% 伤害；获得 +1 {energiaZh}。"),
+          LineaDescripcion("耗力", $"最多 {esforzable} 点行动点。")
+        },
+        proximaMejoraZh);
       return;
     }
     {

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -120,6 +119,51 @@ public class LlamaDivina : Habilidad
           "Launches a Divine projectile that burns or destroys impure targets.",
           lineas,
           proximaMejora);
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string tituloZh = "神圣之焰 I";
+        if (NIVEL == 2) { tituloZh = "神圣之焰 II"; }
+        if (NIVEL == 3) { tituloZh = "神圣之焰 III"; }
+        if (NIVEL == 4) { tituloZh = "神圣之焰 IV a"; }
+        if (NIVEL == 5) { tituloZh = "神圣之焰 IV b"; }
+
+        string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string fortalezaZh = TerminoDescripcion(TerminoDescripcionId.SalvacionFortaleza, "坚韧豁免", "ic_fortaleza");
+        string danioDivinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino");
+        string ardiendoZh = TerminoDescripcion(TerminoDescripcionId.Ardiendo, $"燃烧（{quemadura}）", "Estado_ardiendo");
+        string fervorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, "狂热");
+        string rangoDanioBaseZh = $"{3 + danioFijoActual}-{18 + danioFijoActual}";
+        string ataqueZh = ataqueActual == 0 ? string.Empty : ataqueActual > 0 ? $" + 攻击（{ataqueActual}）" : $" - 攻击（{Mathf.Abs(ataqueActual)}）";
+        string proximaMejoraZh = null;
+        if (DebeMostrarProximaMejoraDescripcion())
+        {
+          if (NIVEL < 2) { proximaMejoraZh = "豁免难度 +1。"; }
+          else if (NIVEL == 2) { proximaMejoraZh = "基础伤害 +3。"; }
+          else if (NIVEL == 3) { proximaMejoraZh = $"选项A（击杀时 +1 {fervorZh}）或选项B（燃烧 +2）。"; }
+        }
+
+        var lineasZh = new List<LineaDescripcionNormalizada>
+        {
+          LineaDescripcion("目标", "1 个单位或障碍物"),
+          LineaDescripcion("效果", $"命中时，造成 {rangoDanioBaseZh} + {poderZh} 点{danioDivinoZh}。"),
+          LineaDescripcion("检定", $"1d20 + {poderZh}{ataqueZh} 对抗{defensaZh}。大失败：5%。暴击：{Mathf.Clamp(21 - criticoMin, 0, 20) * 5}%。", 1),
+          LineaDescripcion("豁免", $"目标的{fortalezaZh}，对抗难度 {dcBase} + {poderZh}。", 1),
+          LineaDescripcion("豁免失败", $"施加{ardiendoZh}；不死者和虚灵目标会立即死亡。", 1)
+        };
+        if (ganaFervorAlMatar)
+        {
+          lineasZh.Add(LineaDescripcion("击杀时", $"获得 +1 {fervorZh}。", 1));
+        }
+
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          tituloZh,
+          "发射一枚神圣弹体，灼烧或摧毁不洁的目标。",
+          lineasZh,
+          proximaMejoraZh);
         return;
       }
 

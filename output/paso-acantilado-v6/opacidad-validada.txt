@@ -1,0 +1,1 @@
+OK: opacidad GPU anterior=0,6691765; nueva=0,6089507; proporcion=0,9100001 (9% menos).

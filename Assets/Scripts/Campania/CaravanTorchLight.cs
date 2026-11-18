@@ -92,7 +92,11 @@ public class CaravanTorchLight : MonoBehaviour
         float desfase = Mathf.Abs(transform.GetInstanceID() % 997) / 997f;
         float ruido = Mathf.PerlinNoise(Time.unscaledTime * velocidadTitileo, desfase) * 2f - 1f;
 
-        luz.color = colorAntorcha;
+        bool esPasoVientoHelado = campaignManager.scAtributosZona != null
+            && campaignManager.scAtributosZona.ID == 2;
+        luz.color = esPasoVientoHelado
+            ? Color.Lerp(colorAntorcha, new Color(1f, .68f, .42f, 1f), .45f)
+            : colorAntorcha;
         luz.spotAngle = Mathf.Clamp(
             anguloSpotBase * (1f + campaignManager.mejoraCaravanaAntorchas * 0.10f),
             1f,
@@ -100,7 +104,7 @@ public class CaravanTorchLight : MonoBehaviour
         luz.range = mapaManager.ObtenerPasoMapa()
             * campaignManager.ObtenerAlcanceVisionAntorchasEnPasos()
             * multiplicadorRango;
-        luz.intensity = Mathf.Max(0f, intensidadBase * factorVisual * (1f + ruido * variacionTitileo));
+        luz.intensity = Mathf.Max(0f, intensidadBase * (esPasoVientoHelado ? .42f : 1f) * factorVisual * (1f + ruido * variacionTitileo));
         luz.enabled = luzHabilitadaOriginal && luz.intensity > 0.005f;
     }
 

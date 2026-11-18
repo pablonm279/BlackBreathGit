@@ -1,0 +1,8 @@
+PasoVientoHeladoVegetacion: OK
+PasoVientoHeladoTerrenoExtension: OK
+PasoVientoHeladoRelieveFondo: OK
+PasoVientoHeladoClimaParticulas: OK
+PasoVientoHeladoLago: OK
+PasoVientoHeladoHorizonte: OK
+PasoVientoHeladoBrumaFondo: OK
+CaminoSueloRework: OK

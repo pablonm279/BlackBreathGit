@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
@@ -120,6 +119,26 @@ public class TiroconArcoAcido : Habilidad
             LineaDescripcion("Attack Roll", $"1d20 + {agilidad}{bonusTirada} vs {defensa}. Fumble: 5%. {critico}: {criticoPorcentaje}%."),
             LineaDescripcion("Cost", $"1 {flecha}")
           });
+        return;
+      }
+
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string agilidadZh = TerminoDescripcion(TerminoDescripcionId.Agilidad, $"敏捷（{stats.Agilidad}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string danoCortanteZh = TerminoDescripcion(TerminoDescripcionId.DanioCortante, "斩击伤害", "dano_cortante");
+        string danoAcidoZh = TerminoDescripcion(TerminoDescripcionId.DanioAcido, "酸性伤害", "dano_acido");
+        string danoAcidoSinIconoZh = TerminoDescripcion(TerminoDescripcionId.DanioAcido, "酸性伤害");
+        string flechaZh = TerminoDescripcion(TerminoDescripcionId.Flecha, "箭");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada("酸蚀弓箭射击", "射出一支涂有强酸的箭。", new[]
+        {
+          LineaDescripcion("目标", "1 名敌人或障碍物"),
+          LineaDescripcion("效果", $"命中时，造成 {rangoDanio} + {agilidadZh} 点{danoCortanteZh}，并额外造成 1-6 点{danoAcidoZh}。"),
+          LineaDescripcion("擦伤", $"额外造成 1-2 点{danoAcidoSinIconoZh}。", 1),
+          LineaDescripcion("攻击检定", $"1d20 + {agilidadZh}{bonusTirada} 对抗{defensaZh}。大失败：5%。{criticoZh}：{criticoPorcentaje}%。"),
+          LineaDescripcion("消耗", $"1 支{flechaZh}")
+        });
         return;
       }
 

@@ -1,0 +1,6 @@
+Cámara fuente: (1891.73, 40.06, 35.09) / (41.57, 0.00, 359.44) / FOV 59,2
+Terreno: Center: (1905.56, 27.83, 51.63), Extents: (44.74, 1.56, 17.79)
+Extensión: Center: (1907.34, 28.07, 60.03), Extents: (72.93, 1.64, 28.71)
+Decoraciones originales: 5615
+Adornos nuevos: 33
+RNG de campaña intacto: True

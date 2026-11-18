@@ -33,6 +33,11 @@ public class armaArcoLargo : Arma
             sNombreItem = "Longbow " + nmejora;
             itemDescripcion = "A large bow, ideal for long-range shots.\n\nAttack ability: Bow Shot.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "长弓 " + nmejora;
+            itemDescripcion = "一把大型弓，适合远距离射击。\n\n攻击技能：弓箭射击。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Arco Longo " + nmejora;
@@ -54,6 +59,11 @@ public class armaArcoLargo : Arma
             sNombreItem = "Acid Longbow " + nmejora;
             itemDescripcion = "A large bow, ideal for long-range shots.\n\nAttack ability: Acid Bow Shot.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "酸蚀长弓 " + nmejora;
+            itemDescripcion = "一把大型弓，适合远距离射击。\n\n攻击技能：酸蚀弓箭射击。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Arco Longo Acido " + nmejora;
@@ -73,6 +83,11 @@ public class armaArcoLargo : Arma
             sNombreItem = "Powerful Longbow " + nmejora;
             itemDescripcion = "A large bow, ideal for long-range shots.\n\nAttack ability: Powerful Bow Shot.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "强力长弓 " + nmejora;
+            itemDescripcion = "一把大型弓，适合远距离射击。\n\n攻击技能：强力弓箭射击。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Arco Longo Potente " + nmejora;
@@ -91,6 +106,11 @@ public class armaArcoLargo : Arma
          {
             sNombreItem = "Slowing Longbow " + nmejora;
             itemDescripcion = "A large bow, ideal for long-range shots.\n\nAttack ability: Slowing Bow Shot.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "减速长弓 " + nmejora;
+            itemDescripcion = "一把大型弓，适合远距离射击。\n\n攻击技能：减速弓箭射击。";
          }
          else if (TRADU.i.nIdioma == 3)
          {

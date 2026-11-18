@@ -18,6 +18,11 @@ public class armaduraGambeson : Armadura
             sNombreItem = "Gambeson " + nmejora;
             itemDescripcion = "A light padded gambeson built to preserve the duelist's mobility.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "战袄 " + nmejora;
+            itemDescripcion = "一件轻盈的夹棉战袄，用以保持决斗者的机动性。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Gambesao " + nmejora;
@@ -36,6 +41,11 @@ public class armaduraGambeson : Armadura
          {
             sNombreItem = "Light Fencing Gambeson " + nmejora;
             itemDescripcion = "A flexible gambeson for duelists who prefer to start a fight already in motion.\nEffect: +2 Evasion at the start of combat.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "轻剑术战袄 " + nmejora;
+            itemDescripcion = "一件灵活的战袄，适合喜欢一开战便已进入战斗节奏的决斗者。\n效果：战斗开始时闪避 +2。";
          }
          else if (TRADU.i.nIdioma == 3)
          {
@@ -56,6 +66,11 @@ public class armaduraGambeson : Armadura
             sNombreItem = "Gambeson of Composure " + nmejora;
             itemDescripcion = "A sober gambeson reinforced to keep body and mind steady under pressure.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "沉着战袄 " + nmejora;
+            itemDescripcion = "一件朴素的战袄，经过加固以在重压之下保持身心的稳定。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Gambeson do Temple " + nmejora;
@@ -74,6 +89,11 @@ public class armaduraGambeson : Armadura
          {
             sNombreItem = "Last Step Gambeson " + nmejora;
             itemDescripcion = "A gambeson stitched to survive the most dangerous moment of a duel.\nEffect: Last Step.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "最后一步战袄 " + nmejora;
+            itemDescripcion = "一件缝制而成的战袄，用以在决斗最危险的一刻中幸存下来。\n效果：最后一步。";
          }
          else if (TRADU.i.nIdioma == 3)
          {

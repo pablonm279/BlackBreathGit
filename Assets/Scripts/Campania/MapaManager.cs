@@ -27,6 +27,7 @@ public class MapaManager : MonoBehaviour
     const string LogSettlementDescubiertoEs = "<color=#7ED6F7>-La Caravana encuentra un camino de piedra, hay un asentamiento cerca.</color>";
     const string LogSettlementDescubiertoEn = "<color=#7ED6F7>-The caravan finds a stone road, there is a settlement nearby.</color>";
     const string LogSettlementDescubiertoPt = "<color=#7ED6F7>-A Caravana encontra um caminho de pedra, ha um assentamento por perto.</color>";
+    const string LogSettlementDescubiertoZh = "<color=#7ED6F7>-车队发现了一条石路，附近有一处定居点。</color>";
     const float TiempoMaximoEsperaCamaraIntro = 1.5f;
     const float TiempoMaximoEsperaDecoracionIntro = 60f;
     const float DelayInicioAnimacionIntroCampania = 0.45f;
@@ -151,6 +152,8 @@ public class MapaManager : MonoBehaviour
            zonaId = CampaignManager.Instance.scAtributosZona.ID;
        }
 
+       AplicarMaterialesCaminosZona();
+
        Nodo origen = scContenedordeNodos.ObtenerNodoSegunXY(0,0);
        if (origen == null) return;
        if (origen.yatiroConexiones)
@@ -187,6 +190,20 @@ public class MapaManager : MonoBehaviour
            AplicarMapaLinealTutorialSiCorresponde();
            RefrescarVisibilidadExploracion();
            IniciarIntroCampaniaPendienteTrasCarga();
+       }
+  }
+
+  public void AplicarMaterialesCaminosZona()
+  {
+       if (scContenedordeNodos == null) return;
+
+       MaterialesCaminosZona materialesZona = CampaignManager.Instance != null
+           && CampaignManager.Instance.scAtributosZona != null
+           ? CampaignManager.Instance.scAtributosZona.ObtenerMaterialesCaminosZona()
+           : null;
+       foreach (Nodo nodo in scContenedordeNodos.listTodosNodos)
+       {
+           if (nodo != null) nodo.AplicarMaterialesZona(materialesZona);
        }
   }
 
@@ -325,6 +342,7 @@ public class MapaManager : MonoBehaviour
 
         if (!campaignManager.ConsumirIntroCampaniaPendiente())
         {
+            origen.EliminarLineaIntroCampania();
             introCampaniaEnPreparacion = false;
             yield break;
         }
@@ -380,6 +398,8 @@ public class MapaManager : MonoBehaviour
             }
             AlinearConvoyAlSuelo();
         }
+
+        origen.EliminarLineaIntroCampania();
 
         RestaurarCamaraIntroCampania(camaraTransform, parentCamaraOriginal, indiceHermanoCamaraOriginal, posicionLocalCamaraOriginal, rotacionLocalCamaraOriginal, escalaLocalCamaraOriginal);
         RestaurarControlesCamaraIntro(controlesCamaraIntro);
@@ -661,6 +681,7 @@ public class MapaManager : MonoBehaviour
 
         if (origen != null)
         {
+            origen.EliminarLineaIntroCampania();
             origen.PosicionarObjetoEnNodo(goCaravana);
         }
 
@@ -675,6 +696,7 @@ public class MapaManager : MonoBehaviour
 
         if (origen != null)
         {
+            origen.EliminarLineaIntroCampania();
             origen.PosicionarObjetoEnNodo(goCaravana);
         }
 
@@ -1721,6 +1743,7 @@ public class MapaManager : MonoBehaviour
         {
             TRADU.IdiomaIngles => LogSettlementDescubiertoEn,
             TRADU.IdiomaPortugues => LogSettlementDescubiertoPt,
+            TRADU.IdiomaChinoSimplificado => LogSettlementDescubiertoZh,
             _ => LogSettlementDescubiertoEs
         };
     }

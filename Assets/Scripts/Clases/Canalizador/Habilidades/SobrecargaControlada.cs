@@ -44,11 +44,19 @@ public class SobrecargaControlada : Habilidad
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
         if (esIngles)
         {
             txtDescripcion = "<color=#5dade2><b>Controlled Overload</b></color>\n\n" +
                 "<i>(Passive) Lets a trickle of arcane energy leak into every strike. +5% damage.</i>";
+            return;
+        }
+
+        if (esChino)
+        {
+            txtDescripcion = "<color=#5dade2><b>受控过载</b></color>\n\n" +
+                "<i>（被动）护手会在每次攻击中释放少量奥术能量。伤害 +5%。</i>";
             return;
         }
 

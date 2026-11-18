@@ -33,6 +33,11 @@ public class armaEstoque : Arma
             sNombreItem = "Estoc " + nmejora;
             itemDescripcion = "A light, precise estoc, ideal for duels.\n\nAttack ability: Thrust.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "刺剑 " + nmejora;
+            itemDescripcion = "一把轻巧而精准的刺剑，非常适合决斗。\n\n攻击技能：突刺。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Estoque " + nmejora;
@@ -51,6 +56,11 @@ public class armaEstoque : Arma
          {
             sNombreItem = "Astral Estoc " + nmejora;
             itemDescripcion = "An estoc engraved with astral sigils, ideal for marking foes.\n\nAttack ability: Astral Thrust.\nEffect: applies Astral Mark on hit.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "星界刺剑 " + nmejora;
+            itemDescripcion = "一把刻有星界符文的刺剑，适合标记对手。\n\n攻击技能：星界突刺。\n效果：命中时施加星界印记。";
          }
          else if (TRADU.i.nIdioma == 3)
          {
@@ -71,6 +81,11 @@ public class armaEstoque : Arma
             sNombreItem = "First Blood Estoc " + nmejora;
             itemDescripcion = "An estoc built to open a duel with brutal advantage.\n\nAttack ability: First Blood Thrust.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "首滴血刺剑 " + nmejora;
+            itemDescripcion = "一把专为在决斗开局占据压倒性优势而设计的刺剑。\n\n攻击技能：首滴血突刺。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Estoque do Primeiro Sangue " + nmejora;
@@ -90,6 +105,11 @@ public class armaEstoque : Arma
             sNombreItem = "Swift Riposte Estoc " + nmejora;
             itemDescripcion = "A nimble estoc built to pressure with tempo and precision.\n\nAttack ability: Thrust.\nEffect: applies Measured Target on hit.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "疾速还击刺剑 " + nmejora;
+            itemDescripcion = "一把灵巧的刺剑，专为以节奏与精准施压而设计。\n\n攻击技能：突刺。\n效果：命中时施加精准目标。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Estoque de Replica Veloz " + nmejora;
@@ -108,6 +128,11 @@ public class armaEstoque : Arma
          {
             sNombreItem = "Black Rose Estoc " + nmejora;
             itemDescripcion = "An elegant, cruel estoc made to leave wounds that refuse to close.\n\nAttack ability: Black Rose Thrust.\nEffect: applies Black Rose on hit.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "黑玫瑰刺剑 " + nmejora;
+            itemDescripcion = "一把优雅而残酷的刺剑，专为留下无法愈合的伤口而打造。\n\n攻击技能：黑玫瑰突刺。\n效果：命中时施加黑玫瑰。";
          }
          else if (TRADU.i.nIdioma == 3)
          {

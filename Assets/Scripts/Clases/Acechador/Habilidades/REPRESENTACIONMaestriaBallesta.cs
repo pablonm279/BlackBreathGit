@@ -59,6 +59,21 @@ public class REPRESENTACIONMaestriaBallesta : Habilidad
       return;
     }
 
+    if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+    {
+      string ataqueZh = TerminoDescripcion(TerminoDescripcionId.Ataque, "攻击");
+      string danoZh = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "穿刺伤害", "dano_perforante");
+      string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+      string apZh = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "行动点", "ap");
+      string bonusZh = $"{ataqueZh} +1，{danoZh} +2" + (critico > 0 ? $"，{critZh} +{critico}%" : "") + (alcance ? "，距离 +1。" : "。");
+      string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null : NIVEL < 2 ? "下一级：暴击 +5%。" : NIVEL == 2 ? "下一级：行动点消耗 -1。" : NIVEL == 3 ? "选项A：距离 +1。选项B：移除冷却时间。" : null;
+      var lZh = new List<LineaDescripcionNormalizada> { LineaDescripcion("适用于", "手弩攻击。"), LineaDescripcion("加成", bonusZh) };
+      if (reduceAp) lZh.Add(LineaDescripcion("消耗", $"{apZh} -1。"));
+      if (sinCooldown) lZh.Add(LineaDescripcion("冷却时间", "无。"));
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada($"手弩精通 {sufijo}", "被动：提升使用手弩进行的攻击。", lZh, proxZh, costoSuperior: string.Empty);
+      return;
+    }
+
     if (TRADU.i != null && TRADU.i.nIdioma == 3)
     {
       string ataque = TerminoDescripcion(TerminoDescripcionId.Ataque, "Ataque"); string dano = TerminoDescripcion(TerminoDescripcionId.DanioPerforante, "dano Perfurante", "dano_perforante"); string crit = TerminoDescripcion(TerminoDescripcionId.Critico, "Crítico", "critico"); string ap = TerminoDescripcion(TerminoDescripcionId.PuntosAccion, "AP", "ap");

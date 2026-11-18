@@ -98,7 +98,10 @@ public class AlientoNegroVFX : MonoBehaviour
     void OnValidate()
     {
         InicializarObjetivo();
-        InicializarAudio();
+        // No se llama a InicializarAudio aqui: re-escalaba el volumen serializado en cada validacion
+        // (lo leia ya escalado como "base"), degradandolo con cada cambio en el inspector.
+        if (audioMovimiento == null)
+            audioMovimiento = GetComponent<AudioSource>();
         ReconstruirPuntosPosicion();
         valorMaximo = Mathf.Max(valorMinimo, valorMaximo);
         duracionMinima = Mathf.Max(0f, duracionMinima);

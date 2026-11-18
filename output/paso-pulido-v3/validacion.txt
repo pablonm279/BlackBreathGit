@@ -1,0 +1,1 @@
+OK: pared delantera con material continuo; preparación idempotente; terreno principal, colliders, RNG y reloj intactos; zona del tutorial excluida.

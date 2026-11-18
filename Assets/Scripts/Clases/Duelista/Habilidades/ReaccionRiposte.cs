@@ -132,9 +132,11 @@ public class ReaccionRiposte : Reaccion
         string nombreAliado = TRADU.i != null ? TRADU.i.Traducir(aliadoProtegido.uNombre) : aliadoProtegido.uNombre;
         string texto = TRADU.i != null && TRADU.i.nIdioma == 2
             ? nombreDuelista + " intercepts the attack for " + nombreAliado + "."
-            : TRADU.i != null && TRADU.i.nIdioma == 3
-                ? nombreDuelista + " intercepta o ataque por " + nombreAliado + "."
-                : nombreDuelista + " intercepta el ataque por " + nombreAliado + ".";
+            : TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado
+                ? nombreDuelista + " 替 " + nombreAliado + " 拦截了这次攻击。"
+                : TRADU.i != null && TRADU.i.nIdioma == 3
+                    ? nombreDuelista + " intercepta o ataque por " + nombreAliado + "."
+                    : nombreDuelista + " intercepta el ataque por " + nombreAliado + ".";
         BattleManager.Instance.EscribirLog(texto);
 
         return true;
@@ -340,6 +342,10 @@ public class ReaccionRiposte : Reaccion
         if (TRADU.i.nIdioma == 2)
         {
             descripcion = "Reaction: swaps with an adjacent ally targeted by a single-target melee attack, gains Defense for that hit and counterattacks with Thrust on melee misses.";
+        }
+        else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            descripcion = "反应：与相邻的、成为单体近战攻击目标的友军互换位置，在该次打击中获得防御，并在敌人的近战攻击落空时以突刺进行反击。";
         }
         else if (TRADU.i.nIdioma == 3)
         {

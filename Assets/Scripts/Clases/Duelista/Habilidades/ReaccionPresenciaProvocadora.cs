@@ -71,12 +71,17 @@ public class ReaccionPresenciaProvocadora : Reaccion
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaIngles;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaPortugues;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
         int bonusAtaque = ObtenerBonusAtaqueReaccion();
         int bonusDanio = ObtenerBonusDanioPlanoReaccion();
 
         if (esIngles)
         {
             descripcion = $"Reaction: if an enemy misses a melee attack against her, counterattacks with base Thrust ({bonusAtaque:+#;-#;0} Attack, {bonusDanio:+#;-#;0} Damage). Unlimited uses until next turn.";
+        }
+        else if (esChino)
+        {
+            descripcion = $"反应：若敌人对她发起的近战攻击落空，便以基础突刺进行反击（攻击 {bonusAtaque:+#;-#;0}，伤害 {bonusDanio:+#;-#;0}）。直到下一回合开始前，次数不受限。";
         }
         else if (esPortugues)
         {

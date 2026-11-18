@@ -37,6 +37,24 @@ public class REPRESENTACIONAlmaEndeble : Habilidad
             return;
         }
 
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string debilidadZh = TerminoDescripcion(TerminoDescripcionId.Debilidad, "虚弱");
+            string afliccionesZh = TerminoDescripcion(TerminoDescripcionId.Afliccion, "战斗折磨", "Estado_debuff");
+            string alientoNegroZh = TerminoDescripcion(TerminoDescripcionId.AlientoNegro, "黑息");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "脆弱之魂",
+                $"{debilidadZh}：根据{alientoNegroZh}的强度承受折磨。",
+                new[]
+                {
+                    LineaDescripcion("效果", $"{afliccionesZh}会随{alientoNegroZh}的强度提升。"),
+                    LineaDescripcion("来源", alientoNegroZh)
+                },
+                costoSuperior: "",
+                colorTitulo: "#cb5000");
+            return;
+        }
+
         if (TRADU.i != null && TRADU.i.nIdioma == 3)
         {
             string fraqueza = TerminoDescripcion(TerminoDescripcionId.Debilidad, "Fraqueza");

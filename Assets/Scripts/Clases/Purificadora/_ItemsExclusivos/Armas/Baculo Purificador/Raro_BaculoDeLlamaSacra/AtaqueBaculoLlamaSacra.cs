@@ -77,12 +77,36 @@ public class AtaqueBaculoLlamaSacra : GolpeBaston
       : esPortugues
         ? $"<color={colorPoder}>Poder ({stats.Poder})</color>"
         : $"<color={colorPoder}>Poder ({stats.Poder})</color>";
-    string titulo = esIngles ? "Sacred Flame" : esPortugues ? "Chama Sagrada" : "Llama Sacra";
+    bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
+    string titulo = esIngles ? "Sacred Flame" : esChino ? "圣焰" : esPortugues ? "Chama Sagrada" : "Llama Sacra";
     string subtitulo = esIngles
       ? "Melee staff attack with Fire and Divine damage."
-      : esPortugues
-        ? "Ataque corpo a corpo de cajado com dano de Fogo e Divino."
-        : "Ataque cuerpo a cuerpo de báculo con daño de Fuego y Divino.";
+      : esChino
+        ? "带有火焰和神圣伤害的法杖近战攻击。"
+        : esPortugues
+          ? "Ataque corpo a corpo de cajado com dano de Fogo e Divino."
+          : "Ataque cuerpo a cuerpo de báculo con daño de Fuego y Divino.";
+
+    if (esChino)
+    {
+      string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{stats.Poder}）");
+      string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+      string danioFuegoZh = TerminoDescripcion(TerminoDescripcionId.DanioFuego, "火焰伤害", "dano_fuego");
+      string danioDivinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino");
+      string danioDivinoSinIconoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害");
+      string ardiendoZh = TerminoDescripcion(TerminoDescripcionId.Ardiendo, "燃烧（1）", "Estado_ardiendo");
+      txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+        titulo,
+        subtitulo,
+        new[]
+        {
+          LineaDescripcion("目标", "1 名敌人或障碍物"),
+          LineaDescripcion("效果", $"造成 1-8 + {poderZh} 点{danioFuegoZh}，另加 1-4 + 一半{poderZh}点{danioDivinoZh}。"),
+          LineaDescripcion("检定", $"1d20 + {poderZh}{bonusTirada} 对抗{defensaZh}。大失败：5%。暴击：{criticoPorcentaje}%。", 1),
+          LineaDescripcion("命中时", $"施加{ardiendoZh}。虚灵、不死者和腐蚀目标额外受到 1-6 点{danioDivinoSinIconoZh}。", 1)
+        });
+      return;
+    }
 
     if (esIngles)
     {

@@ -1,0 +1,272 @@
+Assets\Scripts\UI\UIEstadoCuadro.cs(8,7): warning CS0105: The using directive for 'System.Collections.Generic' appeared previously in this namespace
+Assets\IAUnidadEspectroBosque.cs(37,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\IAUnidadEspectroBosque.cs(48,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\LogDeCampania.cs(464,13): warning CS0618: 'TMP_Text.enableKerning' is obsolete: 'The "enableKerning" property has been deprecated. Use the "fontFeatures" property to control what features are enabled on the text component.'
+Assets\LogDeCampania.cs(464,35): warning CS0618: 'TMP_Text.enableKerning' is obsolete: 'The "enableKerning" property has been deprecated. Use the "fontFeatures" property to control what features are enabled on the text component.'
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Rufián con Mazo\EnemigoUnidadRufianMazo.cs(11,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\AsentamientoManager.cs(1544,16): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\MapDecorator.cs(934,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\MapDecorator.cs(951,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\MapDecorator.cs(1029,21): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\AsentamientoManager.cs(1604,9): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\Prefabs\Prefabs NPC\VENGADORES DE KADRYN\Alabardero\IAPrimerGolpeAlabardero.cs(107,12): warning CS0219: The variable 'unidadEmpujada' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\VENGADORES DE KADRYN\Alabardero\IAPrimerGolpeAlabardero.cs(66,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Prefabs\Prefabs NPC\VENGADORES DE KADRYN\TrampaAlientoNegro\ReaccionVengadorKadryn.cs(26,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\ArbolMaldito\IACondenaRaices.cs(97,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\Bruja Quemada\IACondenaFerozBruja.cs(110,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\RaizArdiendo\IAEnterrarRaizFuego.cs(120,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkil Guerrero\MiradaMasacre\TrampaMiradamasacre.cs(60,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkil Guerrero\IAMiradadeMasacre.cs(61,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(68,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\ReaccionAtaqueCuervo.cs(43,10): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkilever\IAGarraZarkilever.cs(168,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Efigie Animada\ReaccionEfigieAnimada.cs(43,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Efigie Animada\ReaccionEfigieAnimada.cs(26,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Faagdan\IAEmbestidaFaagdan.cs(153,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Buff.cs(240,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Buff.cs(244,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Buff.cs(416,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Campania\MenuCaravana.cs(551,13): warning CS0162: Unreachable code detected
+Assets\Scripts\Campania\NieblaGuerraCaravana.cs(95,31): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Campania\MenuBatallas.cs(1455,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Campania\CampaignManager.cs(3285,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Campania\Personajes\btnPersonaje.cs(816,32): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Clases\Acechador\Habilidades\Abrojos\Abrojo.cs(31,31): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Acechador\Habilidades\ArrojarAbrojos.cs(135,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\AtaqueEspadaCorta.cs(149,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\ArrojarAbrojos.cs(264,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Acechador\Habilidades\Asesinar.cs(175,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\BombaDeHumo.cs(133,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\BombaDeHumo.cs(224,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Casilla.cs(735,11): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Clases\Acechador\Habilidades\HaciaLasSombras.cs(123,5): warning CS0162: Unreachable code detected
+Assets\Scripts\BattleManager.cs(5906,11): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(156,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\HaciaLasSombras.cs(212,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Acechador\Habilidades\Asesinar.cs(489,11): warning CS0219: The variable 'rangoPlus' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMaestriaBallesta.cs(91,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\DisparoEnvenenado.cs(278,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(323,11): warning CS0219: The variable 'rangoPlus' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONSueldo.cs(51,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONSigiloso.cs(63,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMasacre.cs(99,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\REPRESENTACIONMaestriaEspadaCorta.cs(81,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\Habilidades\CorteIncapacitante.cs(189,5): warning CS0162: Unreachable code detected
+Assets\Scripts\AdministradorEscenas.cs(5754,12): warning CS0219: The variable 'encontrado' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\TiroBallestaDeMano.cs(207,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Infrecuente_Espada Corta Arcana\AtaqueEspadaCortaArcana.cs(150,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Rara_Espada Corta Consumevida\AtaqueEspadaCortaConsumevida.cs(142,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Acechador\_ItemsExclusivos\Armas\Espada Corta\Infrecuente_Espada Corta Filonegro\AtaqueEspadaCortaFilonegro.cs(145,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\CorteVertical.cs(143,7): warning CS0162: Unreachable code detected
+Assets\Scripts\BattleManager.cs(6664,5): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\Scripts\Clases\Caballero\Habilidades\GritoMotivador.cs(174,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\HombroConHombro.cs(192,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\PosturaDefensiva.cs(180,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\CorteHorizontal.cs(215,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\Partir.cs(242,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONArmaduraLimitante.cs(68,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONCorajeInquebrantable.cs(73,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONAcorazado.cs(290,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\PrimerosAuxilios.cs(186,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Campania\CampaignManager.cs(7166,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Infrecuente_MandobleSagrado\CorteVerticalSagrado.cs(154,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Infrecuente_MandobleSediento\CorteVerticalSediento.cs(151,7): warning CS0162: Unreachable code detected
+Assets\Scripts\BattleManager.cs(7036,74): warning CS0184: The given expression is never of the provided ('DestruirObstaculo') type
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONImplacable.cs(340,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\REPRESENTACIONDeterminacion.cs(339,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\_ItemsExclusivos\Armas\Mandoble\Rara_MandobleCongelado\CorteVerticalCongelado.cs(154,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\SiguesTu.cs(181,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Caballero\Habilidades\SiguesTu.cs(419,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Canalizador\Habilidades\AcumularEnergia.cs(171,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaArcana.cs(126,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDesintegradora.cs(202,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDePoder.cs(168,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\EscudoEnergetico.cs(169,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\Instatransporte.cs(165,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONSobrecarga.cs(69,10): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\HojaDeEnergia.cs(194,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONAcumulacionProtegida.cs(148,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\ReaccionSifonArcano.cs(42,30): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Canalizador\Habilidades\ManifestacionArcana.cs(176,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\ResiduoEnergético\ResiduoEnergetico.cs(32,31): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Canalizador\Habilidades\ManifestacionArcana.cs(344,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Canalizador\Habilidades\REPRESENTACIONExcesoDePoder.cs(158,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\EnGarde.cs(112,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONAtaquesReveladores.cs(113,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\Estocada.cs(131,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\CargaDeEstoque.cs(171,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONDanzaDelEstoque.cs(115,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONPasoLigero.cs(87,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\PresenciaProvocadora.cs(142,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Canalizador\Habilidades\SifonArcano.cs(172,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONPosturaDemandante.cs(92,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\AFondo.cs(165,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armaduras\Gambeson\Rara_GambesonDelUltimoPaso\REPRESENTACIONUltimoPaso.cs(88,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\Riposte.cs(125,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\RecuperarAire.cs(128,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\REPRESENTACIONEvasionMaestra.cs(148,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\Habilidades\Riposte.cs(235,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Duelista\Habilidades\PuntaHiriente.cs(184,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armas\Estoque\Infrecuente_EstoqueDelPrimerSangre\EstocadaPrimerSangre.cs(90,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\ClaseExplorador.cs(231,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Explorador\Habilidades\CorteDaga.cs(141,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Acechar.cs(196,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Fogata.cs(186,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armas\Estoque\Rara_EstoqueDeLaRosaNegra\EstocadaRosaNegra.cs(89,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Fogata.cs(272,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONPasoCauteloso.cs(84,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONAcrobatico.cs(143,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONReconocimiento.cs(121,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Duelista\_ItemsExclusivos\Armas\Estoque\Raro_EstoqueAstral\EstocadaAstral.cs(92,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs(201,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs(282,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Explorador\Habilidades\DisparoPotente.cs(238,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\REPRESENTACIONVistaLejana.cs(115,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\TiroconArco.cs(174,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Rafaga.cs(253,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\Vigilancia.cs(215,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\MarcarPresa.cs(206,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\Habilidades\MarcarPresa.cs(314,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Raro_ArcoLargoRalentizante\TiroconArcoRalentizante.cs(188,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Infrecuente_ArcoLargoAcido\TiroconArcoAcido.cs(185,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Explorador\_ItemsExclusivos\Armas\Arco Largo\Infrecuente_ArcoLargoPotente\TiroconArcoPotente.cs(186,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\CastigaraLosMalvados.cs(197,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\CastigaraLosMalvados.cs(361,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Purificadora\Habilidades\Enmendar.cs(180,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\GolpeBaston.cs(158,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\EscudodeFe.cs(227,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Campania\Nodo.cs(6501,17): warning CS0219: The variable 'minSampleDist' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(245,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\PilaresDeLuz.cs(189,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONFervorConjunto.cs(91,9): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\ReaccionCastigarMalvados.cs(40,31): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(420,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(186,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\PilaresDeLuz.cs(414,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONEcosDivinos.cs(357,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\REPRESENTACIONAuraSagrada.cs(360,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\SalmoPurificador.cs(195,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\_ItemsExclusivos\Armas\Baculo Purificador\Raro_BaculoDeLlamaSacra\AtaqueBaculoLlamaSacra.cs(173,5): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\LlamaDivina.cs(248,7): warning CS0162: Unreachable code detected
+Assets\Scripts\Clases\Purificadora\Habilidades\SalmoPurificador.cs(418,32): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Estados.cs(28,28): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+Assets\Scripts\Estados.cs(67,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(79,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(180,32): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(209,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(213,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Campania\Nodo.cs(7182,10): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Estados.cs(228,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(233,6): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(249,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(252,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(268,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(273,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(288,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(293,13): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(309,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(313,12): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(328,8): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(331,12): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Estados.cs(354,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Habilidades\TerminoHoverPopup.cs(74,5): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\Scripts\Sistema\HandicapDificultad.cs(114,22): warning CS0618: 'Object.FindObjectsOfType<T>()' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Tutorial\TutorialDirector.cs(121,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Tutorial\TutorialDirector.cs(164,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Tutorial\TutorialDirector.cs(193,63): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Habilidades\Habilidades IA\IAHabilidad.cs(676,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Tutorial\TutorialDirector.cs(639,19): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\Habilidades\Habilidad.cs(1639,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\IAUnidad.cs(1289,13): warning CS0184: The given expression is never of the provided ('DestruirObstaculo') type
+Assets\Scripts\Tutorial\TutorialPresenter.cs(444,25): warning CS0618: 'Object.FindObjectOfType<T>(bool)' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\UI\ScreenFlash.cs(55,28): warning CS0618: 'Object.FindObjectOfType<T>()' is obsolete: 'Object.FindObjectOfType has been deprecated. Use Object.FindFirstObjectByType instead or if finding any instance is acceptable the faster Object.FindAnyObjectByType'
+Assets\Scripts\UI\BotonHabilidad.cs(715,17): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(730,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(735,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(740,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(746,21): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(755,21): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(763,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\UI\BotonHabilidad.cs(768,19): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Visual\VisualPolishRuntime.cs(197,25): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\SunController.cs(105,13): warning CS0618: 'Light.cookieSize' is obsolete: 'Light.cookieSize has been deprecated. Use Light.cookieSize2D instead.'
+Assets\TooltipBatalla.cs(189,9): warning CS0618: 'TMP_Text.enableWordWrapping' is obsolete: 'The enabledWordWrapping property is now obsolete. Please use the textWrappingMode property instead.'
+Assets\Scripts\Visual\VisualPolishRuntime.cs(597,24): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Visual\VisualPolishRuntime.cs(667,35): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Visual\VisualPolishRuntime.cs(680,24): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Scripts\Unidad.cs(2267,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(3425,15): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(3445,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(3646,11): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(3820,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(4206,5): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(4434,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(5169,3): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(5208,4): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(5923,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(5928,9): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\Scripts\Unidad.cs(6009,7): warning CS4014: Because this call is not awaited, execution of the current method continues before the call is completed. Consider applying the 'await' operator to the result of the call.
+Assets\TRADU.cs(15303,18): warning CS0618: 'Object.FindObjectsOfType<T>(bool)' is obsolete: 'Object.FindObjectsOfType has been deprecated. Use Object.FindObjectsByType instead which lets you decide whether you need the results sorted or not.  FindObjectsOfType sorts the results by InstanceID but if you do not need this using FindObjectSortMode.None is considerably faster.'
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(14,34): warning CS0414: The field 'IALevantarVuelo.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(15,34): warning CS0414: The field 'CariciadelBosque.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(14,34): warning CS0414: The field 'IAChirridoVagranilo.bonusAtaque' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(15,34): warning CS0414: The field 'LuzCegadora.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(17,32): warning CS0414: The field 'IADebatirTacticas.tipoDanio' is assigned but its value is never used
+Assets\Scripts\Habilidades\BoladeFuego.cs(15,34): warning CS0414: The field 'BoladeFuego.criticoRangoHab' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(17,34): warning CS0414: The field 'FerenesiDeAsesinato.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(13,32): warning CS0414: The field 'Perdicion.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(16,34): warning CS0414: The field 'IAChirridoVagranilo.daniodX' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(16,34): warning CS0414: The field 'LuzCegadora.daniodX' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(15,34): warning CS0414: The field 'Purificacion.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(14,32): warning CS0414: The field 'IADebatirTacticas.bonusAtaque' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(18,34): warning CS0414: The field 'Distraer.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(17,34): warning CS0414: The field 'IAChirridoVagranilo.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(12,32): warning CS0414: The field 'Perdicion.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(17,34): warning CS0414: The field 'CariciadelBosque.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladrón\LadronEnvenenarArma.cs(15,32): warning CS0414: The field 'LadronEnvenenarArma.XdDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(17,34): warning CS0414: The field 'Distraer.criticoRangoHab' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladrón\LadronEnvenenarArma.cs(17,32): warning CS0414: The field 'LadronEnvenenarArma.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(15,32): warning CS0414: The field 'IALevantarMartillo.XdDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\LuzCegadora.cs(407,10): warning CS0414: The field 'LuzCegadora.seTiroFlechaVFX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Nedukazal\Zarkil\Zarkilever\IALenguetazo.cs(14,36): warning CS0414: The field 'IALenguetazo.vfxDuracion' is assigned but its value is never used
+Assets\Scripts\UI\UIInfoChar.cs(11,34): warning CS0414: The field 'UIInfoChar.posicionAliadoTop' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladrón\LadronEnvenenarArma.cs(16,32): warning CS0414: The field 'LadronEnvenenarArma.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\BANDIDOS\Ladrón\LadronEnvenenarArma.cs(14,32): warning CS0414: The field 'LadronEnvenenarArma.bonusAtaque' is assigned but its value is never used
+Assets\Scripts\Habilidades\RetrasarTurno.cs(12,34): warning CS0414: The field 'RetrasarTurno.bonusAtaque' is assigned but its value is never used
+Assets\EdgePanCameraX.cs(49,36): warning CS0414: The field 'EdgePanCameraZ.zoomInFovDelta' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(14,32): warning CS0414: The field 'IALevantarMartillo.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(15,32): warning CS0414: The field 'IADebatirTacticas.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(15,34): warning CS0414: The field 'Enredar.XdDanio' is assigned but its value is never used
+Assets\Scripts\Habilidades\RetrasarTurno.cs(14,34): warning CS0414: The field 'RetrasarTurno.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(17,34): warning CS0414: The field 'Enredar.tipoDanio' is assigned but its value is never used
+Assets\Scripts\Habilidades\RetrasarTurno.cs(13,34): warning CS0414: The field 'RetrasarTurno.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(14,34): warning CS0414: The field 'CariciadelBosque.bonusAtaque' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(15,34): warning CS0414: The field 'Distraer.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\CariciadelBosque.cs(16,34): warning CS0414: The field 'CariciadelBosque.daniodX' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(14,34): warning CS0414: The field 'Purificacion.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(15,34): warning CS0414: The field 'IALevantarVuelo.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(11,32): warning CS0414: The field 'Perdicion.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(16,34): warning CS0414: The field 'IAAtaqueCuervo.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(16,34): warning CS0414: The field 'Enredar.daniodX' is assigned but its value is never used
+Assets\Scripts\Clases\Explorador\Habilidades\ImprovisarFlechas.cs(13,26): warning CS0414: The field 'ImprovisarFlechas.usosBatalla' is assigned but its value is never used
+Assets\Scripts\Clases\Canalizador\Habilidades\DescargaDePoder.cs(17,34): warning CS0414: The field 'DescargaDePoder.criticoRangoHab' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(15,34): warning CS0414: The field 'FerenesiDeAsesinato.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(17,34): warning CS0414: The field 'IAAtaqueCuervo.tipoDanio' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(310,10): warning CS0414: The field 'Purificacion.seTiroFlechaVFX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\SUBTERRANEOS\Vagranilo\IAChirridoVagranilo.cs(15,34): warning CS0414: The field 'IAChirridoVagranilo.XdDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IADebatirTacticas.cs(16,32): warning CS0414: The field 'IADebatirTacticas.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(16,34): warning CS0414: The field 'IALevantarVuelo.daniodX' is assigned but its value is never used
+Assets\Scripts\Campania\CaravanTorchLight.cs(11,53): warning CS0414: The field 'CaravanTorchLight.alturaSobreCaravana' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\EspectrodelBosque\Perdicion.cs(14,32): warning CS0414: The field 'Perdicion.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Bosque de los Lamentos\DriadaQuemada\Enredar.cs(14,34): warning CS0414: The field 'Enredar.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(14,34): warning CS0414: The field 'FerenesiDeAsesinato.bonusAtaque' is assigned but its value is never used
+Assets\Scripts\Clases\Purificadora\Habilidades\Purificacion.cs(17,34): warning CS0414: The field 'Purificacion.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\FerenesiDeAsesinato.cs(16,34): warning CS0414: The field 'FerenesiDeAsesinato.daniodX' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(14,34): warning CS0414: The field 'IAAtaqueCuervo.bonusAtaque' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(14,34): warning CS0414: The field 'Distraer.bonusAtaque' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(17,32): warning CS0414: The field 'IALevantarMartillo.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Salvajes\Pajaro Rompe-hielos\IALevantarVuelo.cs(17,34): warning CS0414: The field 'IALevantarVuelo.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Gulek-Gul\IALevantarMartillo.cs(16,32): warning CS0414: The field 'IALevantarMartillo.daniodX' is assigned but its value is never used
+Assets\Scripts\Clases\Acechador\Habilidades\Distraer.cs(16,34): warning CS0414: The field 'Distraer.daniodX' is assigned but its value is never used
+Assets\Scripts\Habilidades\RetrasarTurno.cs(15,34): warning CS0414: The field 'RetrasarTurno.tipoDanio' is assigned but its value is never used
+Assets\Prefabs\Prefabs NPC\ZONA - Paso Viento Helado\Kale'Tav\Bruja\IAAtaqueCuervo.cs(15,34): warning CS0414: The field 'IAAtaqueCuervo.XdDanio' is assigned but its value is never used

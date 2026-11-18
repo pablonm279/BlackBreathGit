@@ -47,6 +47,12 @@ public class TutorialTooltipDefinition
   public string GetText()
   {
     int idioma = TRADU.i != null ? TRADU.i.nIdioma : PlayerPrefs.GetInt("nIdioma", TRADU.IdiomaEspanol);
+    if (idioma == TRADU.IdiomaChinoSimplificado)
+    {
+      return ChineseLocalization.Get("tooltip." + id, !string.IsNullOrEmpty(textoEn) ? textoEn
+        : (!string.IsNullOrEmpty(textoEs) ? textoEs : id));
+    }
+
     if (idioma == TRADU.IdiomaIngles && !string.IsNullOrEmpty(textoEn))
     {
       return textoEn;

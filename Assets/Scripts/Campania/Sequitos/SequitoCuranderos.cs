@@ -54,6 +54,7 @@ public class SequitoCuranderos : MonoBehaviour
     {
       TRADU.IdiomaIngles => "Treatment Wagons: Their initial bonus is +10%; each tier adds another +5%, up to +30%, and reduces the cost of Treat Wounds. This bonus is added to the global healing multiplier and affects both the 4%/h resting rate and the 2%/h active rate.\nCurrent global bonus: ",
       TRADU.IdiomaPortugues => "Carros de Tratamento: O bônus inicial é +10%; cada tier adiciona outros +5%, até +30%, e reduz o custo de Tratar Feridas. Este bônus é somado ao multiplicador global de cura e afeta tanto a taxa de 4%/h em descanso quanto a taxa de 2%/h em atividade.\nBônus global atual: ",
+      TRADU.IdiomaChinoSimplificado => "治疗马车：初始加成为 +10%；每提升一级再增加 +5%，最高可达 +30%，并降低治疗伤患的花费。此加成计入全局治疗倍率，同时影响休整时每小时4%和活动时每小时2%的恢复速率。\n当前全局加成：",
       _ => "Carros de Tratamiento: Su bonificación inicial es +10%; cada tier suma otro +5%, hasta +30%, y reduce el costo de Tratar Heridas. Esta bonificación se suma al multiplicador global de curación y afecta tanto la tasa de 4%/h al descansar como la de 2%/h en actividad.\nBonificación global actual: "
     };
 

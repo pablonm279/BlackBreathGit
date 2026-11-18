@@ -16,6 +16,8 @@ public sealed class PresagioDefinition
   public string descripcionEn;
   public string nombrePt;
   public string descripcionPt;
+  public string nombreZh;
+  public string descripcionZh;
 
   public bool EstaDisponibleEnRegion(int regionId)
   {
@@ -47,6 +49,10 @@ public sealed class PresagioDefinition
     string descripcion;
     switch (idioma)
     {
+      case TRADU.IdiomaChinoSimplificado:
+        nombre = nombreZh;
+        descripcion = descripcionZh;
+        break;
       case TRADU.IdiomaIngles:
         nombre = nombreEn;
         descripcion = descripcionEn;
@@ -148,7 +154,9 @@ public static class PresagioCatalog
       nombreEn = "Broken Routes",
       descripcionEn = "roads have fewer branches.",
       nombrePt = "Rotas Quebradas",
-      descripcionPt = "os caminhos têm menos bifurcações."
+      descripcionPt = "os caminhos têm menos bifurcações.",
+      nombreZh = "断裂之路",
+      descripcionZh = "道路的岔路更少。"
     },
     new PresagioDefinition
     {
@@ -161,7 +169,9 @@ public static class PresagioCatalog
       nombreEn = "Open Routes",
       descripcionEn = "roads have more branches.",
       nombrePt = "Rotas Abertas",
-      descripcionPt = "os caminhos têm mais bifurcações."
+      descripcionPt = "os caminhos têm mais bifurcações.",
+      nombreZh = "通衢之路",
+      descripcionZh = "道路的岔路更多。"
     },
     new PresagioDefinition
     {
@@ -174,7 +184,9 @@ public static class PresagioCatalog
       nombreEn = "Underground",
       descripcionEn = "more underground shortcuts are found.",
       nombrePt = "Subsolo",
-      descripcionPt = "mais atalhos subterrâneos são encontrados."
+      descripcionPt = "mais atalhos subterrâneos são encontrados.",
+      nombreZh = "地底",
+      descripcionZh = "能找到更多地下捷径。"
     },
     new PresagioDefinition
     {
@@ -187,7 +199,9 @@ public static class PresagioCatalog
       nombreEn = "Collapsed",
       descripcionEn = "no underground shortcuts are found.",
       nombrePt = "Desmoronado",
-      descripcionPt = "não são encontrados atalhos subterrâneos."
+      descripcionPt = "não são encontrados atalhos subterrâneos.",
+      nombreZh = "坍塌",
+      descripcionZh = "找不到地下捷径。"
     },
     new PresagioDefinition
     {
@@ -200,7 +214,9 @@ public static class PresagioCatalog
       nombreEn = "Winding Roads",
       descripcionEn = "more winding roads are found.",
       nombrePt = "Caminhos Intrincados",
-      descripcionPt = "mais caminhos sinuosos são encontrados."
+      descripcionPt = "mais caminhos sinuosos são encontrados.",
+      nombreZh = "曲折之路",
+      descripcionZh = "会遇到更多蜿蜒的道路。"
     },
     new PresagioDefinition
     {
@@ -213,7 +229,9 @@ public static class PresagioCatalog
       nombreEn = "Well-Kept Roads",
       descripcionEn = "the number of winding roads is reduced.",
       nombrePt = "Caminhos Bem Cuidados",
-      descripcionPt = "a quantidade de caminhos sinuosos é reduzida."
+      descripcionPt = "a quantidade de caminhos sinuosos é reduzida.",
+      nombreZh = "坦途",
+      descripcionZh = "蜿蜒道路的数量减少。"
     },
     new PresagioDefinition
     {
@@ -226,7 +244,9 @@ public static class PresagioCatalog
       nombreEn = "Old Trails",
       descripcionEn = "more surface shortcuts are found.",
       nombrePt = "Trilhas Antigas",
-      descripcionPt = "mais atalhos de superfície são encontrados."
+      descripcionPt = "mais atalhos de superfície são encontrados.",
+      nombreZh = "古老小径",
+      descripcionZh = "能找到更多地表捷径。"
     },
     new PresagioDefinition
     {
@@ -239,7 +259,9 @@ public static class PresagioCatalog
       nombreEn = "Faded Roads",
       descripcionEn = "no surface shortcuts are found.",
       nombrePt = "Caminhos Apagados",
-      descripcionPt = "não são encontrados atalhos de superfície."
+      descripcionPt = "não são encontrados atalhos de superfície.",
+      nombreZh = "湮没之路",
+      descripcionZh = "找不到地表捷径。"
     },
     new PresagioDefinition
     {
@@ -252,7 +274,9 @@ public static class PresagioCatalog
       nombreEn = "Abundant Materials",
       descripcionEn = "+15% Materials gathering",
       nombrePt = "Materiais Abundantes",
-      descripcionPt = "+15% de coleta de Materiais"
+      descripcionPt = "+15% de coleta de Materiais",
+      nombreZh = "材料充裕",
+      descripcionZh = "+15% 材料采集"
     },
     new PresagioDefinition
     {
@@ -265,7 +289,9 @@ public static class PresagioCatalog
       nombreEn = "Scarce Materials",
       descripcionEn = "-15% Materials gathering",
       nombrePt = "Materiais Escassos",
-      descripcionPt = "-15% de coleta de Materiais"
+      descripcionPt = "-15% de coleta de Materiais",
+      nombreZh = "材料匮乏",
+      descripcionZh = "-15% 材料采集"
     },
     new PresagioDefinition
     {
@@ -278,7 +304,9 @@ public static class PresagioCatalog
       nombreEn = "Easy Prey",
       descripcionEn = "+15% Supplies gathering",
       nombrePt = "Presas Fáceis",
-      descripcionPt = "+15% de coleta de Suprimentos"
+      descripcionPt = "+15% de coleta de Suprimentos",
+      nombreZh = "易得猎物",
+      descripcionZh = "+15% 补给采集"
     },
     new PresagioDefinition
     {
@@ -291,7 +319,9 @@ public static class PresagioCatalog
       nombreEn = "Dwindling Wildlife",
       descripcionEn = "-15% Supplies gathering",
       nombrePt = "Fauna Reduzida",
-      descripcionPt = "-15% de coleta de Suprimentos"
+      descripcionPt = "-15% de coleta de Suprimentos",
+      nombreZh = "野兽稀少",
+      descripcionZh = "-15% 补给采集"
     },
     new PresagioDefinition
     {
@@ -304,7 +334,9 @@ public static class PresagioCatalog
       nombreEn = "Active Trade",
       descripcionEn = "-10% purchase cost of items and resources.",
       nombrePt = "Comércio Ativo",
-      descripcionPt = "-10% no custo de compra de objetos e recursos."
+      descripcionPt = "-10% no custo de compra de objetos e recursos.",
+      nombreZh = "商贸繁荣",
+      descripcionZh = "物品与资源的购买花费 -10%。"
     },
     new PresagioDefinition
     {
@@ -317,7 +349,9 @@ public static class PresagioCatalog
       nombreEn = "Dwindling Trade",
       descripcionEn = "+10% purchase cost of items and resources.",
       nombrePt = "Comércio Enfraquecido",
-      descripcionPt = "+10% no custo de compra de objetos e recursos."
+      descripcionPt = "+10% no custo de compra de objetos e recursos.",
+      nombreZh = "商贸凋敝",
+      descripcionZh = "物品与资源的购买花费 +10%。"
     },
     new PresagioDefinition
     {
@@ -330,7 +364,9 @@ public static class PresagioCatalog
       nombreEn = "Positive Aura",
       descripcionEn = "increases the chance of Events being positive",
       nombrePt = "Aura Positiva",
-      descripcionPt = "aumenta as chances de os Eventos serem positivos"
+      descripcionPt = "aumenta as chances de os Eventos serem positivos",
+      nombreZh = "祥和之兆",
+      descripcionZh = "提高事件呈现正面结果的几率"
     },
     new PresagioDefinition
     {
@@ -343,7 +379,9 @@ public static class PresagioCatalog
       nombreEn = "Negative Aura",
       descripcionEn = "increases the chance of Events being negative",
       nombrePt = "Aura Negativa",
-      descripcionPt = "aumenta as chances de os Eventos serem negativos"
+      descripcionPt = "aumenta as chances de os Eventos serem negativos",
+      nombreZh = "不祥之兆",
+      descripcionZh = "提高事件呈现负面结果的几率"
     },
     new PresagioDefinition
     {
@@ -356,7 +394,9 @@ public static class PresagioCatalog
       nombreEn = "Clear Signs",
       descripcionEn = "Event nodes start revealed on the map.",
       nombrePt = "Sinais Claros",
-      descripcionPt = "os nodos de Eventos começam revelados no mapa."
+      descripcionPt = "os nodos de Eventos começam revelados no mapa.",
+      nombreZh = "明晰之兆",
+      descripcionZh = "事件节点在地图上开局即已揭示。"
     },
     new PresagioDefinition
     {
@@ -369,7 +409,9 @@ public static class PresagioCatalog
       nombreEn = "Confusing Signs",
       descripcionEn = "Event nodes will always be Mysterious.",
       nombrePt = "Sinais Confusos",
-      descripcionPt = "os nodos de Eventos sempre serão Misteriosos."
+      descripcionPt = "os nodos de Eventos sempre serão Misteriosos.",
+      nombreZh = "迷惑之兆",
+      descripcionZh = "事件节点将始终保持神秘。"
     },
     new PresagioDefinition
     {
@@ -382,7 +424,9 @@ public static class PresagioCatalog
       nombreEn = "Resource Piles",
       descripcionEn = "Resource nodes start revealed on the map.",
       nombrePt = "Pilhas de Recursos",
-      descripcionPt = "os nodos de Recursos começam revelados no mapa."
+      descripcionPt = "os nodos de Recursos começam revelados no mapa.",
+      nombreZh = "资源堆积",
+      descripcionZh = "资源节点在地图上开局即已揭示。"
     },
     new PresagioDefinition
     {
@@ -395,7 +439,9 @@ public static class PresagioCatalog
       nombreEn = "Hidden Resources",
       descripcionEn = "Resource nodes will always be Mysterious.",
       nombrePt = "Recursos Escondidos",
-      descripcionPt = "os nodos de Recursos sempre serão Misteriosos."
+      descripcionPt = "os nodos de Recursos sempre serão Misteriosos.",
+      nombreZh = "深藏资源",
+      descripcionZh = "资源节点将始终保持神秘。"
     },
     new PresagioDefinition
     {
@@ -407,7 +453,9 @@ public static class PresagioCatalog
       nombreEn = "Trade Rumors",
       descripcionEn = "Trading Post nodes start revealed on the map.",
       nombrePt = "Rumores Comerciais",
-      descripcionPt = "os nodos de Posto Comercial começam revelados no mapa."
+      descripcionPt = "os nodos de Posto Comercial começam revelados no mapa.",
+      nombreZh = "商旅传闻",
+      descripcionZh = "贸易站节点在地图上开局即已揭示。"
     },
     new PresagioDefinition
     {
@@ -420,7 +468,9 @@ public static class PresagioCatalog
       nombreEn = "Sacred Signs",
       descripcionEn = "Shrine nodes start revealed on the map.",
       nombrePt = "Sinais Sagrados",
-      descripcionPt = "os nodos de Altares começam revelados no mapa."
+      descripcionPt = "os nodos de Altares começam revelados no mapa.",
+      nombreZh = "神圣征兆",
+      descripcionZh = "祭坛节点在地图上开局即已揭示。"
     },
     new PresagioDefinition
     {
@@ -433,7 +483,9 @@ public static class PresagioCatalog
       nombreEn = "Profane Land",
       descripcionEn = "there will be no Shrine nodes on the map.",
       nombrePt = "Terra Profana",
-      descripcionPt = "não haverá nodos de Altares no mapa."
+      descripcionPt = "não haverá nodos de Altares no mapa.",
+      nombreZh = "亵渎之地",
+      descripcionZh = "地图上不会出现祭坛节点。"
     },
     new PresagioDefinition
     {
@@ -446,7 +498,9 @@ public static class PresagioCatalog
       nombreEn = "Threat Warnings",
       descripcionEn = "Elite Battle nodes start revealed on the map.",
       nombrePt = "Avisos de Ameaças",
-      descripcionPt = "os nodos de Batalha de Elite começam revelados no mapa."
+      descripcionPt = "os nodos de Batalha de Elite começam revelados no mapa.",
+      nombreZh = "威胁警讯",
+      descripcionZh = "精英战斗节点在地图上开局即已揭示。"
     },
     new PresagioDefinition
     {
@@ -459,7 +513,9 @@ public static class PresagioCatalog
       nombreEn = "Hidden Threats",
       descripcionEn = "Elite Battle nodes will always be Mysterious.",
       nombrePt = "Ameaças Escondidas",
-      descripcionPt = "os nodos de Batalha de Elite sempre serão Misteriosos."
+      descripcionPt = "os nodos de Batalha de Elite sempre serão Misteriosos.",
+      nombreZh = "潜藏威胁",
+      descripcionZh = "精英战斗节点将始终保持神秘。"
     },
     new PresagioDefinition
     {
@@ -472,7 +528,9 @@ public static class PresagioCatalog
       nombreEn = "Sparse Settlements",
       descripcionEn = "Fewer Settlements in the region and fewer available actions.",
       nombrePt = "Povoados Escassos",
-      descripcionPt = "Menos Assentamentos na região e menos ações disponíveis."
+      descripcionPt = "Menos Assentamentos na região e menos ações disponíveis.",
+      nombreZh = "聚落稀疏",
+      descripcionZh = "该区域的定居点更少，可用操作也更少。"
     },
     new PresagioDefinition
     {
@@ -485,7 +543,9 @@ public static class PresagioCatalog
       nombreEn = "Thriving Settlements",
       descripcionEn = "Settlements provide more civilians and their prices are lower.",
       nombrePt = "Povoados Vigorosos",
-      descripcionPt = "os Assentamentos fornecem mais civis e seus preços são menores."
+      descripcionPt = "os Assentamentos fornecem mais civis e seus preços são menores.",
+      nombreZh = "兴旺聚落",
+      descripcionZh = "定居点提供更多平民，且价格更低。"
     },
     new PresagioDefinition
     {
@@ -498,7 +558,9 @@ public static class PresagioCatalog
       nombreEn = "Charted Region",
       descripcionEn = "a section of the map will be fully explored.",
       nombrePt = "Região Cartografada",
-      descripcionPt = "uma parte do mapa estará completamente explorada."
+      descripcionPt = "uma parte do mapa estará completamente explorada.",
+      nombreZh = "已绘之地",
+      descripcionZh = "地图的一部分将完全探明。"
     },
     new PresagioDefinition
     {
@@ -511,7 +573,9 @@ public static class PresagioCatalog
       nombreEn = "Unknown Region",
       descripcionEn = "Passive Exploration will be more difficult.",
       nombrePt = "Região Desconhecida",
-      descripcionPt = "A Exploração Passiva será mais difícil."
+      descripcionPt = "A Exploração Passiva será mais difícil.",
+      nombreZh = "未知之地",
+      descripcionZh = "被动探索将更加困难。"
     },
     new PresagioDefinition
     {
@@ -524,7 +588,9 @@ public static class PresagioCatalog
       nombreEn = "Positive Feeling",
       descripcionEn = "the Caravan will start with more Hope.",
       nombrePt = "Sensação Positiva",
-      descripcionPt = "a Caravana começará com mais Esperança."
+      descripcionPt = "a Caravana começará com mais Esperança.",
+      nombreZh = "心怀希望",
+      descripcionZh = "车队将以更多希望开局。"
     },
     new PresagioDefinition
     {
@@ -537,7 +603,9 @@ public static class PresagioCatalog
       nombreEn = "Negative Feeling",
       descripcionEn = "the Caravan will start with less Hope.",
       nombrePt = "Sensação Negativa",
-      descripcionPt = "a Caravana começará com menos Esperança."
+      descripcionPt = "a Caravana começará com menos Esperança.",
+      nombreZh = "心存忧虑",
+      descripcionZh = "车队将以更少希望开局。"
     },
     new PresagioDefinition
     {
@@ -550,7 +618,9 @@ public static class PresagioCatalog
       nombreEn = "Peaceful Nights",
       descripcionEn = "resting will grant Hope.",
       nombrePt = "Noites Pacíficas",
-      descripcionPt = "descansar concederá Esperança."
+      descripcionPt = "descansar concederá Esperança.",
+      nombreZh = "静谧之夜",
+      descripcionZh = "休整时将获得希望。"
     },
     new PresagioDefinition
     {
@@ -563,7 +633,9 @@ public static class PresagioCatalog
       nombreEn = "Turbulent Nights",
       descripcionEn = "resting will reduce Hope.",
       nombrePt = "Noites Turbulentas",
-      descripcionPt = "descansar reduzirá a Esperança."
+      descripcionPt = "descansar reduzirá a Esperança.",
+      nombreZh = "不宁之夜",
+      descripcionZh = "休整时将失去希望。"
     },
     new PresagioDefinition
     {
@@ -576,7 +648,9 @@ public static class PresagioCatalog
       nombreEn = "Dangerous Roads",
       descripcionEn = "slightly increases the chance of enemy Ambushes.",
       nombrePt = "Caminhos Perigosos",
-      descripcionPt = "aumenta levemente as chances de Emboscadas inimigas."
+      descripcionPt = "aumenta levemente as chances de Emboscadas inimigas.",
+      nombreZh = "险途",
+      descripcionZh = "略微提高遭敌方伏击的几率。"
     },
     new PresagioDefinition
     {
@@ -589,7 +663,9 @@ public static class PresagioCatalog
       nombreEn = "Unprepared Enemies",
       descripcionEn = "slightly increases the chance of Ambushing enemies.",
       nombrePt = "Inimigos Desprevenidos",
-      descripcionPt = "aumenta levemente as chances de Emboscar inimigos."
+      descripcionPt = "aumenta levemente as chances de Emboscar inimigos.",
+      nombreZh = "敌军松懈",
+      descripcionZh = "略微提高伏击敌人的几率。"
     },
     new PresagioDefinition
     {
@@ -602,7 +678,9 @@ public static class PresagioCatalog
       nombreEn = "Watchful Threats",
       descripcionEn = "Region Alert will increase by 1 more when the journey begins.",
       nombrePt = "Ameaças Vigilantes",
-      descripcionPt = "o Alerta da Região aumentará em mais 1 quando a jornada começar."
+      descripcionPt = "o Alerta da Região aumentará em mais 1 quando a jornada começar.",
+      nombreZh = "警惕之敌",
+      descripcionZh = "旅程开始时区域警戒等级额外提高1点。"
     },
     new PresagioDefinition
     {
@@ -615,7 +693,9 @@ public static class PresagioCatalog
       nombreEn = "No Surveillance",
       descripcionEn = "Region Alert will not increase when the journey begins.",
       nombrePt = "Sem Vigilância",
-      descripcionPt = "o Alerta da Região não aumentará quando a jornada começar."
+      descripcionPt = "o Alerta da Região não aumentará quando a jornada começar.",
+      nombreZh = "疏于戒备",
+      descripcionZh = "旅程开始时区域警戒等级不会提高。"
     },
     new PresagioDefinition
     {
@@ -627,7 +707,9 @@ public static class PresagioCatalog
       nombreEn = "Memorable Adventure",
       descripcionEn = "characters will gain more Experience.",
       nombrePt = "Aventura Memorável",
-      descripcionPt = "os personagens receberão mais Experiência."
+      descripcionPt = "os personagens receberão mais Experiência.",
+      nombreZh = "难忘的历险",
+      descripcionZh = "角色将获得更多经验。"
     },
     new PresagioDefinition
     {
@@ -639,7 +721,9 @@ public static class PresagioCatalog
       nombreEn = "Forgettable Adventure",
       descripcionEn = "characters will gain less Experience.",
       nombrePt = "Aventura Esquecível",
-      descripcionPt = "os personagens receberão menos Experiência."
+      descripcionPt = "os personagens receberão menos Experiência.",
+      nombreZh = "平淡的历险",
+      descripcionZh = "角色将获得更少经验。"
     },
     new PresagioDefinition
     {
@@ -651,7 +735,9 @@ public static class PresagioCatalog
       nombreEn = "Plague in the Region",
       descripcionEn = "when resting, characters must resist with Fortitude or become Sick.",
       nombrePt = "Praga na Região",
-      descripcionPt = "ao descansar, os personagens deverão resistir com Fortitude ou ficarão Doentes."
+      descripcionPt = "ao descansar, os personagens deverão resistir com Fortitude ou ficarão Doentes.",
+      nombreZh = "区域瘟疫",
+      descripcionZh = "休整时，角色须以坚韧抵抗，否则将患病。"
     },
     new PresagioDefinition
     {
@@ -663,7 +749,9 @@ public static class PresagioCatalog
       nombreEn = "Healing Plants",
       descripcionEn = "characters will heal faster passively.",
       nombrePt = "Plantas Curativas",
-      descripcionPt = "os personagens se curarão mais rápido passivamente."
+      descripcionPt = "os personagens se curarão mais rápido passivamente.",
+      nombreZh = "疗愈草木",
+      descripcionZh = "角色的被动治疗速度将加快。"
     },
     new PresagioDefinition
     {
@@ -675,7 +763,9 @@ public static class PresagioCatalog
       nombreEn = "Unbearable Corruption",
       descripcionEn = "at the beginning, characters must resist with Fortitude or become Corrupted.",
       nombrePt = "Corrupção Insuportável",
-      descripcionPt = "no início, os personagens deverão resistir com Fortitude ou serão Corrompidos."
+      descripcionPt = "no início, os personagens deverão resistir com Fortitude ou serão Corrompidos.",
+      nombreZh = "难耐的腐蚀",
+      descripcionZh = "开局时，角色须以坚韧抵抗，否则将被腐蚀。"
     },
     new PresagioDefinition
     {
@@ -687,7 +777,9 @@ public static class PresagioCatalog
       nombreEn = "Blessed Region",
       descripcionEn = "at the beginning, characters who pass a Mental test will become Blessed.",
       nombrePt = "Região Abençoada",
-      descripcionPt = "no início, os personagens que passarem em um teste Mental serão Abençoados."
+      descripcionPt = "no início, os personagens que passarem em um teste Mental serão Abençoados.",
+      nombreZh = "受祝福之地",
+      descripcionZh = "开局时，通过心智检定的角色将获得祝福。"
     },
     new PresagioDefinition
     {
@@ -699,7 +791,9 @@ public static class PresagioCatalog
       nombreEn = "Mirages",
       descripcionEn = "when resting, known nodes may randomly change type.",
       nombrePt = "Miragens",
-      descripcionPt = "ao descansar, os nós conhecidos poderão mudar de tipo aleatoriamente."
+      descripcionPt = "ao descansar, os nós conhecidos poderão mudar de tipo aleatoriamente.",
+      nombreZh = "海市蜃楼",
+      descripcionZh = "休整时，已知节点可能随机改变类型。"
     },
     new PresagioDefinition
     {
@@ -711,7 +805,9 @@ public static class PresagioCatalog
       nombreEn = "Tailwind",
       descripcionEn = "The Black Breath will begin a little farther ahead.",
       nombrePt = "Vento a Favor",
-      descripcionPt = "O Hálito Negro começará um pouco mais adiante."
+      descripcionPt = "O Hálito Negro começará um pouco mais adiante.",
+      nombreZh = "顺风",
+      descripcionZh = "黑息将从稍靠前的位置开始逼近。"
     },
     new PresagioDefinition
     {
@@ -723,7 +819,9 @@ public static class PresagioCatalog
       nombreEn = "Headwind",
       descripcionEn = "The Black Breath will begin farther behind.",
       nombrePt = "Vento Contrário",
-      descripcionPt = "O Hálito Negro começará mais atrás."
+      descripcionPt = "O Hálito Negro começará mais atrás.",
+      nombreZh = "逆风",
+      descripcionZh = "黑息将从更靠后的位置开始逼近。"
     },
     new PresagioDefinition
     {
@@ -735,7 +833,9 @@ public static class PresagioCatalog
       nombreEn = "Clean Air",
       descripcionEn = "The effects of the Black Breath will be less harmful to the caravan.",
       nombrePt = "Ar Limpo",
-      descripcionPt = "Os efeitos do Hálito Negro serão menos nocivos para a caravana."
+      descripcionPt = "Os efeitos do Hálito Negro serão menos nocivos para a caravana.",
+      nombreZh = "清新空气",
+      descripcionZh = "黑息对车队的影响将减弱。"
     },
     new PresagioDefinition
     {
@@ -747,7 +847,9 @@ public static class PresagioCatalog
       nombreEn = "Putrid Air",
       descripcionEn = "The effects of the Black Breath will be more harmful to the caravan.",
       nombrePt = "Ar Pútrido",
-      descripcionPt = "Os efeitos do Hálito Negro serão mais nocivos para a caravana."
+      descripcionPt = "Os efeitos do Hálito Negro serão mais nocivos para a caravana.",
+      nombreZh = "污浊空气",
+      descripcionZh = "黑息对车队的影响将加剧。"
     },
     new PresagioDefinition
     {
@@ -759,7 +861,9 @@ public static class PresagioCatalog
       nombreEn = "Law of the Strongest",
       descripcionEn = "greater Bandit presence in the Region.",
       nombrePt = "Lei do Mais Forte",
-      descripcionPt = "maior presença de Bandidos na Região."
+      descripcionPt = "maior presença de Bandidos na Região.",
+      nombreZh = "弱肉强食",
+      descripcionZh = "该区域匪徒的出没更频繁。"
     },
     new PresagioDefinition
     {
@@ -771,7 +875,9 @@ public static class PresagioCatalog
       nombreEn = "Corrupted Lurking",
       descripcionEn = "greater Corrupted presence in the Region.",
       nombrePt = "Corrompidos à Espreita",
-      descripcionPt = "maior presença de Corrompidos na Região."
+      descripcionPt = "maior presença de Corrompidos na Região.",
+      nombreZh = "腐化者潜伏",
+      descripcionZh = "该区域腐化者的出没更频繁。"
     },
     new PresagioDefinition
     {
@@ -783,7 +889,9 @@ public static class PresagioCatalog
       nombreEn = "Avengers Hunting",
       descripcionEn = "greater presence of Kadryn Avengers in the Region.",
       nombrePt = "Vingadores Caçando",
-      descripcionPt = "maior presença de Vingadores de Kadryn na Região."
+      descripcionPt = "maior presença de Vingadores de Kadryn na Região.",
+      nombreZh = "复仇者狩猎",
+      descripcionZh = "该区域卡德林复仇者的出没更频繁。"
     },
     new PresagioDefinition
     {
@@ -795,7 +903,9 @@ public static class PresagioCatalog
       nombreEn = "Local Sentinels",
       descripcionEn = "greater presence of native Enemies in the Region.",
       nombrePt = "Sentinelas Locais",
-      descripcionPt = "maior presença de Inimigos nativos da Região."
+      descripcionPt = "maior presença de Inimigos nativos da Região.",
+      nombreZh = "本地哨兵",
+      descripcionZh = "该区域本土敌人的出没更频繁。"
     },
     new PresagioDefinition
     {
@@ -807,7 +917,9 @@ public static class PresagioCatalog
       nombreEn = "Superior Threat",
       descripcionEn = "greater numbers of enemy reinforcements.",
       nombrePt = "Ameaça Superior",
-      descripcionPt = "maior quantidade de reforços inimigos."
+      descripcionPt = "maior quantidade de reforços inimigos.",
+      nombreZh = "强敌压境",
+      descripcionZh = "敌方增援数量更多。"
     }
   };
 
@@ -820,6 +932,8 @@ public static class PresagioCatalog
   {
     switch (ObtenerIdiomaActual())
     {
+      case TRADU.IdiomaChinoSimplificado:
+        return "无预兆。";
       case TRADU.IdiomaIngles:
         return "No omens.";
       case TRADU.IdiomaPortugues:
@@ -871,6 +985,8 @@ public static class PresagioCatalog
 
     switch (ObtenerIdiomaActual())
     {
+      case TRADU.IdiomaChinoSimplificado:
+        return definicion.nombreZh;
       case TRADU.IdiomaIngles:
         return definicion.nombreEn;
       case TRADU.IdiomaPortugues:

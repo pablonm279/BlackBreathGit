@@ -45,11 +45,19 @@ public class CompasPerfecto : Habilidad
     {
         bool esIngles = TRADU.i != null && TRADU.i.nIdioma == 2;
         bool esPortugues = TRADU.i != null && TRADU.i.nIdioma == 3;
+        bool esChino = TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado;
 
         if (esIngles)
         {
             txtDescripcion = "<color=#5dade2><b>Perfect Compass</b></color>\n\n" +
                 "<i>(Passive) A footwork so precise it never leaves an opening. +2 Defense, harder to be critically hit.</i>";
+            return;
+        }
+
+        if (esChino)
+        {
+            txtDescripcion = "<color=#5dade2><b>完美步法</b></color>\n\n" +
+                "<i>（被动）精准到从不留下破绽的步法。防御 +2，更难被暴击命中。</i>";
             return;
         }
 

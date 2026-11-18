@@ -83,6 +83,30 @@ public class REPRESENTACIONAtaquesReveladores : Habilidad
                 proximaMejora);
             return;
         }
+        if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string vulnZh = TerminoDescripcion(TerminoDescripcionId.VulnerabilidadExpuesta, "弱点暴露");
+            string critZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+            string proxZh = !DebeMostrarProximaMejoraDescripcion() ? null
+                : NIVEL < 2 ? "受到的暴击伤害 +10%。"
+                : NIVEL == 2 ? "对已暴露目标的暴击率 +5%。"
+                : NIVEL == 3 ? "选项A：受到的暴击伤害 +15%。选项B：持续时间 +1 回合。"
+                : null;
+            string efZh = $"对该目标的攻击{critZh} +{bonusCritPorcentaje}%";
+            if (bonusDanioCritico > 0) { efZh += $"；暴击造成的伤害 +{bonusDanioCritico}%"; }
+            efZh += "。";
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "破绽攻击 " + sufijoNivel,
+                "被动：对敌人造成伤害会使其暴露于后续的暴击之下。",
+                new[]
+                {
+                    LineaDescripcion("触发", "对一名敌人造成伤害。"),
+                    LineaDescripcion("效果", $"施加{vulnZh}（持续 {duracion} 回合；可叠加）。"),
+                    LineaDescripcion("暴露", efZh, 1)
+                },
+                proxZh);
+            return;
+        }
         if(esPortugues){string vuln=TerminoDescripcion(TerminoDescripcionId.VulnerabilidadExpuesta,"Vulnerabilidade Exposta");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nível: +10% de dano crítico sofrido.":NIVEL==2?"Próximo nível: +5% de Crítico contra alvos expostos.":NIVEL==3?"Opção A: +15% de dano crítico sofrido. Opção B: +1 turno de duração.":null;string ef=$"Ataques contra o alvo recebem +{bonusCritPorcentaje}% {crit}";if(bonusDanioCritico>0)ef+=$"; acertos críticos causam +{bonusDanioCritico}% de dano";ef+=".";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Ataques Reveladores "+sufijoNivel,"Passiva: causar dano aos inimigos os expõe a ataques críticos posteriores.",new[]{LineaDescripcion("Ativação","Causa dano a um inimigo."),LineaDescripcion("Efeito",$"Aplica {vuln} ({duracion} turnos; acumulável)."),LineaDescripcion("Exposto",ef,1)},prox,costoSuperior:string.Empty);return;}
         {string vuln=TerminoDescripcion(TerminoDescripcionId.VulnerabilidadExpuesta,"Vulnerabilidad Expuesta");string crit=TerminoDescripcion(TerminoDescripcionId.Critico,"Crítico","critico");string prox=!DebeMostrarProximaMejoraDescripcion()?null:NIVEL<2?"Próximo nivel: +10% de daño crítico recibido.":NIVEL==2?"Próximo nivel: +5% de Crítico contra objetivos expuestos.":NIVEL==3?"Opción A: +15% de daño crítico recibido. Opción B: +1 turno de duración.":null;string ef=$"Los ataques contra el objetivo obtienen +{bonusCritPorcentaje}% {crit}";if(bonusDanioCritico>0)ef+=$"; los impactos críticos infligen +{bonusDanioCritico}% de daño";ef+=".";txtDescripcion=ConstruirDescripcionNormalizadaLocalizada("Ataques Reveladores "+sufijoNivel,"Pasiva: infligir daño a los enemigos los expone a ataques críticos posteriores.",new[]{LineaDescripcion("Activación","Inflige daño a un enemigo."),LineaDescripcion("Efecto",$"Aplica {vuln} ({duracion} turnos; acumulable)."),LineaDescripcion("Expuesto",ef,1)},prox,costoSuperior:string.Empty);return;}
 

@@ -34,6 +34,11 @@ public class armaduraDeCuero : Armadura
             sNombreItem = "Reinforced Leather Armor " + nmejora;
             itemDescripcion = "A lightweight armor made of reinforced leather.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "强化皮甲 " + nmejora;
+            itemDescripcion = "一件由强化皮革制成的轻型护甲。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Armadura de Couro Reforcado " + nmejora;
@@ -53,6 +58,11 @@ public class armaduraDeCuero : Armadura
             sNombreItem = "Lightweight Reinforced Leather Armor";
             itemDescripcion = "A lightweight armor made of reinforced leather.\n\n+2 Evasion at the start of combat.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "轻盈强化皮甲";
+            itemDescripcion = "一件用强化皮革制成的极轻护甲。\n\n战斗开始时闪避 +2。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Armadura de Couro Reforcado de Leveza";
@@ -71,6 +81,11 @@ public class armaduraDeCuero : Armadura
          {
             sNombreItem = "Reinforced Leather Armor of Veil";
             itemDescripcion = "A lightweight armor made of reinforced leather.\n\nWhen receiving critical damage, gain Hidden I.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "帷幕强化皮甲";
+            itemDescripcion = "一件用强化皮革制成的护甲。\n\n受到暴击伤害时，获得隐匿 I。";
          }
          else if (TRADU.i.nIdioma == 3)
          {
@@ -97,6 +112,11 @@ public class armaduraDeCuero : Armadura
             sNombreItem = "Leather Armor " + nmejora;
             itemDescripcion = "A lightweight armor made of leather.";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "皮甲 " + nmejora;
+            itemDescripcion = "一件由皮革制成的轻型护甲。";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Armadura de Couro " + nmejora;
@@ -115,6 +135,11 @@ public class armaduraDeCuero : Armadura
          {
             sNombreItem = "Leather Armor of Fortitude";
             itemDescripcion = "A lightweight armor made of leather.\n\n+1 Fortitude.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "坚韧皮甲";
+            itemDescripcion = "一件皮革制成的护甲。\n\n坚韧豁免 +1。";
          }
          else if (TRADU.i.nIdioma == 3)
          {
@@ -136,6 +161,11 @@ public class armaduraDeCuero : Armadura
             sNombreItem = "Necrotic-leather Armor";
             itemDescripcion = "A lightweight armor made of necrotic leather.\n\n";
          }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "死灵皮甲";
+            itemDescripcion = "一件由死灵化皮革制成的护甲。\n\n";
+         }
          else if (TRADU.i.nIdioma == 3)
          {
             sNombreItem = "Armadura de Couro Necrotico";
@@ -155,6 +185,11 @@ public class armaduraDeCuero : Armadura
          {
             sNombreItem = "Blurred Leather Armor";
             itemDescripcion = "A lightweight armor made of blurred leather.\n\n+3 Evasion at the start of combat.";
+         }
+         else if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+         {
+            sNombreItem = "模糊皮甲";
+            itemDescripcion = "一件由模糊皮革制成的护甲。\n\n战斗开始时闪避 +3。";
          }
          else if (TRADU.i.nIdioma == 3)
          {

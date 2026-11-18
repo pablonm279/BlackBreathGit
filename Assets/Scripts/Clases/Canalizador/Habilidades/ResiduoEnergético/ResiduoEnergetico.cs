@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 
 public class ResiduoEnergetico : Trampa
 {

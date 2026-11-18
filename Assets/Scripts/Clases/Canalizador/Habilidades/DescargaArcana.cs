@@ -86,6 +86,24 @@ public class DescargaArcana : Habilidad
           });
         return;
       }
+      if (TRADU.i != null && TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+      {
+        string poderZh = TerminoDescripcion(TerminoDescripcionId.Poder, $"威力（{poderActual}）");
+        string defensaZh = TerminoDescripcion(TerminoDescripcionId.Defensa, "防御", "IconoDefensa");
+        string danioArcanoZh = TerminoDescripcion(TerminoDescripcionId.DanioArcano, "奥术伤害", "dano_arcano");
+        string criticoZh = TerminoDescripcion(TerminoDescripcionId.Critico, "暴击", "critico");
+        txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+          "奥术冲击",
+          "向一名目标发射一道凝聚的奥术能量。",
+          new[]
+          {
+            LineaDescripcion("目标", "1 个单位或障碍物"),
+            LineaDescripcion("效果", $"命中时造成 {rangoDanioEs} + {poderZh} 点{danioArcanoZh}。"),
+            LineaDescripcion("攻击检定", $"1d20 + {poderZh}{ataqueTxt}，对抗{defensaZh}。大失败：{pifiaPorcentaje}%。{criticoZh}：{criticoPorcentaje}%。"),
+            LineaDescripcion("努力施为", $"最多消耗 {esforzable} 点行动点。")
+          });
+        return;
+      }
       {
         bool pt = TRADU.i != null && TRADU.i.nIdioma == 3;
         string poder = TerminoDescripcion(TerminoDescripcionId.Poder, $"Poder ({poderActual})");

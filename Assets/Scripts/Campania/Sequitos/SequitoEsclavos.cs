@@ -44,6 +44,11 @@ public class SequitoEsclavos : MonoBehaviour
             return "Liberar";
         }
 
+        if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return "释放";
+        }
+
         return TRADU.i.nIdioma == TRADU.IdiomaPortugues ? "Liberar" : "Release";
     }
 
@@ -52,6 +57,11 @@ public class SequitoEsclavos : MonoBehaviour
         if (TRADU.i == null || TRADU.i.nIdioma == TRADU.IdiomaEspanol)
         {
             return "Se perderá el séquito, pero se sumarán como civiles comunes a la caravana. +25 Esperanza";
+        }
+
+        if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            return "该随行队伍将被解散，但他们会作为普通平民加入车队。+25 希望";
         }
 
         return TRADU.i.nIdioma == TRADU.IdiomaPortugues

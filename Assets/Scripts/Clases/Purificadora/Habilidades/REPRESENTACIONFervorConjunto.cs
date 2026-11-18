@@ -37,6 +37,24 @@ public class REPRESENTACIONFervorConjunto : Habilidad
         }
 
         string titulo = "Fervor Conjunto";
+        if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado)
+        {
+            string pasivaZh = TerminoDescripcion(TerminoDescripcionId.Pasiva, "被动");
+            string fervorZh = TerminoDescripcion(TerminoDescripcionId.Fervor, "狂热");
+            string danioDivinoZh = TerminoDescripcion(TerminoDescripcionId.DanioDivino, "神圣伤害", "dano_divino");
+            string barreraZh = TerminoDescripcion(TerminoDescripcionId.Barrera, "屏障", "Estado_barrera");
+            txtDescripcion = ConstruirDescripcionNormalizadaLocalizada(
+                "同心狂热",
+                $"{pasivaZh}：车队的希望会为净化者生成{fervorZh}。",
+                new[]
+                {
+                    LineaDescripcion("效果", $"车队的希望会生成{fervorZh}。"),
+                    LineaDescripcion("每点狂热", $"+1 {danioDivinoZh}，+1 {barreraZh}。")
+                },
+                costoSuperior: "");
+            return;
+        }
+
         if (TRADU.i.nIdioma == 3)
         {
             string passiva = TerminoDescripcion(TerminoDescripcionId.Pasiva, "Passiva");

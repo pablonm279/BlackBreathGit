@@ -1,0 +1,8 @@
+'Si empiezas una nueva partida, sobreescribirás la partida: "{0}".\n\n¿Continuar?' -> [{'key': 'Si empiezas una nueva partida, sobreescribirás la partida: "{0}".\n\n¿Continuar?', 'value': '开始新游戏将覆盖存档：“{0}”。\n\n是否继续？'}]
+'Cancelar' -> [{'key': 'Cancelar', 'value': '取消'}]
+'Continuar' -> [{'key': 'Continuar', 'value': '继续'}]
+'Partida guardada' -> [{'key': 'Partida guardada', 'value': '已保存的游戏'}]
+'Aleatorio' -> [{'key': 'Aleatorio', 'value': '随机'}]
+'Próximamente más regiones' -> [{'key': 'Próximamente más regiones', 'value': '更多地区即将推出'}]
+'Región no disponible en la Demo' -> [{'key': 'Región no disponible en la Demo', 'value': '试玩版暂不开放此地区'}]
+'Mecánicas desconocidas para esta región. Visítala para conocerlas.' -> [{'key': 'Mecánicas desconocidas para esta región. Visítala para conocerlas.', 'value': '尚不了解此地区的机制。前往探索后即可知晓。'}]

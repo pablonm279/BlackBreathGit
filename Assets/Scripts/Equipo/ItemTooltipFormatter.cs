@@ -442,7 +442,7 @@ public static class ItemTooltipFormatter
         if (item is Arma arma)
         {
             AgregarLineaStat(lineasMejora, "Ataque: ", arma.nivelMejora);
-            AgregarLineaStat(lineasMejora, "Danio %: ", arma.nivelMejora * 5, "%");
+            AgregarLineaStat(lineasMejora, "Daño %: ", arma.nivelMejora * 5, "%");
 
             AgregarStatsComunes(
                 lineasStats,
@@ -489,24 +489,24 @@ public static class ItemTooltipFormatter
         }
 
         AgregarLineaStat(lineasStats, "Barrera inicial: ", item.barreraInicioCombate);
-        AgregarLineaStat(lineasStats, "Evasion inicial: ", item.evasionInicioCombate);
-        AgregarLineaStat(lineasStats, "Bonus dano fuego: ", item.bonusDanioFuegoInicioCombate);
-        AgregarLineaStat(lineasStats, "Bonus dano hielo: ", item.bonusDanioHieloInicioCombate);
-        AgregarLineaStat(lineasStats, "Bonus dano rayo: ", item.bonusDanioRayoInicioCombate);
-        AgregarLineaStat(lineasStats, "Bonus dano acido: ", item.bonusDanioAcidoInicioCombate);
-        AgregarLineaStat(lineasStats, "Bonus dano arcano: ", item.bonusDanioArcanoInicioCombate);
-        AgregarLineaStat(lineasStats, "Bonus dano necro: ", item.bonusDanioNecroInicioCombate);
-        AgregarLineaStat(lineasStats, "Bonus dano divino: ", item.bonusDanioDivinoInicioCombate);
-        AgregarLineaStat(lineasStats, "Regeneracion vida: ", item.regeneracionVidaInicioCombate);
-        AgregarLineaStat(lineasStats, "Regeneracion armadura: ", item.regeneracionArmaduraInicioCombate);
-        AgregarLineaStat(lineasStats, "Reduccion dano recibido: ", item.reduccionDanioRecibidoPorcentaje, "%");
-        AgregarLineaStat(lineasStats, "Reduccion dano critico recibido: ", item.reduccionDanioCriticoRecibidoPorcentaje, "%");
+        AgregarLineaStat(lineasStats, "Evasión inicial: ", item.evasionInicioCombate);
+        AgregarLineaStat(lineasStats, "Bonus daño fuego: ", item.bonusDanioFuegoInicioCombate);
+        AgregarLineaStat(lineasStats, "Bonus daño hielo: ", item.bonusDanioHieloInicioCombate);
+        AgregarLineaStat(lineasStats, "Bonus daño rayo: ", item.bonusDanioRayoInicioCombate);
+        AgregarLineaStat(lineasStats, "Bonus daño ácido: ", item.bonusDanioAcidoInicioCombate);
+        AgregarLineaStat(lineasStats, "Bonus daño arcano: ", item.bonusDanioArcanoInicioCombate);
+        AgregarLineaStat(lineasStats, "Bonus daño necro: ", item.bonusDanioNecroInicioCombate);
+        AgregarLineaStat(lineasStats, "Bonus daño divino: ", item.bonusDanioDivinoInicioCombate);
+        AgregarLineaStat(lineasStats, "Regeneración vida: ", item.regeneracionVidaInicioCombate);
+        AgregarLineaStat(lineasStats, "Regeneración armadura: ", item.regeneracionArmaduraInicioCombate);
+        AgregarLineaStat(lineasStats, "Reducción daño recibido: ", item.reduccionDanioRecibidoPorcentaje, "%");
+        AgregarLineaStat(lineasStats, "Reducción daño crítico recibido: ", item.reduccionDanioCriticoRecibidoPorcentaje, "%");
         AgregarLineaStat(lineasStats, "Resistencia estados: ", item.resistenciaEstadosPorcentaje, "%");
-        AgregarLineaStat(lineasStats, "Espinas dano plano: ", item.espinasDanioPlano);
-        AgregarLineaStat(lineasStats, "Espinas dano %: ", item.espinasDanioPorcentaje, "%");
+        AgregarLineaStat(lineasStats, "Espinas daño plano: ", item.espinasDanioPlano);
+        AgregarLineaStat(lineasStats, "Espinas daño %: ", item.espinasDanioPorcentaje, "%");
         if (item.IDEfectoEspecial == 5)
         {
-            AgregarLineaStat(lineasStats, "Danio %: ", 10, "%");
+            AgregarLineaStat(lineasStats, "Daño %: ", 10, "%");
         }
 
         if (lineasMejora.Count == 0 && lineasStats.Count == 0 && lineasHabilidades.Count == 0 && lineasDebuffImpacto.Count == 0 && lineasConsumible.Count == 0)
@@ -622,9 +622,9 @@ public static class ItemTooltipFormatter
             lineas.Add("<b>" + Traducir("Limpia estados negativos") + "</b>");
         }
 
-        AgregarLineaStat(lineas, "Regeneracion vida (directo): ", data.modificarRegeneracionVida);
-        AgregarLineaStat(lineas, "Regeneracion armadura (directo): ", data.modificarRegeneracionArmadura);
-        AgregarLineaStat(lineas, "Evasion (directo): ", data.modificarEvasion);
+        AgregarLineaStat(lineas, "Regeneración vida (directo): ", data.modificarRegeneracionVida);
+        AgregarLineaStat(lineas, "Regeneración armadura (directo): ", data.modificarRegeneracionArmadura);
+        AgregarLineaStat(lineas, "Evasión (directo): ", data.modificarEvasion);
 
         ConsumibleBuffData buff = data.buff;
         bool tieneBuffStats = buff != null && buff.TieneCambios();
@@ -655,7 +655,7 @@ public static class ItemTooltipFormatter
             ? Traducir("combate")
             : duracionRondas + "T";
 
-        lineas.Add($"<b>{Traducir("Aplica buff: ")}</b>{nombreBuff} ({Traducir("Duracion: ")}{duracion})");
+        lineas.Add($"<b>{Traducir("Aplica buff: ")}</b>{nombreBuff} ({Traducir("Duración: ")}{duracion})");
 
         if (!tieneBuffStats)
         {
@@ -668,13 +668,13 @@ public static class ItemTooltipFormatter
         AgregarLineaStat(lineas, "Iniciativa: ", buff.cantIniciativa);
         AgregarLineaStat(lineas, "PA: ", buff.cantAPMax);
         AgregarLineaStat(lineas, "Valentía: ", buff.cantPMMax);
-        AgregarLineaStat(lineas, "HP Maximo: ", buff.cantHPMax);
+        AgregarLineaStat(lineas, "HP Máximo: ", buff.cantHPMax);
         AgregarLineaStat(lineas, "Armadura: ", buff.cantArmadura);
         AgregarLineaStat(lineas, "Defensa: ", buff.cantDefensa);
         AgregarLineaStat(lineas, "Ataque: ", buff.cantAtaque);
-        AgregarLineaStat(lineas, "Danio %: ", buff.cantDanioPorcentaje, "%");
+        AgregarLineaStat(lineas, "Daño %: ", buff.cantDanioPorcentaje, "%");
         AgregarLineaStat(lineas, "Crit dado: ", buff.cantCritDado);
-        AgregarLineaStat(lineas, "Danio crit %: ", buff.cantCritDanio, "%");
+        AgregarLineaStat(lineas, "Daño Crítico %: ", buff.cantCritDanio, "%");
         AgregarLineaStat(lineas, "TS Reflejos: ", buff.cantTsReflejos);
         AgregarLineaStat(lineas, "TS Fortaleza: ", buff.cantTsFortaleza);
         AgregarLineaStat(lineas, "TS Mental: ", buff.cantTsMental);
@@ -683,22 +683,22 @@ public static class ItemTooltipFormatter
         AgregarLineaStat(lineas, "Resistencia Rayo: ", buff.cantResRay);
         AgregarLineaStat(lineas, "Resistencia Acido: ", buff.cantResAci);
         AgregarLineaStat(lineas, "Resistencia Arcano: ", buff.cantResArc);
-        AgregarLineaStat(lineas, "Resistencia Necrotica: ", buff.cantResNec);
+        AgregarLineaStat(lineas, "Resistencia Necrótica: ", buff.cantResNec);
         AgregarLineaStat(lineas, "Resistencia Divina: ", buff.cantResDiv);
         AgregarLineaStat(lineas, "Barrera inicial: ", buff.cantBarrera);
-        AgregarLineaStat(lineas, "Bonus dano fuego: ", buff.cantDamBonusElementalFue);
-        AgregarLineaStat(lineas, "Bonus dano hielo: ", buff.cantDamBonusElementalHie);
-        AgregarLineaStat(lineas, "Bonus dano rayo: ", buff.cantDamBonusElementalRay);
-        AgregarLineaStat(lineas, "Bonus dano acido: ", buff.cantDamBonusElementalAci);
-        AgregarLineaStat(lineas, "Bonus dano arcano: ", buff.cantDamBonusElementalArc);
-        AgregarLineaStat(lineas, "Bonus dano necro: ", buff.cantDamBonusElementalNec);
-        AgregarLineaStat(lineas, "Bonus dano divino: ", buff.cantDamBonusElementalDiv);
-        AgregarLineaStat(lineas, "Penetracion armadura: ", buff.cantPenetracionArmadura);
-        AgregarLineaStat(lineas, "Reduccion dano recibido: ", buff.cantReduccionDanioRecibidoPorcentaje, "%");
-        AgregarLineaStat(lineas, "Reduccion dano critico recibido: ", buff.cantReduccionDanioCriticoRecibidoPorcentaje, "%");
+        AgregarLineaStat(lineas, "Bonus daño fuego: ", buff.cantDamBonusElementalFue);
+        AgregarLineaStat(lineas, "Bonus daño hielo: ", buff.cantDamBonusElementalHie);
+        AgregarLineaStat(lineas, "Bonus daño rayo: ", buff.cantDamBonusElementalRay);
+        AgregarLineaStat(lineas, "Bonus daño ácido: ", buff.cantDamBonusElementalAci);
+        AgregarLineaStat(lineas, "Bonus daño arcano: ", buff.cantDamBonusElementalArc);
+        AgregarLineaStat(lineas, "Bonus daño necro: ", buff.cantDamBonusElementalNec);
+        AgregarLineaStat(lineas, "Bonus daño divino: ", buff.cantDamBonusElementalDiv);
+        AgregarLineaStat(lineas, "Penetración armadura: ", buff.cantPenetracionArmadura);
+        AgregarLineaStat(lineas, "Reducción daño recibido: ", buff.cantReduccionDanioRecibidoPorcentaje, "%");
+        AgregarLineaStat(lineas, "Reducción daño crítico recibido: ", buff.cantReduccionDanioCriticoRecibidoPorcentaje, "%");
         AgregarLineaStat(lineas, "Resistencia estados: ", buff.cantResistenciaEstadosPorcentaje, "%");
-        AgregarLineaStat(lineas, "Espinas dano plano: ", buff.cantEspinasDanioPlano);
-        AgregarLineaStat(lineas, "Espinas dano %: ", buff.cantEspinasDanioPorcentaje, "%");
+        AgregarLineaStat(lineas, "Espinas daño plano: ", buff.cantEspinasDanioPlano);
+        AgregarLineaStat(lineas, "Espinas daño %: ", buff.cantEspinasDanioPorcentaje, "%");
     }
 
     private static void AgregarStatsComunes(
@@ -715,7 +715,7 @@ public static class ItemTooltipFormatter
         AgregarLineaStat(lineas, "Iniciativa: ", buffIniciativa);
         AgregarLineaStat(lineas, "PA: ", buffApMax);
         AgregarLineaStat(lineas, "Valentía: ", buffValMax);
-        AgregarLineaStat(lineas, "HP Maximo: ", buffHpMax);
+        AgregarLineaStat(lineas, "HP Máximo: ", buffHpMax);
         AgregarLineaStat(lineas, "Armadura: ", buffArmadura);
         AgregarLineaStat(lineas, "Defensa: ", buffDefensa);
         AgregarLineaStat(lineas, "TS Reflejos: ", buffTSReflejo);
@@ -726,7 +726,7 @@ public static class ItemTooltipFormatter
         AgregarLineaStat(lineas, "Resistencia Hielo: ", buffResHielo);
         AgregarLineaStat(lineas, "Resistencia Arcano: ", buffResArcano);
         AgregarLineaStat(lineas, "Resistencia Acido: ", buffResAcido);
-        AgregarLineaStat(lineas, "Resistencia Necrotica: ", buffResNecro);
+        AgregarLineaStat(lineas, "Resistencia Necrótica: ", buffResNecro);
         AgregarLineaStat(lineas, "Resistencia Divina: ", buffResDivino);
     }
 
@@ -785,7 +785,7 @@ public static class ItemTooltipFormatter
             }
 
             encabezado.Append(" | ");
-            encabezado.Append(Traducir("Duracion: "));
+            encabezado.Append(Traducir("Duración: "));
             encabezado.Append(duracion);
             encabezado.Append("T");
 
@@ -809,23 +809,23 @@ public static class ItemTooltipFormatter
         AgregarModDebuff(mods, "Ataque", efecto.modAtaque);
         AgregarModDebuff(mods, "Defensa", efecto.modDefensa);
         AgregarModDebuff(mods, "Armadura", efecto.modArmadura);
-        AgregarModDebuff(mods, "Danio %", efecto.modDanioPorcentaje, "%");
+        AgregarModDebuff(mods, "Daño %", efecto.modDanioPorcentaje, "%");
         AgregarModDebuff(mods, "TS Reflejos", efecto.modTSReflejos);
         AgregarModDebuff(mods, "TS Fortaleza", efecto.modTSFortaleza);
         AgregarModDebuff(mods, "TS Mental", efecto.modTSMental);
         AgregarModDebuff(mods, "Res Fuego", efecto.modResFuego);
         AgregarModDebuff(mods, "Res Hielo", efecto.modResHielo);
         AgregarModDebuff(mods, "Res Rayo", efecto.modResRayo);
-        AgregarModDebuff(mods, "Res Acido", efecto.modResAcido);
+        AgregarModDebuff(mods, "Res Ácido", efecto.modResAcido);
         AgregarModDebuff(mods, "Res Arcano", efecto.modResArcano);
         AgregarModDebuff(mods, "Res Necro", efecto.modResNecro);
         AgregarModDebuff(mods, "Res Divino", efecto.modResDivino);
         AgregarModDebuff(mods, "Crit dado", efecto.modCritDado);
-        AgregarModDebuff(mods, "Danio crit %", efecto.modCritDanioPorcentaje, "%");
+        AgregarModDebuff(mods, "Daño Crítico %", efecto.modCritDanioPorcentaje, "%");
         AgregarModDebuff(mods, "Sangrado", efecto.stacksSangrado, "T");
         AgregarModDebuff(mods, "Ardiendo", efecto.stacksArdiendo, "T");
         AgregarModDebuff(mods, "Congelado", efecto.stacksCongelado, "T");
-        AgregarModDebuff(mods, "Acido", efecto.stacksAcido, "T");
+        AgregarModDebuff(mods, "Ácido", efecto.stacksAcido, "T");
         AgregarModDebuff(mods, "Aturdido", efecto.stacksAturdido, "T");
         AgregarModDebuff(mods, "AP por turno", -efecto.reduccionAPPorTurno);
         AgregarModDebuff(mods, "Resistencias reducidas", efecto.reduccionResistencias, "T");
@@ -833,7 +833,7 @@ public static class ItemTooltipFormatter
         AgregarModDebuff(mods, "Ignora armadura", efecto.ignorarArmaduraPlano);
         AgregarModDebuff(mods, "Robo vida", efecto.roboVidaPorcentaje, "%");
         AgregarModDebuff(mods, "Empuje", efecto.empujeCasillas);
-        AgregarModDebuff(mods, "Jalon", efecto.jalonCasillas);
+        AgregarModDebuff(mods, "Jalón", efecto.jalonCasillas);
 
         return string.Join(", ", mods);
     }
@@ -1004,57 +1004,57 @@ public static class ItemTooltipFormatter
             if (txt == "Artefacto") { return "Artifact"; }
             if (txt == "Desconocida") { return "Unknown"; }
             if (txt == "Barrera inicial: ") { return "Starting Barrier: "; }
-            if (txt == "Evasion inicial: ") { return "Starting Evasion: "; }
+            if (txt == "Evasión inicial: ") { return "Starting Evasion: "; }
             if (txt == "Cura: ") { return "Heals: "; }
             if (txt == "Remueve debuffs") { return "Removes debuffs"; }
             if (txt == "Remueve buffs") { return "Removes buffs"; }
             if (txt == "Limpia estados negativos") { return "Cleanses negative states"; }
-            if (txt == "Regeneracion vida (directo): ") { return "Life Regeneration (direct): "; }
-            if (txt == "Regeneracion armadura (directo): ") { return "Armor Regeneration (direct): "; }
-            if (txt == "Evasion (directo): ") { return "Evasion (direct): "; }
+            if (txt == "Regeneración vida (directo): ") { return "Life Regeneration (direct): "; }
+            if (txt == "Regeneración armadura (directo): ") { return "Armor Regeneration (direct): "; }
+            if (txt == "Evasión (directo): ") { return "Evasion (direct): "; }
             if (txt == "Aplica buff: ") { return "Applies buff: "; }
             if (txt == "Efecto de consumible") { return "Consumable Effect"; }
             if (txt == "combate") { return "combat"; }
             if (txt == "HP Max") { return "Max HP"; }
-            if (txt == "Bonus dano fuego: ") { return "Bonus Fire Damage: "; }
-            if (txt == "Bonus dano hielo: ") { return "Bonus Ice Damage: "; }
-            if (txt == "Bonus dano rayo: ") { return "Bonus Lightning Damage: "; }
-            if (txt == "Bonus dano acido: ") { return "Bonus Acid Damage: "; }
-            if (txt == "Bonus dano arcano: ") { return "Bonus Arcane Damage: "; }
-            if (txt == "Bonus dano necro: ") { return "Bonus Necrotic Damage: "; }
-            if (txt == "Bonus dano divino: ") { return "Bonus Divine Damage: "; }
-            if (txt == "Regeneracion vida: ") { return "Life Regeneration: "; }
-            if (txt == "Regeneracion armadura: ") { return "Armor Regeneration: "; }
-            if (txt == "Reduccion dano recibido: ") { return "Damage Reduction: "; }
-            if (txt == "Reduccion dano critico recibido: ") { return "Critical Damage Reduction: "; }
+            if (txt == "Bonus daño fuego: ") { return "Bonus Fire Damage: "; }
+            if (txt == "Bonus daño hielo: ") { return "Bonus Ice Damage: "; }
+            if (txt == "Bonus daño rayo: ") { return "Bonus Lightning Damage: "; }
+            if (txt == "Bonus daño ácido: ") { return "Bonus Acid Damage: "; }
+            if (txt == "Bonus daño arcano: ") { return "Bonus Arcane Damage: "; }
+            if (txt == "Bonus daño necro: ") { return "Bonus Necrotic Damage: "; }
+            if (txt == "Bonus daño divino: ") { return "Bonus Divine Damage: "; }
+            if (txt == "Regeneración vida: ") { return "Life Regeneration: "; }
+            if (txt == "Regeneración armadura: ") { return "Armor Regeneration: "; }
+            if (txt == "Reducción daño recibido: ") { return "Damage Reduction: "; }
+            if (txt == "Reducción daño crítico recibido: ") { return "Critical Damage Reduction: "; }
             if (txt == "Resistencia estados: ") { return "Status Resistance: "; }
-            if (txt == "Espinas dano plano: ") { return "Thorns Flat Damage: "; }
-            if (txt == "Espinas dano %: ") { return "Thorns Damage %: "; }
+            if (txt == "Espinas daño plano: ") { return "Thorns Flat Damage: "; }
+            if (txt == "Espinas daño %: ") { return "Thorns Damage %: "; }
             if (txt == "Ataque: ") { return "Attack: "; }
             if (txt == "Crit dado: ") { return "Critical Die: "; }
-            if (txt == "Danio crit %: ") { return "Critical Damage %: "; }
-            if (txt == "Penetracion armadura: ") { return "Armor Penetration: "; }
+            if (txt == "Daño Crítico %: ") { return "Critical Damage %: "; }
+            if (txt == "Penetración armadura: ") { return "Armor Penetration: "; }
             if (txt == "Debuff por impacto: ") { return "On-hit debuff: "; }
             if (txt == "Debuff de impacto") { return "On-hit Debuff"; }
-            if (txt == "Duracion: ") { return "Duration: "; }
+            if (txt == "Duración: ") { return "Duration: "; }
             if (txt == "Afecta: ") { return "Affects: "; }
             if (txt == "Defensa") { return "Defense"; }
             if (txt == "TS Mental") { return "Mental Save"; }
-            if (txt == "Danio %") { return "Damage %"; }
-            if (txt == "Danio crit %") { return "Critical Damage %"; }
+            if (txt == "Daño %") { return "Damage %"; }
+            if (txt == "Daño Crítico %") { return "Critical Damage %"; }
             if (txt == "Crit dado") { return "Critical Die"; }
             if (txt == "TS") { return "Save"; }
             if (txt == "Res Fuego") { return "Fire Res"; }
             if (txt == "Res Hielo") { return "Ice Res"; }
             if (txt == "Res Rayo") { return "Lightning Res"; }
-            if (txt == "Res Acido") { return "Acid Res"; }
+            if (txt == "Res Ácido") { return "Acid Res"; }
             if (txt == "Res Arcano") { return "Arcane Res"; }
             if (txt == "Res Necro") { return "Necrotic Res"; }
             if (txt == "Res Divino") { return "Divine Res"; }
             if (txt == "Sangrado") { return "Bleed"; }
             if (txt == "Ardiendo") { return "Burning"; }
             if (txt == "Congelado") { return "Frozen"; }
-            if (txt == "Acido") { return "Acid"; }
+            if (txt == "Ácido") { return "Acid"; }
             if (txt == "Aturdido") { return "Stunned"; }
             if (txt == "AP por turno") { return "AP per turn"; }
             if (txt == "Resistencias reducidas") { return "Reduced Resistances"; }
@@ -1062,11 +1062,11 @@ public static class ItemTooltipFormatter
             if (txt == "Ignora armadura") { return "Ignores Armor"; }
             if (txt == "Robo vida") { return "Life Steal"; }
             if (txt == "Empuje") { return "Push"; }
-            if (txt == "Jalon") { return "Pull"; }
+            if (txt == "Jalón") { return "Pull"; }
             if (txt == "Valentía: " || txt == "Valentia: ") { return "Valour: "; }
-            if (txt == "HP Maximo: ") { return "Max HP: "; }
+            if (txt == "HP Máximo: ") { return "Max HP: "; }
             if (txt == "Resistencia Acido: ") { return "Acid Resistance: "; }
-            if (txt == "Resistencia Necrotica: ") { return "Necrotic Resistance: "; }
+            if (txt == "Resistencia Necrótica: ") { return "Necrotic Resistance: "; }
         }
 
         return traducido;
