@@ -5,6 +5,7 @@ public sealed class AtributosZona : MonoBehaviour
     public int FASE = 1;
     public GameObject bosqueardienteContenedorGameObjects;
     public GameObject pasovientoheladoContenedorGameObjects;
+    public GameObject nedukazalContenedorGameObjects;
     public GameObject BosqueAngustiante_Llama;
     public MeshRenderer TexturaTerreno, TexturaTerrenoExtension;
 }

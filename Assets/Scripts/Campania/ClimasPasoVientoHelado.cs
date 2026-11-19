@@ -171,6 +171,12 @@ public sealed class ClimasPasoVientoHelado : MonoBehaviour
                 if (!renderersOriginales.ContainsKey(renderer)) renderersOriginales.Add(renderer, renderer.enabled);
                 materialesAuroraOriginales.Add(renderer,original);
                 material = new Material(original) { name = original.name + " Aurora suave (Runtime)", hideFlags = HideFlags.DontSave };
+                var shaderAurora = Resources.Load<Shader>("PasoVientoHeladoAuroraParticulas");
+                if (shaderAurora != null)
+                {
+                    material.shader = shaderAurora;
+                    material.SetFloat("_Fase", original.HasProperty("_Color") ? original.GetColor("_Color").b * .73f : 0);
+                }
                 if (material.HasProperty("_Color"))
                 {
                     Color color = original.GetColor("_Color");
@@ -256,9 +262,14 @@ public sealed class ClimasPasoVientoHelado : MonoBehaviour
         Color tinte = Shader.GetGlobalColor("_PasoTinteCielo");
         foreach (var m in materiales)
             if (m.HasProperty("_Luz")) { m.SetFloat("_Luz",luz); m.SetColor("_Tinte",tinte); }
-        // Conservar las luces animadas anteriores como reflejo tenue, sin blanquear la nieve.
+        // Reflejo verde/celeste de la aurora: suave, con una respiracion lenta por color.
         foreach (var par in lucesAuroraOriginales)
-            if (par.Key != null) par.Key.intensity = par.Value*Mathf.Lerp(.015f,.006f,dia)*mezcla.w;
+            if (par.Key != null)
+            {
+                float fase = par.Key.color.b * 4.1f;
+                float pulso = .94f + .06f * Mathf.Sin(Time.unscaledTime * .17f + fase);
+                par.Key.intensity = par.Value*Mathf.Lerp(.065f,.028f,dia)*mezcla.w*pulso;
+            }
         foreach (var par in materialesAuroraRefinados)
         {
             if (par.Key == null) continue;
@@ -267,7 +278,11 @@ public sealed class ClimasPasoVientoHelado : MonoBehaviour
             if (par.Value.HasProperty("_Color") && materialesAuroraOriginales[par.Key].HasProperty("_Color"))
             {
                 Color color = materialesAuroraOriginales[par.Key].GetColor("_Color");
-                color.a *= mezcla.w * Mathf.Lerp(.72f, .20f, dia);
+                bool azul = color.b > color.g;
+                float brillo = 1.12f * Mathf.Lerp(1, azul ? 1.90f : 1.25f, dia);
+                color.r *= brillo; color.g *= brillo; color.b *= brillo;
+                color.a = Mathf.Min(1, color.a * mezcla.w * Mathf.Lerp(.92f, .78f, dia)
+                    * Mathf.Lerp(1, azul ? 1.35f : 1, dia));
                 par.Value.SetColor("_Color", color);
             }
         }
@@ -275,7 +290,7 @@ public sealed class ClimasPasoVientoHelado : MonoBehaviour
         float rafaga = VientoPasoVientoHelado.Activo
             ? Mathf.Lerp(.72f,1.27f,Mathf.Clamp01(VientoPasoVientoHelado.FuerzaEn(centro)))
             : .72f + Mathf.Pow(.5f+.5f*Mathf.Sin(Time.unscaledTime*.31f),2)*.55f;
-        Tasa(copos,68*mezcla.y*rafaga); Tasa(grano,48*mezcla.y*rafaga);
+        Tasa(copos,75*mezcla.y*rafaga); Tasa(grano,53*mezcla.y*rafaga);
         Tasa(lluvia,230*mezcla.x); Tasa(bruma,3.2f*mezcla.z);
         if (VientoPasoVientoHelado.Activo)
         {

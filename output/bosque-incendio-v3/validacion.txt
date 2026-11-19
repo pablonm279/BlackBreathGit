@@ -1,0 +1,44 @@
+OK RNG de campaña intacto al preparar
+OK Posiciones de emisores originales intactas
+OK Presupuesto de emisión original conservado
+OK Emisores espectrales sin cambios
+OK Materiales fuente sin modificar
+OK No modifica llamas del Paso ni de Nedukazal
+OK Malla jugable intacta
+OK Llamas regulares profesionalizadas: 157
+OK Llamas alargadas, con punta y oscilación
+OK Llamas sin sombras adicionales
+OK Llamas visibles dentro del terreno y del rango X de los nodos
+OK Reaplicar no duplica sistemas
+OK Reaplicar no agranda las llamas acumulativamente
+OK El banco de fondo no se reprocesa como una llama original
+OK Tres cortinas de humo, sin arbolado lejano
+OK Fondo sin colisiones
+OK Sin fila ni emisores de llamas fuera del bosque
+OK Shader BosqueArdienteFuego
+OK Shader BosqueArdienteFondo
+OK Shader BosqueArdienteSuelo
+OK Shader CaminoSueloRework
+OK La pausa no emite llamas adicionales
+OK Mismos materiales regionales del Paso para caminos y asentamientos
+OK Mismo multiplicador de ancho del Paso
+OK Misma textura y escala UV: CaminoBase_Paso
+OK Misma geometría y repetición: CaminoBase_Paso
+OK Caminos del bosque sin nieve añadida
+OK Misma textura y escala UV: CaminoBase_Paso 1
+OK Misma geometría y repetición: CaminoBase_Paso 1
+OK Caminos del bosque sin nieve añadida
+OK Misma textura y escala UV: CaminoBase_Paso 2
+OK Misma geometría y repetición: CaminoBase_Paso 2
+OK Caminos del bosque sin nieve añadida
+OK Misma textura y escala UV: Caminos Hint 1
+OK Misma geometría y repetición: Caminos Hint 1
+OK Caminos del bosque sin nieve añadida
+OK Misma textura y escala UV: CaminosaAldeaPaso
+OK Misma geometría y repetición: CaminosaAldeaPaso
+OK Caminos del bosque sin nieve añadida
+OK Calidad baja limita el resplandor a una luz
+OK Humo e incendio se apagan al salir del bosque
+OK RNG intacto después de animar y reaplicar
+OK El humo provisional no tapa las cortinas nuevas
+OK Al retirar el fondo nuevo se restaura el renderer anterior

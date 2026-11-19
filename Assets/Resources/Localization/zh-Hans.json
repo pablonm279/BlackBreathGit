@@ -2106,7 +2106,7 @@
       "value": "-活动已锁定。"
     },
     {
-      "key": "-Como Purificadora,",
+      "key": "-Como Purificadora, ",
       "value": "-作为净化者，"
     },
     {
@@ -2138,11 +2138,11 @@
       "value": "-没有可净化的腐化角色。"
     },
     {
-      "key": "-Por la baja Esperanza ",
+      "key": "-Por la baja Esperanza, ",
       "value": "-由于希望偏低 "
     },
     {
-      "key": "-Por la muy baja Esperanza ",
+      "key": "-Por la muy baja Esperanza, ",
       "value": "-由于希望极低 "
     },
     {
@@ -3438,7 +3438,7 @@
       "value": "<color=#a0e812><b>获得45经验。</b></color>"
     },
     {
-      "key": "<color=#ba3fef>-Luchar con los Bandidos.</color>\n\n",
+      "key": "<color=#ba3fef>-Luchar contra los Bandidos.</color>\n\n",
       "value": "<color=#ba3fef>-与匪徒作战。</color>\n\n"
     },
     {
@@ -3570,7 +3570,7 @@
       "value": "<b>(!)</b> 暴露区域，车队将遭到伏击。"
     },
     {
-      "key": "\nSe conseguirán de 25-40 Materiales y 60-85 Suministros.",
+      "key": "\nSe conseguirán 25-40 Materiales y 60-85 Suministros.",
       "value": "\n将获得 25-40 材料和 60-85 补给。"
     },
     {
@@ -3582,7 +3582,7 @@
       "value": "\n\n可在定居点或贸易站出售。"
     },
     {
-      "key": "\nSe conseguirán de 18-30 Materiales y 70-110 Suministros.",
+      "key": "\nSe conseguirán 18-30 Materiales y 70-110 Suministros.",
       "value": "\n将获得 18-30 材料和 70-110 补给。"
     },
     {
@@ -3670,7 +3670,7 @@
       "value": "到了早上，众人眼睛发红、咳嗽不止，脾气也很坏。\n\n"
     },
     {
-      "key": "-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  ",
+      "key": "-La Caravana ha llegado a un nodo incendiado. -10 Esperanza. ",
       "value": "-车队抵达了一个燃烧的节点。-10 希望。  "
     },
     {
@@ -3838,7 +3838,7 @@
       "value": " <color=#9e2a1c>驮牛</color>，总载重能力为 "
     },
     {
-      "key": "-La caravana ha sufrido un Ataque durante el descanso. Probabilidades ",
+      "key": "-La Caravana ha sufrido un Ataque durante el descanso. Probabilidades ",
       "value": "-车队在休息期间遭到袭击。概率 "
     },
     {
@@ -3926,7 +3926,7 @@
       "value": "英雄货车旁的一阵骚动，牵出了 <b><color=#d1006f>"
     },
     {
-      "key": "-El Séquito de Artistas ha tenido un festán y despilfarrado suministros: ",
+      "key": "-El Séquito de Artistas ha tenido un festín y despilfarrado suministros: ",
       "value": "-艺人随行队伍大摆宴席，挥霍了补给："
     },
     {
@@ -4010,7 +4010,7 @@
       "value": "-艺人随行队伍离开了车队。-25 平民 -15 希望"
     },
     {
-      "key": "-La ausencia de Aliento Negro al viajar, inspira a la Caravana. +2 Esperanza",
+      "key": "-La ausencia de Aliento Negro al viajar inspira a la Caravana. +2 Esperanza",
       "value": "-旅途中没有黑息，让车队备受鼓舞。+2 希望"
     },
     {
@@ -4078,7 +4078,7 @@
       "value": "雨天：-5 希望。补给采集 -15%，伏击概率 -20%。"
     },
     {
-      "key": "<color=#a0e812>-Si decides seguirlo, se intentará encontrar un Atajo.</color>\n\n",
+      "key": "<color=#a0e812>-Si decides seguirlo, intentarás encontrar un Atajo.</color>\n\n",
       "value": "<color=#a0e812>-若你选择跟随他，将尝试寻找一条捷径。</color>\n\n"
     },
     {
@@ -4274,7 +4274,7 @@
       "value": "-由于希望高涨，潜猎者们这次决定不领取酬劳。"
     },
     {
-      "key": "-El tener que trabajar en plena Ola de Calor, ha caído mal en los Civiles. -3 Esperanza",
+      "key": "-Tener que trabajar en plena Ola de Calor cayó mal entre los Civiles. -3 Esperanza",
       "value": "-要在热浪当头时干活，让平民们很不满。-3 希望"
     },
     {
@@ -4282,7 +4282,7 @@
       "value": "-净化之日的神职人员加入了车队。+20 平民 +15 希望"
     },
     {
-      "key": "<color=#a0e812>-Si decides seguir el rastro, se intentará encontrar un Atajo.</color>\n\n",
+      "key": "<color=#a0e812>-Si decides seguir el rastro, intentarás encontrar un Atajo.</color>\n\n",
       "value": "<color=#a0e812>-若你选择跟踪，将尝试寻找一条捷径。</color>\n\n"
     },
     {
@@ -4306,7 +4306,7 @@
       "value": "他们在事态失控之前把它控制住了，但慌乱之中耗掉了一些资源。\n\n"
     },
     {
-      "key": "-El tener un Día Libre en plena Ola de Calor, ha caído bien en los Civiles. +5 Esperanza",
+      "key": "-Tener un Día Libre en plena Ola de Calor cayó bien entre los Civiles. +5 Esperanza",
       "value": "-在热浪当头时放一天假，让平民们很受用。+5 希望"
     },
     {
@@ -4366,7 +4366,7 @@
       "value": "<color=#FF6666>积雪使得除休息或警戒之外的活动都无法进行。</color>"
     },
     {
-      "key": "Puedes extender lo salvable junto al fuego antes de partir o desecharlo y seguir adelante.\n\n",
+      "key": "Puedes secar lo salvable junto al fuego antes de partir o desecharlo y seguir adelante.\n\n",
       "value": "你可以在出发前把还能用的东西摊在火边烘，或者丢掉它继续前进。\n\n"
     },
     {
@@ -4526,7 +4526,7 @@
       "value": "车队借着那些光亮，在被夷平的村舍和零散的废墟之间更好地辨明方向。\n\n"
     },
     {
-      "key": "-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han gastado 200 de oro.",
+      "key": "-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han gastado 200 de Oro.",
       "value": "-你在圣所举行了一场仪式。黑息后退15小时，花费了200金币。"
     },
     {
@@ -4562,7 +4562,7 @@
       "value": "从一口古老的地下井口，传出断续的呼喊，以及指甲刮擦石头的声音。\n\n"
     },
     {
-      "key": "-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han sacrificado 3 bueyes.",
+      "key": "-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han sacrificado 3 Bueyes.",
       "value": "-你在圣所举行了一场仪式。黑息后退15小时，献祭了3头驮牛。"
     },
     {
@@ -4578,7 +4578,7 @@
       "value": "<color=#ba3fef>-若你短暂停下整理通行秩序，将增加5小时的延误。</color>\n\n"
     },
     {
-      "key": " de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -5 Esperanza",
+      "key": " de Oro de los Mercaderes de la Caravana, obligados a donar a la causa. -5 Esperanza",
       "value": " 金币，来自车队的商贾，他们被迫为这项事业捐款。-5 希望"
     },
     {
@@ -4646,15 +4646,15 @@
       "value": "一名英雄勉力撑着前行，但隘口的寒意终究钻得比该有的更深。\n\n"
     },
     {
-      "key": " suministros. +25 Esperanza. +20 Materiales y 200 Oro y un nuevo personaje se suma a la caravana</b></color>",
+      "key": " Suministros. +25 Esperanza, +20 Materiales, +200 Oro. Un nuevo personaje se suma a la Caravana.</b></color>",
       "value": " 补给。+25 希望。+20 材料和 200 金币，还有一名新角色加入车队</b></color>"
     },
     {
-      "key": "-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.",
+      "key": "-La Caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza.",
       "value": "-车队抵达了一处净化者圣所。角色恢复了15%。+10 希望。"
     },
     {
-      "key": "<color=#a0e812><b>\nDescansar en este lugar tendrá beneficios adicionales:+20% curación recibida.</b></color>",
+      "key": "<color=#a0e812><b>\nDescansar en este lugar tendrá beneficios adicionales: +20% curación recibida.</b></color>",
       "value": "<color=#a0e812><b>\n在此地休整将有额外收益：受到的治疗 +20%。</b></color>"
     },
     {
@@ -4674,7 +4674,7 @@
       "value": "夜里，一辆装食物的货车渗进了水，一部分口粮就此报废。\n\n"
     },
     {
-      "key": "Has llegado a un lugar rico en recursos naturales, los civiles se han puesto a recolectar lo que han podido.",
+      "key": "Has llegado a un lugar rico en recursos naturales. Los Civiles recolectaron lo que pudieron.",
       "value": "你抵达了一处自然资源丰富的地方，平民们已经开始尽量采集能拿到的东西。"
     },
     {
@@ -4718,7 +4718,7 @@
       "value": "<color=#ba3fef>-若你任由他们发泄，车队将在下一场战斗中士气涣散。</color>\n\n"
     },
     {
-      "key": "Puedes ordenar hacer una breve parada hasta que el aire se despeje o forzar la marcha para no perder tiempo.\n\n",
+      "key": "Puedes ordenar una breve parada hasta que el aire se despeje o forzar la marcha para no perder tiempo.\n\n",
       "value": "你可以下令短暂停下、等空气转好，或者强行赶路以免浪费时间。\n\n"
     },
     {
@@ -4742,7 +4742,7 @@
       "value": "你可以跟上去、试着找到一条更好的通道，或者冷静地研究它、在出发前辨明方向。\n\n"
     },
     {
-      "key": "\nDe 15-25 Civiles se unirán a la Caravana y brindarán 50-60 Suministros, 6-8 Materiales, 2-4 Bueyes y 60-70 Oro.",
+      "key": "\nSe unirán 15-25 Civiles a la Caravana y aportarán 50-60 Suministros, 6-8 Materiales, 2-4 Bueyes y 60-70 Oro.",
       "value": "\n将有 15-25 名平民加入车队，并带来 50-60 补给、6-8 材料、2-4 头驮牛和 60-70 金币。"
     },
     {
@@ -4754,7 +4754,7 @@
       "value": "一伙匪徒封住了唯一安全的通道，索要一笔离谱的过路费才肯放车队通过。\n\n"
     },
     {
-      "key": "Alrededor del fogón, algunos civiles y héroes comparten historias simples, comida caliente y un rato de charla.\n\n",
+      "key": "Alrededor del fogón, algunos Civiles y Héroes comparten historias simples, comida caliente y un rato de charla.\n\n",
       "value": "火塘旁，几名平民和英雄分享着朴素的故事、热饭和一段闲谈。\n\n"
     },
     {
@@ -4774,7 +4774,7 @@
       "value": "气氛越发紧张，其他车队成员局促地看着。两人都坚称自己有理，等着你来评判。\n\n"
     },
     {
-      "key": "Un foco de incendio vuelve a encenderse detrás de la Caravana y el viento empuja las llamas hacia la retaguardia.\n\n",
+      "key": "Un foco de incendio vuelve a encenderse detrás de la Caravana y el viento empuja las llamas hacia ella.\n\n",
       "value": "车队后方一处火点重新燃起，风把火苗推向后队。\n\n"
     },
     {
@@ -4802,7 +4802,7 @@
       "value": "一串新鲜的山羊蹄印通向一道狭窄的岩架，那条路似乎能省去一部分攀爬。\n\n"
     },
     {
-      "key": "<color=#ba3fef>-Debes intervenir en apoyo a uno de los dos. El otro obtendrá Baja Moral por 5 días. Apoyas a:</color>\n\n",
+      "key": "<color=#ba3fef>-Debes apoyar a uno de los dos. El otro obtendrá Baja Moral por 5 días. Apoyas a:</color>\n\n",
       "value": "<color=#ba3fef>-你必须出面支持其中一方。另一方将获得低落士气，持续5天。你支持：</color>"
     },
     {
@@ -4814,7 +4814,7 @@
       "value": "一听说车队将在黎明出发，他们请求在扎奇尔再次穿过这一带之前加入进来。\n\n"
     },
     {
-      "key": "La atmósfera se vuelve más ligera y optimista, y por un breve instante, el peso de la situación parece desvanecerse.\n\n\n\n",
+      "key": "La atmósfera se vuelve más ligera y optimista, y por un instante el peso de la situación parece desvanecerse.\n\n\n\n",
       "value": "气氛变得轻松而乐观，有那么短短一瞬，处境的重压仿佛消散了。\n\n\n\n"
     },
     {
@@ -4834,7 +4834,7 @@
       "value": "车队在一座被洗劫过的棚屋塌陷的屋顶下勉强安顿休整。每一声吱嘎都让人抬头张望。\n\n"
     },
     {
-      "key": "Los civiles se cubren el rostro como pueden, los bueyes se inquietan y por varios instantes avanzar se vuelve peligroso.\n\n",
+      "key": "Los Civiles se cubren el rostro como pueden, los bueyes se inquietan y por varios instantes avanzar se vuelve peligroso.\n\n",
       "value": "平民们尽力掩住口鼻，驮牛躁动不安，有那么好一会儿，前进变得危险。\n\n"
     },
     {
@@ -4846,7 +4846,7 @@
       "value": "一部分夜间守卫时不时打起了盹。没出什么大事，但营地在天亮时人心不安。\n\n"
     },
     {
-      "key": "</color></b> junto con algunos Civiles comienzan a contar chistes y anécdotas divertidas, riendo y disfrutando del momento.\n",
+      "key": "</color></b>, junto con algunos Civiles, comienzan a contar chistes y anécdotas, riendo y disfrutando del momento.\n",
       "value": "</color></b> 和几名平民一起讲起了笑话和趣闻，笑着享受这一刻。\n"
     },
     {
@@ -4858,7 +4858,7 @@
       "value": "<color=#ba3fef>-若你什么都不说，车队将在1段旅程内疏于防备。探索 -10%，伏击 +10%。</color>\n\n"
     },
     {
-      "key": "Un Civil agotado se desploma en el camino. Nadie parece notarlo, o darle importancia alguna y pasan a su lado como si nada.\n\n",
+      "key": "Un Civil agotado se desploma en el camino. Nadie parece notarlo, o nadie le da importancia: pasan a su lado como si nada.\n\n",
       "value": "一名精疲力竭的平民瘫倒在路上。似乎没人注意到，也没人当回事，众人若无其事地从他身边走过。\n\n"
     },
     {
@@ -4874,7 +4874,7 @@
       "value": "夜风从倒下的树上卷来带火的余烬，逼得营地的一部分一次又一次挪动。\n\n"
     },
     {
-      "key": "Has llegado a un hermoso claro natural que parece no haber sido manchado por la corrupción y la pestilencia en lo mas mínimo.\n",
+      "key": "Has llegado a un hermoso claro que la corrupción y la pestilencia parecen no haber tocado.\n",
       "value": "你来到一处美丽的天然空地，它似乎丝毫没有被腐蚀和瘟疫玷污。\n"
     },
     {
@@ -4934,7 +4934,7 @@
       "value": "<color=#ba3fef>-若你选择将其扑灭，车队会为控制火势耗掉资源。-15 补给，+3 希望。</color>\n\n"
     },
     {
-      "key": "<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La másica profana desalienta a la caravana. -5 Esperanza.</color>",
+      "key": "<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La música profana desalienta a la Caravana. -5 Esperanza.</color>",
       "value": "<color=#6A0DAD>-附近的一个节点开始了一场凯尔塔夫仪式。亵渎的乐声令车队士气低落。-5 希望。</color>"
     },
     {
@@ -4978,7 +4978,7 @@
       "value": "一头驮牛病倒了，无法继续。饲养员建议在疾病扩散之前检查其余的牛。\n\n"
     },
     {
-      "key": "Has llegado a un pequeño asentamiento. Notas que los civiles están desorganizados y necesitan liderazgo para sobrevivir al Aliento Negro.",
+      "key": "Has llegado a un pequeño asentamiento. Los Civiles están desorganizados y necesitan liderazgo para sobrevivir al Aliento Negro.",
       "value": "你来到一处小定居点。你注意到这里的平民一盘散沙，需要有人领导才能在黑息中活下去。"
     },
     {
@@ -4990,7 +4990,7 @@
       "value": "一名英雄找到一封始终没能寄出内杜卡赞的信，收信人是一个在王国之外等着消息的人。\n\n"
     },
     {
-      "key": "</color></b> se ofrece a levantarlo y cargarlo. Pero puedes optar por ordenarle que guarde sus fuerzas para futuros peligros del camino.\n\n",
+      "key": "</color></b> se ofrece a levantarlo y cargarlo. Pero puedes ordenarle que guarde sus fuerzas para los peligros del camino.\n\n",
       "value": "</color></b> 主动提出把它抬起来扛走。但你也可以下令让他保留体力，以应对路上将来的危险。\n\n"
     },
     {
@@ -5014,7 +5014,7 @@
       "value": "一名英雄在一面墙上发现一长串匆忙写下的名字，随着内杜卡赞的陷落被一个个划掉。\n\n"
     },
     {
-      "key": "Al levantar el campamento, varios civiles notan que faltan herramientas básicas de trabajo. Puede que hayan quedado tiradas en la oscuridad.\n\n",
+      "key": "Al levantar el campamento, varios Civiles notan que faltan herramientas básicas de trabajo. Puede que hayan quedado tiradas en la oscuridad.\n\n",
       "value": "拔营时，好几名平民发现基本的工具不见了。也许是落在黑暗里没带走。\n\n"
     },
     {
@@ -5030,7 +5030,7 @@
       "value": "没人看得清下面有什么，但显然有东西在深处移动。你可以去调查，或者强令车队继续前进。\n\n"
     },
     {
-      "key": "Uno de los Héroes se ofrece a levantarlo y cargarlo. Pero puedes optar por ordenarle que guarde sus fuerzas para futuros peligros del camino.\n\n",
+      "key": "Uno de los Héroes se ofrece a levantarlo y cargarlo. Pero puedes ordenarle que guarde sus fuerzas para los peligros del camino.\n\n",
       "value": "一名英雄主动提出把它抬起来扛走。但你也可以下令让他保留体力，以应对路上将来的危险。\n\n"
     },
     {
@@ -5066,7 +5066,7 @@
       "value": "在一处驿站庭院的遮蔽下，藏在帆布和翻倒的货车后面，他们发现几名内杜卡赞的居民正等着逃走的时机。\n\n"
     },
     {
-      "key": "<color=#a0e812><b>\n\nSe ha marcado en el camino adelante el nodo al cual deberás dirigirte para encontrarte con el equipo de salvamento.</b></color>",
+      "key": "<color=#a0e812><b>\n\nSe marcó en el camino el nodo donde te encontrarás con el equipo de salvamento.</b></color>",
       "value": "<color=#a0e812><b>\n\n前方路线上已标出你需要前往、与救援队会合的节点。</b></color>"
     },
     {
@@ -5242,7 +5242,7 @@
       "value": "有人在火边讲起一个老故事。另一个声音纠正了一处细节，又一个声音补上一段回忆，很快，半个车队都带着疲惫的微笑在听。\n\n"
     },
     {
-      "key": "La Caravana encuentra un Río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n",
+      "key": "La Caravana encuentra un Río de buen caudal y agua que parece limpia. Varios Civiles, entusiasmados, se dirigen hacia él para refrescarse.\n\n",
       "value": "车队发现一条水量充沛、水质看起来还不错的河。好几名平民兴致勃勃地朝它走去，想去玩水、凉快一下。\n\n"
     },
     {
@@ -5306,7 +5306,7 @@
       "value": "几名艺人和一个流动集市的成员加入了车队。他们虽然爱炫耀、挥霍资源，但在某些节庆场合能提振车队的士气。"
     },
     {
-      "key": "La ruta se abre en varias direcciones parecidas y las pocas señales útiles parecen haberse cruzado unas con otras. Dos miembros de la caravana parecen tener opiniones encontradas. ¿A quién escucharás?\n\n",
+      "key": "La ruta se abre en varias direcciones parecidas y las pocas señales útiles parecen haberse cruzado unas con otras. Dos miembros de la Caravana tienen opiniones encontradas. ¿A quién escucharás?\n\n",
       "value": "道路分岔成几个相似的方向，为数不多的有用路标似乎彼此矛盾。车队里有两名成员意见相左。你会听谁的？"
     },
     {
@@ -5342,7 +5342,7 @@
       "value": "这些士兵为了活命而弃守军中的岗位。他们饥肠辘辘、满心羞愧，只求在车队里有个位置，就愿意提供保护，尽管一部分平民并不乐意。\n\n"
     },
     {
-      "key": "El ave mensajera regresa con un mensaje atado a sus patas. En él se indica el punto exacto al que la caravana deberá dirigirse para encontrarse con el equipo de salvamento, junto con los recursos cedidos por la ciudad de Serria.\n",
+      "key": "El ave mensajera regresa con un mensaje atado a las patas. Indica el punto exacto donde la Caravana deberá encontrarse con el equipo de salvamento y los recursos cedidos por la ciudad de Serria.\n",
       "value": "信鸟带着一封绑在脚上的信回来了。信中指明了车队需要前往、与救援队会合的确切地点，以及塞里亚城拨付的物资。\n"
     },
     {
@@ -5370,7 +5370,7 @@
       "value": "一群长期四处漂泊、只为求生的平民。大多是营养不良的老人、妇女和孩子。他们比常人吃得少，接纳他们做了正确的事，这让车队充满欣慰。往后就得照顾他们了。\n\n"
     },
     {
-      "key": "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 5 de Esperanza Extra.\n\n-Cada 24 h hay un 30% de chances de que hagan un festán y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.",
+      "key": "EFECTOS PASIVOS:\n\n-Al unirse a la Caravana se ganan 15 de Esperanza.\n\n-Cada vez que se selecciona Feria como Tarea Civil de Descanso se ganan 5 de Esperanza Extra.\n\n-Cada 24 h hay un 30% de chances de que hagan un festín y despilfarren 1-4 Suministros.\n\n-Si abandonan la Caravana se pierden 15 de Esperanza.",
       "value": "被动效果：\n\n-加入车队时，获得15希望。\n\n-每次将集市选为休整的平民任务时，额外获得5希望。\n\n-每24小时有30%概率大摆宴席，挥霍1-4补给。\n\n-若他们离开车队，损失15希望。"
     },
     {
@@ -5378,7 +5378,7 @@
       "value": "你来到一处临时搭起的<b>贸易站</b>，这里向旅人提供基本的求生补给。\n你商贾随行队伍的等级有助于压低价格。\n\n你的商贾随行队伍已更新了库存。\n\n若你在此休整，平民们会建立商贸往来，每人产出 2 金币。"
     },
     {
-      "key": "Has llegado al lugar señalado por el ave mensajera y te has encontrado con el equipo de salvamento enviado por la Ciudad Puerto de Serria.\nEnseguida saludan a la caravana y comienzan a descargar los recursos que han traído para ayudarles en su travesía.\n\nInmediatamente los ánimos mejoran en la caravana al ver que no están solos en esta lucha.\n",
+      "key": "Has llegado al lugar señalado por el ave mensajera y te encuentras con el equipo de salvamento enviado por la Ciudad Puerto de Serria.\nEnseguida saludan a la Caravana y comienzan a descargar los recursos que trajeron para ayudarles en su travesía.\n\nLos ánimos mejoran de inmediato: ya no están solos en esta lucha.\n",
       "value": "你抵达了信鸟指明的地点，见到了塞里亚港城派出的救援队。\n他们立刻向车队致意，开始卸下带来的物资，以助你们完成这段旅程。\n\n看到自己并非孤军奋战，车队的士气立刻好转。\n"
     },
     {
@@ -9598,7 +9598,7 @@
       "value": "1段旅程内探索 -10%，伏击 +10%。旅程开始时消耗1层。"
     },
     {
-      "key": "Antes de dormir, un grupo de civiles se ofrece a ayudar con tareas atrasadas del campamento.\n\n",
+      "key": "Antes de dormir, un grupo de Civiles se ofrece a ayudar con tareas atrasadas del campamento.\n\n",
       "value": "临睡前，一群平民主动提出帮忙处理营地里积压的杂务。\n\n"
     },
     {

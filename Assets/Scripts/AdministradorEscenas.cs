@@ -2623,7 +2623,7 @@ public class AdministradorEscenas : MonoBehaviour
       return false;
     }
 
-    mrFondoBatalla.material = fondoSeleccionado.fondo;
+    mrFondoBatalla.sharedMaterial = fondoSeleccionado.fondo;
 
     if (mrFondoFrente == null)
     {
@@ -2693,6 +2693,16 @@ public class AdministradorEscenas : MonoBehaviour
     }
 
     battleAmbientLife.Configurar(mrFondoBatalla, zonaVisualBatallaActual, fondoBatallaSubterraneoActual);
+
+    // Tinte del fondo segun la hora de la batalla (las cuevas no tienen hora: conservan su oscuridad clasica).
+    var campania = CampaignManager.Instance;
+    if (!fondoBatallaSubterraneoActual && campania != null)
+    {
+      float hora = campania.ObtenerHoraActual();
+      // Si el combate quedo marcado como nocturno pero el reloj ya avanzo, se respeta la noche.
+      if (campania.EsCombatePendienteNocturno() && !CampaignManager.EsHoraNocturna(hora)) hora = 22f;
+      battleAmbientLife.EstablecerHora(hora);
+    }
   }
 
   void ConfigurarAmbientacionNocturnaBatalla(bool activa)
@@ -6018,7 +6028,62 @@ public class AdministradorEscenas : MonoBehaviour
     {
       AbrirHandbook();
     }
+
+#if UNITY_EDITOR
+    // DEBUG-FONDOS (temporal, solo Editor): F5 fondo anterior, F6 fondo siguiente.
+    if (Input.GetKeyDown(KeyCode.F5)) DebugCambiarFondo(-1);
+    if (Input.GetKeyDown(KeyCode.F6)) DebugCambiarFondo(1);
+#endif
   }
+
+#if UNITY_EDITOR
+  // DEBUG-FONDOS: recorre 3 de Paso Viento Helado, 3 de Bosque y 2 de caverna sin recargar la pelea.
+  // Reaplica fondo, frente, zona, ambiente (CampoVivo + diorama) y noche. Para quitarlo, borrar este bloque
+  // y el de Update marcados DEBUG-FONDOS.
+  int debugFondoIndice = -1;
+
+  void DebugCambiarFondo(int delta)
+  {
+    if (EscenaBatalla == null || !EscenaBatalla.activeInHierarchy || mrFondoBatalla == null) return;
+
+    var opciones = new List<(FondoBatalla fondo, EncounterZoneType zona, bool subt, string nombre)>();
+    void Agregar(List<FondoBatalla> lista, int max, EncounterZoneType zona, bool subt, string prefijo)
+    {
+      if (lista == null) return;
+      for (int i = 0; i < lista.Count && i < max; i++)
+        if (lista[i] != null && lista[i].fondo != null) opciones.Add((lista[i], zona, subt, prefijo + " " + (i + 1)));
+    }
+    Agregar(fondosPasoVientoHelado, 3, EncounterZoneType.PasoVientoHelado, false, "Paso Viento Helado");
+    Agregar(fondosBosqueLamentos, 3, EncounterZoneType.BosqueAngustiante, false, "Bosque");
+    Agregar(fondosSubterraneos, 2, EncounterZoneType.Subterraneo, true, "Caverna");
+    if (opciones.Count == 0) return;
+
+    debugFondoIndice = debugFondoIndice < 0
+      ? (delta > 0 ? 0 : opciones.Count - 1)
+      : (debugFondoIndice + delta + opciones.Count) % opciones.Count;
+    var o = opciones[debugFondoIndice];
+
+    zonaVisualBatallaActual = o.zona;
+    fondoBatallaSubterraneoActual = o.subt;
+    mrFondoBatalla.sharedMaterial = o.fondo.fondo;
+
+    if (mrFondoFrente == null)
+    {
+      Transform ff = mrFondoBatalla.transform.Find("FondoFrente");
+      if (ff != null) mrFondoFrente = ff.GetComponent<MeshRenderer>();
+    }
+    if (mrFondoFrente != null)
+    {
+      mrFondoFrente.sharedMaterial = o.fondo.fondoFrente;
+      mrFondoFrente.enabled = o.fondo.fondoFrente != null;
+    }
+
+    ConfigurarAmbienteVidaBatalla();
+    bool noche = BattleManager.Instance != null && BattleManager.Instance.nocheLienzo != null && BattleManager.Instance.nocheLienzo.activeSelf;
+    battleAmbientLife?.EstablecerModoNocturno(noche);
+    Debug.Log("[DEBUG-FONDOS] " + (debugFondoIndice + 1) + "/" + opciones.Count + ": " + o.nombre + " (" + o.fondo.fondo.name + ")");
+  }
+#endif
 
 
 

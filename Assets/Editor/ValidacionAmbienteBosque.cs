@@ -14,6 +14,10 @@ public static class ValidacionAmbienteBosque
         bool conservar = new SerializedObject(zona).FindProperty("usarTexturaProceduralBosqueAngustiante").boolValue;
         if (conservar) zona.ReaplicarTexturaBosqueArdiente();
         AmbienteBosqueArdiente.Preparar(zona, conservar);
+        if (CampaignManager.Instance != null && CampaignManager.Instance.scMapaManager != null)
+            CampaignManager.Instance.scMapaManager.AplicarMaterialesCaminosZona();
+        foreach (var camino in UnityEngine.Object.FindObjectsByType<CaminoMesh>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            if (camino.gameObject.scene == zona.gameObject.scene) camino.ReaplicarVisual();
         zona.StartCoroutine(AdornosBosqueArdiente.Generar(zona));
     }
 

@@ -10,6 +10,10 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
     readonly List<Vector3> focos = new List<Vector3>();
     readonly List<ParticleSystem> sistemasAmbiente = new List<ParticleSystem>(3);
     readonly Dictionary<Material, Material> materialesLlamas = new Dictionary<Material, Material>();
+    struct MedidasFuego { public ParticleSystem.MinMaxCurve x, y, z, velocidad; }
+    readonly Dictionary<ParticleSystem, MedidasFuego> medidasFuego = new Dictionary<ParticleSystem, MedidasFuego>();
+    readonly Dictionary<ParticleSystemRenderer, bool> visibilidadFuego = new Dictionary<ParticleSystemRenderer, bool>();
+    Bounds areaFuego;
     AtributosZona zona;
     Material humo, brasa, ceniza;
     GameObject raizParticulas;
@@ -28,6 +32,11 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
         var ambiente = raiz.GetComponent<AmbienteBosqueArdiente>();
         if (ambiente == null) ambiente = raiz.AddComponent<AmbienteBosqueArdiente>();
         ambiente.zona = atributos;
+        ambiente.DelimitarFuego();
+        var camara = Camera.main;
+        if (camara != null) camara.depthTextureMode |= DepthTextureMode.Depth;
+        foreach (var emisor in new List<ParticleSystem>(ambiente.medidasFuego.Keys))
+            if (emisor == null) ambiente.medidasFuego.Remove(emisor);
         ambiente.PrepararMateriales();
         ambiente.PrepararTerreno(atributos.TexturaTerreno, conservarTextura);
         ambiente.PrepararTerreno(atributos.TexturaTerrenoExtension, conservarTextura);
@@ -90,6 +99,8 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
         // Solo se leen las posiciones para distribuir las particulas ambientales.
         foreach (var ps in raiz.GetComponentsInChildren<ParticleSystem>(true))
         {
+            if (OmitirEmisor(ps.transform)) continue;
+            if (!DentroDelBosque(ps.transform.position)) continue;
             var renderer = ps.GetComponent<ParticleSystemRenderer>();
             var original = renderer != null ? renderer.sharedMaterial : null;
             if (original == null || original.name.IndexOf("Llama", System.StringComparison.OrdinalIgnoreCase) < 0
@@ -102,26 +113,103 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
     void RefinarMaterialLlamas(GameObject raiz)
     {
         if (raiz == null) return;
-        var shader = Resources.Load<Shader>("BosqueArdienteLlamas");
+        var shader = Resources.Load<Shader>("BosqueArdienteFuego");
         if (shader == null) return;
         foreach (var ps in raiz.GetComponentsInChildren<ParticleSystem>(true))
         {
+            if (OmitirEmisor(ps.transform)) continue;
             if (ps.name.IndexOf("Humo", System.StringComparison.OrdinalIgnoreCase) >= 0) continue;
             var renderer = ps.GetComponent<ParticleSystemRenderer>();
             var original = renderer != null ? renderer.sharedMaterial : null;
-            if (original == null || materiales.Contains(original)
-                || original.name.IndexOf("Llama", System.StringComparison.OrdinalIgnoreCase) < 0) continue;
+            if (original == null || original.name.IndexOf("Llama", System.StringComparison.OrdinalIgnoreCase) < 0
+                || original.name.IndexOf("Espectral", System.StringComparison.OrdinalIgnoreCase) >= 0) continue;
+            if (!visibilidadFuego.TryGetValue(renderer, out var visible))
+            { visible = renderer.enabled; visibilidadFuego.Add(renderer, visible); }
+            renderer.enabled = visible && DentroDelBosque(ps.transform.position);
+            ProfesionalizarEmisor(ps, renderer);
+            if (materiales.Contains(original))
+            {
+                original.shader = shader;
+                original.SetColor("_Color", Color.white);
+                original.SetFloat("_Intensidad", .9f);
+                continue;
+            }
             if (!materialesLlamas.TryGetValue(original, out var refinado))
             {
                 refinado = CrearMaterial(shader, original.name + " refinada", 0);
-                // Conserva color, emision HDR, brillo, texturas y blending del material original.
-                refinado.CopyPropertiesFromMaterial(original);
-                refinado.SetFloat("_UsarForma", 1);
+                refinado.SetColor("_Color", Color.white);
+                refinado.SetFloat("_Intensidad", .9f);
                 materialesLlamas.Add(original, refinado);
             }
-            // Solo cambia el sombreado: no se escriben modulos del emisor, transform ni LOD.
             renderer.sharedMaterial = refinado;
         }
+    }
+
+    void DelimitarFuego()
+    {
+        if (zona.TexturaTerreno == null) return;
+        var min = zona.TexturaTerreno.bounds.min; var max = zona.TexturaTerreno.bounds.max;
+        min.x += .8f; max.x -= .8f; min.z += .8f; max.z -= .8f;
+        float izquierda = float.PositiveInfinity, derecha = float.NegativeInfinity;
+        foreach (var nodo in Object.FindObjectsByType<Nodo>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (nodo.gameObject.scene != zona.gameObject.scene) continue;
+            var p = nodo.transform.position;
+            if (p.x < min.x || p.x > max.x || p.z < min.z || p.z > max.z) continue;
+            izquierda = Mathf.Min(izquierda, p.x); derecha = Mathf.Max(derecha, p.x);
+        }
+        if (derecha - izquierda > 1)
+        { min.x = Mathf.Max(min.x, izquierda - .5f); max.x = Mathf.Min(max.x, derecha + .5f); }
+        areaFuego.SetMinMax(min, max);
+    }
+
+    bool DentroDelBosque(Vector3 p) => p.x >= areaFuego.min.x && p.x <= areaFuego.max.x
+        && p.z >= areaFuego.min.z && p.z <= areaFuego.max.z;
+
+    bool OmitirEmisor(Transform objeto)
+    {
+        return objeto.GetComponentInParent<FondoBosqueArdiente>() != null
+            || zona.pasovientoheladoContenedorGameObjects != null && objeto.IsChildOf(zona.pasovientoheladoContenedorGameObjects.transform)
+            || zona.nedukazalContenedorGameObjects != null && objeto.IsChildOf(zona.nedukazalContenedorGameObjects.transform);
+    }
+
+    void ProfesionalizarEmisor(ParticleSystem ps, ParticleSystemRenderer renderer)
+    {
+        var main = ps.main;
+        if (!medidasFuego.TryGetValue(ps, out var medidas))
+        {
+            medidas = new MedidasFuego { x = main.startSizeX,
+                y = main.startSize3D ? main.startSizeY : main.startSizeX,
+                z = main.startSize3D ? main.startSizeZ : main.startSizeX, velocidad = main.startSpeed };
+            medidasFuego.Add(ps, medidas);
+        }
+        main.startSize3D = true;
+        main.startSizeX = EscalarCurva(medidas.x, .82f);
+        main.startSizeY = EscalarCurva(medidas.y, 1.12f);
+        main.startSizeZ = EscalarCurva(medidas.z, .82f);
+        main.startSpeed = EscalarCurva(medidas.velocidad, .55f);
+        main.startRotation3D = false;
+        main.startRotation = new ParticleSystem.MinMaxCurve(-.10f, .10f);
+        main.startColor = Color.white;
+        var rotacion = ps.rotationOverLifetime; rotacion.enabled = false;
+        var color = ps.colorOverLifetime; color.enabled = true; color.color = FondoBosqueArdiente.GradienteFuego();
+        var size = ps.sizeOverLifetime; size.enabled = true; size.separateAxes = false;
+        size.size = new ParticleSystem.MinMaxCurve(1, new AnimationCurve(new Keyframe(0, .55f), new Keyframe(.22f, 1), new Keyframe(1, .15f)));
+        var noise = ps.noise; noise.enabled = true; noise.strength = .055f;
+        noise.frequency = .8f; noise.scrollSpeed = .32f; noise.quality = ParticleSystemNoiseQuality.Low;
+        renderer.renderMode = ParticleSystemRenderMode.Billboard;
+        renderer.alignment = ParticleSystemRenderSpace.View;
+        renderer.pivot = new Vector3(0, -.35f, 0);
+        renderer.shadowCastingMode = ShadowCastingMode.Off; renderer.receiveShadows = false;
+    }
+
+    static ParticleSystem.MinMaxCurve EscalarCurva(ParticleSystem.MinMaxCurve curva, float factor)
+    {
+        if (curva.mode == ParticleSystemCurveMode.Constant) curva.constant *= factor;
+        else if (curva.mode == ParticleSystemCurveMode.TwoConstants)
+        { curva.constantMin *= factor; curva.constantMax *= factor; }
+        else curva.curveMultiplier *= factor;
+        return curva;
     }
 
     void AgregarFoco(Vector3 posicion)
@@ -203,13 +291,13 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
                 var go = new GameObject("Luz cálida de incendio " + (i + 1));
                 go.transform.SetParent(raizLuces.transform, true);
                 var luz = go.AddComponent<Light>();
-                luz.type = LightType.Point; luz.color = new Color(1, .35f, .09f);
-                luz.range = 4.6f; luz.shadows = LightShadows.None;
+                luz.type = LightType.Point; luz.color = new Color(1, .62f, .27f);
+                luz.range = 2.6f; luz.shadows = LightShadows.None;
                 luz.renderMode = LightRenderMode.ForceVertex;
                 luz.cullingMask = 1 << zona.TexturaTerreno.gameObject.layer;
                 lucesIncendio.Add(luz);
             }
-            lucesIncendio[i].transform.position = focos[i * focos.Count / cantidad] + Vector3.up * .8f;
+            lucesIncendio[i].transform.position = focos[i * focos.Count / cantidad] + Vector3.up * .3f;
         }
         for (int i = 0; i < lucesIncendio.Count; i++) lucesIncendio[i].enabled = i < cantidad;
     }
@@ -221,7 +309,7 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
             * (1 - Mathf.SmoothStep(0, 1, Mathf.InverseLerp(17, 21, hora)));
         for (int i = 0; i < lucesIncendio.Count; i++)
             if (lucesIncendio[i] != null)
-                lucesIncendio[i].intensity = Mathf.Lerp(.95f, .65f, dia)
+                lucesIncendio[i].intensity = Mathf.Lerp(.40f, .25f, dia)
                     * (1 + Mathf.Sin(reloj * .73f + i * 2.1f) * .075f + Mathf.Sin(reloj * 1.13f + i) * .025f);
         if (humo != null) humo.SetColor("_Color", Color.Lerp(new Color(.72f, .67f, .65f), Color.white, dia));
         if (ceniza != null) ceniza.SetColor("_Color", Color.Lerp(new Color(.63f, .61f, .60f), Color.white, dia));
@@ -347,6 +435,7 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
 
     void OnDestroy()
     {
+        foreach (var par in visibilidadFuego) if (par.Key != null) par.Key.enabled = par.Value;
         if (raizLuces != null) { if (Application.isPlaying) Destroy(raizLuces); else DestroyImmediate(raizLuces); }
         if (fondo != null) { if (Application.isPlaying) Destroy(fondo.gameObject); else DestroyImmediate(fondo.gameObject); }
         foreach (var material in materiales)

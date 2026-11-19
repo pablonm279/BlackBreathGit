@@ -23,6 +23,7 @@ public sealed class CampoVivoBatalla : MonoBehaviour
   private ParticleSystem motasLejanas, motasCercanas, bruma, polvo, fragmentos;
   private readonly ParticleSystem.Particle[] particulas = new ParticleSystem.Particle[180];
   private MeshRenderer sombraSuelo, luzSuelo;
+  private DioramaBatalla diorama;
   private readonly Dictionary<Unidad, Rastro> rastros = new Dictionary<Unidad, Rastro>();
   private readonly HashSet<Unidad> presentes = new HashSet<Unidad>();
   private readonly List<Unidad> retiradas = new List<Unidad>();
@@ -51,6 +52,7 @@ public sealed class CampoVivoBatalla : MonoBehaviour
   public void Configurar(MeshRenderer rendererFondo, EncounterZoneType tipoZona, bool bajoTierra)
   {
     LimpiarTransitorios();
+    LiberarDiorama();
     actual = this;
     batalla = BattleManager.Instance;
     fondo = rendererFondo;
@@ -100,7 +102,9 @@ public sealed class CampoVivoBatalla : MonoBehaviour
     presupuestoEmisiones = 44;
     var ajustes = AjustesCampoVivo.Actual;
     float calidad = QualitySettings.GetQualityLevel() <= 0 ? .55f : QualitySettings.GetQualityLevel() == 1 ? .8f : 1f;
-    float viento = paleta.viento * (1f + .7f * Rafaga(reloj));
+    // En Paso Viento Helado el viento (y la nieve) va de derecha a izquierda; en el resto, como antes.
+    float sentido = zona == EncounterZoneType.PasoVientoHelado && !subterraneo ? -1f : 1f;
+    float viento = sentido * paleta.viento * (1f + .7f * Rafaga(reloj));
 
     foreach (Material m in materiales)
     {
@@ -108,6 +112,7 @@ public sealed class CampoVivoBatalla : MonoBehaviour
       m.SetVector(VientoId, new Vector4(viento * .12f, .012f, 0, 0));
     }
     AnimarSuelo(ajustes, viento);
+    AnimarDiorama(ajustes, viento, dt, calidad);
     if (ajustes.atmosfera)
     {
       EmitirAmbiente(dt, ajustes.densidad * calidad, viento);
@@ -294,7 +299,45 @@ public sealed class CampoVivoBatalla : MonoBehaviour
     Color luz = paleta.luz;
     luz.a = (subterraneo ? .028f : .034f) * visibilidad * (1f + .07f*Mathf.Sin(reloj*.32f));
     luzSuelo.sharedMaterial.SetColor(ColorId, luz);
-    luzSuelo.sharedMaterial.SetVector(VientoId, new Vector4(-viento*.09f,.018f,0,0));
+    luzSuelo.sharedMaterial.SetVector(VientoId, new Vector4(-Mathf.Abs(viento)*.09f,.018f,0,0));
+  }
+
+  // Capas escenicas por zona (ver DioramaBatalla.Perfil). Apagar ajustes.diorama restaura el aspecto anterior.
+  private void AnimarDiorama(AjustesCampoVivo ajustes, float viento, float dt, float calidad)
+  {
+    if (!ajustes.diorama) { if (diorama != null) diorama.Activar(false); return; }
+    if (diorama == null)
+    {
+      Camera camara = batalla.goCamara != null ? batalla.goCamara.GetComponent<Camera>() : null;
+      var area = new DioramaBatalla.Area { centro = centro, derecha = derecha, normal = normal, adelante = adelante, mitadTablero = extension, celda = celda };
+      var perfil = DioramaBatalla.Perfil.Para(zona, subterraneo, paleta.brasas, paleta.aire, paleta.luz, paleta.polvo);
+      diorama = DioramaBatalla.Crear(raiz.transform, area, camara, fondo, BuscarSuelo(), perfil, calidad,
+        TableroIntegradoBatalla.Soporta(zona, subterraneo));
+      if (diorama == null) return;
+    }
+    diorama.Avanzar(dt, reloj, Mathf.Abs(viento), mezcla * ajustes.intensidad, Rafaga(reloj));
+  }
+
+  // Objeto "Suelo" de la grilla (hermano de las filas de casillas). Si no existe, el diorama estima el borde.
+  private Transform BuscarSuelo()
+  {
+    var casillas = batalla.lCasillasTotal;
+    if (casillas == null) return null;
+    foreach (var c in casillas)
+    {
+      Transform fila = c != null ? c.transform.parent : null;
+      Transform grilla = fila != null ? fila.parent : null;
+      Transform suelo = grilla != null ? grilla.Find("Suelo") : null;
+      if (suelo != null) return suelo;
+    }
+    return null;
+  }
+
+  private void LiberarDiorama()
+  {
+    if (diorama == null) return;
+    diorama.Liberar();
+    diorama = null;
   }
 
   private void EmitirAmbiente(float dt, float densidad, float viento)
@@ -497,6 +540,7 @@ public sealed class CampoVivoBatalla : MonoBehaviour
 
   private void OnDestroy()
   {
+    LiberarDiorama();
     foreach (Material m in materiales) Liberar(m);
     Liberar(malla);
     if (raiz != null) Liberar(raiz);

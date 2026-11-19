@@ -696,7 +696,7 @@ public class MenuDescanso : MonoBehaviour
       campaignManager.CapturarHoraCombatePendiente(campaignManager.ObtenerHoraActual());
       campaignManager.BATALLA_EnCurso = 11;
       campaignManager.EMBOSCADA_EnCurso = 3;
-      campaignManager.EscribirLog(TRADU.i.Traducir("-La caravana ha sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + tiradaEmboscadaDescanso);
+      campaignManager.EscribirLog(TRADU.i.Traducir("-La Caravana ha sufrido un Ataque durante el descanso. Probabilidades ") + chancesAtaqueACaravana + TRADU.i.Traducir("% - Tirada: 1d100 = ") + tiradaEmboscadaDescanso);
       campaignManager.TryAutosaveCampania("descanso_interrumpido", out _);
       TutorialTooltipManager.TryShow(TooltipEmboscadaNormalId);
       campaignManager.scMenuBatallas.EventoBatallaCaravana(0, 3);
@@ -750,12 +750,12 @@ public class MenuDescanso : MonoBehaviour
       if (tareaCivilSeleccionada == 4) // y se descansa, da +5 esperanza
       {
         CampaignManager.Instance.CambiarEsperanzaActual(5);
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El tener un Día Libre en plena Ola de Calor, ha caído bien en los Civiles. +5 Esperanza"));
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Tener un Día Libre en plena Ola de Calor cayó bien entre los Civiles. +5 Esperanza"));
       }
       else
       {
         CampaignManager.Instance.CambiarEsperanzaActual(-3); //si se hace otra cosa, -3
-        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-El tener que trabajar en plena Ola de Calor, ha caído mal en los Civiles. -3 Esperanza"));
+        CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Tener que trabajar en plena Ola de Calor cayó mal entre los Civiles. -3 Esperanza"));
       }
 
     }
@@ -901,14 +901,14 @@ public class MenuDescanso : MonoBehaviour
     {
       int random = UnityEngine.Random.Range(1, 5);
       CampaignManager.Instance.CambiarCivilesActuales(-random);
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la baja Esperanza ") + random + TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la baja Esperanza, ") + random + TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
 
     }
     else if (CampaignManager.Instance.GetEsperanzaActual() <= 10)
     {
       int random = UnityEngine.Random.Range(1, 11);
       CampaignManager.Instance.CambiarCivilesActuales(-random);
-      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la muy baja Esperanza ") + random + TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
+      CampaignManager.Instance.EscribirLog(TRADU.i.Traducir("-Por la muy baja Esperanza, ") + random + TRADU.i.Traducir(" Civiles han abandonado la Caravana."));
     }
 
     //Efectos Esperanza en Descanso 

@@ -481,6 +481,13 @@ public class Unidad : MonoBehaviour
   [SerializeField] private float floatingTextCrowdExtraIntervalMax = 0.03f;
   private float nextFloatingTextTime = -999f;
   private readonly List<float> floatingTextSlotExpiries = new List<float>();
+  // Antisolape de textos flotantes: cada texto activo recuerda donde esta para que los nuevos nazcan por encima sin pisarlo.
+  private struct TextoFlotanteActivo { public float fin; public float inicio; public float yBase; public float velocidad; public float altura; }
+  private readonly List<TextoFlotanteActivo> textosFlotantesActivos = new List<TextoFlotanteActivo>();
+  private const float FactorAlturaTextoFlotante = 1.5f;
+  private const float MargenTextoFlotante = 0.2f;
+  private const float VentanaAntisolapeTextoFlotante = 0.9f;
+  private const float EsperaMaximaApiladoTextoFlotante = 0.4f;
   private readonly List<Renderer> renderersOcultosPorEscondido = new List<Renderer>();
   private bool unidadCanvasOcultadoPorEscondido;
   private bool imagenOcultadaPorEscondido;
@@ -5018,9 +5025,38 @@ public virtual void AplicarDesesperanzado()
     return baseInterval + extra;
   }
 
+  // Y (en unidades del canvas de la unidad) donde un texto nuevo no pisa a ninguno de los activos, ni ahora ni mientras ambos suben.
+  private float CalcularYLibreTextoFlotante(float yBase, float altura, float velocidad, float duracion, float now)
+  {
+    textosFlotantesActivos.RemoveAll(e => e.fin <= now);
+    float y = yBase;
+    for (int pasada = 0; pasada <= textosFlotantesActivos.Count; pasada++)
+    {
+      bool movido = false;
+      for (int i = 0; i < textosFlotantesActivos.Count; i++)
+      {
+        TextoFlotanteActivo e = textosFlotantesActivos[i];
+        float restante = Mathf.Min(e.fin - now, duracion, VentanaAntisolapeTextoFlotante);
+        float sep = (e.altura + altura) * 0.5f * (1f + MargenTextoFlotante);
+        float yEnAhora = e.yBase + e.velocidad * (now - e.inicio);
+        float minimoSobre = yEnAhora + sep + Mathf.Max(0f, (e.velocidad - velocidad) * restante);
+        float maximoBajo = yEnAhora - sep - Mathf.Max(0f, (velocidad - e.velocidad) * restante);
+        if (y < minimoSobre && y > maximoBajo)
+        {
+          y = minimoSobre;
+          movido = true;
+        }
+      }
+
+      if (!movido) { break; }
+    }
+
+    return y;
+  }
+
   public async Task GenerarTextoFlotante(string txString, Color color, FloatingTextContext contexto = FloatingTextContext.Generic, TextMeshProUGUI overrideText = null)
   {
-    if (DebeSuprimirTextoFlotantePorEscondidoIA())
+    if (DebeSuprimirTextoFlotantePorEscondidoIA() || string.IsNullOrWhiteSpace(txString))
     {
       return;
     }
@@ -5042,6 +5078,39 @@ public virtual void AplicarDesesperanzado()
     {
       int delayMs = Mathf.CeilToInt(delaySeconds * 1000f);
       await BattleManager.DelayCombateAsync(delayMs);
+    }
+
+    // Estimaciones del texto (prefab) para ubicarlo sin solaparse con los que ya estan en el aire.
+    bool antisolape = !apilarTextosFlotantes && overrideText == null && scUnidadCanvas != null && scUnidadCanvas.PrefabtxtDaño != null;
+    float alturaAntisolape = 0f;
+    float velocidadAntisolape = 0f;
+    float duracionAntisolape = 0f;
+    float yBasePrefabAntisolape = 0f;
+    if (antisolape)
+    {
+      GameObject prefabTexto = scUnidadCanvas.PrefabtxtDaño;
+      TextMeshProUGUI tmpPrefab = prefabTexto.GetComponent<TextMeshProUGUI>();
+      FloatingTextAnimator animPrefab = prefabTexto.GetComponent<FloatingTextAnimator>();
+      RectTransform rectPrefab = prefabTexto.GetComponent<RectTransform>();
+      antisolape = tmpPrefab != null && animPrefab != null && rectPrefab != null;
+      if (antisolape)
+      {
+        alturaAntisolape = tmpPrefab.fontSize * FactorAlturaTextoFlotante;
+        velocidadAntisolape = animPrefab.GetVerticalSpeed(contexto);
+        duracionAntisolape = ObtenerDuracionTextoFlotante(animPrefab, contexto);
+        yBasePrefabAntisolape = rectPrefab.anchoredPosition.y;
+
+        // Si la pila ya esta llena, espera un instante a que suban los anteriores en vez de apilar sin limite.
+        float alturaMaximaPila = alturaAntisolape * Mathf.Max(1, floatingTextMaxSlots);
+        float esperado = 0f;
+        while (esperado < EsperaMaximaApiladoTextoFlotante
+          && CalcularYLibreTextoFlotante(yBasePrefabAntisolape, alturaAntisolape, velocidadAntisolape, duracionAntisolape, Time.time) - yBasePrefabAntisolape > alturaMaximaPila)
+        {
+          await BattleManager.DelayCombateAsync(50);
+          esperado += 0.05f;
+          if (this == null) { return; }
+        }
+      }
     }
 
     // Instancia el nuevo objeto
@@ -5093,6 +5162,20 @@ public virtual void AplicarDesesperanzado()
         float lifetime = ObtenerDuracionTextoFlotante(animator, contexto);
         int slotIndex = ReservarSlotTextoFlotante(lifetime);
         basePosition += Vector2.up * (floatingTextSlotSpacing * slotIndex);
+      }
+      else if (antisolape && animator != null)
+      {
+        float ahora = Time.time;
+        float yLibre = CalcularYLibreTextoFlotante(basePosition.y, alturaAntisolape, velocidadAntisolape, duracionAntisolape, ahora);
+        textosFlotantesActivos.Add(new TextoFlotanteActivo
+        {
+          inicio = ahora,
+          fin = ahora + duracionAntisolape,
+          yBase = yLibre,
+          velocidad = velocidadAntisolape,
+          altura = alturaAntisolape
+        });
+        basePosition.y = yLibre;
       }
 
       if (animator != null)

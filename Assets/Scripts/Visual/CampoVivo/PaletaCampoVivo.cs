@@ -13,7 +13,7 @@ public struct PaletaCampoVivo
     if (subterraneo || zona == EncounterZoneType.Subterraneo)
       p = new PaletaCampoVivo { aire = new Color(.29f,.43f,.48f), motas = new Color(.57f,.8f,.83f), polvo = new Color(.43f,.48f,.5f), luz = new Color(.4f,.65f,.7f), viento = .055f, caida = -.035f, densidad = .6f };
     else if (zona == EncounterZoneType.PasoVientoHelado)
-      p = new PaletaCampoVivo { aire = new Color(.56f,.7f,.79f), motas = new Color(.84f,.93f,1f), polvo = new Color(.69f,.83f,.92f), luz = new Color(.56f,.74f,.88f), viento = .42f, caida = -.3f, densidad = 1.35f, nieve = true };
+      p = new PaletaCampoVivo { aire = new Color(.56f,.7f,.79f), motas = new Color(.84f,.93f,1f), polvo = new Color(.69f,.83f,.92f), luz = new Color(.56f,.74f,.88f), viento = .42f, caida = -.3f, densidad = 1.66f, nieve = true };
     else if (zona == EncounterZoneType.Nedukazal)
       p = new PaletaCampoVivo { aire = new Color(.57f,.44f,.3f), motas = new Color(.9f,.71f,.44f), polvo = new Color(.65f,.49f,.32f), luz = new Color(.93f,.7f,.39f), viento = .2f, caida = -.08f, densidad = .85f };
     else if (bosqueQuemado)

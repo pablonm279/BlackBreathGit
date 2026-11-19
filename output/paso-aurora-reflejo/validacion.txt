@@ -1,0 +1,7 @@
+Hora real=9 clima real=4
+Luz luz=0,1039565
+Luz (1) luz=0,189156
+Clima_Aurora color=RGBA(0.095, 6.711, 3.562, 0.144) visible=True
+Clima_Aurora (1) color=RGBA(0.080, 3.179, 5.086, 0.112) visible=True
+Luz sin aurora=0
+Luz (1) sin aurora=0

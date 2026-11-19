@@ -1,0 +1,21 @@
+Validación visual de fondos Paso Viento Helado — 1536 x 1024 RGB
+Capturas geométricas sin postprocesado; no representan el clima ni la iluminación dinámica de la partida.
+Editor configurado en Quality Low con límite global de mipmaps 2 durante las capturas; la nitidez mostrada en esas capturas corresponde a esa configuración. Las imágenes fuente nuevas conservan 1536 x 1024.
+Escena temporal de previsualización; cámara, materiales, escenas y partida originales sin modificar.
+Fondo 1 / normal: plano cubre viewport completo=False; proyección local X -0,369..0,419 Y -0,501..0,136; base; FOV 52,10
+Fondo 1 / rueda-cerca: plano cubre viewport completo=True; proyección local X -0,346..0,397 Y -0,466..0,132; avance 0.38, descenso 0.08, pitch -1.6; FOV 52,10
+Fondo 1 / habilidad-izquierda: plano cubre viewport completo=True; proyección local X -0,339..0,264 Y -0,416..0,091; paneo -0.36, avance 0.61, descenso 0.2, yaw -4, roll -2.4, FOV -8; FOV 44,10
+Fondo 1 / habilidad-derecha: plano cubre viewport completo=True; proyección local X -0,206..0,391 Y -0,420..0,082; paneo +0.36, avance 0.61, descenso 0.2, yaw +4, roll +2.4, FOV -8; FOV 44,10
+Fondo 1 / rueda-lejos: plano cubre viewport completo=False; proyección local X -0,374..0,424 Y -0,507..0,136; rueda -0.18; FOV 52,10
+Fondo 2 / normal: plano cubre viewport completo=False; proyección local X -0,369..0,419 Y -0,501..0,136; base; FOV 52,10
+Fondo 2 / rueda-cerca: plano cubre viewport completo=True; proyección local X -0,346..0,397 Y -0,466..0,132; avance 0.38, descenso 0.08, pitch -1.6; FOV 52,10
+Fondo 2 / habilidad-izquierda: plano cubre viewport completo=True; proyección local X -0,339..0,264 Y -0,416..0,091; paneo -0.36, avance 0.61, descenso 0.2, yaw -4, roll -2.4, FOV -8; FOV 44,10
+Fondo 2 / habilidad-derecha: plano cubre viewport completo=True; proyección local X -0,206..0,391 Y -0,420..0,082; paneo +0.36, avance 0.61, descenso 0.2, yaw +4, roll +2.4, FOV -8; FOV 44,10
+Fondo 2 / rueda-lejos: plano cubre viewport completo=False; proyección local X -0,374..0,424 Y -0,507..0,136; rueda -0.18; FOV 52,10
+Fondo 3 / normal: plano cubre viewport completo=False; proyección local X -0,369..0,419 Y -0,501..0,136; base; FOV 52,10
+Fondo 3 / rueda-cerca: plano cubre viewport completo=True; proyección local X -0,346..0,397 Y -0,466..0,132; avance 0.38, descenso 0.08, pitch -1.6; FOV 52,10
+Fondo 3 / habilidad-izquierda: plano cubre viewport completo=True; proyección local X -0,339..0,264 Y -0,416..0,091; paneo -0.36, avance 0.61, descenso 0.2, yaw -4, roll -2.4, FOV -8; FOV 44,10
+Fondo 3 / habilidad-derecha: plano cubre viewport completo=True; proyección local X -0,206..0,391 Y -0,420..0,082; paneo +0.36, avance 0.61, descenso 0.2, yaw +4, roll +2.4, FOV -8; FOV 44,10
+Fondo 3 / rueda-lejos: plano cubre viewport completo=False; proyección local X -0,374..0,424 Y -0,507..0,136; rueda -0.18; FOV 52,10
+El plano de fondo no necesita cubrir por sí solo las esquinas inferiores ocultas por el suelo: se verifica el compuesto en las capturas.
+No se ejecutó el tutorial completo; el cambio de producción abarca solamente tres texturas PNG, conservando GUID, dimensiones fuente, materiales y lógica.

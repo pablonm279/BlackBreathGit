@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 public class ReaccionAtaqueCuervo : Reaccion
 {
    IAAtaqueCuervo ataqueCuervo;
+   int rondaReaccion = -1;
+   readonly HashSet<Unidad> atacantesEstaRonda = new HashSet<Unidad>();
    void Start()
    {
 
@@ -31,7 +33,14 @@ public class ReaccionAtaqueCuervo : Reaccion
 
      public async override void AplicarEfectos(Unidad uTriggerer, bool melee, float variableFlexible1 = 0,  float variableFlexible2 = 0)
      {
-     
+        // Una vez por atacante por ronda
+        int rondaActual = BattleManager.Instance.RondaNro;
+        if (rondaReaccion != rondaActual)
+        {
+          rondaReaccion = rondaActual;
+          atacantesEstaRonda.Clear();
+        }
+        if (!atacantesEstaRonda.Add(uTriggerer)) return;
 
         //---------------Ataque Cuervo Ojos----------------
         float delay = 0.6f;

@@ -821,7 +821,22 @@ public class AtributosZona : MonoBehaviour
          3 => nedukazalContenedorGameObjects,
          _ => null
       };
-      return contenedor != null ? contenedor.GetComponent<MaterialesCaminosZona>() : null;
+      var materiales = contenedor != null ? contenedor.GetComponent<MaterialesCaminosZona>() : null;
+      if (ID == 1 && contenedor != null && pasovientoheladoContenedorGameObjects != null)
+      {
+         var paso = pasovientoheladoContenedorGameObjects.GetComponent<MaterialesCaminosZona>();
+         if (paso != null)
+         {
+            if (materiales == null) materiales = contenedor.AddComponent<MaterialesCaminosZona>();
+            materiales.caminoOriginal = paso.caminoOriginal;
+            materiales.caminoMarcado = paso.caminoMarcado;
+            materiales.caminoUsado = paso.caminoUsado;
+            materiales.caminoHint = paso.caminoHint;
+            materiales.caminoAAldea = paso.caminoAAldea;
+            materiales.multiplicadorAnchoBase = paso.multiplicadorAnchoBase;
+         }
+      }
+      return materiales;
    }
 
    public GameObject BosqueAngustiante_ArbolQuemado1;

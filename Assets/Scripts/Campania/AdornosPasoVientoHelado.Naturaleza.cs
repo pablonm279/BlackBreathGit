@@ -24,7 +24,6 @@ public sealed partial class AdornosPasoVientoHelado
             if (renderer != null && (renderer.bounds.size.y > .75f || radio > paso * .2f))
                 obstaculosTroncos.Add(new Vector4(hijo.position.x, 0, hijo.position.z, radio));
         }
-        yield return GenerarTroncosNevados();
 
         // Un puñado de candidatos por manchón favorece los huecos sin crear una grilla visible.
         int cantidad = Mathf.Clamp(Mathf.RoundToInt(terreno.size.x * terreno.size.z / (paso * paso * 1.5f)), 32, 90);

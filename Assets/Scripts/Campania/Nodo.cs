@@ -360,6 +360,20 @@ public class Nodo : MonoBehaviour
       materialCaminoHintVisual = null;
       materialCaminoHintPasoVientoHeladoVisual = null;
     }
+    if (CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null
+        && CampaignManager.Instance.scAtributosZona.ID == 1)
+    {
+      var mallasOcultas = new List<MeshRenderer>();
+      foreach (var camino in GetComponentsInChildren<CaminoMesh>(true))
+      {
+        var renderer = camino.GetMeshRenderer();
+        if (renderer != null && !renderer.enabled) mallasOcultas.Add(renderer);
+      }
+      foreach (var conexion in conexionesSalientes)
+        if (conexion != null) AplicarEstadoVisualCamino(conexion, conexion.estadoVisual);
+      SincronizarMaterialCaminosRecortados();
+      foreach (var renderer in mallasOcultas) if (renderer != null) renderer.enabled = false;
+    }
   }
 
   void Start()
@@ -999,7 +1013,7 @@ public class Nodo : MonoBehaviour
     float anchoCamino = ObtenerAnchoVisualCamino(esCaminoDificil);
     if (esRutaRegularHaciaAldea)
     {
-      anchoCamino *= EsZonaPasoVientoHelado() ? 1.20f : CaminoAAldeaAnchoMultiplicador;
+      anchoCamino *= UsaAnchoAldeaPaso() ? 1.20f : CaminoAAldeaAnchoMultiplicador;
     }
     if (esAtajoSuperficie)
     {
@@ -1686,7 +1700,7 @@ public class Nodo : MonoBehaviour
 
     if (campaign.DebeForzarTipoNodoMisteriosoPorPresagio(tipoNodo))
     {
-      MarcarDescubiertoPorMecanicaEspecial();
+      // No marcar como descubierto: el nodo solo debe verse (como misterioso) cuando lo revele la vision de la caravana.
       if (estabaRevelado)
       {
         revelado = true;
@@ -3520,7 +3534,7 @@ if (esLaLider)
     float ancho = nodoOrigen.ObtenerAnchoVisualCamino(esCaminoDificil && !esCaminoAAldea);
     if (esCaminoAAldea)
     {
-      ancho *= EsZonaPasoVientoHelado() ? 1.20f : CaminoAAldeaAnchoMultiplicador;
+      ancho *= UsaAnchoAldeaPaso() ? 1.20f : CaminoAAldeaAnchoMultiplicador;
     }
     if (esAtajoSuperficie)
     {
@@ -3747,6 +3761,12 @@ if (esLaLider)
     return CampaignManager.Instance != null
       && CampaignManager.Instance.scAtributosZona != null
       && CampaignManager.Instance.scAtributosZona.ID == 2;
+  }
+
+  static bool UsaAnchoAldeaPaso()
+  {
+    var zona = CampaignManager.Instance != null ? CampaignManager.Instance.scAtributosZona : null;
+    return zona != null && (zona.ID == 1 || zona.ID == 2);
   }
 
   private bool CoincideExtremoLineaConPosicion(LineRenderer lineRenderer, Vector3 posicionObjetivo)

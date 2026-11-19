@@ -1,0 +1,3 @@
+Hora conservada=True clima conservado=True
+Clima_Aurora shader=GDD/Campania/PasoVientoHeladoAuroraParticulas blend=5,10
+Clima_Aurora (1) shader=GDD/Campania/PasoVientoHeladoAuroraParticulas blend=5,10

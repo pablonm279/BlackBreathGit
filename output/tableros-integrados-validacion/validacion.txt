@@ -1,0 +1,182 @@
+OK 30 casillas en dos lados de 15
+OK Preparacion paso 0
+OK Barras horizontales y finas en pantalla paso
+OK Transform de Slider original intacto paso
+OK Suelo anterior oculto paso
+OK Ningun collider nuevo paso
+OK Vida y fill de barras intactos paso
+OK Obstaculos sin cambios de estado paso
+OK Barras con fondo sin UI ni colliders nuevos paso
+OK Contactos sin colliders paso
+OK Posiciones intactas paso
+OK Coordenadas, ocupacion y costes intactos paso
+OK Activacion de capas intacta paso
+OK Relleno visual sigue 25 por ciento del Slider real paso
+OK Barra y sombra se ocultan al retirar obstaculo paso
+OK Orientacion original de barras restaurada paso
+OK Materiales originales restaurados paso
+OK Placa original restaurada paso
+OK Graficos originales de barras restaurados paso
+OK Un solo suelo sin acumulacion paso
+OK Sombras liberadas paso
+OK Preparacion paso 1
+OK Barras horizontales y finas en pantalla paso
+OK Transform de Slider original intacto paso
+OK Suelo anterior oculto paso
+OK Ningun collider nuevo paso
+OK Vida y fill de barras intactos paso
+OK Obstaculos sin cambios de estado paso
+OK Barras con fondo sin UI ni colliders nuevos paso
+OK Contactos sin colliders paso
+OK Posiciones intactas paso
+OK Coordenadas, ocupacion y costes intactos paso
+OK Activacion de capas intacta paso
+OK Orientacion original de barras restaurada paso
+OK Materiales originales restaurados paso
+OK Placa original restaurada paso
+OK Graficos originales de barras restaurados paso
+OK Un solo suelo sin acumulacion paso
+OK Sombras liberadas paso
+OK Preparacion paso 2
+OK Barras horizontales y finas en pantalla paso
+OK Transform de Slider original intacto paso
+OK Suelo anterior oculto paso
+OK Ningun collider nuevo paso
+OK Vida y fill de barras intactos paso
+OK Obstaculos sin cambios de estado paso
+OK Barras con fondo sin UI ni colliders nuevos paso
+OK Contactos sin colliders paso
+OK Posiciones intactas paso
+OK Coordenadas, ocupacion y costes intactos paso
+OK Activacion de capas intacta paso
+OK Orientacion original de barras restaurada paso
+OK Materiales originales restaurados paso
+OK Placa original restaurada paso
+OK Graficos originales de barras restaurados paso
+OK Un solo suelo sin acumulacion paso
+OK Sombras liberadas paso
+OK Preparacion bosque 0
+OK Barras horizontales y finas en pantalla bosque
+OK Transform de Slider original intacto bosque
+OK Suelo anterior oculto bosque
+OK Ningun collider nuevo bosque
+OK Vida y fill de barras intactos bosque
+OK Obstaculos sin cambios de estado bosque
+OK Barras con fondo sin UI ni colliders nuevos bosque
+OK Contactos sin colliders bosque
+OK Posiciones intactas bosque
+OK Coordenadas, ocupacion y costes intactos bosque
+OK Activacion de capas intacta bosque
+OK Relleno visual sigue 25 por ciento del Slider real bosque
+OK Barra y sombra se ocultan al retirar obstaculo bosque
+OK Orientacion original de barras restaurada bosque
+OK Materiales originales restaurados bosque
+OK Placa original restaurada bosque
+OK Graficos originales de barras restaurados bosque
+OK Un solo suelo sin acumulacion bosque
+OK Sombras liberadas bosque
+OK Preparacion bosque 1
+OK Barras horizontales y finas en pantalla bosque
+OK Transform de Slider original intacto bosque
+OK Suelo anterior oculto bosque
+OK Ningun collider nuevo bosque
+OK Vida y fill de barras intactos bosque
+OK Obstaculos sin cambios de estado bosque
+OK Barras con fondo sin UI ni colliders nuevos bosque
+OK Contactos sin colliders bosque
+OK Posiciones intactas bosque
+OK Coordenadas, ocupacion y costes intactos bosque
+OK Activacion de capas intacta bosque
+OK Orientacion original de barras restaurada bosque
+OK Materiales originales restaurados bosque
+OK Placa original restaurada bosque
+OK Graficos originales de barras restaurados bosque
+OK Un solo suelo sin acumulacion bosque
+OK Sombras liberadas bosque
+OK Preparacion bosque 2
+OK Barras horizontales y finas en pantalla bosque
+OK Transform de Slider original intacto bosque
+OK Suelo anterior oculto bosque
+OK Ningun collider nuevo bosque
+OK Vida y fill de barras intactos bosque
+OK Obstaculos sin cambios de estado bosque
+OK Barras con fondo sin UI ni colliders nuevos bosque
+OK Contactos sin colliders bosque
+OK Posiciones intactas bosque
+OK Coordenadas, ocupacion y costes intactos bosque
+OK Activacion de capas intacta bosque
+OK Orientacion original de barras restaurada bosque
+OK Materiales originales restaurados bosque
+OK Placa original restaurada bosque
+OK Graficos originales de barras restaurados bosque
+OK Un solo suelo sin acumulacion bosque
+OK Sombras liberadas bosque
+OK Preparacion nedukazal 0
+OK Barras horizontales y finas en pantalla nedukazal
+OK Transform de Slider original intacto nedukazal
+OK Suelo anterior oculto nedukazal
+OK Ningun collider nuevo nedukazal
+OK Vida y fill de barras intactos nedukazal
+OK Obstaculos sin cambios de estado nedukazal
+OK Barras con fondo sin UI ni colliders nuevos nedukazal
+OK Contactos sin colliders nedukazal
+OK Posiciones intactas nedukazal
+OK Coordenadas, ocupacion y costes intactos nedukazal
+OK Activacion de capas intacta nedukazal
+OK Relleno visual sigue 25 por ciento del Slider real nedukazal
+OK Barra y sombra se ocultan al retirar obstaculo nedukazal
+OK Orientacion original de barras restaurada nedukazal
+OK Materiales originales restaurados nedukazal
+OK Placa original restaurada nedukazal
+OK Graficos originales de barras restaurados nedukazal
+OK Un solo suelo sin acumulacion nedukazal
+OK Sombras liberadas nedukazal
+OK Preparacion nedukazal 1
+OK Barras horizontales y finas en pantalla nedukazal
+OK Transform de Slider original intacto nedukazal
+OK Suelo anterior oculto nedukazal
+OK Ningun collider nuevo nedukazal
+OK Vida y fill de barras intactos nedukazal
+OK Obstaculos sin cambios de estado nedukazal
+OK Barras con fondo sin UI ni colliders nuevos nedukazal
+OK Contactos sin colliders nedukazal
+OK Posiciones intactas nedukazal
+OK Coordenadas, ocupacion y costes intactos nedukazal
+OK Activacion de capas intacta nedukazal
+OK Orientacion original de barras restaurada nedukazal
+OK Materiales originales restaurados nedukazal
+OK Placa original restaurada nedukazal
+OK Graficos originales de barras restaurados nedukazal
+OK Un solo suelo sin acumulacion nedukazal
+OK Sombras liberadas nedukazal
+OK Preparacion nedukazal 2
+OK Barras horizontales y finas en pantalla nedukazal
+OK Transform de Slider original intacto nedukazal
+OK Suelo anterior oculto nedukazal
+OK Ningun collider nuevo nedukazal
+OK Vida y fill de barras intactos nedukazal
+OK Obstaculos sin cambios de estado nedukazal
+OK Barras con fondo sin UI ni colliders nuevos nedukazal
+OK Contactos sin colliders nedukazal
+OK Posiciones intactas nedukazal
+OK Coordenadas, ocupacion y costes intactos nedukazal
+OK Activacion de capas intacta nedukazal
+OK Orientacion original de barras restaurada nedukazal
+OK Materiales originales restaurados nedukazal
+OK Placa original restaurada nedukazal
+OK Graficos originales de barras restaurados nedukazal
+OK Un solo suelo sin acumulacion nedukazal
+OK Sombras liberadas nedukazal
+OK Subterraneo conserva su suelo
+OK Diorama anterior de caverna preparado
+OK Transicion caverna a Paso
+OK Sin placa ni borde duplicados en zonas integradas
+OK Ambiente no reactiva la placa bajo el suelo integrado
+OK Restauracion tras cambiar de bioma
+OK Sin sustituciones fuera de las zonas aprobadas
+OK Colliders sin cambios
+OK RNG de combate intacto
+OK Reloj de combate intacto
+OK Administrador real sin cambios
+OK Shader Suelo compilado
+OK Shader Borde compilado

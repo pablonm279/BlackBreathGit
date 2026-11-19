@@ -76,6 +76,7 @@ public class CaminoMesh : MonoBehaviour
     Material _displaySourceMaterial;
     bool _displayPreservaMaterial;
     bool _displayConfiguradoComoPaso;
+    int _displayZona = int.MinValue;
     Material _underlayMaterial;
     Material _underlaySourceMaterial;
     Material _rutsMaterial;
@@ -175,7 +176,7 @@ public class CaminoMesh : MonoBehaviour
             return;
 
         // Paso: huella rustica, con bordes irregulares; solo modifica la franja visual.
-        bool paso = EsPasoVientoHelado();
+        bool paso = UsaEstiloCaminosPaso();
         float anchoRework = ReworkWidthScale * (paso ? PasoWidthFactor : 1f);
         float endpointInset = paso
             ? PasoEndpointInset
@@ -804,10 +805,12 @@ public class CaminoMesh : MonoBehaviour
     void UpdateDisplayMaterial(Material source, bool preservarMaterial)
     {
         // El Paso conserva los estados del material fuente sobre nieve compactada.
-        bool esPaso = usarReworkVisual && EsPasoVientoHelado();
+        bool esPaso = usarReworkVisual && UsaEstiloCaminosPaso();
+        int zonaActual = CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null
+            ? CampaignManager.Instance.scAtributosZona.ID : 0;
         if (esPaso) preservarMaterial = false;
         // Si la zona cambio desde que se configuro el material, hay que reconstruirlo.
-        if (_displaySourceMaterial == source && _displayPreservaMaterial == preservarMaterial && _displayConfiguradoComoPaso == esPaso
+        if (_displaySourceMaterial == source && _displayPreservaMaterial == preservarMaterial && _displayConfiguradoComoPaso == esPaso && _displayZona == zonaActual
             && (_displayMaterial != null || preservarMaterial && _mr.sharedMaterial == source))
             return;
 
@@ -815,6 +818,7 @@ public class CaminoMesh : MonoBehaviour
         _displaySourceMaterial = source;
         _displayPreservaMaterial = preservarMaterial;
         _displayConfiguradoComoPaso = esPaso;
+        _displayZona = zonaActual;
         if (source == null)
         {
             _mr.sharedMaterial = null;
@@ -895,10 +899,11 @@ public class CaminoMesh : MonoBehaviour
         if (material.HasProperty("_MacroVariation"))
             material.SetFloat("_MacroVariation", 0.08f);
 
-        if (EsPasoVientoHelado())
+        if (UsaEstiloCaminosPaso())
         {
             bool aldea = SourceUsesVillageRoadAlbedo(source);
-            material.SetFloat("_SnowAmount", aldea ? 0.30f : 0.60f);
+            bool bosque = CampaignManager.Instance.scAtributosZona.ID == 1;
+            material.SetFloat("_SnowAmount", bosque ? 0f : aldea ? 0.30f : 0.60f);
             material.SetFloat("_EdgeFeather", 0.38f);
             material.SetFloat("_EdgeBreakup", 0.32f);
             material.SetFloat("_RutStrength", _caminoRecorrido ? 0.25f : 0.12f);
@@ -909,7 +914,7 @@ public class CaminoMesh : MonoBehaviour
             // Desatura el tinte original sin perder las señales de selección/tipo.
             Color tinte = source.HasProperty("_Color") ? source.GetColor("_Color") : Color.white;
             material.SetColor("_Color", Color.Lerp(Color.white, tinte, 0.32f));
-            material.SetColor("_BiomeTint", new Color(0.64f, 0.71f, 0.78f, 1f));
+            material.SetColor("_BiomeTint", bosque ? new Color(.56f, .47f, .38f, 1f) : new Color(0.64f, 0.71f, 0.78f, 1f));
         }
 
         ConfigureTransparentSurface(material);
@@ -921,7 +926,7 @@ public class CaminoMesh : MonoBehaviour
         if (source == null || !source.HasProperty("_MainTex")) return false;
         var textura = source.GetTexture("_MainTex");
         if (_villageRoadAlbedo != null && textura == _villageRoadAlbedo) return true;
-        if (!EsPasoVientoHelado() || textura == null) return false;
+        if (!UsaEstiloCaminosPaso() || textura == null) return false;
         // Los materiales de estado conservan la textura de la variante regional de aldeas.
         var materiales = CampaignManager.Instance.scAtributosZona.ObtenerMaterialesCaminosZona();
         return materiales != null && materiales.caminoAAldea != null
@@ -941,10 +946,10 @@ public class CaminoMesh : MonoBehaviour
         return new Color(0.46f, 0.35f, 0.23f, 1f);
     }
 
-    static bool EsPasoVientoHelado()
+    static bool UsaEstiloCaminosPaso()
     {
         return CampaignManager.Instance != null && CampaignManager.Instance.scAtributosZona != null
-            && CampaignManager.Instance.scAtributosZona.ID == 2;
+            && (CampaignManager.Instance.scAtributosZona.ID == 1 || CampaignManager.Instance.scAtributosZona.ID == 2);
     }
 
     void UpdateUnderlayMaterial(Material source)
@@ -1246,7 +1251,7 @@ public class CaminoMesh : MonoBehaviour
         if (_displayMaterial != null && _displayMaterial.HasProperty("_CaminoRecorrido"))
             _displayMaterial.SetFloat("_CaminoRecorrido", _caminoRecorrido ? 1f : 0f);
         if (_displayMaterial != null && _displayMaterial.HasProperty("_RutStrength"))
-            _displayMaterial.SetFloat("_RutStrength", EsPasoVientoHelado()
+            _displayMaterial.SetFloat("_RutStrength", UsaEstiloCaminosPaso()
                 ? (_caminoRecorrido ? 0.25f : 0.12f) : (_caminoRecorrido ? 0.24f : 0.08f));
 
         if (_rutsMr != null) _rutsMr.enabled = !usarReworkVisual && _visible && _caminoRecorrido;

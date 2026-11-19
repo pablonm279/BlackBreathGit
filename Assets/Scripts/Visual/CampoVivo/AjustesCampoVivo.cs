@@ -9,7 +9,8 @@ public sealed class AjustesCampoVivo : ScriptableObject
   public bool suelo = true;
   public bool desplazamientos = true;
   public bool impactos = true;
-  [Range(0.1f, 1.5f)] public float intensidad = 1f;
+  [Tooltip("Capas escenicas alrededor del tablero (ventisca o ceniza, borde, nieblas, rayos, nubes) con un perfil por zona.")]
+  public bool diorama = true;  [Range(0.1f, 1.5f)] public float intensidad = 1f;
   [Range(0.25f, 1.5f)] public float densidad = 1f;
   [Tooltip("Referencias del fondo quemado: funcionan tambien cuando el material es una instancia.")]
   public Texture[] fondosQuemados = new Texture[0];

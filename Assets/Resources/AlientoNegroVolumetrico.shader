@@ -163,7 +163,7 @@ Shader "GDD/Aliento Negro Volumetrico"
                 float3 volumeNormal = normalize(right * surface.x + up * surface.y
                     + facing * max(0.12, domeHeight));
                 float3 lightDirection = normalize(float3(-0.48, 0.78, -0.4));
-                float visualTime = _Time.y * 0.8;
+                float visualTime = _Time.y * 0.64;
                 float flow = visualTime * _NoiseSpeed;
                 float3 noisePosition = mul(_WorldToAliento, float4(volumePosition, 1)).xyz
                     * (_NoiseScale * 0.075) + float3(flow, -flow * 0.73, flow * 0.4);
@@ -189,7 +189,7 @@ Shader "GDD/Aliento Negro Volumetrico"
                 float localX = mul(_WorldToAliento, float4(i.worldPos, 1)).x;
                 float depth = smoothstep(0.0, 1.0,
                     (localX - _DensityGradient.x) / max(0.01, _DensityGradient.y));
-                float densityRamp = lerp(0.34, 1.25, depth);
+                float densityRamp = lerp(0.50, 1.25, depth);
                 float2 screenUv = i.screenPos.xy / max(0.0001, i.screenPos.w);
                 float visionDistance = length((screenUv - _CaminoVisionPantalla.xy)
                     / max(_CaminoVisionPantalla.zw, float2(0.0001, 0.0001)));

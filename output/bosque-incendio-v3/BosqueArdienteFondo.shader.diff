@@ -1,0 +1,20 @@
+--- antes/BosqueArdienteFondo.shader
++++ Assets/Resources/BosqueArdienteFondo.shader
+@@ -35,7 +35,7 @@
+             }
+             half4 frag(v2f i) : SV_Target
+             {
+-                float2 p=i.world.xy*float2(.075,.12)+float2(-_Reloj*.025,-_Reloj*.045)+_Capa*17.3;
++                float2 p=i.world.xy*float2(.14,.21)+float2(-_Reloj*.025,-_Reloj*.045)+_Capa*17.3;
+                 float voluta=ruido(p+ruido(p*.52)*2.2);
+                 float n=voluta*.58+ruido(p*2.07+9.1)*.28+ruido(p*4.13+7.3)*.14;
+                 float borde=smoothstep(0,.09,i.uv.y)*(1-smoothstep(.88,1,i.uv.y));
+@@ -43,7 +43,7 @@
+                 float alfa=_Color.a*lerp(.87,1,smoothstep(.25,.72,n))*borde;
+                 half3 color=_Color.rgb*lerp(.65,1,_Dia)*lerp(.35,1.65,n);
+                 float rescoldo=exp(-abs(i.uv.y-.11)*18)*smoothstep(.30,.78,ruido(p*float2(.6,1.4)+27));
+-                color+=half3(.13,.026,.002)*rescoldo;
++                color+=half3(.028,.018,.008)*rescoldo;
+                 return half4(color*alfa,alfa);
+             }
+             ENDCG

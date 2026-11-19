@@ -1,0 +1,23 @@
+Pareja 1: FondoBosqueLamentos1 + FondoBosqueLamentos1Frente; textura 1536x1024; cola=3999; alpha Fade=True
+Pareja 2: FondoBosqueLamentos2 + FondoBosqueLamentos2Frente; textura 1536x1024; cola=3999; alpha Fade=True
+Pareja 3: FondoBosqueLamentos3 + FondoBosqueLamentos3Frente; textura 1536x1024; cola=3999; alpha Fade=True
+Seleccion real AplicarFondoAleatorio 1: OK, frente activo y material correcto.
+Fondo 1 / normal: frente visible=2,41%; pixeles en centro protegido=0
+Fondo 1 / rueda-cerca: frente visible=0,10%; pixeles en centro protegido=0
+Fondo 1 / habilidad-izquierda: frente visible=0,00%; pixeles en centro protegido=0
+Fondo 1 / habilidad-derecha: frente visible=0,00%; pixeles en centro protegido=0
+Fondo 1 / rueda-lejos: frente visible=2,88%; pixeles en centro protegido=0
+Seleccion real AplicarFondoAleatorio 2: OK, frente activo y material correcto.
+Fondo 2 / normal: frente visible=2,40%; pixeles en centro protegido=0
+Fondo 2 / rueda-cerca: frente visible=0,25%; pixeles en centro protegido=0
+Fondo 2 / habilidad-izquierda: frente visible=0,00%; pixeles en centro protegido=0
+Fondo 2 / habilidad-derecha: frente visible=0,00%; pixeles en centro protegido=0
+Fondo 2 / rueda-lejos: frente visible=2,87%; pixeles en centro protegido=0
+Seleccion real AplicarFondoAleatorio 3: OK, frente activo y material correcto.
+Fondo 3 / normal: frente visible=2,41%; pixeles en centro protegido=0
+Fondo 3 / rueda-cerca: frente visible=0,16%; pixeles en centro protegido=0
+Fondo 3 / habilidad-izquierda: frente visible=0,00%; pixeles en centro protegido=0
+Fondo 3 / habilidad-derecha: frente visible=0,00%; pixeles en centro protegido=0
+Fondo 3 / rueda-lejos: frente visible=2,87%; pixeles en centro protegido=0
+Paso Viento Helado y frente nulo: comportamiento de seleccion conservado.
+Capturas en escena temporal sin postprocesado. Tutorial completo no ejecutado; se conserva la seleccion de Paso Viento Helado y el apagado para fondos sin frente. Sin cambios en scripts, casillas, camara o secuencias. La seleccion de los tres fondos de bosque usados por el tutorial pasa la prueba; no se recorre el tutorial entero.

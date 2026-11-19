@@ -39,7 +39,7 @@ Shader "GDD/Aliento Negro Contacto Suelo"
             {
                 float3 p = mul(_WorldToAliento, float4(i.worldPos, 1)).xyz;
                 float2 q = (p.xz - _Footprint.xy) / max(_Footprint.zw, 0.001);
-                float flow = _Time.y * 0.028;
+                float flow = _Time.y * 0.0224;
                 float noise = tex2D(_NoiseTex, p.xz * 0.1725 + float2(flow, flow * 0.4)).r;
                 float mask = 1 - smoothstep(0.32, 1.08, length(q) + (noise - 0.5) * 0.08);
                 mask *= lerp(0.75, 1, noise) * smoothstep(0.25, 0.75, i.normal.y);

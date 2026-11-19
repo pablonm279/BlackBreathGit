@@ -1,0 +1,3 @@
+[Log] OK 30 marcos desgastados en la implementacion real; materiales y mallas restaurables; margen exterior exactamente 30% menor en ambos ejes; posiciones, vida y RNG reales intactos.
+Shader de bordes compilado, compatible con la GPU, sin mensajes de error.
+Prueba realizada en una escena de preview aislada, sin detener el Play del usuario.

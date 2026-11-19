@@ -274,6 +274,11 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
             return false;
         }
 
+        if (EsPasoVientoHelado && campaignManager.EsNocheActual())
+        {
+            return false;
+        }
+
         return campaignManager.scTutorialManager == null
             || !campaignManager.scTutorialManager.tutorialActivo;
     }
@@ -566,6 +571,7 @@ public sealed class BandadasBosqueArdiente : MonoBehaviour
     void CrearPajaros(BandadaActiva bandada, int cantidad, float profundidad)
     {
         if (bandada.esGanso) cantidad = Mathf.Clamp(cantidad, 3, 6);
+        if (EsPasoVientoHelado) cantidad = Mathf.Max(1, Mathf.RoundToInt(cantidad * 0.8f));
         float profundidadMedia = Mathf.Max(0.1f, (profundidadCamara.x + profundidadCamara.y) * 0.5f);
         float compensacionProfundidad = profundidad / profundidadMedia;
 

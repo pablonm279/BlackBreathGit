@@ -7481,7 +7481,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         CapturarHoraCombatePendiente(ObtenerHoraActual());
         BATALLA_EnCurso = 11;
         EMBOSCADA_EnCurso = 3;
-        EscribirLog(TRADU.i.Traducir("-La caravana ha sufrido un Ataque durante el descanso. Probabilidades ")
+        EscribirLog(TRADU.i.Traducir("-La Caravana ha sufrido un Ataque durante el descanso. Probabilidades ")
           + chanceEmboscada
           + TRADU.i.Traducir("% - Tirada: 1d100 = ")
           + tiradaEmboscada);
@@ -7911,7 +7911,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     //Efectos en Civiles segun Tier de Aliento
     if (GetTierAlientoNegro() == 1)
     {
-      EscribirLogSinBitacora(TRADU.i.Traducir("-La ausencia de Aliento Negro al viajar, inspira a la Caravana. +2 Esperanza"));
+      EscribirLogSinBitacora(TRADU.i.Traducir("-La ausencia de Aliento Negro al viajar inspira a la Caravana. +2 Esperanza"));
       CambiarEsperanzaActual(2);
     }
     if (GetTierAlientoNegro() == 2)
@@ -8314,14 +8314,14 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       txtdescripcionSantuario.text = TRADU.i.Traducir("Has llegado a un Santuario de Purificadores, varios se han construido en la región para dar apoyo y plegarias a los valientes que combatieron al Liche.\nHoy, si bien está abandonado, mantiene su aura de tranquilidad y puedes depositar ofrendas para realizar una plegaria de purificación.\n\n<i>Descansar en este lugar bendecirá a tus personajes por 96 h.</i>");
 
       CambiarEsperanzaActual(10);
-      EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza."));
+      EscribirLog(TRADU.i.Traducir("-La Caravana ha llegado a un Santuario de Purificadores. Los personajes se han curado un 15%. +10 Esperanza."));
 
       foreach (Personaje pers in scMenuPersonajes.listaPersonajes)
       {
         if (pers.IDClase == 3) // Purificadora
         {
           pers.RecibirExperiencia(60);
-          EscribirLog(TRADU.i.Traducir("-Como Purificadora,") + pers.sNombre + TRADU.i.Traducir(" gana 60 Experiencia por la visita al santuario."));
+          EscribirLog(TRADU.i.Traducir("-Como Purificadora, ") + pers.sNombre + TRADU.i.Traducir(" gana 60 Experiencia por la visita al santuario."));
         }
         float curacion = pers.fVidaMaxima * 0.15f;
         curacion = pers.AplicarMultiplicadorCuracionCampaniaTraits(curacion);
@@ -8378,7 +8378,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       CambiarEsperanzaActual(-10);
       int nmuertos = UnityEngine.Random.Range(8, 16);
       CambiarCivilesActuales(-nmuertos);
-      EscribirLog(TRADU.i.Traducir("-La caravana ha llegado a un nodo incendiado. -10 Esperanza.  ") + nmuertos + TRADU.i.Traducir(" Civiles Muertos."));
+      EscribirLog(TRADU.i.Traducir("-La Caravana ha llegado a un nodo incendiado. -10 Esperanza. ") + nmuertos + TRADU.i.Traducir(" Civiles Muertos."));
     }
 
     ActualizarBotonesAccionNodoActual();
@@ -8828,7 +8828,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           nodoRitual.ActivarRitual();
           MarcarNodoCampaniaTemporal(nodoRitual, TipoHighlightNodoCampania.Ritual);
           CambiarEsperanzaActual(-5);
-          EscribirLog(TRADU.i.Traducir("<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La másica profana desalienta a la caravana. -5 Esperanza.</color>"));
+          EscribirLog(TRADU.i.Traducir("<color=#6A0DAD>-Un ritual Kale'Tav ha comenzado en un nodo cercano. La música profana desalienta a la Caravana. -5 Esperanza.</color>"));
 
 
 
@@ -9035,7 +9035,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     CambiarOroActual(-200);
     CambiarValorAlientoNegroHoras(-15f);
-    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han gastado 200 de oro."));
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han gastado 200 de Oro."));
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -9068,7 +9068,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     CambiarBueyesActuales(-3);
     CambiarValorAlientoNegroHoras(-15f);
-    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han sacrificado 3 bueyes."));
+    EscribirLog(TRADU.i.Traducir("-Has realizado un ritual en el santuario. El Aliento Negro retrocede 15 h y se han sacrificado 3 Bueyes."));
 
     // Buscar personajes corruptos
     var corruptos = scMenuPersonajes.listaPersonajes.FindAll(p => p.Camp_Corrupto);
@@ -10424,7 +10424,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
         int rand2 = UnityEngine.Random.Range(1, 6);
 
         CambiarSuministrosActuales(-rand2);
-        EscribirLog(TRADU.i.Traducir("-El Séquito de Artistas ha tenido un festán y despilfarrado suministros: ") + rand2);
+        EscribirLog(TRADU.i.Traducir("-El Séquito de Artistas ha tenido un festín y despilfarrado suministros: ") + rand2);
       }
     }
 
@@ -10698,7 +10698,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       int cantidad = UnityEngine.Random.Range(40, 81);
       CambiarEsperanzaActual(-5);
       CambiarOroActual(cantidad);
-      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" obtiene ") + cantidad + TRADU.i.Traducir(" de Oro de los Mercaderes de la Caravana, que fueron coercionados para que donen a la causa. -5 Esperanza"));
+      EscribirLog("-" + pers.sNombre + TRADU.i.Traducir(" obtiene ") + cantidad + TRADU.i.Traducir(" de Oro de los Mercaderes de la Caravana, obligados a donar a la causa. -5 Esperanza"));
     }
     else if (pers.ActividadSeleccionada == 18)
     {
@@ -12398,6 +12398,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
     if (Input.GetKeyDown(KeyCode.F5))
     {
+#if UNITY_EDITOR
+      // DEBUG-FONDOS: en pelea, F5 se usa para ciclar fondos (AdministradorEscenas) y no debe guardar la campania.
+      if (scAdministradorEscenas != null && scAdministradorEscenas.escenaActual == 1) { return; }
+#endif
       if (tutorialConfiguracionActiva) { EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       GuardarCampaniaManual();
     }

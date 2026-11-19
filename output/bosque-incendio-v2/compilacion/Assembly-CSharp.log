@@ -1,0 +1,2 @@
+Assets\Scripts\UI\UIEstadoCuadro.cs(7,7): warning CS0105: The using directive for 'System.Collections.Generic' appeared previously in this namespace
+Assets\Scripts\Visual\CampoVivo\CampoVivoBatalla.cs(26,11): error CS0246: The type or namespace name 'DioramaBatalla' could not be found (are you missing a using directive or an assembly reference?)

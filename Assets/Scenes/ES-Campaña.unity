@@ -204007,11 +204007,11 @@ MonoBehaviour:
     fondoFrente: {fileID: 2100000, guid: f09fe7c940a19fc45adf1172c5e2c22a, type: 2}
   fondosPasoVientoHelado:
   - fondo: {fileID: 2100000, guid: f24f4d6d748d5ad498b3f909e6c6f99e, type: 2}
-    fondoFrente: {fileID: 0}
+    fondoFrente: {fileID: 2100000, guid: 66627123b5d71124caccd9fd1d617182, type: 2}
   - fondo: {fileID: 2100000, guid: d402f350158745043972b925afc7c291, type: 2}
-    fondoFrente: {fileID: 0}
+    fondoFrente: {fileID: 2100000, guid: f8a42e35286660b43b00de3499dd2d63, type: 2}
   - fondo: {fileID: 2100000, guid: 811d9f2ee900b6841940f5e653026a0b, type: 2}
-    fondoFrente: {fileID: 0}
+    fondoFrente: {fileID: 2100000, guid: ec94d8368c554b841b5d70b34b6c8e9a, type: 2}
   fondosNedukazal:
   - fondo: {fileID: 2100000, guid: 0be63a6df2bb1264cbab6c360abd0037, type: 2}
     fondoFrente: {fileID: 0}
@@ -258757,8 +258757,8 @@ Transform:
   m_GameObject: {fileID: 532498902}
   serializedVersion: 2
   m_LocalRotation: {x: 0.31244245, y: -0, z: -0, w: 0.94993675}
-  m_LocalPosition: {x: -4.0515, y: -0.785, z: 4.99}
-  m_LocalScale: {x: 15.580782, y: 10.956117, z: 0.6758971}
+  m_LocalPosition: {x: -4.0515, y: -0.5534, z: 4.99}
+  m_LocalScale: {x: 15.580782, y: 11.531313, z: 0.6758971}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2084709589}
@@ -462300,7 +462300,7 @@ MonoBehaviour:
   debugForzarCombateFinalBosqueAlIniciar: 0
   debugForzarCombateJefeGulekGulAlIniciar: 0
   debugForzarAuroraPasoVientoHelado: 0
-  debugIgnorarCombates: 1
+  debugIgnorarCombates: 0
   debugMostrarTodosLosCaminosMapa: 0
   debugIniciarConCaballeroCompleto: 0
   debugIniciarConExploradorCompleto: 0
@@ -493666,7 +493666,7 @@ Transform:
   m_GameObject: {fileID: 1088822106}
   serializedVersion: 2
   m_LocalRotation: {x: 0.31725755, y: -0.007910784, z: -0.0029560307, w: 0.94830185}
-  m_LocalPosition: {x: -3.4500122, y: 1.8431, z: -1.8000002}
+  m_LocalPosition: {x: -3.4500122, y: 1.8430786, z: -1.8000002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

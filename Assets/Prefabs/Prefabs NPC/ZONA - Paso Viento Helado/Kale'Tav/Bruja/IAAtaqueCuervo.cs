@@ -88,7 +88,7 @@ public class IAAtaqueCuervo : IAHabilidad
 
       if (objetivo.TiradaSalvacion(2, 13))
       {
-        int danio = UnityEngine.Random.Range(3, 12);
+        int danio = UnityEngine.Random.Range(4, 13);
         objetivo.RecibirDanio(danio, 1, false, scEstaUnidad);
 
         /////////////////////////////////////////////

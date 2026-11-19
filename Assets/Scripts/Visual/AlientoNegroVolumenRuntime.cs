@@ -229,7 +229,7 @@ public sealed class AlientoNegroVolumenRuntime : MonoBehaviour
     {
         var main = sistema.main;
         main.startLifetime = new ParticleSystem.MinMaxCurve(7f, 9f);
-        main.simulationSpeed = 0.56f;
+        main.simulationSpeed = 0.448f;
         main.startSize = new ParticleSystem.MinMaxCurve(8f, 10f);
         main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
         main.maxParticles = 1000;
@@ -263,7 +263,7 @@ public sealed class AlientoNegroVolumenRuntime : MonoBehaviour
     {
         var main = sistema.main;
         main.startLifetime = new ParticleSystem.MinMaxCurve(7f, 15f);
-        main.simulationSpeed = 0.48f;
+        main.simulationSpeed = 0.384f;
         main.startSize = new ParticleSystem.MinMaxCurve(18f, 24f);
         main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
         main.maxParticles = 900;
@@ -315,7 +315,7 @@ public sealed class AlientoNegroVolumenRuntime : MonoBehaviour
         main.startLifetime = new ParticleSystem.MinMaxCurve(13f, 20f);
         main.startSize = new ParticleSystem.MinMaxCurve(22f, 30f);
         main.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
-        main.simulationSpeed = 0.336f;
+        main.simulationSpeed = 0.2688f;
         main.maxParticles = 450;
 
         var emission = retaguardia.emission;
@@ -516,12 +516,13 @@ public sealed class AlientoNegroVolumenRuntime : MonoBehaviour
         main.startLifetime = new ParticleSystem.MinMaxCurve(
             vida.constantMin * 1.5f, vida.constantMax * 1.5f);
         main.cullingMode = ParticleSystemCullingMode.AlwaysSimulate;
+        main.maxParticles = Mathf.CeilToInt(main.maxParticles * 1.15f);
 
         // Dejar margen incluso con la vida máxima evita recambios por tandas
         // cuando el emisor llena todos sus espacios disponibles.
         var emission = sistema.emission;
         emission.rateOverTime = new ParticleSystem.MinMaxCurve(Mathf.Min(
-            emission.rateOverTime.constant,
+            emission.rateOverTime.constant * 1.15f,
             main.maxParticles * 0.9f / main.startLifetime.constantMax));
 
         // La nube se disuelve por transparencia; no colapsa al final de su vida.
@@ -832,7 +833,7 @@ public sealed class AlientoNegroVolumenRuntime : MonoBehaviour
         // Una misma forma, iluminación y velocidad para todas las capas.
         // La densidad determina su función dentro de la masa de nubes.
         ConfigurarMaterial(
-            materialRuntime, densidad * escalaAlphaRegional * 1.2f,
+            materialRuntime, densidad * escalaAlphaRegional * 1.38f,
             2.3f, 0.58f, 0.43f, 0.22f, 0.028f, 0.06f,
             0.95f, 0.58f, 0.30f, 0.48f,
             perfil == PerfilCapa.NucleosDensos ? 0.32f : 0.12f);

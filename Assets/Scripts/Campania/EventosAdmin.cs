@@ -265,7 +265,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Un grupo de bandidos bloquea el único paso seguro y exige un peaje desmedido para dejar avanzar a la Caravana.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides pagar el peaje, perderás 1 de Oro por Civil.</color>\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Luchar con los Bandidos.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Luchar contra los Bandidos.</color>\n\n");
 
 
             textBotonA.text = TRADU.i.Traducir("Pagar");
@@ -349,7 +349,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento008;
             txtTitulo.text = TRADU.i.Traducir("Río Contaminado");
 
-            txtDescripcion.text = TRADU.i.Traducir("La Caravana encuentra un Río con buen caudal y agua que parece decente. Varios civiles entusiasmados comienzan a dirigirse hacia él con la intención de recrearse y refrescarse.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("La Caravana encuentra un Río de buen caudal y agua que parece limpia. Varios Civiles, entusiasmados, se dirigen hacia él para refrescarse.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("El agua podría estar contaminada por el Aliento Negro. Puedes negarle a los Civiles el acceso al agua o dejarlos a su propia suerte.\n\n");
 
             int chancesContaminado = LimitarProbabilidad(30 + (int)(CampaignManager.Instance.GetValorAlientoNegro() / CampaignManager.HorasPorPasoMapa) * 3);
@@ -389,7 +389,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Un alboroto junto a los carros de los Héroes revela a <b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> y <b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b> discutiendo tras un entrenamiento que terminó mal.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("La tensión sube y los demás caravaneros miran con incomodidad. Ambos reclaman tener la razón y esperan tu juicio.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Debes intervenir en apoyo a uno de los dos. El otro obtendrá Baja Moral por 5 días. Apoyas a:</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Debes apoyar a uno de los dos. El otro obtendrá Baja Moral por 5 días. Apoyas a:</color>\n\n");
 
             textBotonA.text = "" + participanteEvento1.sNombre;
 
@@ -609,7 +609,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento001;
             txtTitulo.text = TRADU.i.Traducir("Fuego en la Retaguardia");
 
-            txtDescripcion.text = TRADU.i.Traducir("Un foco de incendio vuelve a encenderse detrás de la Caravana y el viento empuja las llamas hacia la retaguardia.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un foco de incendio vuelve a encenderse detrás de la Caravana y el viento empuja las llamas hacia ella.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Durante unos instantes cunde el pánico: varios Civiles gritan, los bueyes tironean de los carros y parte de la carga corre peligro de prenderse fuego.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides apagarlo, la Caravana consumirá recursos en contener las llamas. -15 Suministros, +3 Esperanza.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides abandonar carga, perderás 15-25 Materiales, pero evitarás que el fuego se acerque más.</color>\n\n");
@@ -824,8 +824,8 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Cenizas en el Camino");
 
             txtDescripcion.text = TRADU.i.Traducir("Una ráfaga caliente levanta una espesa nube de cenizas y brasas apagadas alrededor de la Caravana.\n");
-            txtDescripcion.text += TRADU.i.Traducir("Los civiles se cubren el rostro como pueden, los bueyes se inquietan y por varios instantes avanzar se vuelve peligroso.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("Puedes ordenar hacer una breve parada hasta que el aire se despeje o forzar la marcha para no perder tiempo.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("Los Civiles se cubren el rostro como pueden, los bueyes se inquietan y por varios instantes avanzar se vuelve peligroso.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("Puedes ordenar una breve parada hasta que el aire se despeje o forzar la marcha para no perder tiempo.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides esperar, sumarás un retraso de 5 horas.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides seguir, las cenizas incomodarán a los Civiles. -5 Esperanza, +1 Fatiga.</color>\n\n");
 
@@ -861,8 +861,8 @@ public class EventosAdmin : MonoBehaviour
             retratoParticipante2.SetActive(true);
             retratoParticipante2.GetComponent<Image>().sprite = participanteEvento2.spRetrato;
 
-            txtDescripcion.text = TRADU.i.Traducir("Durante la noche, <b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> y <b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b> junto con algunos Civiles comienzan a contar chistes y anécdotas divertidas, riendo y disfrutando del momento.\n");
-            txtDescripcion.text += TRADU.i.Traducir("La atmósfera se vuelve más ligera y optimista, y por un breve instante, el peso de la situación parece desvanecerse.\n\n\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Durante la noche, <b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> y <b><color=#d1006f>") + participanteEvento2.sNombre + TRADU.i.Traducir("</color></b>, junto con algunos Civiles, comienzan a contar chistes y anécdotas, riendo y disfrutando del momento.\n");
+            txtDescripcion.text += TRADU.i.Traducir("La atmósfera se vuelve más ligera y optimista, y por un instante el peso de la situación parece desvanecerse.\n\n\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+5 Esperanza</b>\n\n</color>");
@@ -1170,15 +1170,15 @@ public class EventosAdmin : MonoBehaviour
 
             participanteEvento1 = CampaignManager.Instance.ObtenerPersonajeAleatorio();
             retratoParticipante1.SetActive(participanteEvento1 != null);
-            txtDescripcion.text = TRADU.i.Traducir("Un Civil agotado se desploma en el camino. Nadie parece notarlo, o darle importancia alguna y pasan a su lado como si nada.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Un Civil agotado se desploma en el camino. Nadie parece notarlo, o nadie le da importancia: pasan a su lado como si nada.\n\n");
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
-                txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> se ofrece a levantarlo y cargarlo. Pero puedes optar por ordenarle que guarde sus fuerzas para futuros peligros del camino.\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("<b><color=#d1006f>") + participanteEvento1.sNombre + TRADU.i.Traducir("</color></b> se ofrece a levantarlo y cargarlo. Pero puedes ordenarle que guarde sus fuerzas para los peligros del camino.\n\n");
             }
             else
             {
-                txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes se ofrece a levantarlo y cargarlo. Pero puedes optar por ordenarle que guarde sus fuerzas para futuros peligros del camino.\n\n");
+                txtDescripcion.text += TRADU.i.Traducir("Uno de los Héroes se ofrece a levantarlo y cargarlo. Pero puedes ordenarle que guarde sus fuerzas para los peligros del camino.\n\n");
             }
             AgregarDescripcionTiradaD20(participanteEvento1, TipoTiradaEvento.Fortaleza, ObtenerTSFortalezaTotal(participanteEvento1), DificultadHombrosFirmes,
                 "+50 Experiencia y +5 Esperanza.", "+50 Experience and +5 Hope.", "+50 de Experiência e +5 de Esperança.",
@@ -1228,7 +1228,7 @@ public class EventosAdmin : MonoBehaviour
             participanteEvento2 = CampaignManager.Instance.ObtenerPersonajeAleatorio(participanteEvento1 != null ? new List<Personaje> { participanteEvento1 } : null);
             retratoParticipante1.SetActive(participanteEvento1 != null);
             retratoParticipante2.SetActive(participanteEvento2 != null);
-            txtDescripcion.text = TRADU.i.Traducir("La ruta se abre en varias direcciones parecidas y las pocas señales útiles parecen haberse cruzado unas con otras. Dos miembros de la caravana parecen tener opiniones encontradas. ¿A quién escucharás?\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("La ruta se abre en varias direcciones parecidas y las pocas señales útiles parecen haberse cruzado unas con otras. Dos miembros de la Caravana tienen opiniones encontradas. ¿A quién escucharás?\n\n");
             if (participanteEvento1 != null)
             {
                 retratoParticipante1.GetComponent<Image>().sprite = participanteEvento1.spRetrato;
@@ -1301,7 +1301,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Unas huellas frescas de carnero de montaña se internan por una cornisa estrecha que parece evitar parte del ascenso.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Puedes seguir el rastro e intentar usar ese paso o mantener la ruta principal sin arriesgarte.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides seguir el rastro, se intentará encontrar un Atajo.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides seguir el rastro, intentarás encontrar un Atajo.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides mantener la ruta, la visión del sendero levantará el ánimo. +4 Esperanza.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Seguir el rastro");
@@ -1483,7 +1483,7 @@ public class EventosAdmin : MonoBehaviour
             txtTitulo.text = TRADU.i.Traducir("Raciones Mojadas");
 
             txtDescripcion.text = TRADU.i.Traducir("Durante la noche se filtró agua en uno de los carros de comida y parte de las raciones quedó inutilizable.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("Puedes extender lo salvable junto al fuego antes de partir o desecharlo y seguir adelante.\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("Puedes secar lo salvable junto al fuego antes de partir o desecharlo y seguir adelante.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides secarlas, partirán más tarde. Retraso de 5 horas.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides desecharlas, perderás 18 Suministros.</color>\n\n");
 
@@ -1507,7 +1507,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento007;
             txtTitulo.text = TRADU.i.Traducir("Herramientas Perdidas");
 
-            txtDescripcion.text = TRADU.i.Traducir("Al levantar el campamento, varios civiles notan que faltan herramientas básicas de trabajo. Puede que hayan quedado tiradas en la oscuridad.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Al levantar el campamento, varios Civiles notan que faltan herramientas básicas de trabajo. Puede que hayan quedado tiradas en la oscuridad.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Puedes ordenar una búsqueda rápida o reemplazarlas con lo que quede en reserva.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides buscarlas, partirán más tarde. Retraso de 5 horas.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#ba3fef>-Si decides reemplazarlas, perderás 12 Materiales.</color>\n\n");
@@ -1761,7 +1761,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento202;
             txtTitulo.text = TRADU.i.Traducir("Fogón Compartido");
 
-            txtDescripcion.text = TRADU.i.Traducir("Alrededor del fogón, algunos civiles y héroes comparten historias simples, comida caliente y un rato de charla.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Alrededor del fogón, algunos Civiles y Héroes comparten historias simples, comida caliente y un rato de charla.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("No soluciona nada, pero por unas horas la Caravana vuelve a sentirse un poco más unida.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>+6 Esperanza</b></color>");
 
@@ -1773,7 +1773,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento204;
             txtTitulo.text = TRADU.i.Traducir("Manos Voluntariosas");
 
-            txtDescripcion.text = TRADU.i.Traducir("Antes de dormir, un grupo de civiles se ofrece a ayudar con tareas atrásadas del campamento.\n\n");
+            txtDescripcion.text = TRADU.i.Traducir("Antes de dormir, un grupo de Civiles se ofrece a ayudar con tareas atrasadas del campamento.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Puedes organizar una pequeña ronda de reparaciones o agradecer el gesto y dejarlos descansar.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides organizar, la Caravana ganará 15 Materiales.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides dejarlos descansar, +4 Esperanza.</color>\n\n");
@@ -1930,7 +1930,7 @@ public class EventosAdmin : MonoBehaviour
 
             txtDescripcion.text = TRADU.i.Traducir("Antes de levantar el campamento, encuentran un rastro de animales que cruza una ladera más amable que la ruta habitual.\n\n");
             txtDescripcion.text += TRADU.i.Traducir("Puedes seguirlo para intentar encontrar un paso mejor o estudiarlo con calma para orientarte antes de partir.\n\n");
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides seguirlo, se intentará encontrar un Atajo.</color>\n\n");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides seguirlo, intentarás encontrar un Atajo.</color>\n\n");
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812>-Si decides estudiarlo, se revelarán nodos cercanos.</color>\n\n");
 
             textBotonA.text = TRADU.i.Traducir("Seguirlo");
@@ -2062,7 +2062,7 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento201;
             txtTitulo.text = TRADU.i.Traducir("Claro");
 
-            txtDescripcion.text = TRADU.i.Traducir("Has llegado a un hermoso claro natural que parece no haber sido manchado por la corrupción y la pestilencia en lo mas mínimo.\n");
+            txtDescripcion.text = TRADU.i.Traducir("Has llegado a un hermoso claro que la corrupción y la pestilencia parecen no haber tocado.\n");
             txtDescripcion.text += TRADU.i.Traducir("Es un excelente lugar para descansar y recuperar fuerzas.\n\n\n\n\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
@@ -2079,14 +2079,14 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento201;
             txtTitulo.text = TRADU.i.Traducir("Asentamiento");
 
-            txtDescripcion.text = TRADU.i.Traducir("Has llegado a un pequeño asentamiento. Notas que los civiles están desorganizados y necesitan liderazgo para sobrevivir al Aliento Negro.");
-            txtDescripcion.text += TRADU.i.Traducir("\nDe 15-25 Civiles se unirán a la Caravana y brindarán 50-60 Suministros, 6-8 Materiales, 2-4 Bueyes y 60-70 Oro.");
+            txtDescripcion.text = TRADU.i.Traducir("Has llegado a un pequeño asentamiento. Los Civiles están desorganizados y necesitan liderazgo para sobrevivir al Aliento Negro.");
+            txtDescripcion.text += TRADU.i.Traducir("\nSe unirán 15-25 Civiles a la Caravana y aportarán 50-60 Suministros, 6-8 Materiales, 2-4 Bueyes y 60-70 Oro.");
             txtDescripcion.text += TRADU.i.Traducir("\nUn Héroe aleatorio se sumará a tus fuerzas.\n\n\n\n\n");
 
 
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>\nDescansar en este lugar tendrá beneficios adicionales:+20% curación recibida.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>\nDescansar en este lugar tendrá beneficios adicionales: +20% curación recibida.</b></color>");
 
             botonA.SetActive(false);
 
@@ -2099,12 +2099,12 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento201;
             txtTitulo.text = TRADU.i.Traducir("Recursos");
 
-            txtDescripcion.text = TRADU.i.Traducir("Has llegado a un lugar rico en recursos naturales, los civiles se han puesto a recolectar lo que han podido.");
+            txtDescripcion.text = TRADU.i.Traducir("Has llegado a un lugar rico en recursos naturales. Los Civiles recolectaron lo que pudieron.");
 
             if (CampaignManager.Instance.scAtributosZona.ID == 3)//Nedukazal
-            { txtDescripcion.text += TRADU.i.Traducir("\nSe conseguirán de 25-40 Materiales y 60-85 Suministros."); }
+            { txtDescripcion.text += TRADU.i.Traducir("\nSe conseguirán 25-40 Materiales y 60-85 Suministros."); }
             else
-            { txtDescripcion.text += TRADU.i.Traducir("\nSe conseguirán de 18-30 Materiales y 70-110 Suministros."); }
+            { txtDescripcion.text += TRADU.i.Traducir("\nSe conseguirán 18-30 Materiales y 70-110 Suministros."); }
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
             txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>\n\nDescansar en este lugar tendrá beneficios adicionales: +20% efectividad a tareas de Recolección.</b></color>");
@@ -2118,10 +2118,10 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento201;
             txtTitulo.text = TRADU.i.Traducir("Misión de Salvamento");
 
-            txtDescripcion.text = TRADU.i.Traducir("El ave mensajera regresa con un mensaje atado a sus patas. En él se indica el punto exacto al que la caravana deberá dirigirse para encontrarse con el equipo de salvamento, junto con los recursos cedidos por la ciudad de Serria.\n");
+            txtDescripcion.text = TRADU.i.Traducir("El ave mensajera regresa con un mensaje atado a las patas. Indica el punto exacto donde la Caravana deberá encontrarse con el equipo de salvamento y los recursos cedidos por la ciudad de Serria.\n");
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>\n\nSe ha marcado en el camino adelante el nodo al cual deberás dirigirte para encontrarte con el equipo de salvamento.</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>\n\nSe marcó en el camino el nodo donde te encontrarás con el equipo de salvamento.</b></color>");
 
             botonA.SetActive(false);
 
@@ -2132,14 +2132,14 @@ public class EventosAdmin : MonoBehaviour
             imRetrato.sprite = Evento201;
             txtTitulo.text = TRADU.i.Traducir("Un encuentro esperado");
 
-            txtDescripcion.text = TRADU.i.Traducir("Has llegado al lugar señalado por el ave mensajera y te has encontrado con el equipo de salvamento enviado por la Ciudad Puerto de Serria.\nEnseguida saludan a la caravana y comienzan a descargar los recursos que han traído para ayudarles en su travesía.\n\nInmediatamente los ánimos mejoran en la caravana al ver que no están solos en esta lucha.\n");
+            txtDescripcion.text = TRADU.i.Traducir("Has llegado al lugar señalado por el ave mensajera y te encuentras con el equipo de salvamento enviado por la Ciudad Puerto de Serria.\nEnseguida saludan a la Caravana y comienzan a descargar los recursos que trajeron para ayudarles en su travesía.\n\nLos ánimos mejoran de inmediato: ya no están solos en esta lucha.\n");
 
 
             int suministros = 30;
             suministros += MetaprogresionManager.Instance.SerriaTierGranjas * 10;
 
             //El efecto de los eventos se aplica al apretar el boton de salir o de opcion
-            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>\n\nSe han entregado ") + suministros + TRADU.i.Traducir(" suministros. +25 Esperanza. +20 Materiales y 200 Oro y un nuevo personaje se suma a la caravana</b></color>");
+            txtDescripcion.text += TRADU.i.Traducir("<color=#a0e812><b>\n\nSe han entregado ") + suministros + TRADU.i.Traducir(" Suministros. +25 Esperanza, +20 Materiales, +200 Oro. Un nuevo personaje se suma a la Caravana.</b></color>");
             CampaignManager.Instance.CambiarSuministrosActuales(suministros);
             CampaignManager.Instance.CambiarMaterialesActuales(20);
             CampaignManager.Instance.CambiarOroActual(200);

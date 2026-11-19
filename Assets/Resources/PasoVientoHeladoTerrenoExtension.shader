@@ -156,6 +156,14 @@ Shader "GDD/Campania/PasoVientoHeladoTerrenoExtension"
             fixed3 cielo = PasoCieloVelado(_PasoCordillera,PasoUVCielo(pantalla,_PasoScrollCielo),_PasoLuzCielo,_PasoTinteCielo.rgb);
             o.Albedo *= 1-bruma;
             o.Emission = cielo * bruma;
+            // Reflejo difuso de la aurora sobre nieve: bandas amplias, lentas y sin bordes duros.
+            float faseAurora=dot(p,float2(.10,.18))+sin(p.x*.07+_Time.y*.035)*1.7+_Time.y*.07;
+            float bandaAurora=smoothstep(.22,.90,.5+.5*sin(faseAurora));
+            float tonoAurora=.5+.5*sin(p.x*.065-p.y*.09+_Time.y*.045);
+            float3 reflejoAurora=lerp(float3(.10,.65,.36),float3(.08,.43,.72),tonoAurora);
+            float luzAurora=lerp(.035,.026,smoothstep(.25,.85,_PasoLuzCielo));
+            o.Emission+=reflejoAurora*bandaAurora*luzAurora*saturate(_PasoClimaVisual.w)
+                *(1-roca)*(1-tundra*.6)*(1-bruma);
             o.Alpha = 1;
         }
         void AplicarNiebla(Input i, SurfaceOutputStandard o, inout fixed4 color)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public enum FloatingTextContext
 {
@@ -191,6 +192,12 @@ public class FloatingTextAnimator : MonoBehaviour
         return profile.lifetime;
     }
 
+    public float GetVerticalSpeed(FloatingTextContext context)
+    {
+        FloatingTextProfile profile = ResolveProfile(context);
+        return profile != null ? profile.verticalSpeed : 0f;
+    }
+
     public Coroutine Play(string text, Color color, FloatingTextContext context)
     {
         if (tmp == null || rect == null)
@@ -236,9 +243,13 @@ public class FloatingTextAnimator : MonoBehaviour
         rect.anchoredPosition = baseAnchoredPosition;
         rect.localScale = Vector3.one;
 
-        float elapsed = 0f;
-        float lifetime = profile.lifetime;
+        Color baseColor = ArmonizarColor(color, context);
+        PrepararEstilo(context);
 
+        float lifetime = profile.lifetime;
+        tmp.ForceMeshUpdate();
+
+        float elapsed = 0f;
         while (elapsed < lifetime)
         {
             float t = Mathf.Clamp01(elapsed / lifetime);
@@ -263,16 +274,16 @@ public class FloatingTextAnimator : MonoBehaviour
             float scaleValue = Mathf.Max(0.01f, profile.scaleCurve.Evaluate(t));
             rect.localScale = Vector3.one * scaleValue;
 
-            Color tinted = color;
+            Color tinted = baseColor;
             if (profile.useColorGradient)
             {
-                Color gradientColor = profile.colorGradient.Evaluate(t);
-                tinted = MultiplyColors(color, gradientColor);
+                tinted = MultiplyColors(tinted, profile.colorGradient.Evaluate(t));
             }
 
             float alpha = Mathf.Clamp01(profile.alphaCurve.Evaluate(t));
             tinted.a *= alpha;
             tmp.color = tinted;
+            AplicarAlphaEstilo(tinted.a);
 
             elapsed += Time.deltaTime;
             yield return null;
@@ -280,7 +291,181 @@ public class FloatingTextAnimator : MonoBehaviour
 
         tmp.color = new Color(tmp.color.r, tmp.color.g, tmp.color.b, 0f);
         rect.localScale = Vector3.zero;
+        AplicarAlphaEstilo(0f);
+        LimpiarPildora();
         runningRoutine = null;
+    }
+
+    // ---------- Estilo unificado ----------
+
+    private const string RutaFuenteTexto = "Fuentes/Cardo/Cardo-Regular SDF";
+    private static TMP_FontAsset fuenteCache;
+    private RectTransform pildoraRect;
+    private FloatingTextObsidianPanel pildoraImage;
+    private bool estiloPreparado;
+    private float pildoraAlphaActual;
+
+    private void PrepararEstilo(FloatingTextContext context)
+    {
+        if (fuenteCache == null)
+        {
+            fuenteCache = Resources.Load<TMP_FontAsset>(RutaFuenteTexto);
+        }
+
+        if (fuenteCache != null && tmp.font != fuenteCache)
+        {
+            tmp.font = fuenteCache;
+        }
+
+        tmp.fontStyle &= ~FontStyles.Bold;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.characterSpacing = 0.5f;
+        tmp.enableAutoSizing = false;
+        tmp.raycastTarget = false;
+        tmp.textWrappingMode = TextWrappingModes.NoWrap;
+        tmp.overflowMode = TextOverflowModes.Overflow;
+
+        // Contorno fino oscuro + sombra suave para legibilidad sobre cualquier fondo.
+        tmp.outlineWidth = context == FloatingTextContext.CriticalDamage ? 0.1f : 0.06f;
+        tmp.outlineColor = new Color(0.04f, 0.04f, 0.06f, 0.85f);
+        Material mat = tmp.fontMaterial;
+        if (mat != null && mat.HasProperty(ShaderUtilities.ID_UnderlayColor))
+        {
+            mat.EnableKeyword(ShaderUtilities.Keyword_Underlay);
+            mat.SetColor(ShaderUtilities.ID_UnderlayColor, new Color(0f, 0f, 0f, 0.45f));
+            mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetX, 0.4f);
+            mat.SetFloat(ShaderUtilities.ID_UnderlayOffsetY, -0.5f);
+            mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.35f);
+            mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 0.1f);
+        }
+
+        estiloPreparado = true;
+        CrearPildora();
+    }
+
+    private void CrearPildora()
+    {
+        // Si otro componente ya dibuja fondo (campaña), no duplicar.
+        if (GetComponent<FloatingTextBackground>() != null || rect == null || rect.parent == null)
+        {
+            return;
+        }
+
+        if (pildoraRect == null)
+        {
+            GameObject go = new GameObject("FondoTextoCombate", typeof(RectTransform), typeof(CanvasRenderer), typeof(FloatingTextObsidianPanel));
+            pildoraRect = go.GetComponent<RectTransform>();
+            pildoraImage = go.GetComponent<FloatingTextObsidianPanel>();
+            pildoraRect.SetParent(rect.parent, false);
+            go.layer = gameObject.layer;
+            pildoraImage.raycastTarget = false;
+            pildoraImage.color = Color.clear;
+        }
+
+        int indiceTexto = rect.GetSiblingIndex();
+        pildoraRect.SetSiblingIndex(pildoraRect.GetSiblingIndex() < indiceTexto ? indiceTexto - 1 : indiceTexto);
+    }
+
+    private void LateUpdate()
+    {
+        if (!estiloPreparado || pildoraRect == null || pildoraImage == null || tmp == null)
+        {
+            return;
+        }
+
+        Bounds b = tmp.textBounds;
+        if (b.size.x <= 0.01f || string.IsNullOrEmpty(tmp.text) || pildoraAlphaActual <= 0.001f)
+        {
+            pildoraImage.color = Color.clear;
+            return;
+        }
+
+        float padX = tmp.fontSize * 0.3f;
+        float padY = tmp.fontSize * 0.12f;
+        // Anclas fijas: el ancho depende solo de los glifos, incluso en padres estirados.
+        pildoraRect.anchorMin = pildoraRect.anchorMax = Vector2.one * 0.5f;
+        pildoraRect.pivot = new Vector2(0.5f, 0.5f);
+        pildoraRect.position = rect.TransformPoint(b.center);
+        pildoraRect.localRotation = rect.localRotation;
+        pildoraRect.localScale = rect.localScale;
+        pildoraRect.sizeDelta = new Vector2(b.size.x + padX * 2f, b.size.y + padY * 2f);
+        pildoraImage.SetFontSize(tmp.fontSize);
+        pildoraImage.color = new Color(1f, 1f, 1f, tmp.color.a);
+    }
+
+    private void AplicarAlphaEstilo(float alpha)
+    {
+        pildoraAlphaActual = alpha;
+        if (tmp == null)
+        {
+            return;
+        }
+
+        Color o = tmp.outlineColor;
+        o.a = 0.85f * alpha;
+        tmp.outlineColor = o;
+        Material mat = tmp.fontMaterial;
+        if (mat != null && mat.HasProperty(ShaderUtilities.ID_UnderlayColor))
+        {
+            mat.SetColor(ShaderUtilities.ID_UnderlayColor, new Color(0f, 0f, 0f, 0.45f * alpha));
+        }
+    }
+
+    private void LimpiarPildora()
+    {
+        pildoraAlphaActual = 0f;
+        if (pildoraImage != null)
+        {
+            pildoraImage.color = Color.clear;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (pildoraRect != null)
+        {
+            Destroy(pildoraRect.gameObject);
+        }
+    }
+
+    private void OnDisable()
+    {
+        LimpiarPildora();
+    }
+
+    // Unifica la paleta: colores legibles, ni lavados ni estridentes.
+    private static Color ArmonizarColor(Color c, FloatingTextContext context)
+    {
+        if (context == FloatingTextContext.Resist || context == FloatingTextContext.Miss)
+        {
+            return new Color(0.92f, 0.87f, 0.77f, c.a);
+        }
+        if (context == FloatingTextContext.Heal)
+        {
+            return new Color(0.5f, 0.93f, 0.6f, c.a);
+        }
+
+        Color.RGBToHSV(c, out float h, out float s, out float v);
+        if (s < 0.12f)
+        {
+            v = Mathf.Max(v, 0.82f);
+        }
+        else
+        {
+            s = Mathf.Min(s, 0.72f);
+            v = Mathf.Max(v, 0.94f);
+        }
+
+        Color r = Color.HSVToRGB(h, s, v);
+        r.a = c.a;
+        return r;
+    }
+
+    private static float EaseOutBack(float x, float c1)
+    {
+        float c3 = c1 + 1f;
+        float p = x - 1f;
+        return 1f + c3 * p * p * p + c1 * p * p;
     }
 
     private FloatingTextProfile ResolveProfile(FloatingTextContext context)

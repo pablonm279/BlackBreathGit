@@ -1,0 +1,371 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Rendering;
+
+// Capas escenicas alrededor del tablero, con un perfil por zona.
+// Solo mallas transparentes sin colliders: no tocan casillas, unidades, camara, RNG ni tiempo.
+public sealed class DioramaBatalla
+{
+  public struct Area
+  {
+    public Vector3 centro, derecha, normal, adelante;
+    public Vector2 mitadTablero;
+    public float celda;
+  }
+
+  // Que capas lleva cada zona y con que fuerza. Los colores salen de la paleta de CampoVivo.
+  public struct Perfil
+  {
+    public bool nubes, rayos;
+    public float alfaNubes, alfaRayos, alfaNiebla, alfaDeriva, alfaBorde;
+    public bool rayosSuaves;
+    // Efectos propios de cada zona: fuego lejano y volutas espectrales (aditivos), oscuridad de cueva, brasas en el borde.
+    public float alfaFuego, alfaEspectral, alfaOscuridad, brasasBorde, pulsoRayos, escalaBorde, alfaCeniza;
+    public float sentidoDeriva;   // 1: la ventisca del suelo va hacia la derecha; -1: hacia la izquierda
+    public bool bordeViento;
+    public Color colorFuego, colorEspectral;
+    public float densidadRayos, saturacion, sensibilidadRafaga, umbralBrillo;
+    public Color colorNubes, colorNiebla, colorDeriva, colorBorde, colorBrillo, colorRayos;
+
+    public static Perfil Para(EncounterZoneType zona, bool subterraneo, bool brasas, Color aire, Color luz, Color polvo)
+    {
+      var p = new Perfil
+      {
+        escalaBorde = 1f, sentidoDeriva = 1f,
+        nubes = false, rayos = false, alfaNubes = .2f, alfaRayos = .2f, alfaNiebla = .2f, alfaDeriva = .12f, alfaBorde = .5f,
+        densidadRayos = 8f, saturacion = .6f, sensibilidadRafaga = 1f, umbralBrillo = .996f,
+        colorNubes = aire * .5f, colorNiebla = aire, colorDeriva = polvo, colorBorde = polvo,
+        colorBrillo = Color.white, colorRayos = luz
+      };
+      if (subterraneo || zona == EncounterZoneType.Subterraneo)
+      {
+        // Cueva: sin cielo. La luz entra por la boca del tunel; el color de los rayos sale del propio fondo.
+        p.rayos = true; p.rayosSuaves = true; p.alfaRayos = .22f; p.densidadRayos = 10f;
+        p.alfaNiebla = .22f; p.alfaDeriva = .09f; p.alfaBorde = .4f; p.saturacion = .5f;
+        p.colorBorde = polvo * .8f;
+        p.colorBrillo = new Color(.6f, .9f, 1f); p.umbralBrillo = .995f; p.sensibilidadRafaga = .5f;
+        p.alfaOscuridad = .4f; p.pulsoRayos = .18f;
+      }
+      else if (zona == EncounterZoneType.PasoVientoHelado)
+      {
+        p.nubes = true; p.rayos = true; p.alfaNubes = .3f; p.alfaRayos = .22f; p.densidadRayos = 11f;
+        p.alfaNiebla = .2f; p.alfaDeriva = .16f; p.alfaBorde = .55f; p.saturacion = .5f; p.sensibilidadRafaga = 1.6f;
+        // Nieve barrida por el viento: lenguetas finas, universales para las tres variantes del paso.
+        p.bordeViento = true; p.escalaBorde = .7f; p.sentidoDeriva = -1f;
+        p.colorNubes = aire * .45f; p.colorDeriva = Color.Lerp(aire, Color.white, .15f);
+        p.colorBorde = Color.Lerp(luz, Color.white, .2f); p.colorRayos = Color.Lerp(luz, Color.white, .3f);
+      }
+      else if (zona == EncounterZoneType.Nedukazal)
+      {
+        // Salon en ruinas a la luz de antorchas: polvo en suspension y destellos dorados.
+        p.alfaNiebla = .2f; p.alfaDeriva = .1f; p.alfaBorde = .4f; p.saturacion = .8f;
+        p.colorBorde = polvo * .75f;
+        p.colorBrillo = new Color(1f, .8f, .45f); p.umbralBrillo = .994f; p.sensibilidadRafaga = .4f;
+      }
+      else if (brasas)
+      {
+        // Bosque quemado: humo, ceniza acumulada y brasas.
+        p.nubes = true; p.rayos = true; p.rayosSuaves = true; p.alfaNubes = .3f; p.alfaRayos = .2f; p.densidadRayos = 8f;
+        p.alfaNiebla = .32f; p.alfaDeriva = .22f; p.saturacion = .35f; p.sensibilidadRafaga = 1.2f;
+        // Borde de ceniza muy sutil: oscuro, fino y sin brillos (antes parecia nieve).
+        p.alfaBorde = .2f; p.colorBorde = polvo * .55f; p.escalaBorde = .6f; p.umbralBrillo = 2f;
+        // Bosque que se prende fuego, con algo espectral: fuegos lejanos que titilan, brasas en la ceniza y volutas frias.
+        p.alfaFuego = .11f; p.alfaCeniza = 1f; p.colorFuego = new Color(1f, .42f, .1f);
+        p.alfaEspectral = .1f; p.colorEspectral = new Color(.5f, 1f, .85f);
+        p.brasasBorde = 0f; p.pulsoRayos = .25f;
+      }
+      else
+      {
+        p.nubes = true; p.rayos = true; p.rayosSuaves = true; p.alfaNubes = .2f; p.alfaRayos = .16f; p.densidadRayos = 7f;
+        p.alfaNiebla = .22f; p.alfaDeriva = .14f; p.alfaBorde = .45f; p.saturacion = .7f;
+        p.colorBrillo = new Color(.9f, .95f, .6f);
+      }
+      return p;
+    }
+  }
+
+  private sealed class Capa
+  {
+    public Material material;
+    public Color color;
+    public float alfa, velocidad, sensibilidadRafaga, pulso, fase;
+  }
+
+  // Lectura del fondo pintado: brillo medio y punto mas luminoso (en UV de la textura).
+  private struct AnalisisFondo
+  {
+    public bool valido;
+    public float luminancia;
+    public Vector2 fuente;
+    public Color tinteLuz;
+  }
+
+  private static readonly int ColorId = Shader.PropertyToID("_Color");
+  private static readonly int RelojId = Shader.PropertyToID("_Reloj");
+  private static readonly int DerivaId = Shader.PropertyToID("_Deriva");
+
+  private readonly List<KeyValuePair<Renderer, bool>> placaOriginal = new List<KeyValuePair<Renderer, bool>>(2);
+  private readonly List<Capa> capas = new List<Capa>(7);
+  private GameObject raiz;
+  private Mesh malla;
+  private float deriva;
+
+  public static DioramaBatalla Crear(Transform padre, Area area, Camera camara, MeshRenderer fondo, Transform suelo, Perfil perfil, float calidad)
+  {
+    Shader shader = Resources.Load<Shader>("CampoVivo/Diorama");
+    if (shader == null || !shader.isSupported) return null;
+    var d = new DioramaBatalla();
+    d.Construir(padre, shader, area, camara, fondo, suelo, perfil, calidad);
+    return d;
+  }
+
+  private void Construir(Transform padre, Shader shader, Area area, Camera camara, MeshRenderer fondo, Transform suelo, Perfil perfil, float calidad)
+  {
+    raiz = new GameObject("Diorama (reversible)");
+    raiz.transform.SetParent(padre, false);
+    malla = new Mesh { name = "Diorama_Quad", hideFlags = HideFlags.DontSave };
+    malla.vertices = new[] { new Vector3(-.5f,-.5f), new Vector3(.5f,-.5f), new Vector3(.5f,.5f), new Vector3(-.5f,.5f) };
+    malla.uv = new[] { Vector2.zero, Vector2.right, Vector2.one, Vector2.up };
+    malla.triangles = new[] { 0,2,1,0,3,2 };
+    malla.RecalculateBounds();
+
+    // Con el objeto Suelo de la grilla, las capas de terreno se apoyan exactamente en su cara superior
+    // (sin desfase de perspectiva). Sin el, se estima desde el area de casillas.
+    Transform marco = raiz.transform;
+    Vector2 caja = new Vector2(
+      Mathf.Max(area.celda, area.mitadTablero.x - area.celda * .07f),
+      Mathf.Max(area.celda, area.mitadTablero.y - area.celda * .41f));
+    float lift = area.celda * .045f;
+    if (suelo != null)
+    {
+      var go = new GameObject("Marco del suelo");
+      go.transform.SetParent(raiz.transform, true);
+      go.transform.SetPositionAndRotation(suelo.position + suelo.up * (suelo.lossyScale.y * .5f), suelo.rotation);
+      marco = go.transform;
+      caja = new Vector2(suelo.lossyScale.x * .5f - area.celda * .03f, suelo.lossyScale.z * .5f - area.celda * .03f);
+      lift = area.celda * .03f;
+    }
+    Vector2 lamina = new Vector2(caja.x * 2.1f, caja.y * 1.75f);
+
+    // Los fondos oscuros no deben lavarse: las capas claras bajan con el brillo medio de la pintura.
+    Transform fondoT = fondo != null ? fondo.transform : null;
+    AnalisisFondo analisis = Analizar(fondo != null ? fondo.sharedMaterial : null);
+    float k = analisis.valido ? Mathf.Clamp(analisis.luminancia / .28f, .4f, 1f) : 1f;
+    float s = perfil.sensibilidadRafaga;
+
+    // Placa del tablero propia: reemplaza visualmente al Suelo de la escena (sus renderers se apagan mientras el
+    // diorama esta activo y se restauran despues; su collider no se toca).
+    if (suelo != null)
+    {
+      foreach (Renderer r in suelo.GetComponentsInChildren<Renderer>(true))
+        placaOriginal.Add(new KeyValuePair<Renderer, bool>(r, r.enabled));
+      AlternarPlacaOriginal(false);
+    }
+    CrearSuelo("Placa del tablero", marco, shader, 5, perfil, new Color(.02f, .03f, .05f, 1f), .5f * Mathf.Lerp(.7f, 1f, k), 0f, 0f, lift * .5f, lamina, caja, new Vector4(area.celda * .7f, 0, 0, 0), -7, 0f);
+
+    // Suelo: ventisca/polvo rasante (se intensifica con las rafagas) y bancos de nieve o ceniza con relieve en el borde.
+    CrearSuelo("Ventisca rasante", marco, shader, 0, perfil, perfil.colorDeriva, perfil.alfaDeriva * k, 1f, 1.5f * s, lift, lamina, caja, new Vector4(0, 0, perfil.sentidoDeriva, 0), -6, 1.1f);
+    CrearSuelo("Borde del tablero", marco, shader, 1, perfil, perfil.colorBorde, perfil.alfaBorde * Mathf.Lerp(.6f, 1f, k), 0f, 0f, lift * 1.4f, lamina, caja, new Vector4(area.celda * .55f * perfil.escalaBorde, area.celda * .2f * perfil.escalaBorde, 0, 0), -5, 0f);
+
+    // Capas verticales entre la pintura y el tablero: la camara se mueve, el paralaje es gratis.
+    if (camara != null && fondoT != null)
+    {
+      Vector2 fuente = new Vector2(.5f, .64f);
+      Color colorRayos = perfil.colorRayos;
+      if (analisis.valido)
+      {
+        fuente = ProyectarALamina(camara, fondoT, analisis.fuente);
+        // Mezcla con blanco: el tono de la pintura cruda no siempre coincide con el iluminado.
+        if (perfil.rayos && EsCueva(perfil)) colorRayos = Color.Lerp(analisis.tinteLuz, Color.white, .5f);
+      }
+      if (perfil.nubes)
+        CrearVertical("Nubes del cielo", shader, 4, camara, fondoT, .97f, perfil.colorNubes, perfil.alfaNubes * k, .3f, 0f, Vector4.zero, 10, -32, 10 + 1.5f);
+      if (perfil.rayos && calidad > .6f)
+        CrearVertical("Rayos de luz", shader, 3, camara, fondoT, .95f, colorRayos, perfil.alfaRayos, .12f, -.8f, new Vector4(fuente.x, fuente.y, perfil.densidadRayos, 1.5f), 1, -31, 3.1f, new Vector4(0, perfil.rayosSuaves ? 1f : 0f, 0, 0));
+      if (perfil.rayos && calidad > .6f && perfil.pulsoRayos > 0f) capas[capas.Count - 1].pulso = perfil.pulsoRayos;
+      if (perfil.alfaOscuridad > 0f)
+        CrearVertical("Oscuridad de cueva", shader, 8, camara, fondoT, .975f, Color.black, perfil.alfaOscuridad, 0f, 0f, Vector4.zero, 10, -33, 0f);
+      CrearVertical("Niebla de monte", shader, 2, camara, fondoT, .93f, perfil.colorNiebla, perfil.alfaNiebla * k, .55f, 1f * s, new Vector4(.66f, .2f, 3.2f, 0), 10, -30, .93f * 10f);
+      if (calidad > .6f)
+        CrearVertical("Niebla del valle", shader, 2, camara, fondoT, .84f, perfil.colorNiebla, perfil.alfaNiebla * .65f * k, 1f, 1.1f * s, new Vector4(.58f, .16f, 2.4f, 0), 10, -29, .84f * 10f);
+      if (perfil.alfaFuego > 0f)
+        CrearVertical("Resplandor de fuego", shader, 6, camara, fondoT, .9f, perfil.colorFuego, perfil.alfaFuego * Mathf.Lerp(.7f, 1f, k), .3f, .8f, new Vector4(.55f, .15f, 5f, 0), 1, -28, 2.2f);
+      if (perfil.alfaCeniza > 0f)
+      {
+        // Ceniza que cae en dos profundidades (la cercana solo en calidad alta). Sin sensibilidad a rachas.
+        float aspectoCapa = Mathf.Max(camara.aspect, 16f / 9f) * 1.1f;
+        // Brasas diminutas y escasas, rojizas y opacas (en aditivo viraban a blanco sobre fondos claros).
+        CrearVertical("Brasas lejanas", shader, 9, camara, fondoT, .86f, Color.white, perfil.alfaCeniza * .7f, 0f, 0f, new Vector4(20f, .0018f, .8f, 0), 10, -26, 6.6f, new Vector4(aspectoCapa, 0, 0, 0));
+        if (calidad > .6f)
+          CrearVertical("Brasas cercanas", shader, 9, camara, fondoT, .95f, Color.white, perfil.alfaCeniza, 0f, 0f, new Vector4(11f, .0031f, 1f, 0), 10, -25, 8.8f, new Vector4(aspectoCapa, 0, 0, 0));
+      }
+      if (perfil.alfaEspectral > 0f)
+        CrearVertical("Volutas espectrales", shader, 7, camara, fondoT, .86f, perfil.colorEspectral, perfil.alfaEspectral, .4f, 0f, Vector4.zero, 1, -27, 4.4f);
+    }
+  }
+
+  // En cuevas el color de los rayos lo da la luz real del fondo (azul, amarilla...).
+  private static bool EsCueva(Perfil p) { return !p.nubes && p.rayos; }
+
+  private static Vector2 ProyectarALamina(Camera camara, Transform fondo, Vector2 uvTextura)
+  {
+    Vector3 mundo = fondo.TransformPoint(new Vector3(uvTextura.x - .5f, uvTextura.y - .5f, 0f));
+    Vector3 vp = camara.WorldToViewportPoint(mundo);
+    float aspecto = Mathf.Max(camara.aspect, 16f / 9f);
+    float x = .5f + (vp.x - .5f) * camara.aspect / (1.35f * aspecto * 1.1f);
+    float y = .5f + (vp.y - .5f) / 1.35f;
+    return new Vector2(Mathf.Clamp(x, .1f, .9f), Mathf.Clamp(y, .1f, .9f));
+  }
+
+  // Reduce la pintura a 32x32 en la GPU (sirve aunque la textura no sea legible) y busca su luz.
+  private static AnalisisFondo Analizar(Material material)
+  {
+    var r = new AnalisisFondo();
+    Texture tex = material != null ? material.mainTexture : null;
+    if (tex == null) return r;
+    const int N = 32;
+    RenderTexture rt = RenderTexture.GetTemporary(N, N, 0, RenderTextureFormat.ARGB32);
+    RenderTexture previa = RenderTexture.active;
+    Texture2D lectura = null;
+    try
+    {
+      Graphics.Blit(tex, rt);
+      RenderTexture.active = rt;
+      lectura = new Texture2D(N, N, TextureFormat.RGBA32, false);
+      lectura.ReadPixels(new Rect(0, 0, N, N), 0, 0);
+      Color32[] px = lectura.GetPixels32();
+      float suma = 0f, maximo = 0f;
+      var lum = new float[px.Length];
+      for (int i = 0; i < px.Length; i++)
+      {
+        lum[i] = (px[i].r * .3f + px[i].g * .59f + px[i].b * .11f) / 255f;
+        suma += lum[i];
+        // Ignora el cuarto inferior (suelo): la fuente de luz esta en el horizonte o mas arriba.
+        if (i / N >= N / 4) maximo = Mathf.Max(maximo, lum[i]);
+      }
+      r.luminancia = suma / px.Length;
+      float corte = maximo * .8f, peso = 0f;
+      Vector2 centro = Vector2.zero; Color tinte = Color.black;
+      for (int i = 0; i < px.Length; i++)
+      {
+        if (i / N < N / 4 || lum[i] < corte) continue;
+        float w = lum[i] - corte + .001f;
+        centro += new Vector2(((i % N) + .5f) / N, ((i / N) + .5f) / N) * w;
+        tinte += (Color)px[i] * w; peso += w;
+      }
+      if (peso > 0f)
+      {
+        r.fuente = centro / peso;
+        tinte /= peso;
+        float m = Mathf.Max(tinte.r, Mathf.Max(tinte.g, tinte.b), .001f);
+        r.tinteLuz = new Color(tinte.r / m, tinte.g / m, tinte.b / m, 1f);
+        r.valido = true;
+      }
+    }
+    catch { r.valido = false; }
+    finally
+    {
+      RenderTexture.active = previa;
+      RenderTexture.ReleaseTemporary(rt);
+      if (lectura != null) Destruir(lectura);
+    }
+    return r;
+  }
+
+  private void CrearSuelo(string nombre, Transform marco, Shader shader, float modo, Perfil perfil, Color color, float alfa, float velocidad,
+    float sensibilidad, float altura, Vector2 lamina, Vector2 caja, Vector4 parametros, int orden, float semilla)
+  {
+    var go = new GameObject(nombre, typeof(MeshFilter), typeof(MeshRenderer));
+    go.transform.SetParent(marco, false);
+    go.transform.localRotation = Quaternion.Euler(90, 0, 0);
+    go.transform.localPosition = new Vector3(0, altura, 0);
+    go.transform.localScale = new Vector3(lamina.x * 2f, lamina.y * 2f, 1);
+    Material m = Preparar(go, shader, modo, color, alfa, velocidad, sensibilidad, 10, orden, semilla);
+    m.SetVector("_Medidas", new Vector4(lamina.x, lamina.y, caja.x, caja.y));
+    m.SetVector("_Param", parametros);
+    m.SetFloat("_Saturacion", perfil.saturacion);
+    m.SetColor("_ColBrillo", perfil.colorBrillo);
+    m.SetVector("_Extra", new Vector4(perfil.umbralBrillo, 0, perfil.brasasBorde, perfil.bordeViento ? 1f : 0f));
+  }
+
+  // Plano vertical orientado a la camara, a una fraccion del camino entre la camara y la pintura.
+  private void CrearVertical(string nombre, Shader shader, float modo, Camera camara, Transform fondo, float fraccion, Color color,
+    float alfa, float velocidad, float sensibilidad, Vector4 parametros, float destino, int orden, float semilla, Vector4 extra = default)
+  {
+    Vector3 posCamara = camara.transform.position;
+    Vector3 punto = Vector3.Lerp(posCamara, fondo.position, fraccion);
+    float distancia = Vector3.Distance(posCamara, punto);
+    float alto = 2f * distancia * Mathf.Tan(Mathf.Max(camara.fieldOfView, 52f) * .5f * Mathf.Deg2Rad) * 1.35f;
+    float ancho = alto * Mathf.Max(camara.aspect, 16f / 9f) * 1.1f;
+    var go = new GameObject(nombre, typeof(MeshFilter), typeof(MeshRenderer));
+    go.transform.SetParent(raiz.transform, true);
+    go.transform.SetPositionAndRotation(punto, Quaternion.LookRotation(punto - posCamara, camara.transform.up));
+    go.transform.localScale = new Vector3(ancho, alto, 1);
+    Material m = Preparar(go, shader, modo, color, alfa, velocidad, sensibilidad, destino, orden, semilla);
+    m.SetVector("_Param", parametros);
+    m.SetVector("_Extra", extra);
+  }
+
+  private Material Preparar(GameObject go, Shader shader, float modo, Color color, float alfa, float velocidad, float sensibilidad,
+    float destino, int orden, float semilla)
+  {
+    var m = new Material(shader) { name = "Diorama_" + go.name, hideFlags = HideFlags.DontSave };
+    m.SetFloat("_Modo", modo);
+    m.SetFloat("_Semilla", semilla);
+    m.SetFloat("_Destino", destino);
+    go.GetComponent<MeshFilter>().sharedMesh = malla;
+    var r = go.GetComponent<MeshRenderer>();
+    r.sharedMaterial = m;
+    r.sortingOrder = orden;
+    r.shadowCastingMode = ShadowCastingMode.Off;
+    r.receiveShadows = false;
+    r.lightProbeUsage = LightProbeUsage.Off;
+    r.reflectionProbeUsage = ReflectionProbeUsage.Off;
+    capas.Add(new Capa { material = m, color = color, alfa = alfa, velocidad = velocidad, sensibilidadRafaga = sensibilidad });
+    return m;
+  }
+
+  public void Activar(bool activo)
+  {
+    if (raiz != null && raiz.activeSelf != activo) { raiz.SetActive(activo); AlternarPlacaOriginal(activo); }
+  }
+
+  // Con el diorama activo la placa original no se dibuja; al apagarlo vuelve a su estado previo.
+  private void AlternarPlacaOriginal(bool dioramaActivo)
+  {
+    foreach (var par in placaOriginal)
+      if (par.Key != null) par.Key.enabled = dioramaActivo ? false : par.Value;
+  }
+
+  // rafaga: 0 en calma, ~1 en el pico de una racha. Las capas la usan para espesarse o aclararse.
+  public void Avanzar(float dt, float reloj, float viento, float visibilidad, float rafaga)
+  {
+    if (raiz == null) return;
+    Activar(true);
+    deriva += dt * viento * .12f;
+    foreach (Capa c in capas)
+    {
+      Color color = c.color; color.a = c.alfa * visibilidad * Mathf.Max(0f, 1f + c.sensibilidadRafaga * rafaga) * (1f + c.pulso * Mathf.Sin(reloj * .6f + c.fase));
+      c.material.SetColor(ColorId, color);
+      c.material.SetFloat(RelojId, reloj);
+      c.material.SetFloat(DerivaId, deriva * c.velocidad);
+    }
+  }
+
+  public void Liberar()
+  {
+    AlternarPlacaOriginal(false);
+    placaOriginal.Clear();
+    foreach (Capa c in capas) Destruir(c.material);
+    capas.Clear();
+    Destruir(malla);
+    Destruir(raiz);
+    malla = null; raiz = null;
+  }
+
+  private static void Destruir(Object o)
+  {
+    if (o == null) return;
+    if (Application.isPlaying) Object.Destroy(o); else Object.DestroyImmediate(o);
+  }
+}

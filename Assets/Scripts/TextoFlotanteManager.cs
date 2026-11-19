@@ -26,6 +26,7 @@ public class TextoFlotanteManager : MonoBehaviour
     private readonly Queue<FloatingTextRequest> colaTextos = new Queue<FloatingTextRequest>();
     private bool procesandoCola;
     private int textosActivos;
+    private readonly List<bool> slotsOcupados = new List<bool>();
 
     private void Awake()
     {
@@ -116,9 +117,21 @@ public class TextoFlotanteManager : MonoBehaviour
 
     private void LanzarTexto(FloatingTextRequest request)
     {
-        int slotIndex = Mathf.Clamp(textosActivos, 0, Mathf.Max(0, maxTextosSimultaneos - 1));
+        // Slot real: el primero libre, para que un texto nuevo nunca caiga sobre otro que sigue en el aire.
+        int slotIndex = slotsOcupados.IndexOf(false);
+        if (slotIndex < 0)
+        {
+            slotIndex = slotsOcupados.Count;
+            slotsOcupados.Add(false);
+        }
+
+        slotsOcupados[slotIndex] = true;
         textosActivos = Mathf.Max(0, textosActivos + 1);
-        StartCoroutine(SpawnTexto(request, slotIndex, () => { textosActivos = Mathf.Max(0, textosActivos - 1); }));
+        StartCoroutine(SpawnTexto(request, slotIndex, () =>
+        {
+            textosActivos = Mathf.Max(0, textosActivos - 1);
+            if (slotIndex < slotsOcupados.Count) { slotsOcupados[slotIndex] = false; }
+        }));
     }
 
     private IEnumerator SpawnTexto(FloatingTextRequest request, int slotIndex, Action onFinish)
@@ -137,7 +150,9 @@ public class TextoFlotanteManager : MonoBehaviour
             if (rect != null)
             {
                 Vector2 basePosition = rect.anchoredPosition;
-                Vector2 offset = new Vector2(separacionHorizontal * slotIndex, separacionVertical * slotIndex);
+                TextMeshProUGUI tmpMedida = goTexto.GetComponentInChildren<TextMeshProUGUI>();
+                float separacion = tmpMedida != null ? Mathf.Max(separacionVertical, tmpMedida.fontSize * 1.6f) : separacionVertical;
+                Vector2 offset = new Vector2(separacionHorizontal * slotIndex, separacion * slotIndex);
                 rect.anchoredPosition = basePosition    + offset;
             }
 

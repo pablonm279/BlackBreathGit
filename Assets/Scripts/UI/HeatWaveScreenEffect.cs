@@ -477,7 +477,7 @@ public class BlackBreathInsideScreenEffect : MonoBehaviour
 {
   private const string OverlayName = "BlackBreathInsideOverlay";
   private const int TextureSize = 128;
-  private const float FadeDuration = 0.24f;
+  private const float FadeDuration = 0.30f;
 
   // Cian/verde sutil para inmersion cuando la caravana esta dentro del aliento.
   private static readonly Color ColorVignettePrimaryBase = new Color(0.11f, 0.62f, 0.55f, 0.0045f);
@@ -567,7 +567,7 @@ public class BlackBreathInsideScreenEffect : MonoBehaviour
       return;
     }
 
-    float t = Time.unscaledTime * 0.52f + animationSeed;
+    float t = Time.unscaledTime * 0.416f + animationSeed;
     float pulseA = 0.5f + 0.5f * Mathf.Sin(t);
     float pulseB = 0.5f + 0.5f * Mathf.Sin((t * 1.21f) + 1.1f);
 

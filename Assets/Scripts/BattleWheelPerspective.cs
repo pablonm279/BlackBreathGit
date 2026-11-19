@@ -21,6 +21,8 @@ public sealed class BattleWheelPerspective : MonoBehaviour
   private float perspectivaActual;
   private float velocidadPerspectiva;
   private float focoHabilidad;
+  private Transform fondoCompensado;
+  private Vector3 desplazamientoFondoAplicado;
 
   public float FocoHabilidad => focoHabilidad;
 
@@ -92,6 +94,7 @@ public sealed class BattleWheelPerspective : MonoBehaviour
   private void Update()
   {
     RestaurarRigBase();
+    RestaurarFondo();
 
     if (PuedeLeerRueda())
     {
@@ -132,12 +135,85 @@ public sealed class BattleWheelPerspective : MonoBehaviour
     Vector3 avance = rotacionCamaraLocal * Vector3.forward * (nivelVisual * avanceMaximo);
     Vector3 descenso = Vector3.down * (nivelVisual * descensoMaximo);
     transform.localPosition = posicionLocalBaseRig + avance + descenso;
+
+    CompensarParalajeFondo(rotacionCamaraLocal);
+  }
+
+  // El fondo esta mas lejos que la grilla: al avanzar la camara se desplazaba menos que ella.
+  // Lo movemos en sentido contrario al avance, escalado por la relacion de profundidades,
+  // para que fondo y grilla se muevan en pantalla de forma solidaria.
+  private void CompensarParalajeFondo(Quaternion rotacionCamaraLocal)
+  {
+    RestaurarFondo();
+
+    if (battleManager == null || battleManager.lCasillasTotal == null || battleManager.lCasillasTotal.Count == 0)
+    {
+      return;
+    }
+
+    if (fondoCompensado == null)
+    {
+      AdministradorEscenas admin = FindObjectOfType<AdministradorEscenas>();
+      if (admin == null || admin.mrFondoBatalla == null)
+      {
+        return;
+      }
+
+      fondoCompensado = admin.mrFondoBatalla.transform;
+    }
+
+    Transform padre = transform.parent;
+    Vector3 posicionBase = padre != null ? padre.TransformPoint(posicionLocalBaseRig) : posicionLocalBaseRig;
+    Quaternion rotacionPadre = padre != null ? padre.rotation : Quaternion.identity;
+    Vector3 adelante = rotacionPadre * (rotacionCamaraLocal * Vector3.forward);
+
+    Vector3 centro = Vector3.zero;
+    int cantidad = 0;
+    foreach (Casilla casilla in battleManager.lCasillasTotal)
+    {
+      if (casilla == null)
+      {
+        continue;
+      }
+
+      centro += casilla.transform.position;
+      cantidad++;
+    }
+
+    if (cantidad == 0)
+    {
+      return;
+    }
+
+    centro /= cantidad;
+    float profundidadGrilla = Vector3.Dot(centro - posicionBase, adelante);
+    float profundidadFondo = Vector3.Dot(fondoCompensado.position - posicionBase, adelante);
+    if (profundidadGrilla <= 0.01f || profundidadFondo <= profundidadGrilla + 0.01f)
+    {
+      return;
+    }
+
+    float factor = (profundidadFondo / profundidadGrilla) - 1f;
+    Vector3 movimientoCamara = transform.position - posicionBase;
+    desplazamientoFondoAplicado = -movimientoCamara * factor;
+    fondoCompensado.position += desplazamientoFondoAplicado;
+  }
+
+  private void RestaurarFondo()
+  {
+    if (fondoCompensado != null && desplazamientoFondoAplicado != Vector3.zero)
+    {
+      fondoCompensado.position -= desplazamientoFondoAplicado;
+    }
+
+    desplazamientoFondoAplicado = Vector3.zero;
   }
 
   private void OnDisable()
   {
     focoHabilidad = 0f;
     RestaurarRigBase();
+    RestaurarFondo();
   }
 
   private void RestaurarRigBase()

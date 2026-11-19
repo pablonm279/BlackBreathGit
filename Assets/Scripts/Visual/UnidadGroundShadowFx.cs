@@ -33,7 +33,7 @@ public sealed class UnidadGroundShadowFx : MonoBehaviour
 
     RectTransform imagenUnidad = unidad.uImage.rectTransform;
     RectTransform padre = imagenUnidad.parent as RectTransform;
-    if (padre == null)
+    if (padre == null || !padre.gameObject.scene.IsValid())
     {
       return;
     }

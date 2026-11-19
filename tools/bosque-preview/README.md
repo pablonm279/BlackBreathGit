@@ -40,3 +40,24 @@ fuentes conservadas en `output/bosque-pulido-v1/fuentes-antes`.
 La copia visual conserva la escala y cámara serializadas de la escena, pero omite gestores,
 UI y controladores de cámara. No contiene la distribución de nodos de una partida real ni
 su posprocesado. No reemplaza una prueba interactiva de campaña ni del tutorial completo.
+
+## Revisión de incendio y caminos
+
+La revisión siguiente modifica expresamente las partículas provisionales y reemplaza el
+arbolado de fondo por humo de incendio. Sus criterios sustituyen las comprobaciones
+anteriores que exigían conservar la forma, tamaños y módulos de las llamas regulares.
+Los emisores espectrales, posiciones, presupuestos de emisión y materiales fuente se conservan.
+
+Preparar con `python tools/prepare-bosque-preview.py --incendio` y ejecutar Unity sobre
+`Temp/BosquePreview` con `-batchmode -executeMethod BosqueIncendioRender.Run -quit`.
+Los resultados se guardan en `output/bosque-incendio-v2`. Esta prueba usa el `CaminoMesh`
+real y extrae el método regional real de `AtributosZona` para comparar las cinco variantes
+del Paso con el bosque: material, textura efectiva, escala UV, vértices y repetición.
+Verifica también shaders, reaplicación sin escalado acumulativo ni duplicados, pausa,
+calidad baja, RNG, salida de zona y restauración del renderer de humo provisional.
+
+La corrección posterior elimina completamente el banco exterior: se conserva la
+distribución de emisores del bosque, limitando su visibilidad al terreno principal y al
+rango X de los nodos. Reduce tamaño, saturación e intensidad y añade desvanecimiento
+por profundidad para suavizar el contacto con el suelo. Las capturas y doce cuadros
+de detalle animado de esta revisión quedan en `output/bosque-incendio-v3`.

@@ -1,0 +1,137 @@
+--- antes/AmbienteBosqueArdiente.cs
++++ Assets/Scripts/Campania/AmbienteBosqueArdiente.cs
+@@ -12,6 +12,8 @@
+     readonly Dictionary<Material, Material> materialesLlamas = new Dictionary<Material, Material>();
+     struct MedidasFuego { public ParticleSystem.MinMaxCurve x, y, z, velocidad; }
+     readonly Dictionary<ParticleSystem, MedidasFuego> medidasFuego = new Dictionary<ParticleSystem, MedidasFuego>();
++    readonly Dictionary<ParticleSystemRenderer, bool> visibilidadFuego = new Dictionary<ParticleSystemRenderer, bool>();
++    Bounds areaFuego;
+     AtributosZona zona;
+     Material humo, brasa, ceniza;
+     GameObject raizParticulas;
+@@ -30,6 +32,9 @@
+         var ambiente = raiz.GetComponent<AmbienteBosqueArdiente>();
+         if (ambiente == null) ambiente = raiz.AddComponent<AmbienteBosqueArdiente>();
+         ambiente.zona = atributos;
++        ambiente.DelimitarFuego();
++        var camara = Camera.main;
++        if (camara != null) camara.depthTextureMode |= DepthTextureMode.Depth;
+         foreach (var emisor in new List<ParticleSystem>(ambiente.medidasFuego.Keys))
+             if (emisor == null) ambiente.medidasFuego.Remove(emisor);
+         ambiente.PrepararMateriales();
+@@ -95,6 +100,7 @@
+         foreach (var ps in raiz.GetComponentsInChildren<ParticleSystem>(true))
+         {
+             if (OmitirEmisor(ps.transform)) continue;
++            if (!DentroDelBosque(ps.transform.position)) continue;
+             var renderer = ps.GetComponent<ParticleSystemRenderer>();
+             var original = renderer != null ? renderer.sharedMaterial : null;
+             if (original == null || original.name.IndexOf("Llama", System.StringComparison.OrdinalIgnoreCase) < 0
+@@ -117,24 +123,48 @@
+             var original = renderer != null ? renderer.sharedMaterial : null;
+             if (original == null || original.name.IndexOf("Llama", System.StringComparison.OrdinalIgnoreCase) < 0
+                 || original.name.IndexOf("Espectral", System.StringComparison.OrdinalIgnoreCase) >= 0) continue;
++            if (!visibilidadFuego.TryGetValue(renderer, out var visible))
++            { visible = renderer.enabled; visibilidadFuego.Add(renderer, visible); }
++            renderer.enabled = visible && DentroDelBosque(ps.transform.position);
+             ProfesionalizarEmisor(ps, renderer);
+             if (materiales.Contains(original))
+             {
+                 original.shader = shader;
+                 original.SetColor("_Color", Color.white);
+-                original.SetFloat("_Intensidad", 1.15f);
++                original.SetFloat("_Intensidad", .9f);
+                 continue;
+             }
+             if (!materialesLlamas.TryGetValue(original, out var refinado))
+             {
+                 refinado = CrearMaterial(shader, original.name + " refinada", 0);
+                 refinado.SetColor("_Color", Color.white);
+-                refinado.SetFloat("_Intensidad", 1.15f);
++                refinado.SetFloat("_Intensidad", .9f);
+                 materialesLlamas.Add(original, refinado);
+             }
+             renderer.sharedMaterial = refinado;
+         }
+     }
++
++    void DelimitarFuego()
++    {
++        if (zona.TexturaTerreno == null) return;
++        var min = zona.TexturaTerreno.bounds.min; var max = zona.TexturaTerreno.bounds.max;
++        min.x += .8f; max.x -= .8f; min.z += .8f; max.z -= .8f;
++        float izquierda = float.PositiveInfinity, derecha = float.NegativeInfinity;
++        foreach (var nodo in Object.FindObjectsByType<Nodo>(FindObjectsInactive.Include, FindObjectsSortMode.None))
++        {
++            if (nodo.gameObject.scene != zona.gameObject.scene) continue;
++            var p = nodo.transform.position;
++            if (p.x < min.x || p.x > max.x || p.z < min.z || p.z > max.z) continue;
++            izquierda = Mathf.Min(izquierda, p.x); derecha = Mathf.Max(derecha, p.x);
++        }
++        if (derecha - izquierda > 1)
++        { min.x = Mathf.Max(min.x, izquierda - .5f); max.x = Mathf.Min(max.x, derecha + .5f); }
++        areaFuego.SetMinMax(min, max);
++    }
++
++    bool DentroDelBosque(Vector3 p) => p.x >= areaFuego.min.x && p.x <= areaFuego.max.x
++        && p.z >= areaFuego.min.z && p.z <= areaFuego.max.z;
+ 
+     bool OmitirEmisor(Transform objeto)
+     {
+@@ -154,10 +184,10 @@
+             medidasFuego.Add(ps, medidas);
+         }
+         main.startSize3D = true;
+-        main.startSizeX = EscalarCurva(medidas.x, 1.12f);
+-        main.startSizeY = EscalarCurva(medidas.y, 1.8f);
+-        main.startSizeZ = EscalarCurva(medidas.z, 1.12f);
+-        main.startSpeed = EscalarCurva(medidas.velocidad, .8f);
++        main.startSizeX = EscalarCurva(medidas.x, .82f);
++        main.startSizeY = EscalarCurva(medidas.y, 1.12f);
++        main.startSizeZ = EscalarCurva(medidas.z, .82f);
++        main.startSpeed = EscalarCurva(medidas.velocidad, .55f);
+         main.startRotation3D = false;
+         main.startRotation = new ParticleSystem.MinMaxCurve(-.10f, .10f);
+         main.startColor = Color.white;
+@@ -169,6 +199,7 @@
+         noise.frequency = .8f; noise.scrollSpeed = .32f; noise.quality = ParticleSystemNoiseQuality.Low;
+         renderer.renderMode = ParticleSystemRenderMode.Billboard;
+         renderer.alignment = ParticleSystemRenderSpace.View;
++        renderer.pivot = new Vector3(0, -.35f, 0);
+         renderer.shadowCastingMode = ShadowCastingMode.Off; renderer.receiveShadows = false;
+     }
+ 
+@@ -260,13 +291,13 @@
+                 var go = new GameObject("Luz cálida de incendio " + (i + 1));
+                 go.transform.SetParent(raizLuces.transform, true);
+                 var luz = go.AddComponent<Light>();
+-                luz.type = LightType.Point; luz.color = new Color(1, .35f, .09f);
+-                luz.range = 4.6f; luz.shadows = LightShadows.None;
++                luz.type = LightType.Point; luz.color = new Color(1, .62f, .27f);
++                luz.range = 2.6f; luz.shadows = LightShadows.None;
+                 luz.renderMode = LightRenderMode.ForceVertex;
+                 luz.cullingMask = 1 << zona.TexturaTerreno.gameObject.layer;
+                 lucesIncendio.Add(luz);
+             }
+-            lucesIncendio[i].transform.position = focos[i * focos.Count / cantidad] + Vector3.up * .8f;
++            lucesIncendio[i].transform.position = focos[i * focos.Count / cantidad] + Vector3.up * .3f;
+         }
+         for (int i = 0; i < lucesIncendio.Count; i++) lucesIncendio[i].enabled = i < cantidad;
+     }
+@@ -278,7 +309,7 @@
+             * (1 - Mathf.SmoothStep(0, 1, Mathf.InverseLerp(17, 21, hora)));
+         for (int i = 0; i < lucesIncendio.Count; i++)
+             if (lucesIncendio[i] != null)
+-                lucesIncendio[i].intensity = Mathf.Lerp(.95f, .65f, dia)
++                lucesIncendio[i].intensity = Mathf.Lerp(.40f, .25f, dia)
+                     * (1 + Mathf.Sin(reloj * .73f + i * 2.1f) * .075f + Mathf.Sin(reloj * 1.13f + i) * .025f);
+         if (humo != null) humo.SetColor("_Color", Color.Lerp(new Color(.72f, .67f, .65f), Color.white, dia));
+         if (ceniza != null) ceniza.SetColor("_Color", Color.Lerp(new Color(.63f, .61f, .60f), Color.white, dia));
+@@ -404,6 +435,7 @@
+ 
+     void OnDestroy()
+     {
++        foreach (var par in visibilidadFuego) if (par.Key != null) par.Key.enabled = par.Value;
+         if (raizLuces != null) { if (Application.isPlaying) Destroy(raizLuces); else DestroyImmediate(raizLuces); }
+         if (fondo != null) { if (Application.isPlaying) Destroy(fondo.gameObject); else DestroyImmediate(fondo.gameObject); }
+         foreach (var material in materiales)

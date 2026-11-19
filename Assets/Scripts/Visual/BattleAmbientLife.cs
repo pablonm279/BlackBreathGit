@@ -27,12 +27,15 @@ public class BattleAmbientLife : MonoBehaviour
   [SerializeField] private float variacionIntensidadLuces = 0.075f;
   [SerializeField] private float velocidadLuces = 1.15f;
 
-  private Material materialFondoInstancia;
+  // Sin copia del material: el fondo usa el material compartido (editable en vivo) y el tinte, la pulsacion y el
+  // desplazamiento de UV se aplican por renderer con un MaterialPropertyBlock. colorBaseFondo es un multiplicador.
+  private MaterialPropertyBlock bloqueFondo;
   private Color colorBaseFondo = Color.white;
   private Color colorDiurnoFondo = Color.white;
   private bool modoNocturno;
+  // Hora del dia en que ocurre la batalla (0-24). Negativa: sin hora (cuevas), se usa el modo noche clasico.
+  private float horaBatalla = -1f;
   private Vector2 uvBaseFondo;
-  private Vector2 uvInicialFondo;
   private float fasePulso;
 
   private GameObject goAmbientRoot;
@@ -53,6 +56,7 @@ public class BattleAmbientLife : MonoBehaviour
     fondoRenderer = fondo;
     zonaActual = zona;
     subterraneoActual = subterraneo;
+    horaBatalla = -1f;
     fasePulso = Random.Range(0f, Mathf.PI * 2f);
 
     InicializarFondo();
@@ -63,6 +67,43 @@ public class BattleAmbientLife : MonoBehaviour
     colorDiurnoFondo = colorBaseFondo;
     AplicarModoNocturnoAlFondo();
     CampoVivoBatalla.ConfigurarEn(this, fondo, zona, subterraneo);
+    TableroIntegradoBatalla.ConfigurarEn(this, fondo, zona, subterraneo);
+  }
+
+  // Tinte leve del albedo del fondo segun la hora: mas claro de dia, amarillento y luego rojizo al atardecer,
+  // apenas oscuro y frio de noche. Es un multiplicador sobre el color del material (que queda intacto).
+  public void EstablecerHora(float hora)
+  {
+    horaBatalla = hora;
+    AplicarModoNocturnoAlFondo();
+  }
+
+  private static readonly (float hora, Color tinte)[] TintesHorarios =
+  {
+    (0f,    new Color(0.77f, 0.81f, 0.93f)),
+    (5f,    new Color(0.80f, 0.84f, 0.94f)),
+    (6.5f,  new Color(0.94f, 0.91f, 0.98f)),   // amanecer: frio y palido
+    (8f,    new Color(1.03f, 1.02f, 1.00f)),
+    (10f,   new Color(1.08f, 1.08f, 1.05f)),   // dia: mas claro
+    (15f,   new Color(1.08f, 1.07f, 1.03f)),
+    (17f,   new Color(1.08f, 1.03f, 0.92f)),   // tarde: amarillento
+    (19f,   new Color(1.06f, 0.93f, 0.80f)),
+    (20.5f, new Color(0.96f, 0.82f, 0.79f)),   // atardecer: rojizo
+    (22f,   new Color(0.79f, 0.82f, 0.93f)),   // noche
+    (24f,   new Color(0.77f, 0.81f, 0.93f)),
+  };
+
+  public static Color TinteHorario(float hora)
+  {
+    float h = Mathf.Repeat(hora, 24f);
+    for (int i = 1; i < TintesHorarios.Length; i++)
+    {
+      if (h > TintesHorarios[i].hora) continue;
+      var a = TintesHorarios[i - 1]; var b = TintesHorarios[i];
+      float t = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(a.hora, b.hora, h));
+      return Color.Lerp(a.tinte, b.tinte, t);
+    }
+    return TintesHorarios[TintesHorarios.Length - 1].tinte;
   }
 
   public void EstablecerModoNocturno(bool activo)
@@ -186,59 +227,55 @@ public class BattleAmbientLife : MonoBehaviour
 
   private void InicializarFondo()
   {
-    materialFondoInstancia = null;
+    bloqueFondo = bloqueFondo ?? new MaterialPropertyBlock();
     colorBaseFondo = Color.white;
     uvBaseFondo = Vector2.zero;
-    uvInicialFondo = Vector2.zero;
 
     if (fondoRenderer == null)
     {
       return;
     }
 
-    materialFondoInstancia = fondoRenderer.material;
-    if (materialFondoInstancia == null)
-    {
-      return;
-    }
-
-    if (materialFondoInstancia.HasProperty("_MainTex"))
-    {
-      uvInicialFondo = materialFondoInstancia.mainTextureOffset;
-      uvBaseFondo = uvInicialFondo;
-    }
-
-    if (materialFondoInstancia.HasProperty("_Color"))
-    {
-      colorBaseFondo = materialFondoInstancia.color;
-    }
+    fondoRenderer.SetPropertyBlock(null);
   }
 
   private void AnimarFondo()
   {
-    if (materialFondoInstancia == null)
+    Material material = fondoRenderer != null ? fondoRenderer.sharedMaterial : null;
+    if (material == null || bloqueFondo == null)
     {
       return;
     }
 
     float t = Time.time;
+    bloqueFondo.Clear();
 
-    if (animarUVFondo && materialFondoInstancia.HasProperty("_MainTex"))
+    if (animarUVFondo && material.HasProperty("_MainTex"))
     {
       // Oscilacion minima y acotada para evitar desplazamiento visible hacia margenes.
       float fx = Mathf.Max(0.01f, frecuenciaUV);
-      uvBaseFondo.x = uvInicialFondo.x + Mathf.Sin(t * fx + fasePulso) * amplitudUVx;
-      uvBaseFondo.y = uvInicialFondo.y + Mathf.Sin(t * fx * 0.79f + fasePulso * 0.73f) * amplitudUVy;
-      materialFondoInstancia.mainTextureOffset = uvBaseFondo;
+      uvBaseFondo.x = Mathf.Sin(t * fx + fasePulso) * amplitudUVx;
+      uvBaseFondo.y = Mathf.Sin(t * fx * 0.79f + fasePulso * 0.73f) * amplitudUVy;
+      Vector2 escala = material.mainTextureScale;
+      Vector2 desplazamiento = material.mainTextureOffset + uvBaseFondo;
+      bloqueFondo.SetVector("_MainTex_ST", new Vector4(escala.x, escala.y, desplazamiento.x, desplazamiento.y));
     }
 
-    if (materialFondoInstancia.HasProperty("_Color"))
+    if (material.HasProperty("_Color"))
     {
       float pulso = 1f + Mathf.Sin(t * velocidadPulsoColor + fasePulso) * amplitudPulsoColor;
-      Color c = colorBaseFondo * pulso;
-      c.a = colorBaseFondo.a;
-      materialFondoInstancia.color = c;
+      Color baseMaterial = material.color;
+      Color c = baseMaterial * (colorBaseFondo * pulso);
+      c.a = baseMaterial.a;
+      bloqueFondo.SetColor("_Color", c);
     }
+
+    fondoRenderer.SetPropertyBlock(bloqueFondo);
+  }
+
+  private void OnDisable()
+  {
+    if (fondoRenderer != null) fondoRenderer.SetPropertyBlock(null);
   }
 
   private void RecalcularBoundsCampo()
@@ -604,18 +641,24 @@ public class BattleAmbientLife : MonoBehaviour
       velocidadPulsoColor = 0.18f;
     }
 
-    if (materialFondoInstancia != null && materialFondoInstancia.HasProperty("_Color"))
+    if (fondoRenderer != null)
     {
-      Color actual = materialFondoInstancia.color;
-      colorBaseFondo = Color.Lerp(actual, colorZona, 0.08f);
-      colorBaseFondo.a = actual.a;
+      colorBaseFondo = Color.Lerp(Color.white, colorZona, 0.08f);
+      colorBaseFondo.a = 1f;
     }
   }
 
   private void AplicarModoNocturnoAlFondo()
   {
-    if (materialFondoInstancia == null || !materialFondoInstancia.HasProperty("_Color"))
+    if (fondoRenderer == null)
     {
+      return;
+    }
+
+    if (horaBatalla >= 0f)
+    {
+      colorBaseFondo = colorDiurnoFondo * TinteHorario(horaBatalla);
+      colorBaseFondo.a = 1f;
       return;
     }
 
@@ -627,7 +670,7 @@ public class BattleAmbientLife : MonoBehaviour
 
     // Mantiene los detalles del arte del fondo, pero lo lleva a una paleta lunar legible.
     Color tonoNocturno = colorDiurnoFondo * new Color(0.42f, 0.54f, 0.78f, 1f);
-    tonoNocturno.a = colorDiurnoFondo.a;
+    tonoNocturno.a = 1f;
     colorBaseFondo = Color.Lerp(colorDiurnoFondo, tonoNocturno, 0.72f);
   }
 }

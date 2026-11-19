@@ -5,6 +5,9 @@ import re
 import shutil
 import sys
 
+if "--incendio" in sys.argv and "--pulido" not in sys.argv:
+    sys.argv.append("--pulido")
+
 root = Path(__file__).resolve().parents[1]
 target = root / "Temp/BosquePreview"
 (target / "Assets/Editor").mkdir(parents=True, exist_ok=True)
@@ -52,7 +55,7 @@ def copy_asset(source):
 for name in ["Llama1GO.prefab", "LlamaEspectral.prefab", "BosqueArdiente - Arbol1.prefab", "BosqueArdiente - Piedra1.prefab", "MatBosqueArdienteSuelo.mat"]:
     copy_asset(root / "Assets/Resources/ObjetosMapa" / name)
 for name in ["BosqueArdienteAmbiente.shader", "BosqueArdienteSuelo.shader", "BosqueArdienteLlamas.shader",
-             "BosqueArdienteMadera.shader", "BosqueArdienteFondo.shader"]:
+             "BosqueArdienteMadera.shader", "BosqueArdienteFondo.shader", "BosqueArdienteFuego.shader"]:
     copy_asset(root / "Assets/Resources" / name)
 
 # Export one real, authored map flame as an isolated fixture (never save the scene).
@@ -219,3 +222,35 @@ if "--pulido" in sys.argv:
         source = source.replace('"BosqueArdienteSuelo"', '"BosqueArdienteSueloAntes"')
         (target / "Assets/AmbienteBosqueArdienteAntes.cs").write_text(source, encoding="utf-8")
     print(f"Escenario real: {len(selected)} componentes visuales y {len(calls)} tandas originales de decoración.")
+
+if "--incendio" in sys.argv:
+    # Verifica el CaminoMesh real y el método regional real, sin ejecutar los gestores del juego.
+    contexto = target / "Assets/ContextoPreview.cs"
+    text = contexto.read_text(encoding="utf-8-sig")
+    text = re.sub(r"public sealed class CaminoMesh : MonoBehaviour\s*\{.*?\n\}", "", text, flags=re.S)
+    text = text.replace("public static CampaignManager Instance;", "public static CampaignManager Instance; public AtributosZona scAtributosZona;")
+    actual = (root / "Assets/Scripts/Campania/AtributosZona.cs").read_text(encoding="utf-8-sig")
+    method_start = actual.index("public MaterialesCaminosZona ObtenerMaterialesCaminosZona()")
+    opening = actual.index("{", method_start); depth = 1; end = opening + 1
+    while depth:
+        depth += (actual[end] == "{") - (actual[end] == "}"); end += 1
+    text = text.replace("public int ID = 1;", actual[method_start:end] + "\npublic int ID = 1;")
+    contexto.write_text(text, encoding="utf-8")
+    shutil.copy2(root / "Assets/CaminoMesh.cs", target / "Assets/CaminoMesh.cs")
+    shutil.copy2(root / "Assets/Scripts/Campania/MaterialesCaminosZona.cs", target / "Assets/MaterialesCaminosZona.cs")
+    for name in ["CaminoSueloRework.shader"]:
+        copy_asset(root / "Assets/Resources" / name)
+    for name in ["CaminoSueloRework.png", "caminopiedra.png"]:
+        copy_asset(root / "Assets/Resources/Imagenes/Materials" / name)
+    zona_source = next(v for v in blocks.values() if "bosqueardienteContenedorGameObjects:" in v)
+    paso_id = re.search(r"pasovientoheladoContenedorGameObjects: \{fileID: (-?\d+)", zona_source)[1]
+    profile_guid = re.search(r"guid: (\w+)", (root / "Assets/Scripts/Campania/MaterialesCaminosZona.cs.meta").read_text())[1]
+    profile = next(blocks[c] for c in re.findall(r"component: \{fileID: (-?\d+)", blocks[paso_id]) if profile_guid in blocks.get(c, ""))
+    assignments = []
+    for field in ["caminoOriginal", "caminoMarcado", "caminoUsado", "caminoHint", "caminoAAldea"]:
+        guid = re.search(field + r": \{fileID: -?\d+, guid: (\w+)", profile)[1]
+        asset = guids[guid]; copy_asset(asset)
+        assignments.append('p.' + field + ' = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>("' + asset.relative_to(root).as_posix() + '");')
+    ancho = re.search(r"multiplicadorAnchoBase: ([\d.]+)", profile)[1]
+    (target / "Assets/Editor/CaminosBosqueFixture.cs").write_text('using UnityEngine; public static class CaminosBosqueFixture { public static MaterialesCaminosZona Crear() { var p = new GameObject("Perfil del Paso aislado").AddComponent<MaterialesCaminosZona>();\n' + '\n'.join(assignments) + '\np.multiplicadorAnchoBase = ' + ancho + 'f; return p; } }', encoding="utf-8")
+    shutil.copy2(root / "tools/bosque-preview/BosqueIncendioRender.cs", target / "Assets/Editor/BosqueIncendioRender.cs")
