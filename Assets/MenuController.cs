@@ -243,18 +243,43 @@ public class MenuController : MonoBehaviour
         StartCoroutine(CargarJuego());
     }
 
+    // "Continuar": carga la partida guardada mas reciente de cualquier slot.
     public void OnContinuarPartida()
     {
-        if (!SaveGameService.TryQueuePendingLoadFromFile(out string error))
+        int slot = SaveSlots.GetMostRecentLoadableSlot();
+        string error = string.Empty;
+        if (slot < 0 || !OnCargarSlot(slot, out error))
+        {
+            Debug.LogWarning("[SaveGame] No se pudo preparar la carga de la campaña. " + (slot < 0 ? "No hay partidas guardadas." : error));
+            RefrescarBotonesCargarPartida();
+        }
+    }
+
+    public bool OnCargarSlot(int slot, out string error)
+    {
+        error = string.Empty;
+        if (!SaveSlots.IsValidSlot(slot))
+        {
+            error = "Slot invalido.";
+            return false;
+        }
+
+        if (!SaveGameService.TryQueuePendingLoadFromFile(out error, SaveSlots.GetSlotPath(slot)))
         {
             Debug.LogWarning("[SaveGame] No se pudo preparar la carga de la campaña. " + error);
             RefrescarBotonesCargarPartida();
-            return;
+            return false;
+        }
+
+        if (slot >= 1)
+        {
+            SaveSlots.ActiveManualSlot = slot;
         }
 
         RuntimeAnalytics.SetDemoPath("continue");
         RuntimeAnalytics.TrackDesign("ui", "main_menu", "continue_game");
         StartCoroutine(CargarJuego());
+        return true;
     }
 
     public void abriropciones()
@@ -315,7 +340,7 @@ public class MenuController : MonoBehaviour
 
     void RefrescarBotonesCargarPartida()
     {
-        bool haySave = SaveGameService.HasSaveFile();
+        bool haySave = SaveSlots.HasAnyLoadableSlot();
         if (botonesCargarPartida.Count == 0)
         {
             RecolectarBotonesCargarPartida();

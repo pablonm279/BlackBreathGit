@@ -10,6 +10,7 @@ public static class SaveGameService
   private const string TempFileSuffix = ".tmp";
   private const string BackupFileSuffix = ".bak";
   private const string RecoveryFileSuffix = ".recovery";
+  private const string CorruptFileSuffix = ".corrupt";
 
   private static SaveFileData pendingLoadData;
   private static string pendingLoadFailureMessage;
@@ -80,7 +81,22 @@ public static class SaveGameService
       }
 
       string json = JsonUtility.ToJson(saveFileData, true);
-      File.WriteAllText(tempPath, json, new UTF8Encoding(false));
+      if (!IsStructurallyValidJson(json))
+      {
+        error = "El estado serializado de la campaña no es valido. Se conserva el guardado anterior.";
+        return false;
+      }
+
+      WriteAllTextDurable(tempPath, json);
+
+      // Verifica el temporal antes de confirmarlo: si quedo truncado o no se puede deserializar,
+      // el guardado anterior (principal + copia) queda intacto.
+      if (!TryReadSaveFileAtPath(tempPath, out _, out string verifyError))
+      {
+        error = "La verificacion del guardado fallo (" + verifyError + "). Se conserva el guardado anterior.";
+        return false;
+      }
+
       CommitTempFile(tempPath, resolvedPath);
       return true;
     }
@@ -159,7 +175,8 @@ public static class SaveGameService
         resolvedPath,
         GetTempPath(resolvedPath),
         GetBackupPath(resolvedPath),
-        GetRecoveryPath(resolvedPath)
+        GetRecoveryPath(resolvedPath),
+        GetCorruptPath(resolvedPath)
       };
 
       foreach (string filePath in paths)
@@ -193,6 +210,42 @@ public static class SaveGameService
   private static string GetRecoveryPath(string resolvedPath)
   {
     return resolvedPath + RecoveryFileSuffix;
+  }
+
+  private static string GetCorruptPath(string resolvedPath)
+  {
+    return resolvedPath + CorruptFileSuffix;
+  }
+
+  // True si existe cualquiera de los archivos del guardado (principal, copia o temporal),
+  // aunque ninguno sea valido. Permite distinguir "slot vacio" de "slot danado".
+  public static bool AnySaveArtifactExists(string path = null)
+  {
+    string resolvedPath = ResolvePath(path);
+    return File.Exists(resolvedPath) || File.Exists(GetBackupPath(resolvedPath)) || File.Exists(GetTempPath(resolvedPath));
+  }
+
+  public static bool TryGetLastWriteTimeUtc(out DateTime lastWriteUtc, out long length, string path = null)
+  {
+    lastWriteUtc = DateTime.MinValue;
+    length = 0;
+    try
+    {
+      string resolvedPath = ResolvePath(path);
+      foreach (string candidate in new[] { resolvedPath, GetBackupPath(resolvedPath), GetTempPath(resolvedPath) })
+      {
+        if (!File.Exists(candidate)) { continue; }
+        FileInfo info = new FileInfo(candidate);
+        DateTime fecha = info.LastWriteTimeUtc;
+        if (fecha > lastWriteUtc) { lastWriteUtc = fecha; }
+        length += info.Length;
+      }
+      return lastWriteUtc != DateTime.MinValue;
+    }
+    catch (Exception)
+    {
+      return false;
+    }
   }
 
   private static void CommitTempFile(string tempPath, string resolvedPath)
@@ -244,6 +297,11 @@ public static class SaveGameService
         error = "El archivo de guardado esta vacio.";
         return false;
       }
+      if (!IsStructurallyValidJson(json))
+      {
+        error = "El archivo de guardado esta truncado o danado.";
+        return false;
+      }
       if (!HasRequiredSaveStructure(json))
       {
         error = "El archivo de guardado no contiene todos los bloques requeridos.";
@@ -280,6 +338,59 @@ public static class SaveGameService
     }
   }
 
+  // Detecta el fallo mas comun (archivo cortado a mitad de escritura): el JSON debe empezar con '{',
+  // terminar con '}' y tener llaves/corchetes balanceados fuera de las cadenas de texto.
+  private static bool IsStructurallyValidJson(string json)
+  {
+    if (string.IsNullOrWhiteSpace(json))
+    {
+      return false;
+    }
+
+    int start = 0;
+    int end = json.Length - 1;
+    while (start <= end && char.IsWhiteSpace(json[start])) { start++; }
+    while (end >= start && char.IsWhiteSpace(json[end])) { end--; }
+    if (start >= end || json[start] != '{' || json[end] != '}')
+    {
+      return false;
+    }
+
+    int depth = 0;
+    bool inString = false;
+    for (int i = start; i <= end; i++)
+    {
+      char c = json[i];
+      if (inString)
+      {
+        if (c == '\\') { i++; }
+        else if (c == '"') { inString = false; }
+        continue;
+      }
+
+      if (c == '"') { inString = true; }
+      else if (c == '{' || c == '[') { depth++; }
+      else if (c == '}' || c == ']')
+      {
+        depth--;
+        if (depth < 0) { return false; }
+        if (depth == 0 && i != end) { return false; }
+      }
+    }
+
+    return depth == 0 && !inString;
+  }
+
+  private static void WriteAllTextDurable(string path, string contents)
+  {
+    byte[] bytes = new UTF8Encoding(false).GetBytes(contents);
+    using (FileStream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+    {
+      stream.Write(bytes, 0, bytes.Length);
+      stream.Flush(true);
+    }
+  }
+
   private static bool HasRequiredSaveStructure(string json)
   {
     return json.IndexOf("\"version\"", StringComparison.Ordinal) >= 0
@@ -294,6 +405,11 @@ public static class SaveGameService
     string recoveryPath = GetRecoveryPath(resolvedPath);
     try
     {
+      if (File.Exists(resolvedPath))
+      {
+        // Conserva el archivo danado para diagnostico antes de reemplazarlo.
+        File.Copy(resolvedPath, GetCorruptPath(resolvedPath), true);
+      }
       File.Copy(recoverySourcePath, recoveryPath, true);
       DeleteFileIfExists(resolvedPath);
       File.Move(recoveryPath, resolvedPath);

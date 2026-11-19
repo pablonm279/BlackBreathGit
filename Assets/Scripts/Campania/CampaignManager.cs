@@ -4515,26 +4515,153 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return true;
   }
 
+  // Boton "Guardar Partida" del menu de opciones: abre el panel de slots para elegir donde guardar.
   public void GuardarCampaniaManual()
   {
-    if (TryGuardarCampania(out string error))
+    OpcionesCargarPlayerPrefsUI opciones = ObtenerOpcionesActivas();
+    if (opciones != null)
     {
-      NotificarResultadoGuardado("-Campaña guardada.", Color.cyan);
+      opciones.AbrirPanelPartidas();
+      return;
+    }
+
+    GuardadoRapido();
+  }
+
+  // F5: guarda directo en el ultimo slot manual usado.
+  public void GuardadoRapido()
+  {
+    int slot = SaveSlots.ActiveManualSlot;
+    if (TryGuardarCampaniaEnSlot(slot, out string error))
+    {
+      NotificarResultadoGuardado(SaveSlotsLoc.T("-Partida guardada en el slot " + slot + ".", "-Game saved to slot " + slot + ".", "-Partida salva no slot " + slot + "."), Color.cyan);
       return;
     }
 
     NotificarResultadoGuardado("-No se pudo guardar la campaña. " + error, Color.red);
   }
 
+  // F9: carga el guardado mas reciente (de cualquier slot).
   public void CargarCampaniaManual()
   {
-    if (TryCargarCampaniaDesdeArchivo(out string error))
+    int slot = SaveSlots.GetMostRecentLoadableSlot();
+    if (slot < 0)
     {
-      NotificarResultadoGuardado("-Campaña cargada.", Color.cyan);
+      NotificarResultadoGuardado(SaveSlotsLoc.T("-No hay partidas guardadas.", "-There are no saved games.", "-Nao ha partidas salvas."), Color.red);
       return;
     }
 
+    CargarCampaniaDesdeSlot(slot);
+  }
+
+  public bool PuedeCargarCampania(out string motivo)
+  {
+    motivo = string.Empty;
+    if (DebeUsarConfiguracionTutorial())
+    {
+      motivo = SaveSlotsLoc.T("No disponible durante el tutorial.", "Not available during the tutorial.", "Indisponivel durante o tutorial.");
+      return false;
+    }
+
+    if (!campaniaInicializada || (scAdministradorEscenas != null && scAdministradorEscenas.escenaActual != 0) || transicionZonaEnCurso)
+    {
+      motivo = SaveSlotsLoc.T("Solo disponible en el mapa de campaña.", "Only available on the campaign map.", "Disponivel apenas no mapa da campanha.");
+      return false;
+    }
+
+    return true;
+  }
+
+  public bool TryGuardarCampaniaEnSlot(int slot, out string error)
+  {
+    error = string.Empty;
+    if (!SaveSlots.IsValidSlot(slot))
+    {
+      error = "Slot invalido.";
+      return false;
+    }
+
+    if (!TryGuardarCampania(out error, SaveSlots.GetSlotPath(slot)))
+    {
+      return false;
+    }
+
+    SaveSlots.InvalidateCache(slot);
+    if (slot >= 1)
+    {
+      SaveSlots.ActiveManualSlot = slot;
+    }
+    IniciarCapturaPreviewSlot(slot);
+    return true;
+  }
+
+  public bool CargarCampaniaDesdeSlot(int slot)
+  {
+    if (!SaveSlots.IsValidSlot(slot))
+    {
+      return false;
+    }
+
+    if (!PuedeCargarCampania(out string motivo))
+    {
+      NotificarResultadoGuardado("-" + motivo, Color.red);
+      return false;
+    }
+
+    if (TryCargarCampaniaDesdeArchivo(out string error, SaveSlots.GetSlotPath(slot)))
+    {
+      if (slot >= 1)
+      {
+        SaveSlots.ActiveManualSlot = slot;
+      }
+      NotificarResultadoGuardado(SaveSlotsLoc.T("-Partida cargada.", "-Game loaded.", "-Partida carregada."), Color.cyan);
+      return true;
+    }
+
     NotificarResultadoGuardado("-No se pudo cargar la campaña. " + error, Color.red);
+    return false;
+  }
+
+  private void IniciarCapturaPreviewSlot(int slot)
+  {
+    if (!SavePreviewCapture.PuedeCapturar() || !isActiveAndEnabled)
+    {
+      return;
+    }
+
+    StartCoroutine(SavePreviewCapture.CapturarYGuardar(slot, ObtenerOverlaysAOcultarEnPreview()));
+  }
+
+  // El menu de opciones (desde donde se guarda) no debe aparecer en la vista previa de la campaña.
+  private GameObject[] ObtenerOverlaysAOcultarEnPreview()
+  {
+    List<GameObject> overlays = new List<GameObject>(2);
+    if (MenuOpciones != null && MenuOpciones.activeInHierarchy)
+    {
+      overlays.Add(MenuOpciones);
+    }
+
+    AdministradorEscenas administradorEscenas = scAdministradorEscenas;
+    if (administradorEscenas != null && administradorEscenas.MenuOpciones != null && administradorEscenas.MenuOpciones.activeInHierarchy)
+    {
+      overlays.Add(administradorEscenas.MenuOpciones);
+    }
+
+    return overlays.ToArray();
+  }
+
+  private static OpcionesCargarPlayerPrefsUI ObtenerOpcionesActivas()
+  {
+    OpcionesCargarPlayerPrefsUI[] todas = FindObjectsByType<OpcionesCargarPlayerPrefsUI>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+    for (int i = 0; i < todas.Length; i++)
+    {
+      if (todas[i] != null && todas[i].isActiveAndEnabled)
+      {
+        return todas[i];
+      }
+    }
+
+    return null;
   }
 
   public bool TryAutosaveCampania(string origen, out string error)
@@ -4542,6 +4669,8 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     if (TryGuardarCampania(out error))
     {
       Debug.Log("[SaveGame] Autosave de campania completado" + FormatearOrigenAutosave(origen) + ".");
+      SaveSlots.InvalidateCache(SaveSlots.AutoSlot);
+      IniciarCapturaPreviewSlot(SaveSlots.AutoSlot);
       return true;
     }
 
@@ -12403,7 +12532,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       if (scAdministradorEscenas != null && scAdministradorEscenas.escenaActual == 1) { return; }
 #endif
       if (tutorialConfiguracionActiva) { EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
-      GuardarCampaniaManual();
+      GuardadoRapido();
     }
     if (Input.GetKeyDown(KeyCode.F9))
     {

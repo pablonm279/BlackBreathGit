@@ -74,7 +74,11 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     [Header("Brillo")]
     public Slider brilloSlider;
     public TextMeshProUGUI brilloLabel;
-    
+
+    [NonSerialized] private SaveSlotsPanelUI panelPartidas;
+    [NonSerialized] private Button botonPartidas;
+    private TextMeshProUGUI textoBotonPartidas;
+
 
     void Start()
     {
@@ -84,7 +88,8 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         ConfigurarToggleAyudas();
         AsegurarSliderEscalaTexto();
         AsegurarToggleBanter();
-       
+        AsegurarPanelPartidas();
+
         LlenarDropdownResoluciones();
         AplicarEfectosEnUI();
 
@@ -97,8 +102,173 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         ConfigurarToggleAyudas();
         AsegurarSliderEscalaTexto();
         AsegurarToggleBanter();
-        
+        AsegurarPanelPartidas();
+
         AplicarEfectosEnUI();
+    }
+
+    // Pestaña "Partidas": slots de guardado con vista previa. Se crea por codigo (ver SaveSlotsPanelUI).
+    private void AsegurarPanelPartidas()
+    {
+        if (PanelGameplay == null)
+        {
+            return;
+        }
+
+        if (panelPartidas == null && PanelGameplay.transform.parent != null)
+        {
+            Transform existente = PanelGameplay.transform.parent.Find("ContenidoPartidas");
+            if (existente != null)
+            {
+                panelPartidas = existente.GetComponent<SaveSlotsPanelUI>();
+            }
+        }
+
+        Button botonBase = BuscarBotonPestana("bt_Gameplay");
+        if (botonBase == null)
+        {
+            return;
+        }
+
+        if (panelPartidas == null)
+        {
+            panelPartidas = SaveSlotsPanelUI.Crear(PanelGameplay.transform as RectTransform, this, botonBase);
+        }
+
+        if (botonPartidas == null && botonBase.transform.parent != null)
+        {
+            Transform existente = botonBase.transform.parent.Find("bt_Partidas");
+            if (existente != null)
+            {
+                botonPartidas = existente.GetComponent<Button>();
+            }
+            else
+            {
+                botonPartidas = CrearBotonPestanaPartidas(botonBase);
+            }
+        }
+
+        if (botonPartidas != null)
+        {
+            if (textoBotonPartidas == null)
+            {
+                textoBotonPartidas = botonPartidas.GetComponentInChildren<TextMeshProUGUI>(true);
+            }
+            if (textoBotonPartidas != null)
+            {
+                textoBotonPartidas.text = SaveSlotsLoc.T("Partidas", "Saves", "Partidas");
+            }
+        }
+    }
+
+    private Button BuscarBotonPestana(string nombre)
+    {
+        Button[] botones = GetComponentsInChildren<Button>(true);
+        for (int i = 0; i < botones.Length; i++)
+        {
+            if (botones[i] != null && botones[i].name == nombre)
+            {
+                return botones[i];
+            }
+        }
+        return null;
+    }
+
+    private Button CrearBotonPestanaPartidas(Button plantilla)
+    {
+        RectTransform rectPlantilla = plantilla.transform as RectTransform;
+        Transform padre = plantilla.transform.parent;
+        if (rectPlantilla == null || padre == null)
+        {
+            return null;
+        }
+
+        // Se arma desde cero (no se clona la plantilla) para no heredar sus eventos persistentes.
+        GameObject objeto = new GameObject("bt_Partidas", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
+        objeto.layer = plantilla.gameObject.layer;
+        RectTransform rect = (RectTransform)objeto.transform;
+        rect.SetParent(padre, false);
+        rect.anchorMin = rectPlantilla.anchorMin;
+        rect.anchorMax = rectPlantilla.anchorMax;
+        rect.pivot = rectPlantilla.pivot;
+        rect.sizeDelta = rectPlantilla.sizeDelta;
+        rect.localScale = rectPlantilla.localScale;
+        rect.SetSiblingIndex(plantilla.transform.GetSiblingIndex() + 1);
+
+        Image imagenPlantilla = plantilla.GetComponent<Image>();
+        Image imagen = objeto.GetComponent<Image>();
+        if (imagenPlantilla != null)
+        {
+            imagen.sprite = imagenPlantilla.sprite;
+            imagen.type = imagenPlantilla.type;
+            imagen.color = imagenPlantilla.color;
+            imagen.material = imagenPlantilla.material;
+        }
+
+        Button boton = objeto.GetComponent<Button>();
+        boton.targetGraphic = imagen;
+        boton.transition = plantilla.transition;
+        boton.colors = plantilla.colors;
+        boton.onClick.AddListener(AbrirPanelPartidas);
+
+        AudioSource audioPlantilla = plantilla.GetComponent<AudioSource>();
+        if (audioPlantilla != null && audioPlantilla.clip != null)
+        {
+            AudioSource audio = objeto.AddComponent<AudioSource>();
+            audio.clip = audioPlantilla.clip;
+            audio.playOnAwake = false;
+            audio.spatialBlend = 0f;
+            audio.volume = audioPlantilla.volume;
+            audio.outputAudioMixerGroup = audioPlantilla.outputAudioMixerGroup;
+            boton.onClick.AddListener(audio.Play);
+        }
+
+        // El texto si se clona (no tiene eventos): hereda fuente, tamaño y contraescala del original.
+        TextMeshProUGUI textoPlantilla = plantilla.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (textoPlantilla != null)
+        {
+            GameObject textoClon = Instantiate(textoPlantilla.gameObject, rect);
+            textoClon.name = textoPlantilla.gameObject.name;
+        }
+
+        // La botonera se centra por su pivote: al sumar una pestaña se compensa para que las existentes no se muevan.
+        RectTransform rectPadre = padre as RectTransform;
+        VerticalLayoutGroup layout = padre.GetComponent<VerticalLayoutGroup>();
+        if (rectPadre != null && layout != null)
+        {
+            float extra = (rectPlantilla.sizeDelta.y + layout.spacing) * 0.5f;
+            if (Mathf.Approximately(rectPadre.pivot.y, 0.5f))
+            {
+                rectPadre.anchoredPosition -= new Vector2(0f, extra);
+            }
+        }
+
+        return boton;
+    }
+
+    public void AbrirPanelPartidas()
+    {
+        AsegurarPanelPartidas();
+        if (panelPartidas == null)
+        {
+            return;
+        }
+
+        RuntimeAnalytics.TrackDesign("ui", "options", "saves_panel");
+        PanelAudio.SetActive(false);
+        PanelGraficos.SetActive(false);
+        PanelControles.SetActive(false);
+        PanelGameplay.SetActive(false);
+        PanelIdioma.SetActive(false);
+        panelPartidas.gameObject.SetActive(true);
+    }
+
+    private void OcultarPanelPartidas()
+    {
+        if (panelPartidas != null)
+        {
+            panelPartidas.gameObject.SetActive(false);
+        }
     }
 
     private void InicializarCalibracionVisualPorDefecto()
@@ -318,6 +488,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AbrirPanelAudio()
     {
         RuntimeAnalytics.TrackDesign("ui", "options", "audio_panel");
+        OcultarPanelPartidas();
         PanelAudio.SetActive(true);
         PanelGraficos.SetActive(false);
         PanelControles.SetActive(false);
@@ -328,6 +499,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AbrirPanelGraficos()
     {
         RuntimeAnalytics.TrackDesign("ui", "options", "graphics_panel");
+        OcultarPanelPartidas();
         AsegurarDropdownLimitadorFPS();
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(true);
@@ -340,6 +512,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AbrirPanelControles()
     {
         RuntimeAnalytics.TrackDesign("ui", "options", "controls_panel");
+        OcultarPanelPartidas();
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(false);
         PanelControles.SetActive(true);
@@ -351,6 +524,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AbrirPanelGameplay()
     {
         RuntimeAnalytics.TrackDesign("ui", "options", "gameplay_panel");
+        OcultarPanelPartidas();
         AsegurarSliderEscalaTexto();
         ActualizarEtiquetaEscalaTexto();
         AsegurarToggleBanter();
@@ -364,6 +538,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public void AbrirPanelIdioma()
     {
         RuntimeAnalytics.TrackDesign("ui", "options", "language_panel");
+        OcultarPanelPartidas();
         PanelAudio.SetActive(false);
         PanelGraficos.SetActive(false);
         PanelControles.SetActive(false);

@@ -49,7 +49,7 @@ public class botoneraNews : MonoBehaviour
       return;
     }
 
-    bool haySave = SaveGameService.HasSaveFile();
+    bool haySave = SaveSlots.HasAnyLoadableSlot();
     botonContinuar.gameObject.SetActive(true);
     botonContinuar.interactable = haySave;
     AplicarEstadoVisualDeshabilitado(botonContinuar, !haySave);
@@ -75,7 +75,7 @@ public class botoneraNews : MonoBehaviour
 
   public void Continuar()
   {
-    if (!SaveGameService.HasSaveFile())
+    if (!SaveSlots.HasAnyLoadableSlot())
     {
       RefrescarBotonContinuar();
       return;
