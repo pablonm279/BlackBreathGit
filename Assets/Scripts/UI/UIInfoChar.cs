@@ -966,7 +966,7 @@ public class UIInfoChar : MonoBehaviour
    }
    if (unidadMostrada.uNombre == "Faagdan")
    {
-      desc = TRADU.i.Traducir("<i>Esta bestia oriunda del Paso es material de varias leyendas y pesadillas entre los Kale'Tav. De cuerpo robusto y cuernos afilados, supone un peligro para los viajeros incautos.</i>\n\n<color=#199F10>-Ataques de carga en fila.\n-Regeneración leve.</color>\n<color=#EE0000>-Lento.</color>");
+      desc = TRADU.i.Traducir("<i>Esta bestia oriunda del Paso es material de varias leyendas y pesadillas entre los Kale'Tav. De cuerpo robusto y cuernos afilados, supone un peligro para los viajeros incautos.</i>\n\n<color=#199F10>-Ataques de carga en fila.\n-Regeneración leve.</color>");
    }
    if (unidadMostrada.uNombre == "Zarkil Acechador")
    {

@@ -25,6 +25,11 @@ public class ScreenFlash : MonoBehaviour
 
   public static void FlashCritical()
   {
+    if (AccessibilitySettings.ReduceFlashes)
+    {
+      return;
+    }
+
     ScreenFlash instance = GetOrCreate();
     if (instance == null)
     {
@@ -36,6 +41,11 @@ public class ScreenFlash : MonoBehaviour
 
   public static void FlashImpact(Color color, float peakAlpha = 0.04f, float fadeIn = 0.014f, float fadeOut = 0.07f, float delay = 0f)
   {
+    if (AccessibilitySettings.ReduceFlashes)
+    {
+      return;
+    }
+
     ScreenFlash instance = GetOrCreate();
     if (instance == null)
     {

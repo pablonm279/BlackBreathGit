@@ -101,7 +101,7 @@ public sealed class CampoVivoBatalla : MonoBehaviour
     mezcla = Mathf.MoveTowards(mezcla, 1f, dt / 1.4f);
     presupuestoEmisiones = 44;
     var ajustes = AjustesCampoVivo.Actual;
-    float calidad = QualitySettings.GetQualityLevel() <= 0 ? .55f : QualitySettings.GetQualityLevel() == 1 ? .8f : 1f;
+    float calidad = GraphicsQuality.Pick(.55f, .8f, 1f);
     // En Paso Viento Helado el viento (y la nieve) va de derecha a izquierda; en el resto, como antes.
     float sentido = zona == EncounterZoneType.PasoVientoHelado && !subterraneo ? -1f : 1f;
     float viento = sentido * paleta.viento * (1f + .7f * Rafaga(reloj));

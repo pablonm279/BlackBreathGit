@@ -300,7 +300,26 @@ public class CampaignManager : MonoBehaviour
   [SerializeField, Min(0f)] private float duracionEntradaTextoFlotante = 0.35f;
   private readonly Queue<(string, Color)> colaTextos = new Queue<(string, Color)>();
   private readonly Queue<(string, Color)> colaTextosSuspendidosCampania = new Queue<(string, Color)>();
-  private readonly List<(RectTransform contenedor, RectTransform rectTexto, float altura)> textosFlotantesCampaniaActivos = new List<(RectTransform, RectTransform, float)>();
+  [SerializeField, Min(0.5f)] private float duracionVisibleTextoFlotante = 6f;
+  [SerializeField, Min(0.1f)] private float duracionSalidaTextoFlotante = 1f;
+  [SerializeField, Min(1)] private int maxTextosFlotantesVisibles = 5;
+
+  private class TextoFlotanteCampaniaActivo
+  {
+    public RectTransform contenedor;
+    public RectTransform rectTexto;
+    public CanvasGroup grupo;
+    public FloatingTextBackground fondo;
+    public float altura;
+    public float nacimiento;
+    public float inicioSalida;
+    public float y;
+    public float velocidadY;
+    public float yObjetivo;
+  }
+
+  private readonly List<TextoFlotanteCampaniaActivo> textosFlotantesCampaniaActivos = new List<TextoFlotanteCampaniaActivo>();
+  private Coroutine rutinaLayoutTextosFlotantesCampania;
   private bool procesandoCola;
   private int bloqueoTextosFlotantesCampania;
   private int bloqueoTextosRecursosCampania;
@@ -12433,6 +12452,9 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       botonDescansar.sprite = puedeDescansar ? campSi : campNo;
     }
 
+    // El tutorial se diseño con las teclas originales: mientras corre se ignoran los bindings del jugador.
+    Hotkeys.TutorialCampaign = DebeUsarConfiguracionTutorial();
+
     if (IntroCampaniaActivaOPendiente)
     {
       LimpiarHoverNodoCampaniaActual();
@@ -12462,13 +12484,13 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
     //HOTKEYS
     // Detecta cuando se presiona la tecla H una sola vez
-    if (Input.GetKeyDown(KeyCode.R))
+    if (Hotkeys.Down(HotkeyAction.CampRest))
     {
       if (tutorialConfiguracionActiva) { EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       if (asentamientoActivo) { return; }
       AbrirMenuDescanso();
     }
-    if (Input.GetKeyDown(KeyCode.C))
+    if (Hotkeys.Down(HotkeyAction.CampCharacters))
     {
        if (tutorialConfiguracionActiva)
        {
@@ -12487,7 +12509,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       if (asentamientoActivo) { return; }
       scMenuCaravana.AbrirMenuPersonajesDesdeHotkey();
     }
-    if (Input.GetKeyDown(KeyCode.I))
+    if (Hotkeys.Down(HotkeyAction.CampUpgrades))
     {
        if (tutorialConfiguracionActiva)
        {
@@ -12506,7 +12528,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       if (asentamientoActivo) { return; }
       scMenuCaravana.AbrirMenuMejorasDesdeHotkey();
     }
-    if (Input.GetKeyDown(KeyCode.M))
+    if (Hotkeys.Down(HotkeyAction.CampFollowers))
     {
        if (tutorialConfiguracionActiva)
        {
@@ -12525,7 +12547,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       if (asentamientoActivo) { return; }
       scMenuCaravana.AbrirMenuSequitosDesdeHotkey();
     }
-    if (Input.GetKeyDown(KeyCode.F5))
+    if (Hotkeys.Down(HotkeyAction.CampQuickSave))
     {
 #if UNITY_EDITOR
       // DEBUG-FONDOS: en pelea, F5 se usa para ciclar fondos (AdministradorEscenas) y no debe guardar la campania.
@@ -12534,7 +12556,7 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
       if (tutorialConfiguracionActiva) { EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       GuardadoRapido();
     }
-    if (Input.GetKeyDown(KeyCode.F9))
+    if (Hotkeys.Down(HotkeyAction.CampQuickLoad))
     {
       if (tutorialConfiguracionActiva) { EscribirAdvertenciaLog(TRADU.i.Traducir("Tutorial activo, atajos deshabilitados.")); return; }
       CargarCampaniaManual();
@@ -12648,13 +12670,10 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
 
   private static int ObtenerPosicionAtajoPersonaje()
   {
-    if (Input.GetKeyDown(KeyCode.Alpha1)) { return 1; }
-    if (Input.GetKeyDown(KeyCode.Alpha2)) { return 2; }
-    if (Input.GetKeyDown(KeyCode.Alpha3)) { return 3; }
-    if (Input.GetKeyDown(KeyCode.Alpha4)) { return 4; }
-    if (Input.GetKeyDown(KeyCode.Alpha5)) { return 5; }
-    if (Input.GetKeyDown(KeyCode.Alpha6)) { return 6; }
-    if (Input.GetKeyDown(KeyCode.Alpha7)) { return 7; }
+    for (int i = 0; i < 7; i++)
+    {
+      if (Hotkeys.Down(HotkeyAction.CampChar1 + i)) { return i + 1; }
+    }
     return 0;
   }
 
@@ -13256,21 +13275,46 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
           txtMesh.ForceMeshUpdate();
         }
 
-        CanvasGroup grupoEntrada = contenedor != null ? contenedor.GetComponent<CanvasGroup>() : null;
-        if (grupoEntrada != null)
+        // El movimiento y el fundido los controla el layout por código (el Animator del
+        // prefab subía el texto 107 px y hacía que cada mensaje naciera más abajo).
+        Animator animadorPrefab = goTextoFlotante.GetComponent<Animator>();
+        if (animadorPrefab != null)
         {
-          fondoTexto?.SetExternalAlpha(0f);
-          StartCoroutine(MostrarTextoFlotanteCampaniaSuavemente(grupoEntrada, fondoTexto));
+          animadorPrefab.enabled = false;
         }
 
         if (contenedor != null && rt != null)
         {
+          Vector2 posicionBase = rt.anchoredPosition;
+          posicionBase.y = 0f;
+          rt.anchoredPosition = posicionBase;
+
           float alturaTexto = txtMesh != null
             ? Mathf.Max(1f, txtMesh.textBounds.size.y)
             : Mathf.Max(1f, rt.rect.height);
+          float ahora = Time.unscaledTime;
+          CanvasGroup grupoTexto = contenedor.GetComponent<CanvasGroup>();
+          if (grupoTexto != null) grupoTexto.alpha = 0f;
+          fondoTexto?.SetExternalAlpha(0f);
+
           LimpiarRegistrosTextosFlotantesCampaniaDestruidos();
-          textosFlotantesCampaniaActivos.Add((contenedor, rt, alturaTexto));
-          PosicionarNuevoTextoFlotanteCampania();
+          textosFlotantesCampaniaActivos.Add(new TextoFlotanteCampaniaActivo
+          {
+            contenedor = contenedor,
+            rectTexto = rt,
+            grupo = grupoTexto,
+            fondo = fondoTexto,
+            altura = alturaTexto,
+            nacimiento = ahora,
+            inicioSalida = ahora + Mathf.Max(0.5f, duracionVisibleTextoFlotante),
+            y = 0f,
+            yObjetivo = 0f
+          });
+
+          if (rutinaLayoutTextosFlotantesCampania == null)
+          {
+            rutinaLayoutTextosFlotantesCampania = StartCoroutine(ActualizarLayoutTextosFlotantesCampania());
+          }
         }
       }
 
@@ -13299,34 +13343,6 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     return contenedor;
   }
 
-  private IEnumerator MostrarTextoFlotanteCampaniaSuavemente(CanvasGroup grupo, FloatingTextBackground fondo)
-  {
-    float duracion = Mathf.Max(0f, duracionEntradaTextoFlotante);
-    if (duracion <= 0f)
-    {
-      grupo.alpha = 1f;
-      fondo?.SetExternalAlpha(1f);
-      yield break;
-    }
-
-    float transcurrido = 0f;
-    while (transcurrido < duracion && grupo != null)
-    {
-      transcurrido += Time.unscaledDeltaTime;
-      float progreso = Mathf.Clamp01(transcurrido / duracion);
-      float alpha = Mathf.SmoothStep(0f, 1f, progreso);
-      grupo.alpha = alpha;
-      fondo?.SetExternalAlpha(alpha);
-      yield return null;
-    }
-
-    if (grupo != null)
-    {
-      grupo.alpha = 1f;
-    }
-    fondo?.SetExternalAlpha(1f);
-  }
-
   private void LimpiarRegistrosTextosFlotantesCampaniaDestruidos()
   {
     for (int i = textosFlotantesCampaniaActivos.Count - 1; i >= 0; i--)
@@ -13345,32 +13361,77 @@ public class AnimacionTextoRecursoManual : MonoBehaviour
     }
   }
 
-  private void PosicionarNuevoTextoFlotanteCampania()
+  // Apila los mensajes: el nuevo nace siempre en el punto base y los anteriores
+  // suben suavemente para hacerle lugar. Gestiona entrada, salida y destrucción.
+  private IEnumerator ActualizarLayoutTextosFlotantesCampania()
   {
-    int indiceNuevo = textosFlotantesCampaniaActivos.Count - 1;
-    if (indiceNuevo < 0)
+    const float separacion = 6f;
+    const float duracionEntrada = 0.35f;
+    const float deslizamientoEntrada = 18f;
+
+    while (textosFlotantesCampaniaActivos.Count > 0)
     {
-      return;
+      float ahora = Time.unscaledTime;
+      LimpiarRegistrosTextosFlotantesCampaniaDestruidos();
+
+      // Si hay demasiados visibles, los más viejos empiezan a salir ya.
+      int visibles = 0;
+      for (int i = textosFlotantesCampaniaActivos.Count - 1; i >= 0; i--)
+      {
+        var r = textosFlotantesCampaniaActivos[i];
+        if (ahora >= r.inicioSalida) continue;
+        visibles++;
+        if (visibles > Mathf.Max(1, maxTextosFlotantesVisibles))
+        {
+          r.inicioSalida = ahora;
+        }
+      }
+
+      float acumulado = 0f;
+      float salida = Mathf.Max(0.1f, duracionSalidaTextoFlotante);
+      for (int i = textosFlotantesCampaniaActivos.Count - 1; i >= 0; i--)
+      {
+        var r = textosFlotantesCampaniaActivos[i];
+        r.yObjetivo = acumulado;
+        acumulado += Mathf.Max(yStackOffset * 0.6f, r.altura + separacion);
+
+        float edad = ahora - r.nacimiento;
+        float entrada = Mathf.Clamp01(edad / duracionEntrada);
+        float entradaSuave = Mathf.SmoothStep(0f, 1f, entrada);
+        float fundidoSalida = 1f - Mathf.Clamp01((ahora - r.inicioSalida) / salida);
+        float alpha = entradaSuave * Mathf.SmoothStep(0f, 1f, fundidoSalida);
+
+        r.y = Mathf.SmoothDamp(r.y, r.yObjetivo, ref r.velocidadY, 0.22f, Mathf.Infinity, Time.unscaledDeltaTime);
+        float yFinal = r.y - (1f - entradaSuave) * deslizamientoEntrada;
+
+        Vector2 pos = r.contenedor.anchoredPosition;
+        pos.y = yFinal;
+        r.contenedor.anchoredPosition = pos;
+
+        if (r.grupo != null) r.grupo.alpha = alpha;
+        r.fondo?.SetExternalAlpha(alpha);
+
+        if (ahora >= r.inicioSalida + salida)
+        {
+          Destroy(r.contenedor.gameObject);
+          textosFlotantesCampaniaActivos.RemoveAt(i);
+        }
+      }
+
+      yield return null;
     }
 
-    var registroNuevo = textosFlotantesCampaniaActivos[indiceNuevo];
-    float desplazamientoFijo = 0f;
-    for (int anterior = 0; anterior < indiceNuevo; anterior++)
-    {
-      var registroAnterior = textosFlotantesCampaniaActivos[anterior];
-      float separacionPorAltura = (registroAnterior.altura + registroNuevo.altura) * 0.5f + 6f;
-      float separacionMinima = Mathf.Max(yStackOffset * 0.6f, separacionPorAltura);
-      float desplazamientoDebajo = registroAnterior.contenedor.anchoredPosition.y - separacionMinima;
-      desplazamientoFijo = Mathf.Min(desplazamientoFijo, desplazamientoDebajo);
-    }
-
-    Vector2 posicionContenedor = registroNuevo.contenedor.anchoredPosition;
-    posicionContenedor.y = desplazamientoFijo;
-    registroNuevo.contenedor.anchoredPosition = posicionContenedor;
+    rutinaLayoutTextosFlotantesCampania = null;
   }
 
   private void LimpiarTextosFlotantesCampaniaActivos()
   {
+    if (rutinaLayoutTextosFlotantesCampania != null)
+    {
+      StopCoroutine(rutinaLayoutTextosFlotantesCampania);
+      rutinaLayoutTextosFlotantesCampania = null;
+    }
+
     for (int i = 0; i < textosFlotantesCampaniaActivos.Count; i++)
     {
       RectTransform contenedor = textosFlotantesCampaniaActivos[i].contenedor;

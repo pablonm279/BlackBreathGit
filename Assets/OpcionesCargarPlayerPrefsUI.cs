@@ -75,6 +75,12 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     public Slider brilloSlider;
     public TextMeshProUGUI brilloLabel;
 
+    [NonSerialized] private GraphicsOptionsPanel panelGraficosAvanzado;
+    [NonSerialized] private HotkeysPanelUI panelTeclas;
+    [NonSerialized] private AccessibilityPanelUI panelAccesibilidad;
+    [NonSerialized] private Button botonAccesibilidad;
+    private TextMeshProUGUI textoBotonAccesibilidad;
+    [NonSerialized] private GameplayOptionsPanel panelJuego;
     [NonSerialized] private SaveSlotsPanelUI panelPartidas;
     [NonSerialized] private Button botonPartidas;
     private TextMeshProUGUI textoBotonPartidas;
@@ -88,7 +94,11 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         ConfigurarToggleAyudas();
         AsegurarSliderEscalaTexto();
         AsegurarToggleBanter();
+        AsegurarPanelGraficos();
+        AsegurarPanelTeclas();
         AsegurarPanelPartidas();
+        AsegurarPanelAccesibilidad();
+        AsegurarPanelJuego();
 
         LlenarDropdownResoluciones();
         AplicarEfectosEnUI();
@@ -102,9 +112,39 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         ConfigurarToggleAyudas();
         AsegurarSliderEscalaTexto();
         AsegurarToggleBanter();
+        AsegurarPanelGraficos();
+        AsegurarPanelTeclas();
         AsegurarPanelPartidas();
+        AsegurarPanelAccesibilidad();
+        AsegurarPanelJuego();
 
         AplicarEfectosEnUI();
+    }
+
+    // Panel de graficos: ordena los controles existentes y agrega las opciones de detalle (ver GraphicsOptionsPanel).
+    private void AsegurarPanelGraficos()
+    {
+        if (panelGraficosAvanzado == null)
+        {
+            panelGraficosAvanzado = GraphicsOptionsPanel.Asegurar(this);
+        }
+    }
+
+    // Panel de teclas reasignables (ver HotkeysPanelUI): reemplaza al texto estatico de "Accesos rapidos".
+    private void AsegurarPanelTeclas()
+    {
+        if (panelTeclas != null || PanelControles == null)
+        {
+            return;
+        }
+
+        Button botonBase = BuscarBotonPestana("bt_Gameplay");
+        if (botonBase == null)
+        {
+            return;
+        }
+
+        panelTeclas = HotkeysPanelUI.Asegurar(this, botonBase);
     }
 
     // Pestaña "Partidas": slots de guardado con vista previa. Se crea por codigo (ver SaveSlotsPanelUI).
@@ -144,7 +184,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             }
             else
             {
-                botonPartidas = CrearBotonPestanaPartidas(botonBase);
+                botonPartidas = CrearBotonPestana("bt_Partidas", botonBase, AbrirPanelPartidas, false);
             }
         }
 
@@ -174,7 +214,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         return null;
     }
 
-    private Button CrearBotonPestanaPartidas(Button plantilla)
+    private Button CrearBotonPestana(string nombre, Button plantilla, UnityEngine.Events.UnityAction accion, bool crecerHaciaArriba)
     {
         RectTransform rectPlantilla = plantilla.transform as RectTransform;
         Transform padre = plantilla.transform.parent;
@@ -184,7 +224,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         }
 
         // Se arma desde cero (no se clona la plantilla) para no heredar sus eventos persistentes.
-        GameObject objeto = new GameObject("bt_Partidas", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
+        GameObject objeto = new GameObject(nombre, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
         objeto.layer = plantilla.gameObject.layer;
         RectTransform rect = (RectTransform)objeto.transform;
         rect.SetParent(padre, false);
@@ -209,7 +249,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         boton.targetGraphic = imagen;
         boton.transition = plantilla.transition;
         boton.colors = plantilla.colors;
-        boton.onClick.AddListener(AbrirPanelPartidas);
+        boton.onClick.AddListener(accion);
 
         AudioSource audioPlantilla = plantilla.GetComponent<AudioSource>();
         if (audioPlantilla != null && audioPlantilla.clip != null)
@@ -239,7 +279,9 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             float extra = (rectPlantilla.sizeDelta.y + layout.spacing) * 0.5f;
             if (Mathf.Approximately(rectPadre.pivot.y, 0.5f))
             {
-                rectPadre.anchoredPosition -= new Vector2(0f, extra);
+                // false: la botonera crece hacia abajo (las pestañas de arriba no se mueven);
+                // true: crece hacia arriba (usa el hueco decorativo sobre la primera pestaña y deja fijas las de abajo).
+                rectPadre.anchoredPosition += new Vector2(0f, crecerHaciaArriba ? extra : -extra);
             }
         }
 
@@ -260,6 +302,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         PanelControles.SetActive(false);
         PanelGameplay.SetActive(false);
         PanelIdioma.SetActive(false);
+        if (panelAccesibilidad != null) { panelAccesibilidad.gameObject.SetActive(false); }
         panelPartidas.gameObject.SetActive(true);
     }
 
@@ -269,6 +312,93 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         {
             panelPartidas.gameObject.SetActive(false);
         }
+
+        if (panelAccesibilidad != null)
+        {
+            panelAccesibilidad.gameObject.SetActive(false);
+        }
+    }
+
+    // Panel de Gameplay: ordena los controles existentes en filas y agrega velocidad de combate y de caravana (ver GameplayOptionsPanel).
+    private void AsegurarPanelJuego()
+    {
+        if (panelJuego == null)
+        {
+            panelJuego = GameplayOptionsPanel.Asegurar(this);
+        }
+    }
+
+    // Accesos para GameplayOptionsPanel (que reubica estos controles dentro de sus filas).
+    public Slider EscalaTextoSliderActual { get { return escalaTextoSlider; } }
+    public Toggle BanterToggleActual { get { return banterToggle; } }
+    public string TextoEtiquetaEscalaTexto { get { return etiquetaEscalaTexto != null ? etiquetaEscalaTexto.text : string.Empty; } }
+    public string TextoEtiquetaBanter { get { return etiquetaBanter != null ? etiquetaBanter.text : string.Empty; } }
+
+    // Pestaña "Accesibilidad" (ver AccessibilityPanelUI): se crea por codigo igual que "Partidas".
+    private void AsegurarPanelAccesibilidad()
+    {
+        if (PanelGameplay == null)
+        {
+            return;
+        }
+
+        if (panelAccesibilidad == null && PanelGameplay.transform.parent != null)
+        {
+            Transform existente = PanelGameplay.transform.parent.Find("ContenidoAccesibilidad");
+            if (existente != null)
+            {
+                panelAccesibilidad = existente.GetComponent<AccessibilityPanelUI>();
+            }
+        }
+
+        Button botonBase = BuscarBotonPestana("bt_Gameplay");
+        if (botonBase == null)
+        {
+            return;
+        }
+
+        if (panelAccesibilidad == null)
+        {
+            panelAccesibilidad = AccessibilityPanelUI.Crear(PanelGameplay.transform as RectTransform, this, botonBase);
+        }
+
+        if (botonAccesibilidad == null && botonBase.transform.parent != null)
+        {
+            Transform existente = botonBase.transform.parent.Find("bt_Accesibilidad");
+            botonAccesibilidad = existente != null
+                ? existente.GetComponent<Button>()
+                : CrearBotonPestana("bt_Accesibilidad", botonBase, AbrirPanelAccesibilidad, true);
+        }
+
+        if (botonAccesibilidad != null)
+        {
+            if (textoBotonAccesibilidad == null)
+            {
+                textoBotonAccesibilidad = botonAccesibilidad.GetComponentInChildren<TextMeshProUGUI>(true);
+            }
+            if (textoBotonAccesibilidad != null)
+            {
+                textoBotonAccesibilidad.text = SaveSlotsLoc.T("Accesibilidad", "Accessibility", "Acessibilidade");
+            }
+        }
+    }
+
+    public void AbrirPanelAccesibilidad()
+    {
+        AsegurarPanelAccesibilidad();
+        if (panelAccesibilidad == null)
+        {
+            return;
+        }
+
+        RuntimeAnalytics.TrackDesign("ui", "options", "accessibility_panel");
+        PanelAudio.SetActive(false);
+        PanelGraficos.SetActive(false);
+        PanelControles.SetActive(false);
+        PanelGameplay.SetActive(false);
+        PanelIdioma.SetActive(false);
+        if (panelPartidas != null) { panelPartidas.gameObject.SetActive(false); }
+        panelAccesibilidad.gameObject.SetActive(true);
     }
 
     private void InicializarCalibracionVisualPorDefecto()
@@ -361,21 +491,15 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
             fullscreenToggle.SetIsOnWithoutNotify(fs);
         Screen.fullScreen = fs;
 
-        // Calidad grafica
-        int calidadIndex = PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel());
-        //        print($"Obteniendo calidad grafica nivel {calidadIndex}");
-
         // Brillo
         float brillo = Mathf.Clamp01(PlayerPrefs.GetFloat(PrefBrightness, DefaultBrightness));
         if (brilloSlider != null)
         {
             brilloSlider.SetValueWithoutNotify(brillo);
         }
-        QualitySettings.SetQualityLevel(calidadIndex, true);
-        PlayerPrefs.SetInt("graficos_index", calidadIndex); // asegura persistencia inmediata
-        PlayerPrefs.Save();
+        // Calidad grafica: la calidad guardada y sus overrides se aplican desde GraphicsQuality.
         VisualPolishRuntime.ApplyPostProcessingPrefsNow();
-        graficosDropdown.SetValueWithoutNotify(calidadIndex);
+        AsegurarPanelGraficos();
         TraducirDropdownGraficos();
         TraducirDropdownDificultad();
 
@@ -678,12 +802,16 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     public void AplicarGraficos()
     {
-        int index = graficosDropdown.value;
-        QualitySettings.SetQualityLevel(index, true);
+        AsegurarPanelGraficos();
+        if (panelGraficosAvanzado != null)
+        {
+            // Elegir una calidad reinicia los detalles al preset (ver GraphicsOptionsPanel).
+            panelGraficosAvanzado.AlElegirPreset(graficosDropdown.value);
+            AplicarPreferenciasSyncYFPS();
+            return;
+        }
 
-        PlayerPrefs.SetInt("graficos_index", index);
-        PlayerPrefs.Save();
-
+        GraphicsQuality.SetLevel(Mathf.Clamp(graficosDropdown.value, 0, GraphicsQuality.LevelCount - 1), true);
         VisualPolishRuntime.ApplyPostProcessingPrefsNow();
         AplicarPreferenciasSyncYFPS();
     }
@@ -700,40 +828,11 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
 
     void TraducirDropdownGraficos()
     {
-        if (graficosDropdown == null || graficosDropdown.options.Count < 3)
-            return;
-
-        int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
-
-        if (idioma == 1)
+        // Los nombres de las calidades y de los detalles los arma GraphicsOptionsPanel segun el idioma.
+        if (panelGraficosAvanzado != null)
         {
-            graficosDropdown.options[0].text = "Baja";
-            graficosDropdown.options[1].text = "Media";
-            graficosDropdown.options[2].text = "Ultra";
-            // graficosDropdown.options[3].text = "Ultra";
+            panelGraficosAvanzado.Refrescar();
         }
-        else if (idioma == 2)
-        {
-            graficosDropdown.options[0].text = "Low";
-            graficosDropdown.options[1].text = "Medium";
-            graficosDropdown.options[2].text = "Ultra";
-            //   graficosDropdown.options[3].text = "Ultra";
-        }
-        else if (idioma == TRADU.IdiomaPortugues)
-        {
-            graficosDropdown.options[0].text = "Baixa";
-            graficosDropdown.options[1].text = "Media";
-            graficosDropdown.options[2].text = "Ultra";
-        }
-        else if (idioma == TRADU.IdiomaChinoSimplificado)
-        {
-            graficosDropdown.options[0].text = ChineseLocalization.Get("Baja", "Low");
-            graficosDropdown.options[1].text = ChineseLocalization.Get("Media", "Medium");
-            graficosDropdown.options[2].text = ChineseLocalization.Get("Ultra", "Ultra");
-        }
-
-        graficosDropdown.RefreshShownValue();
-
     }
 
     void TraducirDropdownDificultad()
@@ -928,6 +1027,7 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
     private void PosicionarControlEscalaTexto()
     {
         if (PanelGameplay == null || escalaTextoSlider == null || etiquetaEscalaTexto == null) { return; }
+        if (escalaTextoSlider.transform.parent != PanelGameplay.transform) { return; } // ya esta dentro de una fila de GameplayOptionsPanel
 
         Transform parent = PanelGameplay.transform;
         float minY = ObtenerPosicionYControlMasBajo(parent, escalaTextoSlider);
@@ -1123,6 +1223,11 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         if (PanelGameplay == null || banterToggle == null || etiquetaBanter == null)
         {
             return;
+        }
+
+        if (banterToggle.transform.parent != PanelGameplay.transform)
+        {
+            return; // ya esta dentro de una fila de GameplayOptionsPanel
         }
 
         RectTransform toggleRect = banterToggle.transform as RectTransform;
@@ -1512,6 +1617,20 @@ public class OpcionesCargarPlayerPrefsUI : MonoBehaviour
         if (PanelControles == null) return;
         int childCount = PanelControles.transform.childCount;
         if (childCount <= 0) return;
+
+        AsegurarPanelTeclas();
+        if (panelTeclas != null)
+        {
+            // Los textos estaticos por idioma quedaron reemplazados por la lista de teclas reasignables.
+            for (int i = 0; i < childCount; i++)
+            {
+                Transform hijo = PanelControles.transform.GetChild(i);
+                if (hijo != panelTeclas.transform) { hijo.gameObject.SetActive(false); }
+            }
+            panelTeclas.gameObject.SetActive(true);
+            panelTeclas.Refrescar();
+            return;
+        }
 
         int idioma = TRADU.i != null ? TRADU.i.nIdioma : nIdioma;
         int childIdioma = ObtenerIndicePanelIdioma(idioma, childCount);

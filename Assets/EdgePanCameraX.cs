@@ -151,8 +151,9 @@ public class EdgePanCameraZ : MonoBehaviour
         }
 
         float mouseX = Input.mousePosition.x;
-        bool enBordeIzq = mouseX <= edgeThickness;
-        bool enBordeDer = mouseX >= (Screen.width - edgeThickness);
+        bool bordesActivos = AccessibilitySettings.EdgeScrolling;
+        bool enBordeIzq = bordesActivos && mouseX <= edgeThickness;
+        bool enBordeDer = bordesActivos && mouseX >= (Screen.width - edgeThickness);
         estaPaneando = enBordeIzq || enBordeDer;
 
         if (enBordeDer)
@@ -185,23 +186,23 @@ public class EdgePanCameraZ : MonoBehaviour
         }
 
         float horizontal = 0f;
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        if (Hotkeys.Held(HotkeyAction.CameraLeft))
         {
             horizontal -= 1f;
         }
 
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        if (Hotkeys.Held(HotkeyAction.CameraRight))
         {
             horizontal += 1f;
         }
 
         float vertical = 0f;
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        if (Hotkeys.Held(HotkeyAction.CameraDown))
         {
             vertical -= 1f;
         }
 
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        if (Hotkeys.Held(HotkeyAction.CameraUp))
         {
             vertical += 1f;
         }
@@ -297,7 +298,7 @@ public class EdgePanCameraZ : MonoBehaviour
 
     private void AplicarFinalPosicion()
     {
-        if (oscillationEnabled)
+        if (oscillationEnabled && !AccessibilitySettings.ReduceCameraSway)
         {
             float t = Time.time * oscSpeed;
             float ox = Mathf.Sin(t) * oscAmplitudeXY;

@@ -50,10 +50,16 @@ public class IAEmbestidaFaagdan : IAHabilidad
 
   public async override Task ActivarHabilidad()
   {
+    object objetivoPrincipal = EstablecerObjetivoPrioritario();
+    if (objetivoPrincipal == null)
+    {
+      hActualCooldown = 1; // sin objetivo valido: no gasta AP ni el cooldown completo
+      return;
+    }
+
     scEstaUnidad.CambiarAPActual(-costoAP);
     hActualCooldown = hCooldownMax;
 
-    object objetivoPrincipal = EstablecerObjetivoPrioritario();
     List<Unidad> unidadesObjetivo = ObtenerUnidadesEnFila(objetivoPrincipal);
 
     if (objetivoPrincipal is Unidad unidadObjetivo && !unidadesObjetivo.Contains(unidadObjetivo))
@@ -75,7 +81,7 @@ public class IAEmbestidaFaagdan : IAHabilidad
       await BattleManager.DelayCombateAsync(PausaAntesDeRecorrerMs);
     }
 
-    await EjecutarRecorridoVisualAsync(objetivoPrincipal, () => AplicarEfectosEnFila(unidadesObjetivo));
+    await EjecutarRecorridoVisualAsync(objetivoPrincipal, unidadesObjetivo);
   }
 
   private List<Unidad> ObtenerUnidadesEnFila(object objetivoReferencia)
@@ -127,14 +133,6 @@ public class IAEmbestidaFaagdan : IAHabilidad
     return resultado.ToList();
   }
 
-  private void AplicarEfectosEnFila(IEnumerable<Unidad> unidades)
-  {
-    foreach (Unidad unidad in unidades)
-    {
-      AplicarEfectosHabilidad(unidad);
-    }
-  }
-
   public override void AplicarEfectosHabilidad(object obj)
   {
     if (obj is not Unidad objetivo)
@@ -152,50 +150,100 @@ public class IAEmbestidaFaagdan : IAHabilidad
     {
       EmpujarVerticalAleatorioAsync(objetivo);
        // BUFF ---- Así se aplica un buff/debuff
-      Buff buff = new Buff();
-      buff.buffNombre = "Derribado";
-      buff.boolfDebufftBuff = false;
-      buff.DuracionBuffRondas = 1;
-      buff.cantAPMax -= 2;
-      buff.cantDefensa -= 2;
-      buff.AplicarBuff(objetivo);
-      // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-      Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
+      if (!objetivo.TieneBuffNombre("Derribado")) // no se acumula si ya esta derribado
+      {
+        Buff buff = new Buff();
+        buff.buffNombre = "Derribado";
+        buff.boolfDebufftBuff = false;
+        buff.DuracionBuffRondas = 1;
+        buff.cantAPMax -= 2;
+        buff.cantDefensa -= 2;
+        buff.AplicarBuff(objetivo);
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
+      }
 
     }
   }
 
-  private async Task EjecutarRecorridoVisualAsync(object objetivoReferencia, Action impactoAlFinal)
+  private static float FactorTiempo()
+  {
+    BattleManager batalla = BattleManager.Instance;
+    return batalla != null && batalla.modoRapidoActivado
+      ? GameSpeedSettings.CombatAiTimingFactor(batalla.NivelVelocidadCombateEfectivo)
+      : 1f;
+  }
+
+  // Cada unidad de la fila recibe el golpe cuando el Faagdan pasa por su posicion (no todas al final).
+  private void Impactar(Unidad unidad, float dirX)
+  {
+    if (unidad == null || unidad.HP_actual <= 0f || !unidad.gameObject.activeInHierarchy)
+    {
+      return;
+    }
+
+    FaagdanVfx.ImpactoEmbestida(unidad.transform.position, dirX);
+    AplicarEfectosHabilidad(unidad);
+  }
+
+  private async Task EjecutarRecorridoVisualAsync(object objetivoReferencia, List<Unidad> unidades)
   {
     if (scEstaUnidad == null || scEstaUnidad.transform == null)
     {
-      impactoAlFinal?.Invoke();
+      foreach (Unidad u in unidades) { Impactar(u, 1f); }
       return;
     }
 
     Vector3 origen = scEstaUnidad.transform.position;
     if (!TryObtenerDestinoRecorrido(objetivoReferencia, origen, out Vector3 destino))
     {
-      impactoAlFinal?.Invoke();
+      foreach (Unidad u in unidades) { Impactar(u, 1f); }
       return;
     }
 
-    float duracionIda = CalcularDuracionRecorrido(origen, destino, VelocidadRecorridoIda, DuracionMinRecorridoIda, DuracionMaxRecorridoIda);
-    float duracionVuelta = CalcularDuracionRecorrido(destino, origen, VelocidadRecorridoVuelta, DuracionMinRecorridoVuelta, DuracionMaxRecorridoVuelta);
+    float factor = FactorTiempo();
+    float duracionIda = CalcularDuracionRecorrido(origen, destino, VelocidadRecorridoIda, DuracionMinRecorridoIda, DuracionMaxRecorridoIda) * factor;
+    float duracionVuelta = CalcularDuracionRecorrido(destino, origen, VelocidadRecorridoVuelta, DuracionMinRecorridoVuelta, DuracionMaxRecorridoVuelta) * factor;
+
+    float dirX = Mathf.Sign(destino.x - origen.x);
+    if (Mathf.Approximately(dirX, 0f)) { dirX = -1f; }
+
+    List<Unidad> pendientes = unidades
+      .Where(u => u != null)
+      .OrderBy(u => Vector3.Distance(origen, u.transform.position))
+      .ToList();
 
     scEstaUnidad.IniciarPoseAtaqueSostenida(true);
     ReproducirVfxAcompanamiento();
+    FaagdanVfx.Arranque(origen, dirX);
+    FaagdanVfx.Estela(scEstaUnidad.transform, duracionIda);
     try
     {
-      await AnimarRecorridoAsync(scEstaUnidad.transform, origen, destino, duracionIda);
-      impactoAlFinal?.Invoke();
+      await AnimarRecorridoAsync(scEstaUnidad.transform, origen, destino, duracionIda, pendientes, dirX);
+
+      // Los que no se tocaron durante el recorrido (por ejemplo, se movieron) reciben el golpe igual.
+      foreach (Unidad restante in pendientes.ToList())
+      {
+        Impactar(restante, dirX);
+      }
+      pendientes.Clear();
+
+      if (scEstaUnidad != null && scEstaUnidad.transform != null)
+      {
+        FaagdanVfx.Frenada(scEstaUnidad.transform.position, dirX);
+      }
 
       if (PausaImpactoMs > 0)
       {
-        await BattleManager.DelayCombateAsync(PausaImpactoMs);
+        await BattleManager.DelayCombateAsync(Mathf.RoundToInt(PausaImpactoMs * factor));
       }
 
-      await AnimarRecorridoAsync(scEstaUnidad.transform, destino, origen, duracionVuelta);
+      if (scEstaUnidad != null && scEstaUnidad.transform != null)
+      {
+        FaagdanVfx.Estela(scEstaUnidad.transform, duracionVuelta * 0.7f, 0.6f);
+      }
+
+      await AnimarRecorridoAsync(scEstaUnidad != null ? scEstaUnidad.transform : null, destino, origen, duracionVuelta, null, dirX);
     }
     finally
     {
@@ -254,7 +302,7 @@ public class IAEmbestidaFaagdan : IAHabilidad
     return Mathf.Clamp(duracion, duracionMin, duracionMax);
   }
 
-  private async Task AnimarRecorridoAsync(Transform unidadTransform, Vector3 origen, Vector3 destino, float duracion)
+  private async Task AnimarRecorridoAsync(Transform unidadTransform, Vector3 origen, Vector3 destino, float duracion, List<Unidad> pendientes, float dirX)
   {
     if (unidadTransform == null)
     {
@@ -267,16 +315,60 @@ public class IAEmbestidaFaagdan : IAHabilidad
       return;
     }
 
+    Vector3 eje = destino - origen;
+    eje.z = 0f;
+    Vector3 ejeUnitario = eje.sqrMagnitude > 0.0001f ? eje.normalized : Vector3.right;
+    float margen = GulekGulVfx.TamanoCasilla() * 0.3f;
+
     float tiempo = 0f;
     while (tiempo < duracion)
     {
+      if (unidadTransform == null)
+      {
+        return; // la unidad desaparecio durante la carrera
+      }
+
+      // Respeta la pausa del combate.
+      if (BattleManager.Instance != null && BattleManager.Instance.PausaCombateActiva)
+      {
+        await Task.Yield();
+        continue;
+      }
+
       tiempo += Time.deltaTime;
       float t = Mathf.Clamp01(tiempo / duracion);
       unidadTransform.position = Vector3.Lerp(origen, destino, t);
+
+      if (pendientes != null && pendientes.Count > 0)
+      {
+        float avance = Vector3.Dot(unidadTransform.position - origen, ejeUnitario);
+        for (int i = 0; i < pendientes.Count; i++)
+        {
+          Unidad u = pendientes[i];
+          if (u == null)
+          {
+            pendientes.RemoveAt(i);
+            i--;
+            continue;
+          }
+
+          float posicionUnidad = Vector3.Dot(u.transform.position - origen, ejeUnitario);
+          if (avance >= posicionUnidad - margen)
+          {
+            pendientes.RemoveAt(i);
+            i--;
+            Impactar(u, dirX);
+          }
+        }
+      }
+
       await Task.Yield();
     }
 
-    unidadTransform.position = destino;
+    if (unidadTransform != null)
+    {
+      unidadTransform.position = destino;
+    }
   }
 
   private void ReproducirVfxAcompanamiento()

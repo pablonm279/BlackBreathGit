@@ -137937,7 +137937,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 25.359863, y: -7.940857}
+  m_AnchoredPosition: {x: 25.359863, y: -7.940796}
   m_SizeDelta: {x: 250.30005, y: -484.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &287637062
@@ -462406,6 +462406,9 @@ MonoBehaviour:
   usarTextoFlotanteManager: 0
   yStackOffset: 50
   duracionEntradaTextoFlotante: 0.35
+  duracionVisibleTextoFlotante: 6
+  duracionSalidaTextoFlotante: 1
+  maxTextosFlotantesVisibles: 5
   asentamientoManager: {fileID: 1864502516}
   panelLore: {fileID: 0}
   retrasoOcultarFondoLoreTrasInicioCinematica: 0.35
@@ -896212,7 +896215,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -2.8380127, y: -15.671936}
+  m_AnchoredPosition: {x: -2.8380127, y: -15.671875}
   m_SizeDelta: {x: 224.154, y: 172.417}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2122046958

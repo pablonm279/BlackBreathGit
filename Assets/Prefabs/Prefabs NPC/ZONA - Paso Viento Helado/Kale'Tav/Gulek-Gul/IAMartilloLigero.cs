@@ -16,12 +16,16 @@ public class IAMartilloLigero : IAHabilidad
     [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
 
    
+  // Leve avance visual hacia el objetivo (mas cuanto mas lejos), luego vuelve. Solo visual.
+  protected override float AproximacionLeveFraccion => 0.4f;
+  protected override float AproximacionLeveMaxima => GulekGulVfx.TamanoCasilla() * 1.1f;
+
   void Awake()
    {
       nombre = "Martillo Pequeño";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
-      hAncho = 1;
+      hAncho = 2; // unidad grande 2x2: alcanza toda la zona frontal (+-2 filas desde su ancla)
       esMelee = true;
       hAlcance = 1;
       hCooldownMax = 0;
@@ -162,8 +166,6 @@ public class IAMartilloLigero : IAHabilidad
       danio = danio / 100 * (100 + scEstaUnidad.mod_DanioPorcentaje);
       objetivo.RecibirDanio(danio, tipoDanio, false, scEstaUnidad);
     }
-
-    scEstaUnidad.RemoverBuffNombre("Martillo Listo");
   }
   
 

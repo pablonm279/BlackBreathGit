@@ -140,8 +140,6 @@ public class MapDecorator : MonoBehaviour
     [SerializeField] Material materialPasoVientoHeladoClimaNiebla;
 
     // ---- internos ----
-    const string PrefGraficosIndex = "graficos_index";
-    const int CalidadGraficaBaja = 0;
     const float AumentoRadioDecoracionesCalidadBaja = 0.15f;
     const float AumentoRadioDecoracionesCalidadMedia = 0.08f;
     const float UmbralDistCaminoRellenoRemovible = 0.15f;
@@ -678,24 +676,13 @@ public class MapDecorator : MonoBehaviour
             return radio;
         }
 
-        int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
-        if (calidadMaxima <= 0)
+        // Low aumenta mas el radio (menos decoraciones), Medium menos, y High / VeryHigh se acercan a Ultra (sin cambio).
+        float aumento = GraphicsQuality.Pick(AumentoRadioDecoracionesCalidadBaja, AumentoRadioDecoracionesCalidadMedia, 0f);
+        if (aumento <= 0f)
         {
             return radio;
         }
 
-        int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
-        calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
-
-        int nivelesDebajoDeUltra = calidadMaxima - calidadActual;
-        if (nivelesDebajoDeUltra <= 0)
-        {
-            return radio;
-        }
-
-        float aumento = calidadActual <= CalidadGraficaBaja
-            ? AumentoRadioDecoracionesCalidadBaja
-            : AumentoRadioDecoracionesCalidadMedia;
         float multiplicador = 1f + aumento;
         return radio * multiplicador;
     }
@@ -722,7 +709,7 @@ public class MapDecorator : MonoBehaviour
         this.intentosPorPunto = kOverride;
         batchActualEsRellenoRemovible = EsRellenoRemovible(prefab, distCaminoOverride);
         desactivarSombrasDinamicasDecoracion =
-            PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel()) <= CalidadGraficaBaja;
+            GraphicsQuality.IsLow;
 
         ActualizarZonaSegura();
         ConfigurarBordeOrganicoSectorActual(sector);
@@ -1342,11 +1329,7 @@ public class MapDecorator : MonoBehaviour
             return true;
         }
 
-        if (permitirDecoracionSobrePrecipicioTerrenoNorte && EstaSobrePrecipicioTerrenoNorte(p))
-        {
-            return true;
-        }
-
+        // Sin excepcion para el precipicio norte: los adornos sobre la caida quedaban flotando.
         float alturaSuperficie = ObtenerAlturaSuperficieEstimada(p);
         return alturaSuperficie > alturaMinimaSuperficieDecoracion;
     }

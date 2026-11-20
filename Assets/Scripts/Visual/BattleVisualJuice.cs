@@ -160,7 +160,7 @@ public sealed class BattleVisualJuiceRuntime : MonoBehaviour
 
   public void RequestCameraShake(float intensidad, float duracion)
   {
-    if (!BattleVisualJuice.Enabled || BattleManager.Instance == null)
+    if (!BattleVisualJuice.Enabled || AccessibilitySettings.ReduceShake || BattleManager.Instance == null)
     {
       return;
     }
@@ -172,7 +172,7 @@ public sealed class BattleVisualJuiceRuntime : MonoBehaviour
 
   public void RequestHitStop(float duracionReal, float escalaTiempo)
   {
-    if (!BattleVisualJuice.Enabled || BattleManager.Instance == null || Time.timeScale <= 0.001f)
+    if (!BattleVisualJuice.Enabled || AccessibilitySettings.ReduceShake || BattleManager.Instance == null || Time.timeScale <= 0.001f)
     {
       return;
     }

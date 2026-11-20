@@ -163,7 +163,10 @@ public sealed class UnidadLowHealthFx : MonoBehaviour
 
     SincronizarOverlay();
 
-    float pulso = 0.5f + (0.5f * Mathf.Sin((Time.unscaledTime * velocidadFlash) + faseFlash));
+    // Accesibilidad: sin pulso, el aviso de vida baja queda en un brillo fijo.
+    float pulso = AccessibilitySettings.ReduceFlashes
+      ? 0.5f
+      : 0.5f + (0.5f * Mathf.Sin((Time.unscaledTime * velocidadFlash) + faseFlash));
     float pulsoSuave = Mathf.SmoothStep(0f, 1f, pulso);
     float flashAlpha = Mathf.Lerp(alphaFlashMin, alphaFlashMax, pulsoSuave) * visibilidad;
 

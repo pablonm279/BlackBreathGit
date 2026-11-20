@@ -21,7 +21,7 @@ public static class TextoIconosCombate
 
     private static readonly Regex regexEspaciadoIconoNormalizado =
         new Regex(
-            @"(?<antes>[ \t]*)(?<icono><size=" + escalaIcono + @"><sprite name=""[^""]+""(?:\s*/)?></size>)(?<despues>[ \t]*)",
+            @"(?<antes>[ \t]*)(?<icono><size=\d+%><sprite name=""[^""]+""(?:\s*/)?></size>)(?<despues>[ \t]*)",
             RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     private static readonly Regex regexInicioBloqueMecanico =
@@ -291,7 +291,8 @@ public static class TextoIconosCombate
 
     private static string CrearSpriteTag(string spriteName)
     {
-        return "<size=" + escalaIcono + "><sprite name=\"" + spriteName + "\"></size>";
+        string escala = (spriteName == "ap" || spriteName == "cooldown") ? "150%" : escalaIcono;
+        return "<size=" + escala + "><sprite name=\"" + spriteName + "\"></size>";
     }
 
     private static void NormalizarSpriteAssetRecursivo(TMP_SpriteAsset spriteAsset)

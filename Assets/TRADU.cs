@@ -3709,6 +3709,18 @@ public class TRADU : MonoBehaviour
             case "Veneno":
                 r = "Poison";
                 break;
+            case "Congelado":
+                r = "Frozen";
+                break;
+            case "Ácido":
+                r = "Acid";
+                break;
+            case "Inmovil":
+                r = "Immobilized";
+                break;
+            case "AP Reducido":
+                r = "Reduced AP";
+                break;
             case "Sangrado":
                 r = "Bleeding";
                 break;
@@ -5407,6 +5419,15 @@ public class TRADU : MonoBehaviour
             case "<i>Una criatura feroz nativa de la tundra. Es uno de los depredadores más temidos de la región y fuente de varias leyendas entre los Kale'Tav</i>\n\n<color=#199F10>-Regeneración leve.\n-Ataque de embestida en fila.</color>\n<color=#EE0000>-Suelen aparecer sólos o con una pareja como mucho.</color>":
                 r = "<i>A fierce creature native to the tundra. It is one of the most feared predators in the region and the source of several legends among the Kale'Tav</i>\n\n<color=#199F10>-Minor regeneration.\n-Row charge attack.</color>\n<color=#EE0000>-They usually appear alone or with a partner at most.</color>";
                 break;
+            case "Picado Gélido":
+                r = "Frost Dive";
+                break;
+            case "Escamas de Escarcha":
+                r = "Frostbound Scales";
+                break;
+            case "Maldición Ritual":
+                r = "Ritual Curse";
+                break;
             case "Mordisco Faagdan":
                 r = "Faagdan Bite";
                 break;
@@ -5463,6 +5484,30 @@ public class TRADU : MonoBehaviour
                 break;
             case "Martillo Listo":
                 r = "Hammer Ready";
+                break;
+            case "Gulek Gul pierde el control y deja caer el martillo.":
+                r = "Gulek Gul loses control and drops the hammer.";
+                break;
+            case "Gul se enfurece al perder el martillo.":
+                r = "Gul flies into a rage after losing the hammer.";
+                break;
+            case "Gulek y Gul discuten tácticas, y resuelven atacar sin descanso.":
+                r = "Gulek and Gul discuss tactics and decide to attack relentlessly.";
+                break;
+            case "Lanzar Roca":
+                r = "Hurl Rock";
+                break;
+            case "Pisotón":
+                r = "Stomp";
+                break;
+            case "Furia de Gul":
+                r = "Gul's Fury";
+                break;
+            case "Tambaleante":
+                r = "Staggered";
+                break;
+            case "Enfoque Frenético":
+                r = "Frenzied Focus";
                 break;
             case "Gulek Gul pierde el buff 'Martillo Listo' tras recibir daño y no podrá utilizarlo.":
                 r = "Gulek Gul loses the 'Hammer Ready' buff after taking damage and will not be able to use it.";
@@ -5629,8 +5674,8 @@ public class TRADU : MonoBehaviour
             case "Bonus de daño elemental.":
                 r = "Bonus elemental damage.";
                 break;
-            case "<i>Esta bestia oriunda del Paso es material de varias leyendas y pesadillas entre los Kale'Tav. De cuerpo robusto y cuernos afilados, supone un peligro para los viajeros incautos.</i>\n\n<color=#199F10>-Ataques de carga en fila.\n-Regeneración leve.</color>\n<color=#EE0000>-Lento.</color>":
-                r = "<i>This beast native to the Passage is the origin of various legends and nightmares among the Kale'Tav. With a robust body and sharp horns, it poses a danger to unwary travelers.</i>\n\n<color=#199F10>-Line charge attacks.\n-Slight regeneration.</color>\n<color=#EE0000>-Slow.</color>";
+            case "<i>Esta bestia oriunda del Paso es material de varias leyendas y pesadillas entre los Kale'Tav. De cuerpo robusto y cuernos afilados, supone un peligro para los viajeros incautos.</i>\n\n<color=#199F10>-Ataques de carga en fila.\n-Regeneración leve.</color>":
+                r = "<i>This beast native to the Passage is the origin of various legends and nightmares among the Kale'Tav. With a robust body and sharp horns, it poses a danger to unwary travelers.</i>\n\n<color=#199F10>-Line charge attacks.\n-Slight regeneration.</color>";
                 break;
             case "Milicianos disponibles: ":
                 r = "Available Militiamen: ";
@@ -11148,6 +11193,18 @@ public class TRADU : MonoBehaviour
             case "Veneno":
                 r = "Veneno";
                 break;
+            case "Congelado":
+                r = "Congelado";
+                break;
+            case "Ácido":
+                r = "Ácido";
+                break;
+            case "Inmovil":
+                r = "Imóvel";
+                break;
+            case "AP Reducido":
+                r = "PA Reduzido";
+                break;
             case "Sangrado":
                 r = "Sangramento";
                 break;
@@ -12846,6 +12903,15 @@ public class TRADU : MonoBehaviour
             case "<i>Una criatura feroz nativa de la tundra. Es uno de los depredadores más temidos de la región y fuente de varias leyendas entre los Kale'Tav</i>\n\n<color=#199F10>-Regeneración leve.\n-Ataque de embestida en fila.</color>\n<color=#EE0000>-Suelen aparecer sólos o con una pareja como mucho.</color>":
                 r = "<i>Uma criatura feroz nativa da tundra. É um dos predadores mais temidos da região e origem de várias lendas entre os Kale'Tav</i>\n\n<color=#199F10>-Regeneração leve.\n-Ataque de investida em linha.</color>\n<color=#EE0000>-Costuma aparecer sozinha ou, no máximo, com um parceiro.</color>";
                 break;
+            case "Picado Gélido":
+                r = "Mergulho Gélido";
+                break;
+            case "Escamas de Escarcha":
+                r = "Escamas de Geada";
+                break;
+            case "Maldición Ritual":
+                r = "Maldição Ritual";
+                break;
             case "Mordisco Faagdan":
                 r = "Mordida de Faagdan";
                 break;
@@ -12902,6 +12968,30 @@ public class TRADU : MonoBehaviour
                 break;
             case "Martillo Listo":
                 r = "Martelo Pronto";
+                break;
+            case "Gulek Gul pierde el control y deja caer el martillo.":
+                r = "Gulek Gul perde o controle e deixa cair o martelo.";
+                break;
+            case "Gul se enfurece al perder el martillo.":
+                r = "Gul fica furioso ao perder o martelo.";
+                break;
+            case "Gulek y Gul discuten tácticas, y resuelven atacar sin descanso.":
+                r = "Gulek e Gul discutem táticas e decidem atacar sem descanso.";
+                break;
+            case "Lanzar Roca":
+                r = "Arremessar Rocha";
+                break;
+            case "Pisotón":
+                r = "Pisão";
+                break;
+            case "Furia de Gul":
+                r = "Fúria de Gul";
+                break;
+            case "Tambaleante":
+                r = "Cambaleante";
+                break;
+            case "Enfoque Frenético":
+                r = "Foco Frenético";
                 break;
             case "Gulek Gul pierde el buff 'Martillo Listo' tras recibir daño y no podrá utilizarlo.":
                 r = "Gulek Gul perde o buff 'Martelo Pronto' ao receber dano e não poderá usá-lo.";
@@ -13065,8 +13155,8 @@ public class TRADU : MonoBehaviour
             case "Bonus de daño elemental.":
                 r = "Bônus de dano elemental.";
                 break;
-            case "<i>Esta bestia oriunda del Paso es material de varias leyendas y pesadillas entre los Kale'Tav. De cuerpo robusto y cuernos afilados, supone un peligro para los viajeros incautos.</i>\n\n<color=#199F10>-Ataques de carga en fila.\n-Regeneración leve.</color>\n<color=#EE0000>-Lento.</color>":
-                r = "<i>Esta besta oriunda da Passagem é tema de várias lendas e pesadelos entre os Kale'Tav. De corpo robusto e chifres afiados, representa um perigo para os viajantes incautos.</i>\n\n<color=#199F10>-Ataques de investida em linha.\n-Regeneração leve.</color>\n<color=#EE0000>-Lento.</color>";
+            case "<i>Esta bestia oriunda del Paso es material de varias leyendas y pesadillas entre los Kale'Tav. De cuerpo robusto y cuernos afilados, supone un peligro para los viajeros incautos.</i>\n\n<color=#199F10>-Ataques de carga en fila.\n-Regeneración leve.</color>":
+                r = "<i>Esta besta oriunda da Passagem é tema de várias lendas e pesadelos entre os Kale'Tav. De corpo robusto e chifres afiados, representa um perigo para os viajantes incautos.</i>\n\n<color=#199F10>-Ataques de investida em linha.\n-Regeneração leve.</color>";
                 break;
             case "Milicianos disponibles: ":
                 r = "Milicianos disponíveis: ";

@@ -61,7 +61,7 @@ public sealed partial class AdornosPasoVientoHelado : MonoBehaviour
             ? Mathf.Clamp(CampaignManager.Instance.scMapaManager.ObtenerPasoMapa(), 3f, 12f) : 5f;
         rng = new System.Random(unchecked(decorador.GetReliefSeed() ^ (zona.FASE * 19349663) ^ 0x58a193));
         RecolectarExclusiones();
-        int calidad = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel()), 0, 2);
+        int calidad = GraphicsQuality.LegacyTier;
         int cantidad = Mathf.Clamp(Mathf.RoundToInt(terreno.size.x * terreno.size.z / (paso * paso * 1.4f)), 36, 100);
         if (calidad == 0) cantidad = Mathf.RoundToInt(cantidad * .65f);
         for (int i = 0; i < cantidad; i++)

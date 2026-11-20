@@ -51,9 +51,8 @@ public class IAUnidad : MonoBehaviour
       public int GraciaHabilidadMs;
       public int ExtraRangoMs;
 
-      public static AITurnTimings Crear(bool modoRapido)
+      public static AITurnTimings Crear(float factor)
       {
-         float factor = modoRapido ? 0.65f : 1f;
          return new AITurnTimings
          {
             DelaySinObjetivosMs = Mathf.RoundToInt(800f * factor),
@@ -756,6 +755,20 @@ public class IAUnidad : MonoBehaviour
       return false;
    }
 
+   // Barricadas y pilares del propio lado benefician a la IA: no deben destruirlos.
+   private bool EsObstaculoPropioBeneficioso(Obstaculo obstaculo)
+   {
+      if (obstaculo == null || !(obstaculo is Barricada || obstaculo is PilarDeLuz))
+      {
+         return false;
+      }
+
+      return scUnidad != null
+         && scUnidad.CasillaPosicion != null
+         && obstaculo.CasillaPosicion != null
+         && obstaculo.CasillaPosicion.lado == scUnidad.CasillaPosicion.lado;
+   }
+
    private List<Obstaculo> ObtenerObstaculosAdyacentesOrtogonales()
    {
       List<Obstaculo> obstaculos = new List<Obstaculo>();
@@ -790,6 +803,11 @@ public class IAUnidad : MonoBehaviour
          }
 
          if (!obstaculo.destruiblePorMismoLado)
+         {
+            continue;
+         }
+
+         if (EsObstaculoPropioBeneficioso(obstaculo))
          {
             continue;
          }
@@ -862,8 +880,10 @@ public class IAUnidad : MonoBehaviour
 
    private AITurnTimings ObtenerTimingsActuales()
    {
-      bool modoRapido = BattleManager.Instance != null && BattleManager.Instance.modoRapidoActivado;
-      return AITurnTimings.Crear(modoRapido);
+      BattleManager batalla = BattleManager.Instance;
+      bool modoRapido = batalla != null && batalla.modoRapidoActivado;
+      float factor = modoRapido ? GameSpeedSettings.CombatAiTimingFactor(batalla.NivelVelocidadCombateEfectivo) : 1f;
+      return AITurnTimings.Crear(factor);
    }
 
    private void RegistrarHabilidadEnCurso(Task habilidadTask)
@@ -1299,6 +1319,11 @@ public class IAUnidad : MonoBehaviour
         }
         obj = hab.objPosibles;
 
+        if (hab.esHostil)
+        {
+          obj.RemoveAll(o => o is Obstaculo obst && EsObstaculoPropioBeneficioso(obst));
+        }
+
         if (!hab.afectaObstaculos)
       { if (!obj.OfType<Unidad>().Any()) { obj.Clear(); } }
 
@@ -1398,7 +1423,9 @@ public class IAUnidad : MonoBehaviour
             {
                BattleManager.Instance?.OcultarAmenazaMeleeIAPorEjecucion(scUnidad);
             }
+            habilidad.IniciarSeguimientoAnimacion();
             habilidadTask = habilidad.ActivarHabilidad();
+            habilidad.ResolverAnimacionAtaqueDiferida();
 
             if (habilidadTask == null)
             {

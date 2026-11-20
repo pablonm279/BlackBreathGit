@@ -6596,11 +6596,18 @@ if (ejecutarLlegadaCaravana && CampaignManager.Instance != null)
         CampaignManager.Instance.ObtenerHoraActual(),
         false);
 }
-float step = Mathf.Max(0f, velocidadDinamica) * dt;
+// Velocidad de caravana elegida en opciones: la caravana avanza mas rapido y el tiempo de juego pasa en la misma proporcion,
+// asi el viaje consume las mismas horas en menos tiempo real. El tutorial siempre va a velocidad normal.
+float dtViaje = dt;
+if (ejecutarLlegadaCaravana && CampaignManager.Instance != null && !CampaignManager.Instance.DebeUsarConfiguracionTutorial())
+{
+    dtViaje = dt * GameSpeedSettings.CaravanMultiplier;
+}
+float step = Mathf.Max(0f, velocidadDinamica) * dtViaje;
 
 if (ejecutarLlegadaCaravana && !leaderArrived && CampaignManager.Instance != null)
 {
-    float horasAvanzadas = Mathf.Min(dt, Mathf.Max(0f, totalLen - leaderS) / Mathf.Max(0.001f, velocidadDinamica));
+    float horasAvanzadas = Mathf.Min(dtViaje, Mathf.Max(0f, totalLen - leaderS) / Mathf.Max(0.001f, velocidadDinamica));
     CampaignManager.Instance.AvanzarTiempoDuranteViaje(horasAvanzadas);
     horasViajeTranscurridas += horasAvanzadas;
 }

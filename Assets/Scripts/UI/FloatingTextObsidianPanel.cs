@@ -33,8 +33,8 @@ public sealed class FloatingTextObsidianPanel : MaskableGraphic
             new Color(0.26f, 0.22f, 0.15f, 0.9f * color.a), edge);
         Rect inner = Rect.MinMaxRect(r.xMin + edge, r.yMin + edge, r.xMax - edge, r.yMax - edge);
         AddPolygon(vh, inner, Mathf.Max(0f, cut - edge),
-            new Color(0.075f, 0.069f, 0.06f, 0.8f * color.a),
-            new Color(0.025f, 0.023f, 0.022f, 0.8f * color.a));
+            new Color(0.075f, 0.069f, 0.06f, 0.94f * color.a),
+            new Color(0.025f, 0.023f, 0.022f, 0.94f * color.a));
     }
 
     private static void AddPolygon(VertexHelper vh, Rect r, float cut, Color top, Color bottom, float inset = 0f)

@@ -117,8 +117,14 @@ public class BotonHabilidad : MonoBehaviour, IPointerClickHandler
         ActualizarVisualCirculosAccion();
     }
 
+    private void OnEnable()
+    {
+        Hotkeys.Changed += ActualizarkotkeyDelay;
+    }
+
     private void OnDisable()
     {
+        Hotkeys.Changed -= ActualizarkotkeyDelay;
         if (hoverDescripcionRoutine != null)
         {
             StopCoroutine(hoverDescripcionRoutine);
@@ -1508,13 +1514,14 @@ public class BotonHabilidad : MonoBehaviour, IPointerClickHandler
 
     public void ActualizarkotkeyDelay()
     {
+        if (HabilidadRepresentada == null || txtHotkey == null) return;
           if (HabilidadRepresentada.GetType().Name.Contains("REPRESENTACION"))
         { txtHotkey.text = "";  return; } //Si se clickea el boton de una pasiva, no pasa nada
 
         if (txtHotkey == null) return;
         int pos = transform.GetSiblingIndex();
         pos++; // Convertir de índice base 0 a base 1
-        txtHotkey.text = pos.ToString();
+        txtHotkey.text = Hotkeys.ShortName(HotkeyAction.BattleSkill1 + Mathf.Clamp(pos - 1, 0, 9));
 
     }
     

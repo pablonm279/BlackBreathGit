@@ -16,17 +16,21 @@ public class IAMartilloPesado : IAHabilidad
     [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano - 9: Necro
 
    
+  // Leve avance visual hacia el objetivo (mas cuanto mas lejos), luego vuelve. Solo visual.
+  protected override float AproximacionLeveFraccion => 0.4f;
+  protected override float AproximacionLeveMaxima => GulekGulVfx.TamanoCasilla() * 1.1f;
+
   void Awake()
    {
       nombre = "Martillo Grande";
       Usuario = this.gameObject;
       scEstaUnidad = Usuario.GetComponent<Unidad>();
-      hAncho = 1;
+      hAncho = 2; // unidad grande 2x2: alcanza toda la zona frontal (+-2 filas desde su ancla)
       esMelee = true;
       hAlcance = 1;
       hCooldownMax = 1;
       esHostil = true;
-      prioridad = 10;
+      prioridad = 20; // por encima de Pisoton/Lanzar Roca: con el martillo listo, siempre se usa
       costoAP = 4;
       afectaObstaculos = true;
       
@@ -46,17 +50,15 @@ public class IAMartilloPesado : IAHabilidad
 
     void Start()
     {
-      prioridad = 10;
+      prioridad = 20; // por encima de Pisoton/Lanzar Roca: con el martillo listo, siempre se usa
     }
 
 
    public async override Task ActivarHabilidad()
    {
-     if (!scEstaUnidad.TieneBuffNombre("Martillo Listo"))
+     if (!MartilloListoParaGolpear())
     {
-      hActualCooldown = 1;
-      gameObject.GetComponent<IALevantarMartillo>().hActualCooldown = 0;
-      return;
+      return; // guarda: ListaHayObjetivosAlAlcance ya la excluye sin el martillo
     }
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
       hActualCooldown = hCooldownMax;
@@ -168,6 +170,12 @@ public class IAMartilloPesado : IAHabilidad
 
       }
 
+      // Grietas y polvo en la casilla golpeada (solo si el golpe hizo daño).
+      if (resultadoTirada >= 1 && objetivo.CasillaPosicion != null)
+      {
+        GulekGulVfx.ImpactoMartilloEnCasilla(objetivo.CasillaPosicion.transform.position, true);
+      }
+
       objetivo.AplicarDebuffPorAtaquesreiterados(1);
     }
     else if (obj is Obstaculo)
@@ -189,6 +197,11 @@ public class IAMartilloPesado : IAHabilidad
 
     foreach (Casilla casilla in casillasCercanas)
     {
+      // Grietas y polvo en TODA la zona afectada (ocupada o no) para que se entienda donde pega;
+      // la onda viaja hacia afuera con la distancia al golpe.
+      int distanciaAlGolpe = Mathf.Abs(casilla.posX - objetivoInicial.CasillaPosicion.posX)
+        + Mathf.Abs(casilla.posY - objetivoInicial.CasillaPosicion.posY);
+      GulekGulVfx.ImpactoMartilloEnCasilla(casilla.transform.position, false, distanciaAlGolpe);
 
       if (casilla.Presente != null)
       {
@@ -210,6 +223,31 @@ public class IAMartilloPesado : IAHabilidad
 
       
     }
+  }
+
+// Con el martillo y SIN haberlo levantado en este mismo turno. Levantar le deja cooldown 1 y ese cooldown
+  // baja recien al empezar su proximo turno; asi, aunque le sobren AP (Frenetico, Descansado), no levanta y golpea a la vez.
+  private bool MartilloListoParaGolpear()
+  {
+    if (!scEstaUnidad.TieneBuffNombre("Martillo Listo"))
+    {
+      return false;
+    }
+
+    IALevantarMartillo levantar = GetComponent<IALevantarMartillo>();
+    return levantar == null || levantar.hActualCooldown <= 0;
+  }
+
+public override List<object> ListaHayObjetivosAlAlcance()
+  {
+    List<object> lista = base.ListaHayObjetivosAlAlcance(); // conserva la tendencia de movimiento hacia el enemigo
+    if (!MartilloListoParaGolpear())
+    {
+      objPosibles.Clear();
+      return objPosibles; // sin el martillo levantado (o recien levantado este turno) no es una accion posible
+    }
+
+    return lista;
   }
 
 public override object EstablecerObjetivoPrioritario()

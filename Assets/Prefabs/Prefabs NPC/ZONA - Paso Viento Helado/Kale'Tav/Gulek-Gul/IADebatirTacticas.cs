@@ -15,7 +15,16 @@ public class IADebatirTacticas : IAHabilidad
   [SerializeField] private int daniodX;
   [SerializeField] private int tipoDanio; //1: Cortante - 2: Perforante - 3: Contundente - 4: Fuego - 5: Hielo - 6: Rayo - 7: Ácido - 8: Arcano
 
+  // Tacticas posibles
+  private const int TacticaDefensiva = 1;
+  private const int TacticaAgresiva = 2;
+  private const int TacticaDescanso = 3;
+  private const int TacticaFrenetica = 4;
 
+  // Bajo este porcentaje de vida "discuten" descansar en lugar de redoblar el ataque.
+  private const float UmbralDescansoPorcentaje = 0.4f;
+
+  private int ultimaTactica = 0;
 
   void Awake()
   {
@@ -28,10 +37,8 @@ public class IADebatirTacticas : IAHabilidad
     hCooldownMax = 3;
     esHostil = false;
     prioridad = 25;
-    costoAP = 1;
+    costoAP = 0; // accion gratuita: no consume AP (antes figuraba 1 pero nunca se cobraba)
     afectaObstaculos = false;
-
-
 
     hActualCooldown = 0;
 
@@ -39,11 +46,6 @@ public class IADebatirTacticas : IAHabilidad
     XdDanio = 0;
     daniodX = 0;
     tipoDanio = 0;
-
-
-
-
-
   }
 
   void Start()
@@ -55,7 +57,6 @@ public class IADebatirTacticas : IAHabilidad
   public async override Task ActivarHabilidad()
   {
 
-   
     //scEstaUnidad.ReproducirAnimacionAtaque();
 
     Objetivo = scEstaUnidad;
@@ -65,14 +66,19 @@ public class IADebatirTacticas : IAHabilidad
     hActualCooldown = hCooldownMax;
     VFXAplicar(this.gameObject);
 
+    // El VFX dura ~3 s y sigue solo; la accion se resuelve a mitad de camino y termina dentro del
+    // margen de tiempo del IA (HabilidadTimeoutMs + gracia), para no disparar el "tiempo limite".
+    await BattleManager.DelayCombateAsync(1000);
 
+    if (!PuedeResolverAccionIA())
+    {
+      return;
+    }
 
-    await BattleManager.DelayCombateAsync(3000);
     //Esto es cuando el objetivo es uno solo,
     AplicarEfectosHabilidad(Objetivo);
 
-    await BattleManager.DelayCombateAsync(2300);
-    await BattleManager.DelayCombateAsync(600);
+    await BattleManager.DelayCombateAsync(250);
 
   }
 
@@ -83,25 +89,58 @@ public class IADebatirTacticas : IAHabilidad
 
     GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, objetivo.transform.rotation);
     vfx.transform.parent = objetivo.transform;
-     
+
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
+   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);
 
     }
   public GameObject VFXEstadoPrefab;
+
+  // Elige una tactica al azar sin repetir la anterior ni redundar con una que ya esta activa.
+  private int ElegirTactica(Unidad objetivo)
+  {
+    bool vidaBaja = objetivo.HP_actual < objetivo.mod_maxHP * UmbralDescansoPorcentaje;
+
+    List<int> candidatas = new List<int>();
+    if (!objetivo.TieneBuffNombre("Enfoque Defensivo")) { candidatas.Add(TacticaDefensiva); }
+    if (!objetivo.TieneBuffNombre("Enfoque Agresivo")) { candidatas.Add(TacticaAgresiva); }
+
+    if (vidaBaja)
+    {
+      candidatas.Add(TacticaDescanso);
+    }
+    else if (!objetivo.TieneBuffNombre("Enfoque Frenético"))
+    {
+      candidatas.Add(TacticaFrenetica);
+    }
+
+    if (candidatas.Count > 1)
+    {
+      candidatas.Remove(ultimaTactica);
+    }
+
+    if (candidatas.Count == 0)
+    {
+      candidatas.Add(TacticaDefensiva);
+    }
+
+    int elegida = candidatas[UnityEngine.Random.Range(0, candidatas.Count)];
+    ultimaTactica = elegida;
+    return elegida;
+  }
+
   public override void AplicarEfectosHabilidad(object obj)
   {
 
     if (obj is Unidad)
     {
 
-
       Unidad objetivo = (Unidad)obj;
-     
-      int tactica = UnityEngine.Random.Range(1, 4); // 1 a 3
 
-      if (tactica == 1)
+      int tactica = ElegirTactica(objetivo);
+
+      if (tactica == TacticaDefensiva)
       {
         // BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
@@ -114,9 +153,9 @@ public class IADebatirTacticas : IAHabilidad
         buff.AplicarBuff(objetivo);
         // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
-        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque defensivo."));
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque defensivo."));
       }
-      else if (tactica == 2)
+      else if (tactica == TacticaAgresiva)
       {
         // BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();
@@ -129,32 +168,29 @@ public class IADebatirTacticas : IAHabilidad
         buff.AplicarBuff(objetivo);
         // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
-        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque agresivo."));
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque agresivo."));
       }
-      else if (tactica == 3)
+      else if (tactica == TacticaDescanso)
       {
-
-
-        if (objetivo.GetComponent<Unidad>().HP_actual < 150)
-        {
-          // BUFF ---- Así se aplica un buff/debuff
-          Buff buff = new Buff();
-          buff.buffNombre = "Descansando";
-          buff.boolfDebufftBuff = true;
-          buff.cantAPMax = -4;
-          buff.DuracionBuffRondas = 1;
-          buff.AplicarBuff(objetivo);
-
-          objetivo.GetComponent<Unidad>().RecibirCuracion(75, false);
-          // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
-          Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
-          BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten tácticas, y resuelven descansar para recuperar fuerzas."));
-        }
-        else
-        { 
-            // BUFF ---- Así se aplica un buff/debuff
+        // La duracion corre al terminar el turno de la unidad: 2 hace que el efecto cubra su PROXIMO turno
+        // (con 1 el buff expiraba antes de refrescar los AP y el descanso no costaba nada).
         Buff buff = new Buff();
-        buff.buffNombre = "Enfoque Agresivo";
+        buff.buffNombre = "Descansando";
+        buff.boolfDebufftBuff = true;
+        buff.cantAPMax = -4;
+        buff.DuracionBuffRondas = 2;
+        buff.AplicarBuff(objetivo);
+
+        objetivo.RecibirCuracion(75, false);
+        // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
+        Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("Gulek y Gul discuten tácticas, y resuelven descansar para recuperar fuerzas."));
+      }
+      else
+      {
+        // BUFF ---- Así se aplica un buff/debuff
+        Buff buff = new Buff();
+        buff.buffNombre = "Enfoque Frenético";
         buff.boolfDebufftBuff = true;
         buff.cantAPMax = 1;
         buff.DuracionBuffRondas = 3;
@@ -164,28 +200,12 @@ public class IADebatirTacticas : IAHabilidad
         buff.AplicarBuff(objetivo);
         // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
         Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
-        BattleManager.Instance.EscribirLog(scEstaUnidad.uNombre + TRADU.i.Traducir("Gulek y Gul discuten tácticas, y resuelven adoptar un enfoque agresivo."));
- 
-
-
-
-
-        }
+        BattleManager.Instance.EscribirLog(TRADU.i.Traducir("Gulek y Gul discuten tácticas, y resuelven atacar sin descanso."));
       }
-
-
-     
-
-
-
-     
 
     }
 
   }
-
-
-
 
   public override object EstablecerObjetivoPrioritario()
   {
@@ -199,12 +219,4 @@ public class IADebatirTacticas : IAHabilidad
 
   }
 
-
-
 }
-
-  
- 
-  
-
-

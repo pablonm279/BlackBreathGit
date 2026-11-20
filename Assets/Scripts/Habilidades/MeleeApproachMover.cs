@@ -155,6 +155,24 @@ public class MeleeApproachMover : MonoBehaviour
     return MoverHaciaObjetivoAsync(objetivoTransform, mantenerAdelanteDespues);
   }
 
+  // Aproximacion visual "leve" para unidades grandes: avanza solo una fraccion del camino hacia el objetivo
+  // (con un tope en metros) y luego vuelve con el retorno normal. Mas lejos el objetivo, mas se adelanta.
+  public Task<bool> PrepararAproximacionLeveIAAsync(object objetivo, float fraccion, float distanciaMaxima, bool mantenerAdelanteDespues)
+  {
+    if (adelantado && posicionRetorno.HasValue)
+    {
+      mantenerAdelante = mantenerAdelanteDespues;
+      return Task.FromResult(true);
+    }
+
+    if (!TryObtenerDatosObjetivo(objetivo, out Transform objetivoTransform))
+    {
+      return Task.FromResult(false);
+    }
+
+    return MoverHaciaObjetivoAsync(objetivoTransform, mantenerAdelanteDespues, fraccion, distanciaMaxima);
+  }
+
   public async Task VolverAPosicionInicialAsync(bool forzar = false)
   {
     await EsperarDesbloqueoRetornoAsync();
@@ -220,7 +238,7 @@ public class MeleeApproachMover : MonoBehaviour
     }
   }
 
-  async Task<bool> MoverHaciaObjetivoAsync(Transform objetivoTransform, bool mantenerLuego)
+  async Task<bool> MoverHaciaObjetivoAsync(Transform objetivoTransform, bool mantenerLuego, float fraccionRecorrido = 1f, float distanciaMaxima = 0f)
   {
     if (unidad == null || objetivoTransform == null) return false;
     await lockMovimiento.WaitAsync();
@@ -238,6 +256,15 @@ public class MeleeApproachMover : MonoBehaviour
     try
     {
       Vector3 destino = destinoBase - dir.normalized * offsetAtras + offsetAdicional;
+      if (fraccionRecorrido < 1f)
+      {
+        Vector3 avance = (destinoBase - origen) * Mathf.Clamp01(fraccionRecorrido);
+        if (distanciaMaxima > 0f && avance.magnitude > distanciaMaxima)
+        {
+          avance = avance.normalized * distanciaMaxima;
+        }
+        destino = origen + avance;
+      }
       float distancia = Vector3.Distance(origen, destino);
       float durIda = DuracionSegunDistancia(distancia, velocidadIda, rangoDuracionIda, duracionIdaBase);
       ultimaDuracionVuelta = DuracionSegunDistancia(distancia, velocidadVuelta, rangoDuracionVuelta, duracionVueltaBase);

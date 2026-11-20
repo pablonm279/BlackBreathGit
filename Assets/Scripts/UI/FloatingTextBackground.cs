@@ -10,6 +10,8 @@ public class FloatingTextBackground : MonoBehaviour
     private const float DefaultAlpha = 0.8f;
     private static readonly Vector2 DefaultHorizontalPadding = new Vector2(2f, 4f);
     private const float DefaultVerticalPadding = 6f;
+    private const float LeftFadeFraction = 0.03f;
+    private const float ExtraLeftMargin = 10f;
 
     private static Sprite sharedSprite;
     private static Sprite sharedSpriteFromRight;
@@ -108,7 +110,17 @@ public class FloatingTextBackground : MonoBehaviour
 
         targetText.ForceMeshUpdate();
         Bounds textBounds = targetText.textBounds;
-        Vector3 leftWorld = targetRect.TransformPoint(new Vector3(textBounds.min.x - horizontalPadding.x, textBounds.center.y, 0f));
+        float leftPadding = horizontalPadding.x;
+        if (extendFromRight)
+        {
+            // El degradado izquierdo ocupa un % del ancho total (hasta el borde de pantalla):
+            // el relleno crece para que el texto empiece ya dentro de la zona opaca de la sombra.
+            Vector3 textLeftWorld = targetRect.TransformPoint(new Vector3(textBounds.min.x, textBounds.center.y, 0f));
+            float anchoHastaBorde = Mathf.Max(0f, parentRect.rect.xMax - parentRect.InverseTransformPoint(textLeftWorld).x);
+            leftPadding = (LeftFadeFraction * anchoHastaBorde + ExtraLeftMargin) / (1f - LeftFadeFraction);
+        }
+
+        Vector3 leftWorld = targetRect.TransformPoint(new Vector3(textBounds.min.x - leftPadding, textBounds.center.y, 0f));
         Vector3 rightWorld = targetRect.TransformPoint(new Vector3(textBounds.max.x + horizontalPadding.y, textBounds.center.y, 0f));
         Vector3 bottomWorld = targetRect.TransformPoint(new Vector3(textBounds.center.x, textBounds.min.y - verticalPadding, 0f));
         Vector3 topWorld = targetRect.TransformPoint(new Vector3(textBounds.center.x, textBounds.max.y + verticalPadding, 0f));
@@ -169,7 +181,7 @@ public class FloatingTextBackground : MonoBehaviour
             {
                 float normalizedX = x / (float)(TextureWidth - 1);
                 float edgeFade = fromRight
-                    ? Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(normalizedX / 0.03f))
+                    ? Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(normalizedX / LeftFadeFraction))
                     : 1f - Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((normalizedX - 0.97f) / 0.03f));
                 float alphaValue = vertical * edgeFade;
                 texture.SetPixel(x, y, new Color(1f, 1f, 1f, alphaValue));

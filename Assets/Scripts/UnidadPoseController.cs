@@ -279,23 +279,31 @@ public class UnidadPoseController : MonoBehaviour
     }
 
     // Mantiene la pose de habilidad fija hasta que se libere manualmente
-    public void EnterSkillPoseHold()
+    public void EnterSkillPoseHold(Sprite spriteTemporal = null)
     {
-        poseHabilidadTemporal = null;
+        poseHabilidadTemporal = spriteTemporal;
         mantenerPoseHabilidad = true;
         CancelarReversionAutomatica();
 
         poseActual = TipoPoseActual.Habilidad;
-        SetSprite(poseHabilidad);
+        SetSprite(poseHabilidadTemporal != null ? poseHabilidadTemporal : poseHabilidad);
     }
 
     // Sale del modo de pose fija y vuelve a Idle
-    public void ExitPoseHold()
+    public void ExitPoseHold(bool restaurarIdle = true)
     {
         mantenerPoseHabilidad = false;
         CancelarReversionAutomatica();
 
-        SetIdle();
+        if (restaurarIdle)
+        {
+            SetIdle();
+        }
+        else
+        {
+            poseHabilidadTemporal = null;
+            poseActual = TipoPoseActual.Idle;
+        }
     }
 
     public void EnterAttackPoseHold()

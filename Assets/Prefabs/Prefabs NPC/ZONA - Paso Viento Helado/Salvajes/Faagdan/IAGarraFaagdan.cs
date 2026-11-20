@@ -62,8 +62,9 @@ public class IAGarraFaagdan : IAHabilidad
      
    }
 
-      void VFXAplicar(GameObject objetivo)
+      void VFXAplicar(GameObject objetivo, bool critico = false)
     {
+      FaagdanVfx.Zarpazo(objetivo.transform.position, critico);
       GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GarraFaagdan");
 
     GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
@@ -139,7 +140,7 @@ public class IAGarraFaagdan : IAHabilidad
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
        // AplicaDerribado(objetivo, 1);
-         VFXAplicar(objetivo.gameObject);
+         VFXAplicar(objetivo.gameObject, true);
       }
           
             objetivo.AplicarDebuffPorAtaquesreiterados(1);

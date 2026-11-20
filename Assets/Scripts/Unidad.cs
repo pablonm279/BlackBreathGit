@@ -885,6 +885,18 @@ public class Unidad : MonoBehaviour
     {
       return;
     }
+
+    // Llamada manual desde una habilidad de IA en curso: la reproduce PrepararInicioAnimacion una sola vez.
+    if (!forzar)
+    {
+      IAUnidad iaUnidadAnim = GetComponent<IAUnidad>();
+      IAHabilidad habilidadEnCurso = iaUnidadAnim != null ? iaUnidadAnim.HabilidadIAEnEjecucion : null;
+      if (habilidadEnCurso != null && habilidadEnCurso.InterceptarAnimacionAtaqueManual())
+      {
+        return;
+      }
+    }
+
     ultimoAtaqueAnimTime = Time.time;
     if (poseController != null) { poseController.PlayAttackPose(); }
 

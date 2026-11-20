@@ -62,16 +62,20 @@ public class IAGarraDracoHielo : IAHabilidad
      
    }
 
-      void VFXAplicar(GameObject objetivo)
+      void VFXAplicar(GameObject objetivo, bool critico = false)
     {
-      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GarraFaagdan");
+      // Esquirlas de hielo en el punto del zarpazo.
+      DracoHieloVfx.ImpactoHielo(objetivo.transform.position, critico ? 1.2f : 0.7f, false);
+
+      GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_GarraFaagdan"); // tajo reutilizado
+      if (VFXenObjetivo == null) { return; }
 
     GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
     vfx.transform.parent = objetivo.transform;
-     
+
    //Esto pone en la capa del canvas de la unidad afectada +1, para que se vea encima
    Canvas canvasObjeto = vfx.GetComponentInChildren<Canvas>();
-   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);  
+   RenderOrderHelper.OrdenarCanvasEncima(canvasObjeto, vfx.transform.parent, 5);
 
     }
     public override void AplicarEfectosHabilidad(object obj)
@@ -139,7 +143,7 @@ public class IAGarraDracoHielo : IAHabilidad
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
        // AplicaDerribado(objetivo, 1);
-         VFXAplicar(objetivo.gameObject);
+         VFXAplicar(objetivo.gameObject, true);
       }
           
             objetivo.AplicarDebuffPorAtaquesreiterados(1);

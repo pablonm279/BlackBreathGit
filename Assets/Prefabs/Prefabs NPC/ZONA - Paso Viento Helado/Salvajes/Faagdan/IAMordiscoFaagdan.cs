@@ -62,8 +62,9 @@ public class IAMordiscoFaagdan : IAHabilidad
      
    }
 
-      void VFXAplicar(GameObject objetivo)
+      void VFXAplicar(GameObject objetivo, bool critico = false)
     {
+      FaagdanVfx.Mordisco(objetivo.transform.position, critico);
       GameObject VFXenObjetivo = Resources.Load<GameObject>("VFX/VFX_MordiscoFaagdan");
 
     GameObject vfx = Instantiate(VFXenObjetivo, objetivo.transform.position, Quaternion.identity /*objetivo.transform.rotation*/);
@@ -139,7 +140,7 @@ public class IAMordiscoFaagdan : IAHabilidad
         objetivo.RecibirDanio(danio, tipoDanio, true, scEstaUnidad);
 
         AplicarEfecto(objetivo, 2);
-         VFXAplicar(objetivo.gameObject);
+         VFXAplicar(objetivo.gameObject, true);
       }
           
             objetivo.AplicarDebuffPorAtaquesreiterados(1);
@@ -156,7 +157,14 @@ public class IAMordiscoFaagdan : IAHabilidad
     
     void AplicarEfecto(Unidad objetivo, int intensidad)
     {
-      if (objetivo.TiradaSalvacion(2, 9+intensidad))
+      // Tope de 3 acumulaciones (-9 armadura): sin tope cada mordida destruia la armadura para siempre.
+      int acumuladas = 0;
+      foreach (Buff existente in objetivo.GetComponents<Buff>())
+      {
+        if (existente != null && !existente.RemocionAplicada && existente.buffNombre == "Armadura masticada") { acumuladas++; }
+      }
+
+      if (acumuladas < 3 && objetivo.TiradaSalvacion(2, 9+intensidad))
       {
         // BUFF ---- Así se aplica un buff/debuff
         Buff buff = new Buff();

@@ -12,16 +12,10 @@ public sealed class VisualPolishRuntime : MonoBehaviour
 {
   private static VisualPolishRuntime instance;
 
-  private const string PrefPostFx = "gfx_postfx_enabled";
-  private const string PrefAA = "gfx_aa_enabled";
-  private const string PrefBloom = "gfx_bloom_enabled";
-  private const string PrefDoF = "gfx_dof_enabled";
   private const string PrefVsync = "gfx_vsync";
   private const string PrefFpsLimit = "gfx_fps_limit";
   private const string PrefBrightness = "gfx_brightness";
   private const string PrefContrast = "gfx_contrast";
-  private const string PrefGraficosIndex = "graficos_index";
-  private const int CalidadGraficaBaja = 0;
   private const string EscenaMenuPrincipal = "ES-MenuPrincipal";
   private const float InfluenciaBrilloMenuPrincipal = 0.30f;
   private const float BlackBreathParticleReductionPerQualityLevel = 0.15f;
@@ -65,10 +59,6 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   [SerializeField] [Range(0f, 1f)] private float uiMatchWidthOrHeight = 0.5f;
 
   [Header("Defaults (if prefs are missing)")]
-  [SerializeField] private bool defaultPostFxEnabled = true;
-  [SerializeField] private bool defaultAAEnabled = true;
-  [SerializeField] private bool defaultBloomEnabled = true;
-  [SerializeField] private bool defaultDoFEnabled = false;
   [SerializeField] private bool defaultVsyncEnabled = true;
   [SerializeField] private int defaultFpsLimit = 60;
   [Header("Safety")]
@@ -92,6 +82,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   public static void ApplyPostProcessingPrefsNow()
   {
     Scene scene = SceneManager.GetActiveScene();
+    GraphicsQuality.ApplyEngine();
 
     if (instance != null)
     {
@@ -109,6 +100,16 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     {
       instance.EnsureSceneGlobalVolume(scene);
     }
+#endif
+  }
+
+  // Reaplica solo el volumen global (brillo, contraste, filtro de daltonismo): mas liviano que
+  // ApplyPostProcessingPrefsNow, pensado para sliders que se arrastran.
+  public static void RefreshColorGradingNow()
+  {
+#if UNITY_POST_PROCESSING_STACK_V2
+    if (instance == null) { return; }
+    instance.EnsureSceneGlobalVolume(SceneManager.GetActiveScene());
 #endif
   }
 
@@ -147,12 +148,13 @@ public sealed class VisualPolishRuntime : MonoBehaviour
 
   private void ApplyScenePolish(Scene scene)
   {
-    ApplySyncAndFrameRatePrefs(scene);
-
+    // Primero la calidad (SetQualityLevel pisa el vSync) y despues vSync / limite de FPS.
     if (rebalanceQualityAtRuntime)
     {
       ApplyRuntimeQualityRebalance();
     }
+
+    ApplySyncAndFrameRatePrefs(scene);
 
     NormalizeSceneCanvasScalers(scene);
     ApplyMainMenuParticleQuality(scene);
@@ -171,23 +173,8 @@ public sealed class VisualPolishRuntime : MonoBehaviour
 
   private static void ApplyRuntimeQualityRebalance()
   {
-    // Avoid MSAA + post-process AA stacking. PostProcessLayer handles anti-aliasing.
-    QualitySettings.antiAliasing = 0;
-
-    int level = QualitySettings.GetQualityLevel();
-    if (level <= 0) // Low
-    {
-      QualitySettings.shadowDistance = Mathf.Min(QualitySettings.shadowDistance, 30f);
-    }
-    else if (level == 1) // Medium/High
-    {
-      QualitySettings.shadowDistance = Mathf.Min(QualitySettings.shadowDistance, 90f);
-    }
-    else // Ultra+
-    {
-      QualitySettings.shadowDistance = Mathf.Min(QualitySettings.shadowDistance, 140f);
-    }
-
+    // Aplica la calidad guardada (y overrides de sombras / texturas) en cada escena.
+    GraphicsQuality.ApplyEngine();
   }
 
   private void NormalizeSceneCanvasScalers(Scene scene)
@@ -249,22 +236,15 @@ public sealed class VisualPolishRuntime : MonoBehaviour
 
   public static float ResolveQualityAmountMultiplier(float reductionPerLevel)
   {
-    int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
-    if (calidadMaxima <= 0)
+    // particleSteps equivale a "niveles por debajo de Ultra" del esquema original de 3 calidades
+    // (Ultra 0, Medium 1, Low 2) y sale de la tabla de GraphicsQuality (incluye el override de densidad del jugador).
+    float pasos = GraphicsQuality.Current.particleSteps;
+    if (pasos <= 0f)
     {
       return 1f;
     }
 
-    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
-    calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
-
-    int nivelesDebajoDeUltra = calidadMaxima - calidadActual;
-    if (nivelesDebajoDeUltra <= 0)
-    {
-      return 1f;
-    }
-
-    return Mathf.Clamp01(1f - (Mathf.Max(0f, reductionPerLevel) * nivelesDebajoDeUltra));
+    return Mathf.Clamp01(1f - (Mathf.Max(0f, reductionPerLevel) * pasos));
   }
 
   public static void ApplyBlackBreathParticleQualityScale(GameObject root)
@@ -289,25 +269,21 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       ApplyParticleSystemAmountScale(systems[i], multiplier);
     }
 
-    int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
-    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
-    calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
+    GraphicsQuality.Settings calidad = GraphicsQuality.Current;
     int indiceVfx = campaignGeneratedVfxRootCounter++;
 
-    ApplyGeneratedCampaignVfxLod(root, calidadActual, calidadMaxima);
-    ApplyGeneratedCampaignVfxLightBudget(root, indiceVfx, calidadActual, calidadMaxima);
+    ApplyGeneratedCampaignVfxLod(root, calidad);
+    ApplyGeneratedCampaignVfxLightBudget(root, indiceVfx, calidad);
   }
 
-  private static void ApplyGeneratedCampaignVfxLod(GameObject root, int calidadActual, int calidadMaxima)
+  private static void ApplyGeneratedCampaignVfxLod(GameObject root, GraphicsQuality.Settings calidad)
   {
     if (root.GetComponent<LODGroup>() != null) { return; }
 
     ParticleSystemRenderer[] particleRenderers = root.GetComponentsInChildren<ParticleSystemRenderer>(true);
     if (particleRenderers.Length == 0) { return; }
 
-    float alturaMinimaPantalla = calidadActual >= calidadMaxima
-      ? 0.006f
-      : calidadActual <= CalidadGraficaBaja ? 0.018f : 0.010f;
+    float alturaMinimaPantalla = calidad.vfxLodHeight;
 
     LODGroup lodGroup = root.AddComponent<LODGroup>();
     lodGroup.fadeMode = LODFadeMode.None;
@@ -322,15 +298,11 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   private static void ApplyGeneratedCampaignVfxLightBudget(
     GameObject root,
     int indiceVfx,
-    int calidadActual,
-    int calidadMaxima)
+    GraphicsQuality.Settings calidad)
   {
     if (root.name.IndexOf("llama", System.StringComparison.OrdinalIgnoreCase) < 0) { return; }
 
-    int conservarCada = calidadActual >= calidadMaxima
-      ? 3
-      : calidadActual <= CalidadGraficaBaja ? int.MaxValue : 5;
-    bool conservarLuz = calidadActual > CalidadGraficaBaja && indiceVfx % conservarCada == 0;
+    bool conservarLuz = calidad.vfxLightEvery > 0 && indiceVfx % calidad.vfxLightEvery == 0;
     if (conservarLuz) { return; }
 
     Light[] lights = root.GetComponentsInChildren<Light>(true);
@@ -443,9 +415,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   {
     if (!IsCampaignScene(scene)) { return; }
 
-    int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
-    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
-    calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
+    int sombrasLuces = GraphicsQuality.Current.campaignLightShadows;
 
     Light[] lights = FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None);
     for (int i = 0; i < lights.Length; i++)
@@ -470,9 +440,16 @@ public sealed class VisualPolishRuntime : MonoBehaviour
         continue;
       }
 
-      if (calidadActual < calidadMaxima)
+      if (sombrasLuces <= 0)
       {
         light.shadows = LightShadows.None;
+        continue;
+      }
+
+      if (sombrasLuces == 1)
+      {
+        light.shadows = LightShadows.Hard;
+        light.shadowResolution = LightShadowResolution.Low;
         continue;
       }
 
@@ -580,8 +557,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
 
   private static bool IsLowGraphicsQuality()
   {
-    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
-    return calidadActual <= CalidadGraficaBaja;
+    return !GraphicsQuality.Current.menuParticles;
   }
 
   private static bool IsCampaignScene(Scene scene)
@@ -596,8 +572,8 @@ public sealed class VisualPolishRuntime : MonoBehaviour
   {
     Camera[] cameras = FindObjectsOfType<Camera>(true);
     int volumeMask = 1 << postProcessLayerIndex;
-    bool postFxEnabled = PrefBool(PrefPostFx, defaultPostFxEnabled);
-    bool aaEnabled = PrefBool(PrefAA, defaultAAEnabled);
+    GraphicsQuality.Settings calidad = GraphicsQuality.Current;
+    bool postFxEnabled = calidad.postProcessing;
 
     for (int i = 0; i < cameras.Length; i++)
     {
@@ -612,23 +588,28 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       layer.enabled = postFxEnabled;
       if (!postFxEnabled) { continue; }
 
-      // HDR preserves emissive highlights for bloom. PPSv2 adds blue-noise
-      // dithering automatically in its final pass.
-      cam.allowHDR = true;
+      // HDR conserva los brillos emisivos para el bloom; en Low se trabaja en LDR (solo ColorGrading).
+      // PPSv2 agrega dithering de ruido azul en su pasada final.
+      cam.allowHDR = calidad.hdr;
       layer.stopNaNPropagation = true;
       layer.volumeLayer = volumeMask;
 
-      if (aaEnabled)
+      switch (calidad.aa)
       {
-        // SMAA avoids temporal ghosting/motion blur feel when characters move.
-        layer.antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
-        layer.subpixelMorphologicalAntialiasing.quality = IsCampaignScene(scene)
-          ? SubpixelMorphologicalAntialiasing.Quality.Medium
-          : SubpixelMorphologicalAntialiasing.Quality.High;
-      }
-      else
-      {
-        layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+        case GraphicsQuality.AntiAliasing.FXAA:
+          layer.antialiasingMode = PostProcessLayer.Antialiasing.FastApproximateAntialiasing;
+          layer.fastApproximateAntialiasing.fastMode = true;
+          break;
+        case GraphicsQuality.AntiAliasing.SMAA:
+          // SMAA evita el ghosting temporal / sensacion de motion blur al mover personajes.
+          layer.antialiasingMode = PostProcessLayer.Antialiasing.SubpixelMorphologicalAntialiasing;
+          layer.subpixelMorphologicalAntialiasing.quality = calidad.smaaHigh && !IsCampaignScene(scene)
+            ? SubpixelMorphologicalAntialiasing.Quality.High
+            : SubpixelMorphologicalAntialiasing.Quality.Medium;
+          break;
+        default:
+          layer.antialiasingMode = PostProcessLayer.Antialiasing.None;
+          break;
       }
     }
   }
@@ -642,9 +623,8 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     bool isBattle = sceneName.Contains("batalla");
     if (!isMenu && !isCampaign && !isBattle) { return; }
 
-    bool postFxEnabled = PrefBool(PrefPostFx, defaultPostFxEnabled);
-    bool bloomEnabled = PrefBool(PrefBloom, defaultBloomEnabled);
-    bool dofEnabled = PrefBool(PrefDoF, defaultDoFEnabled);
+    GraphicsQuality.Settings calidad = GraphicsQuality.Current;
+    bool postFxEnabled = calidad.postProcessing;
     float brightnessIncrease = isMainMenu ? 0.02f : 0.10f;
     float brightness = Mathf.Clamp01(PrefFloat(PrefBrightness, defaultBrightness) + brightnessIncrease);
     float sceneBrightnessExposureRange = brightnessExposureRange;
@@ -714,10 +694,10 @@ public sealed class VisualPolishRuntime : MonoBehaviour
       runtimeVolume.sharedProfile = profile;
     }
 
-    BuildSceneProfile(profile, isMenu, isCampaign, isBattle, bloomEnabled, dofEnabled, brightnessExposureOffset, contrastOffset);
+    BuildSceneProfile(profile, isMenu, isCampaign, isBattle, calidad, brightnessExposureOffset, contrastOffset);
   }
 
-  private static void BuildSceneProfile(PostProcessProfile profile, bool isMenu, bool isCampaign, bool isBattle, bool bloomEnabled, bool dofEnabled, float brightnessExposureOffset, float contrastOffset)
+  private static void BuildSceneProfile(PostProcessProfile profile, bool isMenu, bool isCampaign, bool isBattle, GraphicsQuality.Settings calidad, float brightnessExposureOffset, float contrastOffset)
   {
     ColorGrading color = GetOrAddSetting<ColorGrading>(profile);
     color.enabled.Override(true);
@@ -750,8 +730,21 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     color.postExposure.Override(baseExposure + brightnessExposureOffset + Mathf.Log(1.10f, 2f));
     color.contrast.Override(Mathf.Clamp(baseContrast + contrastOffset, -100f, 100f));
 
+    // Accesibilidad: filtro para daltonismo (mezclador de canales; identidad cuando esta apagado).
+    float[] mezcla = AccessibilitySettings.GetColorMixer();
+    color.mixerRedOutRedIn.Override(mezcla[0]);
+    color.mixerRedOutGreenIn.Override(mezcla[1]);
+    color.mixerRedOutBlueIn.Override(mezcla[2]);
+    color.mixerGreenOutRedIn.Override(mezcla[3]);
+    color.mixerGreenOutGreenIn.Override(mezcla[4]);
+    color.mixerGreenOutBlueIn.Override(mezcla[5]);
+    color.mixerBlueOutRedIn.Override(mezcla[6]);
+    color.mixerBlueOutGreenIn.Override(mezcla[7]);
+    color.mixerBlueOutBlueIn.Override(mezcla[8]);
+
     Bloom bloom = GetOrAddSetting<Bloom>(profile);
-    bloom.enabled.Override(bloomEnabled);
+    bloom.enabled.Override(calidad.bloom);
+    bloom.fastMode.Override(calidad.bloomFast);
     bloom.intensity.Override(isBattle ? 0.14f : 0.22f);
     bloom.threshold.Override(isBattle ? 1.22f : 1.15f);
     bloom.softKnee.Override(0.25f);
@@ -765,10 +758,7 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     }
 
     AmbientOcclusion ao = GetOrAddSetting<AmbientOcclusion>(profile);
-    int calidadMaxima = Mathf.Max(0, QualitySettings.names.Length - 1);
-    int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
-    calidadActual = Mathf.Clamp(calidadActual, 0, calidadMaxima);
-    bool habilitarAo = !isMenu && (!isCampaign || calidadActual >= calidadMaxima);
+    bool habilitarAo = !isMenu && (isCampaign ? calidad.aoCampaign : calidad.aoBattle);
     ao.enabled.Override(habilitarAo);
     if (habilitarAo)
     {
@@ -783,10 +773,10 @@ public sealed class VisualPolishRuntime : MonoBehaviour
     }
 
     DepthOfField dof = GetOrAddSetting<DepthOfField>(profile);
-    dof.enabled.Override(dofEnabled && !isBattle);
+    dof.enabled.Override(calidad.dof && !isBattle);
     dof.focusDistance.Override(isCampaign ? 4f : 3f);
     dof.aperture.Override(isCampaign ? 18f : 20f);
-    dof.kernelSize.Override(KernelSize.Medium);
+    dof.kernelSize.Override(calidad.dofKernel > 0 ? KernelSize.Medium : KernelSize.Small);
   }
 
   private static T GetOrAddSetting<T>(PostProcessProfile profile) where T : PostProcessEffectSettings

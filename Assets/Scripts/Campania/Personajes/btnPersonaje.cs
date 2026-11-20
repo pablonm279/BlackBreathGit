@@ -488,11 +488,12 @@ public class btnPersonaje : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
       hash = hash * 31 + (personajeRepresentado.Camp_Muerto ? 1 : 0);
       hash = hash * 31 + (personajeRepresentado.Camp_Herido ? 1 : 0);
       hash = hash * 31 + (personajeRepresentado.Camp_Corrupto ? 1 : 0);
-      hash = hash * 31 + personajeRepresentado.ObtenerHorasRestantesEnfermo().GetHashCode();
+      // Horas enteras: con floats cualquier variacion minima recreaba los iconos de estado y hacia parpadear su tooltip.
+      hash = hash * 31 + Mathf.CeilToInt(personajeRepresentado.ObtenerHorasRestantesEnfermo());
       hash = hash * 31 + personajeRepresentado.ObtenerEstadoMoralCampania().GetHashCode();
-      hash = hash * 31 + personajeRepresentado.ObtenerHorasRestantesMoral().GetHashCode();
+      hash = hash * 31 + Mathf.CeilToInt(personajeRepresentado.ObtenerHorasRestantesMoral());
       hash = hash * 31 + (personajeRepresentado.Camp_Fatigado ? 1 : 0);
-      hash = hash * 31 + personajeRepresentado.ObtenerHorasRestantesBendecido().GetHashCode();
+      hash = hash * 31 + Mathf.CeilToInt(personajeRepresentado.ObtenerHorasRestantesBendecido());
       hash = hash * 31 + (personajeRepresentado.Camp_Avergonzado ? 1 : 0);
       hash = hash * 31 + (personajeRepresentado.spRetrato != null ? personajeRepresentado.spRetrato.GetInstanceID() : 0);
       return hash;

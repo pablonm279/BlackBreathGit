@@ -54,7 +54,42 @@ public abstract class IAHabilidad : MonoBehaviour
 
   public List<object> objPosibles = new List<object>(); //Esta variable guarda los objetivos posibles de la habilidad
 
-  public abstract object EstablecerObjetivoPrioritario(); //Dentro de la lista objPosibles, segun la habilidad, determinar cual es la mejor opcion 
+  // --- Anti doble animacion de ataque -------------------------------------------------------------
+  // Muchas habilidades llaman scEstaUnidad.ReproducirAnimacionAtaque() al empezar Y PrepararInicioAnimacion()
+  // reproduce la pose otra vez (al llegar al objetivo). Mientras la habilidad corre desde IAUnidad, la llamada
+  // manual se intercepta y se resuelve una sola vez dentro de PrepararInicioAnimacion.
+  [System.NonSerialized] private bool poseAtaqueSolicitada;
+  [System.NonSerialized] private bool prepararInicioLlamado;
+
+  public void IniciarSeguimientoAnimacion()
+  {
+    poseAtaqueSolicitada = false;
+    prepararInicioLlamado = false;
+  }
+
+  // Devuelve true si la llamada manual se absorbio (se reproducira dentro de PrepararInicioAnimacion).
+  public bool InterceptarAnimacionAtaqueManual()
+  {
+    if (omitirAnimacionDeUso)
+    {
+      return false;
+    }
+
+    poseAtaqueSolicitada = true;
+    return true;
+  }
+
+  // Si la habilidad nunca llamo a PrepararInicioAnimacion en su tramo sincronico, se reproduce la pose pedida
+  // a mano (comportamiento original) para no dejar la animacion sin hacer.
+  public void ResolverAnimacionAtaqueDiferida()
+  {
+    if (poseAtaqueSolicitada && !prepararInicioLlamado && scEstaUnidad != null)
+    {
+      scEstaUnidad.ReproducirAnimacionAtaque(true);
+    }
+  }
+
+  public abstract object EstablecerObjetivoPrioritario(); //Dentro de la lista objPosibles, segun la habilidad, determinar cual es la mejor opcion
 
 
   public abstract Task ActivarHabilidad();
@@ -95,7 +130,9 @@ public abstract class IAHabilidad : MonoBehaviour
       return;
     }
 
-    bool usarAtaque = fuerzaPoseAtaque || esMelee;
+    // poseAtaqueSolicitada: el script de la habilidad pidio la pose de ataque a mano (ReproducirAnimacionAtaque());
+    // se difirio a este punto para que se reproduzca UNA sola vez y en el momento correcto (al llegar al objetivo).
+    bool usarAtaque = fuerzaPoseAtaque || esMelee || poseAtaqueSolicitada;
     if (usarAtaque)
     {
       if (!ignorarDuplicado && scEstaUnidad.EsAnimacionAtaqueRecienteDesde(inicioSecuenciaVisual, VentanaAnimacionDuplicada)) { return; }
@@ -836,6 +873,7 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
 
   protected async void PrepararInicioAnimacion(List<object> objetivos, object solo, Func<Task> resolverImpacto = null)
   {
+    prepararInicioLlamado = true;
     TaskCompletionSource<bool> visualTcs = new TaskCompletionSource<bool>();
     bool focoCamaraAplicado = false;
     bool mantenerFocoCamaraPorCadena = false;
@@ -1033,12 +1071,22 @@ protected List<object> unidadesNoParticipantes; // Lo almacenamos por si hace fa
     await EsperarSecuenciaVisualAsync();
   }
 
+  // Aproximacion visual leve (opt-in): una unidad grande con ataque de area puede adelantarse un poco.
+  // Fraccion del camino hacia el objetivo (0 = desactivada) y tope en unidades de mundo.
+  protected virtual float AproximacionLeveFraccion => 0f;
+  protected virtual float AproximacionLeveMaxima => 0f;
+
   protected Task<bool> IntentarAproximarVisualMeleeAsync(object objetivo, bool mantenerAdelante = false)
   {
     MeleeApproachMover mover = MeleeApproachMover.ObtenerOCrear(scEstaUnidad);
     if (mover == null)
     {
       return Task.FromResult(false);
+    }
+
+    if (esMelee && AproximacionLeveFraccion > 0f)
+    {
+      return mover.PrepararAproximacionLeveIAAsync(objetivo, AproximacionLeveFraccion, AproximacionLeveMaxima, mantenerAdelante);
     }
 
     return mover.PrepararAproximacionIAAsync(esMelee, hAncho, objetivo, mantenerAdelante);

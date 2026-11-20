@@ -9,7 +9,7 @@ public sealed class EscaladoFuentesGlobal : MonoBehaviour
 {
     public const string PrefEscalaTexto = "ui_escala_texto";
     public const float EscalaMinima = 0.8f;
-    public const float EscalaMaxima = 1.05f;
+    public const float EscalaMaxima = 1.15f;
     public const float EscalaPorDefecto = 0.95f;
 
     private static EscaladoFuentesGlobal instance;

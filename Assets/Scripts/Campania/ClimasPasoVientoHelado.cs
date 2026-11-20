@@ -67,8 +67,7 @@ public sealed class ClimasPasoVientoHelado : MonoBehaviour
         decorador = zona.GetComponent<MapDecorator>();
         sol = zona.pasovientoheladoContenedorGameObjects.GetComponentInChildren<SunController>(true);
         rng = new System.Random(unchecked((decorador != null ? decorador.GetReliefSeed() : 19) ^ 0x31a925));
-        int calidad = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel()), 0, 2);
-        factorCalidad = calidad == 0 ? .45f : calidad == 1 ? .72f : 1f;
+        factorCalidad = GraphicsQuality.Pick(.45f, .72f, 1f);
         ruido = CrearRuido();
         raiz = new GameObject("Climas del Paso - visuales (Runtime)") { hideFlags = HideFlags.DontSave };
         raiz.transform.SetParent(transform, true); // escala mundial unitaria

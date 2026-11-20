@@ -879,6 +879,7 @@ public class BattleManager : MonoBehaviour
   {
     LimpiarPreviewAmenazaMeleeIA();
     unidadAmenazaMeleeIASuprimida = null;
+    AplicarEscalaTiempoCombate(); // con "solo turnos enemigos" la velocidad depende de quien juega
 
     if (unidadActiva != null)
     {
@@ -3078,6 +3079,8 @@ public class BattleManager : MonoBehaviour
     bool tutorialActivo = scTutorialCombate != null && scTutorialCombate.tutorialCombateActivo;
     bool esPrimerCombateTutorial = ObtenerAdministradorEscenasActual()?.EsPrimerCombateTutorialEnCurso == true;
     bool hotkeysBatallaBloqueados = tutorialActivo || esPrimerCombateTutorial;
+    // El tutorial se diseño con las teclas originales: mientras corre se ignoran los bindings del jugador.
+    Hotkeys.TutorialBattle = hotkeysBatallaBloqueados;
 
     if (EntradaBatallaBloqueadaPorUI)
     {
@@ -3102,7 +3105,7 @@ public class BattleManager : MonoBehaviour
       DebugObjetosBajoMouse();
     }
 
-    if (!hotkeysBatallaBloqueados && Input.GetKeyDown(KeyCode.Tab))
+    if (!hotkeysBatallaBloqueados && Hotkeys.Down(HotkeyAction.BattleTacticalView))
     {
       ActivarVistaTactica(!vistaTacticaActiva);
     }
@@ -3116,7 +3119,7 @@ public class BattleManager : MonoBehaviour
       SetPausaManualCombate(false);
     }
 
-    if (Input.GetKeyDown(KeyCode.Space))
+    if (Hotkeys.Down(HotkeyAction.BattleEndTurn))
     {
       if (unidadActiva != null && unidadActiva.GetComponent<IAUnidad>() == null && !hotkeysBatallaBloqueados)
       {
@@ -3153,11 +3156,11 @@ public class BattleManager : MonoBehaviour
       AbrirOpcionesDesdeCombate();
     }
 
-    if (!hotkeysBatallaBloqueados && Input.GetKeyDown(KeyCode.I))
+    if (!hotkeysBatallaBloqueados && Hotkeys.Down(HotkeyAction.BattleEnemyInfo))
     {
       scUIInfoChar.BotonInfoenemigos();
     }
-    if (!hotkeysBatallaBloqueados && Input.GetKeyDown(KeyCode.F))
+    if (!hotkeysBatallaBloqueados && Hotkeys.Down(HotkeyAction.BattleFastMode))
     {
       ActivarModoRapido(!modoRapidoActivado);
     }
@@ -4393,12 +4396,12 @@ public class BattleManager : MonoBehaviour
 
     for (int i = 0; i < _habilidadHotkeys.Length; i++)
     {
-      if (soloHotkeyDos && _habilidadHotkeys[i] != KeyCode.Alpha2)
+      if (soloHotkeyDos && i != 1)
       {
         continue;
       }
 
-      if (Input.GetKeyDown(_habilidadHotkeys[i]))
+      if (Hotkeys.Down(HotkeyAction.BattleSkill1 + i))
       {
         scUIBotonesHab.ActivarHabilidadPorHotkeyIndex(i);
         break;
@@ -6708,7 +6711,38 @@ public class BattleManager : MonoBehaviour
   {
     Time.timeScale = PausaCombateActiva
       ? 0f
-      : (modoRapidoActivado ? TimeScaleModoRapido : TimeScaleNormal);
+      : ObtenerEscalaTiempoCombate();
+  }
+
+  // En el tutorial se usa siempre la velocidad rapida original y se ignora "solo turnos enemigos".
+  public int NivelVelocidadCombateEfectivo
+  {
+    get { return Hotkeys.TutorialBattle ? GameSpeedSettings.NivelCombateRapido : GameSpeedSettings.CombatLevel; }
+  }
+
+  private float ObtenerEscalaTiempoCombate()
+  {
+    if (!modoRapidoActivado)
+    {
+      return TimeScaleNormal;
+    }
+
+    if (GameSpeedSettings.CombatOnlyEnemies && !Hotkeys.TutorialBattle && !EsTurnoEnemigoActivo())
+    {
+      return TimeScaleNormal;
+    }
+
+    return GameSpeedSettings.CombatTimeScale(NivelVelocidadCombateEfectivo);
+  }
+
+  private bool EsTurnoEnemigoActivo()
+  {
+    return unidadActiva != null && unidadActiva.CasillaPosicion != null && unidadActiva.CasillaPosicion.lado == 1;
+  }
+
+  public void RefrescarEscalaTiempoCombate()
+  {
+    AplicarEscalaTiempoCombate();
   }
 
   public void btnCambiarEstadoModoRapido()
@@ -6743,6 +6777,7 @@ public class BattleManager : MonoBehaviour
     }
 
     AplicarEscalaTiempoCombate();
+    GameSpeedSettings.NotificarCambioModoRapido();
 
   }
 
@@ -7381,7 +7416,7 @@ public class BattleManager : MonoBehaviour
       return false;
     }
 
-    return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+    return Hotkeys.Held(HotkeyAction.BattlePreviewHostile);
   }
 
   private bool PuedeMostrarPreviewHoverHostil(Casilla origenPreview)

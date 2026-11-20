@@ -169,7 +169,7 @@ public class SaveSlotsPanelUI : MonoBehaviour
       // El rectangulo de la botonera es mas ancho que su arte visible: la columna de pestañas
       // ocupa aproximadamente el tercio izquierdo del marco.
       float izquierda = marco.xMin + marco.width * 0.335f;
-      util = Rect.MinMaxRect(izquierda, marco.yMin + insetY, marco.xMax - insetX, marco.yMax - insetY);
+      util = Rect.MinMaxRect(izquierda, marco.yMin + insetY, marco.xMax - insetX, marco.yMax - marco.height * 0.07f);
     }
 
     rowWidth = Mathf.Max(260f, util.width);

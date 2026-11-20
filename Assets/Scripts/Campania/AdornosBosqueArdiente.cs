@@ -49,9 +49,8 @@ public sealed class AdornosBosqueArdiente : MonoBehaviour
             ? Mathf.Clamp(CampaignManager.Instance.scMapaManager.ObtenerPasoMapa(), 3, 12) : 5;
         rng = new System.Random(unchecked(decorador.GetReliefSeed() ^ (zona.FASE * 19349663) ^ 0x4b057e));
         RecolectarExclusiones();
-        int calidad = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel()), 0, 2);
         int cantidad = Mathf.Clamp(Mathf.RoundToInt(terreno.size.x * terreno.size.z / (paso * paso * 3.5f)), 24, 72);
-        cantidad = Mathf.RoundToInt(cantidad * (calidad == 0 ? .55f : calidad == 1 ? .8f : 1));
+        cantidad = Mathf.RoundToInt(cantidad * GraphicsQuality.Pick(.55f, .8f, 1f));
         for (int i = 0; i < cantidad; i++)
         {
             if (zona == null || zona.ID != 1) yield break;

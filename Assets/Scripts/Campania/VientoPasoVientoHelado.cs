@@ -67,8 +67,7 @@ public sealed class VientoPasoVientoHelado : MonoBehaviour
         if (shader == null) return;
         clima = GetComponent<ClimasPasoVientoHelado>(); decorador = zona.GetComponent<MapDecorator>();
         rng = new System.Random(unchecked((decorador != null ? decorador.GetReliefSeed() : 17)^0x42b17));
-        int nivel = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index",QualitySettings.GetQualityLevel()),0,2);
-        calidad = nivel == 0 ? .45f : nivel == 1 ? .72f : 1f;
+        calidad = GraphicsQuality.Pick(.45f, .72f, 1f);
         raiz = new GameObject("Corrientes permanentes del Paso (Runtime)") { hideFlags = HideFlags.DontSave };
         raiz.transform.SetParent(transform,true);
         matRasante = CrearMaterial(shader,"Nieve rasante en rafagas",3,new Color(.66f,.77f,.87f,.20f),.065f);

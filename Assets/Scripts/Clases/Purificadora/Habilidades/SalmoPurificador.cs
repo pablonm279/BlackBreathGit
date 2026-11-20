@@ -577,6 +577,15 @@ public class SalmoPurificador : Habilidad
 
     string TraducirTexto(string texto)
     {
+      // "Resistencias Reducidas" no tiene clave en TRADU (off-limits): se resuelve localmente.
+      if (texto == "Resistencias Reducidas" && TRADU.i != null)
+      {
+        if (TRADU.i.nIdioma == TRADU.IdiomaIngles) { return "Reduced Resistances"; }
+        if (TRADU.i.nIdioma == TRADU.IdiomaPortugues) { return "Resistências Reduzidas"; }
+        if (TRADU.i.nIdioma == TRADU.IdiomaChinoSimplificado) { return "抗性降低"; }
+        return texto;
+      }
+
       return TRADU.i != null ? TRADU.i.Traducir(texto) : texto;
     }
 

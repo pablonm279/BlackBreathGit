@@ -36,8 +36,6 @@ public class MapaManager : MonoBehaviour
     const float AlphaVignetaIntroCampania = 0.72f;
     const float DuracionFadeVignetaIntroCampania = 0.18f;
     const int SortingOrderVignetaIntroCampania = 32000;
-    const string PrefGraficosIndex = "graficos_index";
-    const int CalidadGraficaBaja = 0;
     bool inicioCompletado;
     bool generacionDiferidaPendiente;
     bool omitirAutoGeneracionEnStart;
@@ -671,8 +669,7 @@ public class MapaManager : MonoBehaviour
 
     bool DebeOmitirIntroCampaniaPorCalidadBaja()
     {
-        int calidadActual = PlayerPrefs.GetInt(PrefGraficosIndex, QualitySettings.GetQualityLevel());
-        return calidadActual <= CalidadGraficaBaja;
+        return GraphicsQuality.IsLow;
     }
 
     void FinalizarIntroCampaniaSinAnimacion(Nodo origen, CampaignManager campaignManager)

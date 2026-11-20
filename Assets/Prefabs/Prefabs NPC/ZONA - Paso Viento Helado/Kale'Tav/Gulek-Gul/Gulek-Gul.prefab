@@ -60,6 +60,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -81,9 +84,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1230110853346428797
 GameObject:
@@ -525,6 +530,9 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -546,9 +554,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6817527822529779511
 GameObject:
@@ -571,6 +581,8 @@ GameObject:
   - component: {fileID: 1086095695144954598}
   - component: {fileID: 2812188617297170847}
   - component: {fileID: 6360104834290905865}
+  - component: {fileID: 8432677143702720014}
+  - component: {fileID: 9040372859650334209}
   m_Layer: 7
   m_Name: Gulek-Gul
   m_TagString: Unidad
@@ -588,7 +600,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -4.64, y: 0.487, z: 3.779}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.5625, y: 0.5625, z: 0.5625}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8095374144337782812}
@@ -641,6 +653,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CasillaPosicion: {fileID: 0}
   CasillaDeseadaMov: {fileID: 0}
+  bGrande: 1
+  omitirFlashAnimacionRecibirDanio: 0
   CasillaForzadoaMover: {fileID: 0}
   estaCargando: {fileID: 0}
   valorCargando: 0
@@ -659,7 +673,7 @@ MonoBehaviour:
   mod_maxHP: 360
   HP_actual: 360
   at_maxAccionP: 4
-  esInmobil: 0
+  esInmobil: 1
   mod_maxAccionP: 4
   AccionP_actual: 4
   scTextoArmaduraFlash: {fileID: 0}
@@ -792,6 +806,7 @@ MonoBehaviour:
   bPuedeVerEscondidos: 0
   unicoEnCombate: 0
   tierEnemigo: 7
+  siempreEnRetaguardiaInicial: 0
   costoMovimientoAP: 1
   tendenciaMovY: 0
   tendenciaMovX: 0
@@ -849,13 +864,20 @@ MonoBehaviour:
   barraVidaHealDelay: 0.08
   barraVidaHealSpeed: 0.9
   barraVidaColorVidaBaja: {r: 0.42, g: 0.02, b: 0.02, a: 1}
+  barraVidaSangradoColor: {r: 0.28, g: 0.015, b: 0.015, a: 1}
   barraVidaRatioInicioRojo: 0.2
   barraVidaOscurecerTurnoPasado: 0.72
+  barraVidaPreviewDanioColor: {r: 1, g: 0.42, b: 0.08, a: 0.82}
+  barraVidaPreviewDanioMinimoColor: {r: 0.16, g: 0.008, b: 0.005, a: 0.96}
+  barraVidaPreviewDanioVelocidadPulso: 6
+  indicadorMuerteGarantizadaVelocidadPulso: 4.5
   rotuloHabilidadOffset: {x: 0, y: 2.1}
   rotuloHabilidadPadding: {x: 0.34, y: 0.16}
   rotuloHabilidadDuracion: 3
   rotuloHabilidadFondo: {r: 0.09, g: 0.012, b: 0.012, a: 0.82}
   rotuloHabilidadBorde: {r: 0.35, g: 0.07, b: 0.06, a: 0.72}
+  duracionVisibilidadTemporal: 4
+  duracionMovimientoEstados: 0.12
   casillaEstadoPrefab: {fileID: 4548383681791405134, guid: 1cab8730c342a944e8f7e88191b074f2, type: 3}
   contenedorCasillasEstados: {fileID: 4694107610616865097}
 --- !u!114 &1981830043046796933
@@ -876,8 +898,6 @@ MonoBehaviour:
   vfxCasteo: {fileID: 0}
   requiereRecurso: 0
   costoPM: 0
-  cooldownMax: 0
-  cooldownActual: 0
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   NIVEL: 0
@@ -1035,6 +1055,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 0
   costoAP: 0
   pPrioridad: 0
@@ -1071,6 +1092,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 0
   costoAP: 0
   pPrioridad: 0
@@ -1107,6 +1129,7 @@ MonoBehaviour:
   Usuario: {fileID: 0}
   scEstaUnidad: {fileID: 0}
   esHostil: 0
+  ignoraProvocacion: 0
   prioridad: 0
   costoAP: 0
   pPrioridad: 0
@@ -1144,6 +1167,78 @@ MonoBehaviour:
   meleePostImpacto: 0.16
   meleePostImpactoMin: 0.05
   meleePostImpactoMax: 0.3
+--- !u!114 &8432677143702720014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6817527822529779511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04ef1ffc4d3d2394f95cc5bc0ddaacbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IAPisoton
+  nombre: 
+  vfxImpacto: {fileID: 0}
+  vfxCasteo: {fileID: 0}
+  hAncho: 0
+  hAlcance: 0
+  esMelee: 0
+  afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 1
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
+  hCooldownMax: 0
+  hActualCooldown: 0
+  Usuario: {fileID: 0}
+  scEstaUnidad: {fileID: 0}
+  esHostil: 0
+  ignoraProvocacion: 0
+  prioridad: 0
+  costoAP: 0
+  XdDanio: 0
+  daniodX: 0
+  tipoDanio: 0
+  posePisoton: {fileID: 21300000, guid: e16317bbe4bb4d4f9115564666022ad8, type: 3}
+--- !u!114 &9040372859650334209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6817527822529779511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb6759684eef3fa4ba3d6c8b46f7e3b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::IALanzarRoca
+  nombre: 
+  vfxImpacto: {fileID: 0}
+  vfxCasteo: {fileID: 0}
+  hAncho: 0
+  hAlcance: 0
+  esMelee: 0
+  afectaObstaculos: 0
+  fuerzaPoseAtaque: 0
+  omitirAnimacionDeUso: 1
+  omitirFocoCamara: 0
+  intensidadFocoCamara: 1
+  hCooldownMax: 0
+  hActualCooldown: 0
+  Usuario: {fileID: 0}
+  scEstaUnidad: {fileID: 0}
+  esHostil: 0
+  ignoraProvocacion: 0
+  prioridad: 0
+  costoAP: 0
+  bonusAtaque: 0
+  XdDanio: 0
+  daniodX: 0
+  tipoDanio: 0
+  poseRocaAgacha: {fileID: 21300000, guid: e39be4ac841c4ea69d87811b6ea9b82a, type: 3}
+  poseRocaLanza: {fileID: 21300000, guid: 11d957905e3046f490c705d9d17758f4, type: 3}
 --- !u!1 &8187723404973685532
 GameObject:
   m_ObjectHideFlags: 0
@@ -1257,7 +1352,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.9, y: 0.77}
+  m_AnchoredPosition: {x: -6.1, y: 0.77}
   m_SizeDelta: {x: 65.9, y: 34.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6439364340457022924

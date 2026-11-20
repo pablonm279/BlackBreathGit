@@ -476,8 +476,7 @@ public sealed class AmbientePasoVientoHelado : MonoBehaviour
         materiales.Add(materialVentisca);
         materialNieve.SetColor("_Color", new Color(.82f,.91f,1f,.42f));
         materialVentisca.SetColor("_Color", new Color(.70f,.84f,.94f,.12f));
-        int calidad = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel()), 0, 2);
-        float factor = calidad == 0 ? .45f : calidad == 1 ? .7f : 1f;
+        float factor = GraphicsQuality.Pick(.45f, .7f, 1f);
         factorParticulas = factor;
         nieve = CrearParticulas("Copos al viento", materialNieve, 180, .025f, .055f, 10f * factor, 7f, new Vector3(-.34f,-.18f,.085f), 2f);
         ventisca = CrearParticulas("Nieve barrida sobre el suelo", materialVentisca, 70, .45f, 1.1f, 5f * factor, 5f, new Vector3(-1.1f,.015f,.25f), .18f);

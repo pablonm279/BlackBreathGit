@@ -2243,6 +2243,21 @@ public class AdministradorEscenas : MonoBehaviour
     ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 1, 2, 4);
   }
 
+  // Roca del jefe Gulek-Gul (lado enemigo). Es municion de "Lanzar Roca": la IA no debe destruirla como estorbo.
+  void ColocarRocaJefeGulekGul(int x, int y)
+  {
+    GameObject prefab = UnityEngine.Random.value < 0.5f ? ContenedorPrefabsBatalla.Roca1 : ContenedorPrefabsBatalla.Roca2;
+    ColocarObstaculoFijoTutorial(prefab, 2, x, y);
+
+    LadoManager lado = BattleManager.Instance != null ? BattleManager.Instance.ladoA : null;
+    Casilla casilla = lado != null ? lado.ObtenerCasillaPorIndex(x, y) : null;
+    Obstaculo obstaculo = casilla != null && casilla.Presente != null ? casilla.Presente.GetComponent<Obstaculo>() : null;
+    if (obstaculo != null)
+    {
+      obstaculo.destruiblePorMismoLado = false;
+    }
+  }
+
   void ColocarObstaculoFijoTutorial(GameObject prefab, int iLado, int x, int y)
   {
     if (prefab == null || BattleManager.Instance == null)
@@ -3608,14 +3623,31 @@ public class AdministradorEscenas : MonoBehaviour
     }
     if (IDEncuentro == 60) // FASE 1 - Jefe 1 - Paso Vientohelado
     {
+      // Gulek-Gul es una unidad grande (2x2): con ancla en (3,3) ocupa columnas 2-3 y filas 3-4.
       GameObject enemigo1 = Instantiate(ContenedorPrefabsBatalla.GulekGul);
-      ColocarEnCasillaEspecifica(2, enemigo1, 2, 3);
+      ColocarEnCasillaEspecifica(2, enemigo1, 3, 3);
 
-      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca1, 2, 3, 1);
-      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 3, 2);
-      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 3, 3);
-      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca2, 2, 3, 4);
-      ColocarObstaculoFijoTutorial(ContenedorPrefabsBatalla.Roca1, 2, 3, 5);
+      // Rocas (municion de "Lanzar Roca"): columna trasera completa...
+      for (int filaRoca = 1; filaRoca <= 5; filaRoca++)
+      {
+        ColocarRocaJefeGulekGul(1, filaRoca);
+      }
+
+      // ...y 3 o 4 al azar en columnas 2-3 fuera de su huella (filas 1, 2 y 5), sin tapar su frente.
+      List<Vector2Int> casillasRocasAzar = new List<Vector2Int>
+      {
+        new Vector2Int(2, 1), new Vector2Int(3, 1),
+        new Vector2Int(2, 2), new Vector2Int(3, 2),
+        new Vector2Int(2, 5), new Vector2Int(3, 5)
+      };
+      int cantidadRocasAzar = UnityEngine.Random.Range(3, 5);
+      for (int i = 0; i < cantidadRocasAzar && casillasRocasAzar.Count > 0; i++)
+      {
+        int idx = UnityEngine.Random.Range(0, casillasRocasAzar.Count);
+        Vector2Int c = casillasRocasAzar[idx];
+        casillasRocasAzar.RemoveAt(idx);
+        ColocarRocaJefeGulekGul(c.x, c.y);
+      }
 
     }
     if (IDEncuentro == 61) // FASE 1 - Jefe 2 - Paso Vientohelado - PENDIENTE
@@ -6024,7 +6056,7 @@ public class AdministradorEscenas : MonoBehaviour
         && BattleManager.Instance.scTutorialCombate != null
         && BattleManager.Instance.scTutorialCombate.tutorialCombateActivo);
 
-    if (!tutorialActivo && Input.GetKeyDown(KeyCode.H))
+    if (!tutorialActivo && Hotkeys.Down(HotkeyAction.Handbook))
     {
       AbrirHandbook();
     }

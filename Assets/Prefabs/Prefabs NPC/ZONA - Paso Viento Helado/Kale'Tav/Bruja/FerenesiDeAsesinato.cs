@@ -29,11 +29,12 @@ public class FerenesiDeAsesinato : IAHabilidad
       esHostil = false;
       prioridad = 15;
       costoAP = 2;
+      omitirAnimacionDeUso = true; // sin animacion de ataque (vaiven)
       afectaObstaculos = false;
       
 
 
-      hActualCooldown = 0;
+      hActualCooldown = UnityEngine.Random.Range(0, hCooldownMax + 1); // arranque aleatorio
 
       bonusAtaque = 0;
       XdDanio = 0;
@@ -54,11 +55,16 @@ public class FerenesiDeAsesinato : IAHabilidad
   object Objetivo;
    public async override Task ActivarHabilidad()
    {
+    Objetivo = EstablecerObjetivoPrioritario();
+    if (Objetivo == null)
+    {
+      hActualCooldown = 1; // todos los aliados ya tienen el frenesi: no gasta AP
+      return;
+    }
+
     gameObject.GetComponent<Unidad>().CambiarAPActual(-costoAP);
      
-      scEstaUnidad.ReproducirAnimacionAtaque();
 
-      Objetivo = EstablecerObjetivoPrioritario();
                       PrepararInicioAnimacion(null,Objetivo);//Despues de establecer objetivo
 
     

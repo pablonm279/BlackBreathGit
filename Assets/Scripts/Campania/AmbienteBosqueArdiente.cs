@@ -239,8 +239,7 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
         // La raiz del mapa tiene escala no uniforme; los tamaños de atmosfera son de mundo.
         raizParticulas.transform.SetParent(transform, true);
         var bounds = zona.TexturaTerreno.bounds;
-        int calidad = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel()), 0, 2);
-        float factor = calidad == 0 ? .45f : calidad == 1 ? .7f : 1;
+        float factor = GraphicsQuality.Pick(.45f, .7f, 1f);
         var chispas = CrearSistema("Brasas de los incendios", brasa, 180, .045f, .09f, 2.5f, 4.8f);
         var humoLocal = CrearSistema("Humo que deriva entre arboles", humo, 50, .55f, 1.15f, 3.5f, 6);
         var cenizas = CrearSistema("Ceniza tenue del bosque", ceniza, 95, .025f, .055f, 9, 15);
@@ -277,8 +276,7 @@ public sealed class AmbienteBosqueArdiente : MonoBehaviour
                 solBosque.SetCampaignHour(CampaignManager.Instance != null ? CampaignManager.Instance.ObtenerHoraActual() : 8);
             }
         }
-        int calidad = Mathf.Clamp(PlayerPrefs.GetInt("graficos_index", QualitySettings.GetQualityLevel()), 0, 2);
-        int cantidad = Mathf.Min(focos.Count, calidad == 0 ? 1 : calidad == 1 ? 2 : 4);
+        int cantidad = Mathf.Min(focos.Count, GraphicsQuality.PickInt(1, 2, 4));
         for (int i = 0; i < cantidad; i++)
         {
             if (i == lucesIncendio.Count)

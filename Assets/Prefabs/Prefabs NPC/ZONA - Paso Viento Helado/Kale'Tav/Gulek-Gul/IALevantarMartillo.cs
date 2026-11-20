@@ -28,7 +28,7 @@ public class IALevantarMartillo : IAHabilidad
     hCooldownMax = 1;
     esHostil = false;
     prioridad = 15;
-    costoAP = 3;
+    costoAP = 2;
     afectaObstaculos = false;
 
 
@@ -57,31 +57,33 @@ public class IALevantarMartillo : IAHabilidad
 
     if (scEstaUnidad.TieneBuffNombre("Martillo Listo"))
     {
-      hActualCooldown = 1;
-      gameObject.GetComponent<IAMartilloPesado>().hActualCooldown = 0;
-      return;
+      return; // ya lo tiene levantado (ListaHayObjetivosAlAlcance ya lo excluye; esto es solo una guarda)
     }
-
 
     //scEstaUnidad.ReproducirAnimacionAtaque();
 
     Objetivo = scEstaUnidad;
+    scEstaUnidad.CambiarAPActual(-costoAP);
     PrepararInicioAnimacion(null, Objetivo);//Despues de establecer objetivo
-
 
     hActualCooldown = hCooldownMax;
 
+    await BattleManager.DelayCombateAsync(700);
 
+    if (!PuedeResolverAccionIA())
+    {
+      return;
+    }
 
-    await BattleManager.DelayCombateAsync(1300);
     //Esto es cuando el objetivo es uno solo,
     AplicarEfectosHabilidad(Objetivo);
 
-    await BattleManager.DelayCombateAsync(1300);
-    await BattleManager.DelayCombateAsync(600);
-    scEstaUnidad.EstablecerAPActualA(0);
-    BattleManager.Instance.TerminarTurno();
+    // Efecto visual: el suelo tiembla un poco al alzar el martillo.
+    GulekGulVfx.PolvoYEscombros(scEstaUnidad.transform.position, 0.8f, 1.1f);
+    GulekGulVfx.OndaDeChoque(scEstaUnidad.transform.position, 0.9f, new Color(0.85f, 0.8f, 0.7f, 0.5f), 0.4f, 1);
+    GulekGulVfx.SacudirCamara(0.3f, 0.15f);
 
+    await BattleManager.DelayCombateAsync(500);
   }
 
 
@@ -110,6 +112,9 @@ public class IALevantarMartillo : IAHabilidad
       // Agrega el componente Buff al objeto objetivo y asigna la configuración del buff
       Buff buffComponent = ComponentCopier.CopyComponent(buff, objetivo.gameObject);
 
+      EnemigoGulekGul gulek = objetivo as EnemigoGulekGul;
+      if (gulek != null) { gulek.RefrescarPoseMartillo(); }
+
     }
    
   }
@@ -125,6 +130,11 @@ public class IALevantarMartillo : IAHabilidad
 
   public override List<object> ListaHayObjetivosAlAlcance() //necesario para self buffearse
   {
+    if (scEstaUnidad.TieneBuffNombre("Martillo Listo"))
+    {
+      return new List<object>(); // ya tiene el martillo levantado: no es una accion posible
+    }
+
     return new List<object> { scEstaUnidad };
 
   }
